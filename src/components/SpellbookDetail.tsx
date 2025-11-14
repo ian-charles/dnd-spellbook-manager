@@ -59,6 +59,19 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
 
   const preparedCount = enrichedSpells.filter(s => s.prepared).length;
 
+  const getLevelText = (level: number) => {
+    if (level === 0) return 'Cantrip';
+    return level.toString();
+  };
+
+  const getComponentsText = (spell: Spell) => {
+    const parts: string[] = [];
+    if (spell.components.verbal) parts.push('V');
+    if (spell.components.somatic) parts.push('S');
+    if (spell.components.material) parts.push('M');
+    return parts.join(', ');
+  };
+
   return (
     <div className="spellbook-detail" data-testid="spellbook-detail">
       <div className="spellbook-detail-header">
@@ -79,58 +92,66 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
           <p>Go to the Browse tab to add spells!</p>
         </div>
       ) : (
-        <div className="spellbook-spell-list" data-testid="spellbook-spell-list">
-          {enrichedSpells.map(({ spell, prepared }) => (
-            <div
-              key={spell.id}
-              className={`spellbook-spell-item ${prepared ? 'prepared' : ''}`}
-              data-testid={`spellbook-spell-${spell.id}`}
-            >
-              <div className="spell-item-checkbox">
-                <input
-                  type="checkbox"
-                  checked={prepared}
-                  onChange={() => handleTogglePrepared(spell.id)}
-                  data-testid="toggle-prepared"
-                  aria-label={`Toggle ${spell.name} prepared status`}
-                />
-              </div>
-              <div className="spell-item-content">
-                <div className="spell-item-header">
-                  <h3>{spell.name}</h3>
-                  <div className="spell-item-badges">
+        <div className="spellbook-table-container" data-testid="spellbook-spell-list">
+          <table className="spell-table spellbook-table">
+            <thead>
+              <tr>
+                <th className="prepared-col">Prep</th>
+                <th>Spell Name</th>
+                <th className="level-col">Level</th>
+                <th>School</th>
+                <th>Time</th>
+                <th>Range</th>
+                <th className="components-col">Comp.</th>
+                <th>Duration</th>
+                <th>Classes</th>
+                <th>Source</th>
+                <th className="action-col">Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              {enrichedSpells.map(({ spell, prepared }) => (
+                <tr
+                  key={spell.id}
+                  className={`spell-row ${prepared ? 'prepared-row' : ''}`}
+                  data-testid={`spellbook-spell-${spell.id}`}
+                >
+                  <td className="prepared-col">
+                    <input
+                      type="checkbox"
+                      checked={prepared}
+                      onChange={() => handleTogglePrepared(spell.id)}
+                      data-testid="toggle-prepared"
+                      aria-label={`Toggle ${spell.name} prepared status`}
+                    />
+                  </td>
+                  <td className="spell-name">
+                    {spell.name}
                     {spell.concentration && <span className="badge badge-concentration">C</span>}
                     {spell.ritual && <span className="badge badge-ritual">R</span>}
-                  </div>
-                </div>
-                <div className="spell-item-info">
-                  <span className="spell-level">
-                    {spell.level === 0 ? 'Cantrip' : `Level ${spell.level}`}
-                  </span>
-                  <span className="spell-separator">·</span>
-                  <span className="spell-school">{spell.school}</span>
-                  <span className="spell-separator">·</span>
-                  <span>{spell.castingTime}</span>
-                  <span className="spell-separator">·</span>
-                  <span>{spell.range}</span>
-                </div>
-                <div className="spell-item-description">
-                  {spell.description.substring(0, 200)}
-                  {spell.description.length > 200 ? '...' : ''}
-                </div>
-              </div>
-              <div className="spell-item-actions">
-                <button
-                  className="btn-remove"
-                  onClick={() => handleRemoveSpell(spell.id, spell.name)}
-                  data-testid={`btn-remove-spell-${spell.id}`}
-                  aria-label={`Remove ${spell.name}`}
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          ))}
+                  </td>
+                  <td className="level-col">{getLevelText(spell.level)}</td>
+                  <td className="school-col">{spell.school}</td>
+                  <td>{spell.castingTime}</td>
+                  <td>{spell.range}</td>
+                  <td className="components-col">{getComponentsText(spell)}</td>
+                  <td>{spell.duration}</td>
+                  <td className="classes-col">{spell.classes.join(', ')}</td>
+                  <td className="source-col">{spell.source}</td>
+                  <td className="action-col">
+                    <button
+                      className="btn-remove-small"
+                      onClick={() => handleRemoveSpell(spell.id, spell.name)}
+                      data-testid={`btn-remove-spell-${spell.id}`}
+                      aria-label={`Remove ${spell.name}`}
+                    >
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

@@ -8,7 +8,7 @@ export default defineConfig({
     globals: true,
     // E2E tests use node environment (Puppeteer), unit tests use jsdom
     environment: process.env.TEST_ENV === 'e2e' ? 'node' : 'jsdom',
-    setupFiles: [],
+    setupFiles: ['./src/test/setup.ts'],
     testTimeout: 30000,
     coverage: {
       provider: 'v8',

@@ -1,2 +1,1 @@
-import '@testing-library/jest-dom';
-import 'fake-indexeddb/auto';
+// Setup file for vitest tests\nimport 'fake-indexeddb/auto';

@@ -1,0 +1,190 @@
+.spellbook-detail {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.spellbook-detail-header {
+  margin-bottom: 2rem;
+}
+
+.btn-back {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--primary-color);
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: opacity 0.2s;
+}
+
+.btn-back:hover {
+  opacity: 0.7;
+}
+
+.spellbook-detail-header h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+.spellbook-stats {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.spellbook-detail-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+.spellbook-detail-empty p {
+  margin: 0.5rem 0;
+}
+
+.spellbook-spell-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.spellbook-spell-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  transition: all 0.2s;
+}
+
+.spellbook-spell-item.prepared {
+  background: var(--bg-prepared, #f0fdf4);
+  border-color: var(--border-prepared, #86efac);
+}
+
+.spellbook-spell-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.spell-item-checkbox {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.25rem;
+}
+
+.spell-item-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.spell-item-content {
+  flex: 1;
+}
+
+.spell-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.spell-item-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.spell-item-badges {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.badge-concentration {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-ritual {
+  background: #ddd6fe;
+  color: #5b21b6;
+}
+
+.spell-item-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.spell-separator {
+  color: var(--border-color);
+}
+
+.spell-level {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.spell-school {
+  text-transform: capitalize;
+}
+
+.spell-item-description {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.spell-item-actions {
+  display: flex;
+  align-items: flex-start;
+}
+
+.btn-remove {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  .spellbook-spell-item.prepared {
+    background: #064e3b;
+    border-color: #059669;
+  }
+
+  .badge-concentration {
+    background: #78350f;
+    color: #fef3c7;
+  }
+
+  .badge-ritual {
+    background: #4c1d95;
+    color: #ddd6fe;
+  }
+}

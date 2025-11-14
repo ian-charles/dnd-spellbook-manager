@@ -197,6 +197,7 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
                   <button
                     className="btn-add-small"
                     onClick={() => onAddToSpellbook(spell.id)}
+                    data-testid="btn-add-spell"
                   >
                     +
                   </button>

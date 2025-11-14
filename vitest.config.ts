@@ -10,6 +10,8 @@ export default defineConfig({
     environment: process.env.TEST_ENV === 'e2e' ? 'node' : 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     testTimeout: 30000,
+    // Run E2E tests sequentially to avoid multiple Chrome instances
+    fileParallelism: process.env.TEST_ENV === 'e2e' ? false : true,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

@@ -1,20 +1,30 @@
-import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest';
+import { describe, it, expect, beforeEach, vi, beforeAll, afterEach } from 'vitest';
 import { StorageService } from './storage.service';
 import { db } from './db';
 import { Spellbook, CreateSpellbookInput, UpdateSpellbookInput } from '../types/spellbook';
-import 'fake-indexeddb/auto';
 
-// Mock crypto.randomUUID for consistent test IDs
+// Mock crypto.randomUUID to generate unique test IDs
+let uuidCounter = 0;
 vi.stubGlobal('crypto', {
-  randomUUID: vi.fn(() => 'test-uuid-123'),
+  randomUUID: vi.fn(() => `test-uuid-${++uuidCounter}`),
 });
 
 describe('StorageService', () => {
   let service: StorageService;
 
+  beforeAll(async () => {
+    // Ensure database is open before running tests
+    await db.open();
+  });
+
   beforeEach(async () => {
     service = new StorageService();
     // Clear the database before each test
+    await db.spellbooks.clear();
+  });
+
+  afterEach(async () => {
+    // Clean up after each test
     await db.spellbooks.clear();
   });
 
@@ -24,7 +34,7 @@ describe('StorageService', () => {
 
       const spellbook = await service.createSpellbook(input);
 
-      expect(spellbook.id).toBe('test-uuid-123');
+      expect(spellbook.id).toMatch(/^test-uuid-\d+$/);
       expect(spellbook.name).toBe('My Spellbook');
       expect(spellbook.spells).toEqual([]);
       expect(spellbook.created).toBeDefined();
@@ -34,9 +44,9 @@ describe('StorageService', () => {
     it('should save spellbook to database', async () => {
       const input: CreateSpellbookInput = { name: 'My Spellbook' };
 
-      await service.createSpellbook(input);
+      const created = await service.createSpellbook(input);
 
-      const saved = await db.spellbooks.get('test-uuid-123');
+      const saved = await db.spellbooks.get(created.id);
       expect(saved).toBeDefined();
       expect(saved?.name).toBe('My Spellbook');
     });

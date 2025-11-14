@@ -124,11 +124,23 @@ async function main() {
       return acc;
     }, {});
 
+    const sourceCounts = transformedSpells.reduce((acc, spell) => {
+      acc[spell.source] = (acc[spell.source] || 0) + 1;
+      return acc;
+    }, {});
+
     console.log('\n📊 Spells by school:');
     Object.entries(schoolCounts)
       .sort((a, b) => b[1] - a[1])
       .forEach(([school, count]) => {
         console.log(`   ${school}: ${count}`);
+      });
+
+    console.log('\n📚 Spells by source:');
+    Object.entries(sourceCounts)
+      .sort((a, b) => b[1] - a[1])
+      .forEach(([source, count]) => {
+        console.log(`   ${source}: ${count}`);
       });
 
   } catch (error) {

@@ -67,6 +67,10 @@ export function SpellList({ spells, onSpellClick, onAddToSpellbook }: SpellListP
             <strong>Classes:</strong> {spell.classes.join(', ')}
           </div>
 
+          <div className="spell-source">
+            <strong>Source:</strong> {spell.source}
+          </div>
+
           {onAddToSpellbook && (
             <button
               className="btn-add-spell"

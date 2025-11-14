@@ -104,6 +104,19 @@
   margin-right: 0.5rem;
 }
 
+.spell-source {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-style: italic;
+  padding-top: 0.5rem;
+}
+
+.spell-source strong {
+  color: #64748b;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
 .btn-add-spell {
   width: 100%;
   margin-top: 1rem;
@@ -167,6 +180,14 @@
   }
 
   .spell-classes strong {
+    color: #475569;
+  }
+
+  .spell-source {
+    color: #64748b;
+  }
+
+  .spell-source strong {
     color: #475569;
   }
 

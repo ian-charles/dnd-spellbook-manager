@@ -86,6 +86,13 @@ export class SpellService {
       );
     }
 
+    // Filter by sources
+    if (filters.sources && filters.sources.length > 0) {
+      results = results.filter((spell) =>
+        filters.sources!.includes(spell.source)
+      );
+    }
+
     // Filter by concentration
     if (filters.concentration !== undefined) {
       results = results.filter(
@@ -118,6 +125,14 @@ export class SpellService {
       spell.classes.forEach((c) => classes.add(c));
     });
     return Array.from(classes).sort();
+  }
+
+  /**
+   * Get unique list of sources
+   */
+  getSources(): string[] {
+    const sources = new Set(this.spells.map((spell) => spell.source));
+    return Array.from(sources).sort();
   }
 
   /**

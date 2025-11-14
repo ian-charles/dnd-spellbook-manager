@@ -93,9 +93,17 @@ async function main() {
     // Fetch all spells
     const rawSpells = await fetchAllSpells();
 
+    // Filter to only 5e Core Rules (SRD)
+    console.log('\n🔍 Filtering to 5e Core Rules only...');
+    const srdSpells = rawSpells.filter(spell => {
+      const source = spell.document__title || '';
+      return source === '5e Core Rules' || source === 'System Reference Document';
+    });
+    console.log(`   Kept ${srdSpells.length} SRD spells (filtered out ${rawSpells.length - srdSpells.length} non-SRD spells)`);
+
     // Transform spells
     console.log('\n🔄 Transforming spell data...');
-    const transformedSpells = rawSpells.map(transformSpell);
+    const transformedSpells = srdSpells.map(transformSpell);
 
     // Create output object
     const output = {

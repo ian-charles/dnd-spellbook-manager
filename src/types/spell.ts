@@ -32,7 +32,6 @@ export interface SpellFilters {
   levels?: number[];
   schools?: string[];
   classes?: string[];
-  sources?: string[];
   concentration?: boolean;
   ritual?: boolean;
   componentVerbal?: boolean;

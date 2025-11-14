@@ -107,7 +107,7 @@ describe('Spell Search E2E', () => {
     await wait(500);
 
     // Should show all spells again
-    const headerText = await page.$eval('.app-header p', el => el.textContent);
+    const headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('319 results');
   }, 30000);
 

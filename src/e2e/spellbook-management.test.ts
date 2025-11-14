@@ -1,24 +1,23 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import puppeteer, { Browser, Page } from 'puppeteer';
-import { startDevServer, stopDevServer, getDevServerUrl } from './setup';
+import { TEST_URL } from './setup';
 
 describe('Spellbook Management E2E', () => {
   let browser: Browser;
   let page: Page;
-  const baseUrl = getDevServerUrl();
+  const baseUrl = TEST_URL;
 
   beforeAll(async () => {
-    await startDevServer();
     browser = await puppeteer.launch({
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 800 });
   });
 
   afterAll(async () => {
     await browser.close();
-    await stopDevServer();
   });
 
   describe('Spellbook List View', () => {

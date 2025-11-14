@@ -32,7 +32,7 @@ describe('Basic E2E Test', () => {
     await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
     await waitForSpellsToLoad(page);
 
-    const headerText = await page.$eval('.app-header p', el => el.textContent);
+    const headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('Browse 319 spells');
   }, 30000);
 });

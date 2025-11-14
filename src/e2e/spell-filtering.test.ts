@@ -20,7 +20,7 @@ describe('Spell Filtering E2E', () => {
     await waitForSpellsToLoad(page);
 
     // Check that the header shows spell count
-    const headerText = await page.$eval('.app-header p', el => el.textContent);
+    const headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('Browse 319 spells');
     expect(headerText).toContain('319 results');
 
@@ -42,7 +42,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500); // Wait for filter to apply
 
     // Check that results are filtered
-    const headerText = await page.$eval('.app-header p', el => el.textContent);
+    const headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('results');
     expect(headerText).not.toContain('319 results');
 
@@ -212,7 +212,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Check that all spells are shown again
-    const headerText = await page.$eval('.app-header p', el => el.textContent);
+    const headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('319 results');
   }, 30000);
 
@@ -229,7 +229,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify filter is applied
-    let headerText = await page.$eval('.app-header p', el => el.textContent);
+    let headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).not.toContain('319 results');
 
     // Click the same filter again to toggle it off
@@ -241,7 +241,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify all spells are shown again
-    headerText = await page.$eval('.app-header p', el => el.textContent);
+    headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('319 results');
   }, 30000);
 
@@ -258,7 +258,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify filter is applied
-    let headerText = await page.$eval('.app-header p', el => el.textContent);
+    let headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).not.toContain('319 results');
 
     // Click the same filter again to toggle it off
@@ -270,7 +270,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify all spells are shown again
-    headerText = await page.$eval('.app-header p', el => el.textContent);
+    headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('319 results');
   }, 30000);
 
@@ -287,7 +287,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify filter is applied
-    let headerText = await page.$eval('.app-header p', el => el.textContent);
+    let headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).not.toContain('319 results');
 
     // Click the same filter again to toggle it off
@@ -299,7 +299,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify all spells are shown again
-    headerText = await page.$eval('.app-header p', el => el.textContent);
+    headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('319 results');
   }, 30000);
 
@@ -321,7 +321,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify filter is applied
-    let headerText = await page.$eval('.app-header p', el => el.textContent);
+    let headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).not.toContain('319 results');
 
     // Click the same checkbox again to toggle it off
@@ -338,7 +338,7 @@ describe('Spell Filtering E2E', () => {
     await wait(500);
 
     // Verify all spells are shown again
-    headerText = await page.$eval('.app-header p', el => el.textContent);
+    headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).toContain('319 results');
   }, 30000);
 });

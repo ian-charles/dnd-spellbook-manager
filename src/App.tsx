@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { SpellList } from './components/SpellList';
+import { SpellTable } from './components/SpellTable';
 import { SpellFilters } from './components/SpellFilters';
 import { useSpells } from './hooks/useSpells';
 import { spellService } from './services/spell.service';
@@ -72,7 +72,7 @@ function App() {
           sources={sources}
         />
 
-        <SpellList
+        <SpellTable
           spells={filteredSpells}
           onSpellClick={handleSpellClick}
         />

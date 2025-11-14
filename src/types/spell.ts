@@ -35,4 +35,7 @@ export interface SpellFilters {
   sources?: string[];
   concentration?: boolean;
   ritual?: boolean;
+  componentVerbal?: boolean;
+  componentSomatic?: boolean;
+  componentMaterial?: boolean;
 }

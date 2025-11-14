@@ -105,6 +105,27 @@ export class SpellService {
       results = results.filter((spell) => spell.ritual === filters.ritual);
     }
 
+    // Filter by verbal component
+    if (filters.componentVerbal !== undefined) {
+      results = results.filter(
+        (spell) => spell.components.verbal === filters.componentVerbal
+      );
+    }
+
+    // Filter by somatic component
+    if (filters.componentSomatic !== undefined) {
+      results = results.filter(
+        (spell) => spell.components.somatic === filters.componentSomatic
+      );
+    }
+
+    // Filter by material component
+    if (filters.componentMaterial !== undefined) {
+      results = results.filter(
+        (spell) => spell.components.material === filters.componentMaterial
+      );
+    }
+
     return results;
   }
 

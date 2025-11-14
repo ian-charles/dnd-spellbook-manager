@@ -17,6 +17,9 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [concentrationOnly, setConcentrationOnly] = useState(false);
   const [ritualOnly, setRitualOnly] = useState(false);
+  const [verbalOnly, setVerbalOnly] = useState(false);
+  const [somaticOnly, setSomaticOnly] = useState(false);
+  const [materialOnly, setMaterialOnly] = useState(false);
 
   const levels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -29,6 +32,9 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
       sources: updates.sources ?? (selectedSources.length > 0 ? selectedSources : undefined),
       concentration: updates.concentration ?? (concentrationOnly || undefined),
       ritual: updates.ritual ?? (ritualOnly || undefined),
+      componentVerbal: updates.componentVerbal ?? (verbalOnly || undefined),
+      componentSomatic: updates.componentSomatic ?? (somaticOnly || undefined),
+      componentMaterial: updates.componentMaterial ?? (materialOnly || undefined),
     };
     onFiltersChange(filters);
   };
@@ -82,6 +88,24 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
     updateFilters({ ritual: newValue || undefined });
   };
 
+  const toggleVerbal = () => {
+    const newValue = !verbalOnly;
+    setVerbalOnly(newValue);
+    updateFilters({ componentVerbal: newValue || undefined });
+  };
+
+  const toggleSomatic = () => {
+    const newValue = !somaticOnly;
+    setSomaticOnly(newValue);
+    updateFilters({ componentSomatic: newValue || undefined });
+  };
+
+  const toggleMaterial = () => {
+    const newValue = !materialOnly;
+    setMaterialOnly(newValue);
+    updateFilters({ componentMaterial: newValue || undefined });
+  };
+
   const clearFilters = () => {
     setSearchText('');
     setSelectedLevels([]);
@@ -90,6 +114,9 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
     setSelectedSources([]);
     setConcentrationOnly(false);
     setRitualOnly(false);
+    setVerbalOnly(false);
+    setSomaticOnly(false);
+    setMaterialOnly(false);
     onFiltersChange({});
   };
 
@@ -162,6 +189,36 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
               {source}
             </button>
           ))}
+        </div>
+      </div>
+
+      <div className="filter-section">
+        <h3>Components</h3>
+        <div className="filter-checkboxes">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={verbalOnly}
+              onChange={toggleVerbal}
+            />
+            <span>Verbal (V)</span>
+          </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={somaticOnly}
+              onChange={toggleSomatic}
+            />
+            <span>Somatic (S)</span>
+          </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={materialOnly}
+              onChange={toggleMaterial}
+            />
+            <span>Material (M)</span>
+          </label>
         </div>
       </div>
 

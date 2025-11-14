@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Spell } from '../types/spell';
+import { SpellTooltip } from './SpellTooltip';
 import './SpellTable.css';
 
 interface SpellTableProps {
@@ -14,6 +15,9 @@ type SortDirection = 'asc' | 'desc';
 export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [tooltipSpell, setTooltipSpell] = useState<Spell | null>(null);
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
@@ -81,6 +85,19 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
     if (spell.components.somatic) parts.push('S');
     if (spell.components.material) parts.push('M');
     return parts.join(', ');
+  };
+
+  const handleMouseEnter = (spell: Spell, event: React.MouseEvent) => {
+    setTooltipSpell(spell);
+    setTooltipPosition({
+      x: event.clientX + 15,
+      y: event.clientY + 15,
+    });
+    setTooltipVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setTooltipVisible(false);
   };
 
   const SortIcon = ({ column }: { column: SortColumn }) => {
@@ -157,6 +174,8 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
             <tr
               key={spell.id}
               onClick={() => onSpellClick?.(spell)}
+              onMouseEnter={(e) => handleMouseEnter(spell, e)}
+              onMouseLeave={handleMouseLeave}
               className="spell-row"
             >
               <td className="spell-name">
@@ -186,6 +205,11 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
           ))}
         </tbody>
       </table>
+      <SpellTooltip
+        spell={tooltipSpell}
+        position={tooltipPosition}
+        visible={tooltipVisible}
+      />
     </div>
   );
 }

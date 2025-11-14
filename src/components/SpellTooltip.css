@@ -1,0 +1,176 @@
+.spell-tooltip {
+  position: fixed;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  color: #e2e8f0;
+  font-size: 14px;
+  line-height: 1.6;
+  backdrop-filter: blur(8px);
+}
+
+.tooltip-header {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.tooltip-title {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #a5b4fc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tooltip-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.tooltip-badge.concentration {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.tooltip-badge.ritual {
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.tooltip-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+  text-transform: capitalize;
+}
+
+.tooltip-meta {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: rgba(51, 65, 85, 0.3);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.tooltip-meta-item {
+  margin: 4px 0;
+}
+
+.tooltip-meta-item strong {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.tooltip-description {
+  margin: 12px 0;
+  color: #e2e8f0;
+}
+
+.tooltip-higher-levels {
+  margin: 12px 0;
+  padding: 8px;
+  background: rgba(99, 102, 241, 0.1);
+  border-left: 2px solid #6366f1;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.tooltip-higher-levels strong {
+  color: #a5b4fc;
+}
+
+.tooltip-footer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(100, 116, 139, 0.3);
+  font-size: 12px;
+}
+
+.tooltip-classes {
+  margin-bottom: 4px;
+  color: #cbd5e1;
+  text-transform: capitalize;
+}
+
+.tooltip-classes strong {
+  color: #94a3b8;
+}
+
+.tooltip-source {
+  color: #64748b;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  .spell-tooltip {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(100, 116, 139, 0.3);
+    color: #1e293b;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .tooltip-title {
+    color: #4c1d95;
+  }
+
+  .tooltip-badge.concentration {
+    background: rgba(251, 191, 36, 0.15);
+    color: #92400e;
+  }
+
+  .tooltip-badge.ritual {
+    background: rgba(139, 92, 246, 0.15);
+    color: #5b21b6;
+  }
+
+  .tooltip-subtitle {
+    color: #64748b;
+  }
+
+  .tooltip-meta {
+    background: rgba(241, 245, 249, 0.8);
+  }
+
+  .tooltip-meta-item strong {
+    color: #475569;
+  }
+
+  .tooltip-description {
+    color: #1e293b;
+  }
+
+  .tooltip-higher-levels {
+    background: rgba(99, 102, 241, 0.08);
+    border-left-color: #6366f1;
+  }
+
+  .tooltip-higher-levels strong {
+    color: #4c1d95;
+  }
+
+  .tooltip-classes {
+    color: #475569;
+  }
+
+  .tooltip-classes strong {
+    color: #64748b;
+  }
+
+  .tooltip-source {
+    color: #94a3b8;
+  }
+}

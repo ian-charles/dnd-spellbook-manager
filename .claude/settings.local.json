@@ -11,7 +11,16 @@
       "Bash(git add:*)",
       "Bash(git init:*)",
       "Bash(git commit:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npm test:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vitest:*)",
+      "Bash(echo:*)",
+      "Bash(src/services/simple.test.ts)",
+      "Bash(npm run test:e2e:*)",
+      "Bash(cross-env TEST_ENV=e2e npx vitest:*)",
+      "Bash(npx cross-env:*)",
+      "Bash(npm run test:unit:*)"
     ],
     "deny": [],
     "ask": []

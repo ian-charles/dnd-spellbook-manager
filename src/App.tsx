@@ -12,11 +12,13 @@ function App() {
   const [filteredSpells, setFilteredSpells] = useState<Spell[]>([]);
   const [schools, setSchools] = useState<string[]>([]);
   const [classes, setClasses] = useState<string[]>([]);
+  const [sources, setSources] = useState<string[]>([]);
 
   useEffect(() => {
     if (!loading && spells.length > 0) {
       setSchools(spellService.getSchools());
       setClasses(spellService.getClasses());
+      setSources(spellService.getSources());
       setFilteredSpells(spells);
     }
   }, [spells, loading]);
@@ -67,6 +69,7 @@ function App() {
           onFiltersChange={setFilters}
           schools={schools}
           classes={classes}
+          sources={sources}
         />
 
         <SpellList

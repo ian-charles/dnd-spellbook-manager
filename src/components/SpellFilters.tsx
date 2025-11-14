@@ -6,13 +6,15 @@ interface SpellFiltersProps {
   onFiltersChange: (filters: Filters) => void;
   schools: string[];
   classes: string[];
+  sources: string[];
 }
 
-export function SpellFilters({ onFiltersChange, schools, classes }: SpellFiltersProps) {
+export function SpellFilters({ onFiltersChange, schools, classes, sources }: SpellFiltersProps) {
   const [searchText, setSearchText] = useState('');
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
   const [selectedSchools, setSelectedSchools] = useState<string[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
+  const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [concentrationOnly, setConcentrationOnly] = useState(false);
   const [ritualOnly, setRitualOnly] = useState(false);
 
@@ -24,6 +26,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
       levels: updates.levels ?? (selectedLevels.length > 0 ? selectedLevels : undefined),
       schools: updates.schools ?? (selectedSchools.length > 0 ? selectedSchools : undefined),
       classes: updates.classes ?? (selectedClasses.length > 0 ? selectedClasses : undefined),
+      sources: updates.sources ?? (selectedSources.length > 0 ? selectedSources : undefined),
       concentration: updates.concentration ?? (concentrationOnly || undefined),
       ritual: updates.ritual ?? (ritualOnly || undefined),
     };
@@ -59,6 +62,14 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
     updateFilters({ classes: newClasses.length > 0 ? newClasses : undefined });
   };
 
+  const toggleSource = (source: string) => {
+    const newSources = selectedSources.includes(source)
+      ? selectedSources.filter((s) => s !== source)
+      : [...selectedSources, source];
+    setSelectedSources(newSources);
+    updateFilters({ sources: newSources.length > 0 ? newSources : undefined });
+  };
+
   const toggleConcentration = () => {
     const newValue = !concentrationOnly;
     setConcentrationOnly(newValue);
@@ -76,6 +87,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
     setSelectedLevels([]);
     setSelectedSchools([]);
     setSelectedClasses([]);
+    setSelectedSources([]);
     setConcentrationOnly(false);
     setRitualOnly(false);
     onFiltersChange({});
@@ -133,6 +145,21 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               onClick={() => toggleClass(className)}
             >
               {className}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="filter-section">
+        <h3>Source</h3>
+        <div className="filter-buttons">
+          {sources.map((source) => (
+            <button
+              key={source}
+              className={`filter-btn ${selectedSources.includes(source) ? 'active' : ''}`}
+              onClick={() => toggleSource(source)}
+            >
+              {source}
             </button>
           ))}
         </div>

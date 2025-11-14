@@ -87,17 +87,20 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
     return parts.join(', ');
   };
 
-  const handleMouseEnter = (spell: Spell, event: React.MouseEvent) => {
-    setTooltipSpell(spell);
-    setTooltipPosition({
-      x: event.clientX + 15,
-      y: event.clientY + 15,
-    });
-    setTooltipVisible(true);
-  };
-
-  const handleMouseLeave = () => {
-    setTooltipVisible(false);
+  const handleRowClick = (spell: Spell, event: React.MouseEvent<HTMLTableRowElement>) => {
+    // Toggle tooltip: if clicking the same spell, hide it; otherwise show new spell
+    if (tooltipVisible && tooltipSpell?.id === spell.id) {
+      setTooltipVisible(false);
+      setTooltipSpell(null);
+    } else {
+      const row = event.currentTarget.getBoundingClientRect();
+      setTooltipSpell(spell);
+      setTooltipPosition({
+        x: row.left,
+        y: row.bottom + 5,
+      });
+      setTooltipVisible(true);
+    }
   };
 
   const SortIcon = ({ column }: { column: SortColumn }) => {
@@ -173,9 +176,7 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
           {sortedSpells.map((spell) => (
             <tr
               key={spell.id}
-              onClick={() => onSpellClick?.(spell)}
-              onMouseEnter={(e) => handleMouseEnter(spell, e)}
-              onMouseLeave={handleMouseLeave}
+              onClick={(e) => handleRowClick(spell, e)}
               className="spell-row"
             >
               <td className="spell-name">

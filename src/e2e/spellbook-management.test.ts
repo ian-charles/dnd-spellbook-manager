@@ -197,7 +197,7 @@ describe('Spellbook Management E2E', () => {
       await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
 
       // Wait a bit for spells to load
-      await page.waitForTimeout(1000);
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       const spells = await page.$$('[data-testid^="spellbook-spell-"]');
       expect(spells.length).toBeGreaterThan(0);
@@ -224,7 +224,7 @@ describe('Spellbook Management E2E', () => {
       await page.click('[data-testid="toggle-prepared"]');
 
       // Wait a bit for state to update
-      await page.waitForTimeout(500);
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Check new state
       const newChecked = await page.$eval(

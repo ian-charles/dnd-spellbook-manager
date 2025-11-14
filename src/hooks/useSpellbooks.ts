@@ -51,6 +51,30 @@ export function useSpellbooks() {
     loadSpellbooks();
   };
 
+  const getSpellbook = async (id: string) => {
+    return await storageService.getSpellbook(id);
+  };
+
+  const addSpellToSpellbook = async (spellbookId: string, spellId: string) => {
+    await storageService.addSpellToSpellbook(spellbookId, spellId);
+    await loadSpellbooks();
+  };
+
+  const removeSpellFromSpellbook = async (spellbookId: string, spellId: string) => {
+    await storageService.removeSpellFromSpellbook(spellbookId, spellId);
+    await loadSpellbooks();
+  };
+
+  const togglePrepared = async (spellbookId: string, spellId: string) => {
+    await storageService.toggleSpellPrepared(spellbookId, spellId);
+    await loadSpellbooks();
+  };
+
+  const updateSpellNotes = async (spellbookId: string, spellId: string, notes: string) => {
+    await storageService.updateSpellNotes(spellbookId, spellId, notes);
+    await loadSpellbooks();
+  };
+
   return {
     spellbooks,
     loading,
@@ -58,6 +82,11 @@ export function useSpellbooks() {
     createSpellbook,
     deleteSpellbook,
     refreshSpellbooks,
+    getSpellbook,
+    addSpellToSpellbook,
+    removeSpellFromSpellbook,
+    togglePrepared,
+    updateSpellNotes,
   };
 }
 

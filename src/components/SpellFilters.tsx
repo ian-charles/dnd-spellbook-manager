@@ -6,15 +6,13 @@ interface SpellFiltersProps {
   onFiltersChange: (filters: Filters) => void;
   schools: string[];
   classes: string[];
-  sources: string[];
 }
 
-export function SpellFilters({ onFiltersChange, schools, classes, sources }: SpellFiltersProps) {
+export function SpellFilters({ onFiltersChange, schools, classes }: SpellFiltersProps) {
   const [searchText, setSearchText] = useState('');
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
   const [selectedSchools, setSelectedSchools] = useState<string[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
-  const [selectedSources, setSelectedSources] = useState<string[]>([]);
   const [concentrationOnly, setConcentrationOnly] = useState(false);
   const [ritualOnly, setRitualOnly] = useState(false);
   const [verbalOnly, setVerbalOnly] = useState(false);
@@ -25,16 +23,15 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
 
   const updateFilters = (updates: Partial<Filters>) => {
     const filters: Filters = {
-      searchText: updates.searchText ?? searchText,
-      levels: updates.levels ?? (selectedLevels.length > 0 ? selectedLevels : undefined),
-      schools: updates.schools ?? (selectedSchools.length > 0 ? selectedSchools : undefined),
-      classes: updates.classes ?? (selectedClasses.length > 0 ? selectedClasses : undefined),
-      sources: updates.sources ?? (selectedSources.length > 0 ? selectedSources : undefined),
-      concentration: updates.concentration ?? (concentrationOnly || undefined),
-      ritual: updates.ritual ?? (ritualOnly || undefined),
-      componentVerbal: updates.componentVerbal ?? (verbalOnly || undefined),
-      componentSomatic: updates.componentSomatic ?? (somaticOnly || undefined),
-      componentMaterial: updates.componentMaterial ?? (materialOnly || undefined),
+      searchText: 'searchText' in updates ? updates.searchText : searchText,
+      levels: 'levels' in updates ? updates.levels : (selectedLevels.length > 0 ? selectedLevels : undefined),
+      schools: 'schools' in updates ? updates.schools : (selectedSchools.length > 0 ? selectedSchools : undefined),
+      classes: 'classes' in updates ? updates.classes : (selectedClasses.length > 0 ? selectedClasses : undefined),
+      concentration: 'concentration' in updates ? updates.concentration : (concentrationOnly || undefined),
+      ritual: 'ritual' in updates ? updates.ritual : (ritualOnly || undefined),
+      componentVerbal: 'componentVerbal' in updates ? updates.componentVerbal : (verbalOnly || undefined),
+      componentSomatic: 'componentSomatic' in updates ? updates.componentSomatic : (somaticOnly || undefined),
+      componentMaterial: 'componentMaterial' in updates ? updates.componentMaterial : (materialOnly || undefined),
     };
     onFiltersChange(filters);
   };
@@ -66,14 +63,6 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
       : [...selectedClasses, className];
     setSelectedClasses(newClasses);
     updateFilters({ classes: newClasses.length > 0 ? newClasses : undefined });
-  };
-
-  const toggleSource = (source: string) => {
-    const newSources = selectedSources.includes(source)
-      ? selectedSources.filter((s) => s !== source)
-      : [...selectedSources, source];
-    setSelectedSources(newSources);
-    updateFilters({ sources: newSources.length > 0 ? newSources : undefined });
   };
 
   const toggleConcentration = () => {
@@ -111,7 +100,6 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
     setSelectedLevels([]);
     setSelectedSchools([]);
     setSelectedClasses([]);
-    setSelectedSources([]);
     setConcentrationOnly(false);
     setRitualOnly(false);
     setVerbalOnly(false);
@@ -172,21 +160,6 @@ export function SpellFilters({ onFiltersChange, schools, classes, sources }: Spe
               onClick={() => toggleClass(className)}
             >
               {className}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="filter-section">
-        <h3>Source</h3>
-        <div className="filter-buttons">
-          {sources.map((source) => (
-            <button
-              key={source}
-              className={`filter-btn ${selectedSources.includes(source) ? 'active' : ''}`}
-              onClick={() => toggleSource(source)}
-            >
-              {source}
             </button>
           ))}
         </div>

@@ -10,7 +10,8 @@
       "Bash(npm run build:spells:*)",
       "Bash(git add:*)",
       "Bash(git init:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

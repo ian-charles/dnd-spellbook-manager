@@ -1,0 +1,186 @@
+.spell-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.spell-list-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+}
+
+.spell-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.spell-card:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.spell-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.spell-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.spell-level {
+  background: rgba(102, 126, 234, 0.2);
+  color: #a5b4fc;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.spell-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.spell-school {
+  text-transform: capitalize;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.spell-tag {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c4b5fd;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.spell-details {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.spell-detail {
+  color: #cbd5e1;
+  font-size: 0.875rem;
+}
+
+.spell-detail strong {
+  color: #94a3b8;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.spell-classes {
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  text-transform: capitalize;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.spell-classes strong {
+  color: #94a3b8;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.btn-add-spell {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(102, 126, 234, 0.2);
+  color: #a5b4fc;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-spell:hover {
+  background: rgba(102, 126, 234, 0.3);
+  border-color: #667eea;
+}
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  .spell-card {
+    background: rgba(248, 250, 252, 0.9);
+    border-color: rgba(226, 232, 240, 0.8);
+  }
+
+  .spell-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  }
+
+  .spell-name {
+    color: #1e293b;
+  }
+
+  .spell-level {
+    background: rgba(102, 126, 234, 0.1);
+    color: #4c1d95;
+  }
+
+  .spell-school {
+    color: #475569;
+  }
+
+  .spell-tag {
+    background: rgba(168, 85, 247, 0.1);
+    color: #6b21a8;
+  }
+
+  .spell-detail {
+    color: #334155;
+  }
+
+  .spell-detail strong {
+    color: #475569;
+  }
+
+  .spell-classes {
+    color: #334155;
+    border-top-color: rgba(226, 232, 240, 0.8);
+  }
+
+  .spell-classes strong {
+    color: #475569;
+  }
+
+  .btn-add-spell {
+    background: rgba(102, 126, 234, 0.1);
+    color: #4c1d95;
+    border-color: rgba(102, 126, 234, 0.2);
+  }
+
+  .btn-add-spell:hover {
+    background: rgba(102, 126, 234, 0.2);
+  }
+
+  .spell-list-empty {
+    color: #64748b;
+  }
+}

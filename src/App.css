@@ -6,11 +6,12 @@
 
 .app-header {
   text-align: center;
-  padding: 2rem 0;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.2);
 }
 
 .app-header h1 {
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
@@ -19,31 +20,60 @@
 }
 
 .app-header p {
-  font-size: 1.2rem;
-  color: #64748b;
+  font-size: 1rem;
+  color: #94a3b8;
 }
 
 .app-main {
   flex: 1;
+  padding: 2rem 0;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.loading,
+.error {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.card {
-  padding: 2rem;
-  border-radius: 12px;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(100, 116, 139, 0.2);
+  min-height: 50vh;
   text-align: center;
+  padding: 2rem;
 }
 
-.card p {
-  margin-top: 1rem;
+.loading h2,
+.error h2 {
+  font-size: 1.5rem;
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+}
+
+.loading p,
+.error p {
   color: #94a3b8;
 }
 
+.error h2 {
+  color: #fca5a5;
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .app-main {
+    padding: 1rem 0;
+  }
+}
+
 @media (prefers-color-scheme: light) {
+  .app-header {
+    border-bottom-color: rgba(226, 232, 240, 0.8);
+  }
+
   .app-header h1 {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-background-clip: text;
@@ -51,12 +81,21 @@
     background-clip: text;
   }
 
-  .card {
-    background: rgba(248, 250, 252, 0.8);
-    border: 1px solid rgba(226, 232, 240, 0.8);
+  .app-header p {
+    color: #64748b;
   }
 
-  .card p {
-    color: #475569;
+  .loading h2,
+  .error h2 {
+    color: #334155;
+  }
+
+  .loading p,
+  .error p {
+    color: #64748b;
+  }
+
+  .error h2 {
+    color: #dc2626;
   }
 }

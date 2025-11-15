@@ -4,26 +4,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-### Unclear/Unused Functionality
-
-#### 4. onSpellClick Prop - Defined But Never Used
-**Location**: [SpellTable.tsx:11](src/components/SpellTable.tsx#L11)
-
-**Issue**: `onSpellClick?: (spell: Spell) => void` prop is defined in the interface but never passed from any parent component. No functionality exists for clicking spells.
-
-**Impact**:
-- Dead code
-- Confusing API
-- Unclear feature expectations
-
-**Proposed Solution**: Either:
-1. Remove the prop entirely (preferred for v1)
-2. Implement spell click functionality if needed
-
-**Decision Required**: Ask user if spell clicking should be a feature
-
-**Effort**: Low (30 minutes to remove)
-**Priority**: Low
+_No active technical debt items currently tracked._
 
 ---
 
@@ -62,6 +43,13 @@ This document tracks known technical debt, code quality issues, and refactoring 
   - Added proper type predicate in `.filter()` using `entry is EnrichedSpell`
   - Removed all unsafe `any` types from the component
 - **Benefit**: Full TypeScript type checking, better IDE support, reduced runtime error risk
+
+### ✅ Removed Dead Code (Completed 2025-11-14)
+- **Deleted**: [src/components/SpellList.tsx](src/components/SpellList.tsx) and [src/components/SpellList.css](src/components/SpellList.css) (~90 lines)
+- **Removed**: `onSpellClick` prop from [src/components/SpellTable.tsx](src/components/SpellTable.tsx) and [src/App.tsx](src/App.tsx)
+- **Removed**: `handleSpellClick` function from [src/App.tsx](src/App.tsx) (stub with console.log only)
+- **Total eliminated**: ~95 lines of unused code
+- **Benefit**: Cleaner codebase, reduced maintenance burden, clearer API
 
 ---
 

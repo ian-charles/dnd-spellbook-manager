@@ -59,11 +59,6 @@ function App() {
     }
   }, [filters, spells, loading]);
 
-  const handleSpellClick = (spell: Spell) => {
-    console.log('Spell clicked:', spell.name);
-    // TODO: Open spell detail modal
-  };
-
   const handleAddToSpellbook = (spellId: string) => {
     if (spellbooks.length === 0) {
       alert('Create a spellbook first!');
@@ -157,7 +152,6 @@ function App() {
             />
             <SpellTable
               spells={filteredSpells}
-              onSpellClick={handleSpellClick}
               onAddToSpellbook={spellbooks.length > 0 ? handleAddToSpellbook : undefined}
             />
           </>

@@ -8,11 +8,10 @@ import './SpellTable.css';
 
 interface SpellTableProps {
   spells: Spell[];
-  onSpellClick?: (spell: Spell) => void;
   onAddToSpellbook?: (spellId: string) => void;
 }
 
-export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTableProps) {
+export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
   const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(spells);
 

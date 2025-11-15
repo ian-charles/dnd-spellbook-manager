@@ -385,6 +385,125 @@ tests/
 
 This ensures tech debt is visible, prioritized, and addressed systematically rather than forgotten.
 
+## Directory Documentation
+
+**ALWAYS maintain documentation in each directory explaining the code, abstractions, interfaces, and design decisions.**
+
+### Requirements
+
+1. **Every directory MUST have a README.md** that explains:
+   - Purpose of the directory
+   - Key files and their responsibilities
+   - Important abstractions and interfaces
+   - Design decisions and tradeoffs
+   - How files interact with each other
+   - Examples of common use cases
+
+2. **Link documentation together**: Create an index at the root linking all directory READMEs
+
+3. **Update documentation when code changes**: Keep docs in sync with code
+
+### Documentation Structure
+
+```
+project-root/
+├── README.md                    # Project overview + index of all docs
+├── src/
+│   ├── README.md               # Source code overview
+│   ├── components/
+│   │   └── README.md           # Component architecture
+│   ├── hooks/
+│   │   └── README.md           # Custom hooks explained
+│   ├── services/
+│   │   └── README.md           # Service layer design
+│   ├── types/
+│   │   └── README.md           # Type definitions explained
+│   └── utils/
+│       └── README.md           # Utility functions
+└── tests/
+    └── README.md               # Testing strategy
+```
+
+### What to Document
+
+**In each directory README.md:**
+
+```markdown
+# [Directory Name]
+
+## Purpose
+One paragraph explaining why this directory exists.
+
+## Key Files
+- `filename.ts`: Brief description
+- `another.ts`: Brief description
+
+## Abstractions & Interfaces
+Explain core abstractions:
+- What is a [Key Concept]?
+- How does [Interface] work?
+- Why did we choose [Pattern]?
+
+## Design Decisions
+- **Decision**: Use custom hooks for state
+- **Rationale**: Reusability and testability
+- **Tradeoff**: Slight complexity increase
+
+## Usage Examples
+```typescript
+// Common pattern
+import { useExample } from './hooks/useExample';
+
+const result = useExample(data);
+```
+```
+
+### Example: hooks/README.md
+
+```markdown
+# Custom Hooks
+
+## Purpose
+Reusable React hooks for state management and side effects in the spellbook manager.
+
+## Key Files
+- `useSpells.ts`: Loads and manages spell data from the service layer
+- `useSpellbooks.ts`: CRUD operations for spellbooks with IndexedDB
+- `useSpellSorting.ts`: Generic sorting logic for spell arrays
+
+## Abstractions
+
+### useSpellSorting
+Generic hook that accepts any array and extracts spell data for sorting.
+Supports both `Spell[]` and enriched objects like `{spell: Spell, prepared: boolean}`.
+
+**Why generic?** Avoids duplication between SpellTable and SpellbookDetail.
+
+## Design Decisions
+
+**Decision**: Use `useMemo` for sorting
+**Rationale**: Prevent unnecessary re-sorts on every render
+**Tradeoff**: Small memory overhead for memoized array
+
+## Usage
+
+```typescript
+// For simple Spell arrays
+const { sortedData, handleSort } = useSpellSorting(spells);
+
+// For enriched objects
+const { sortedData } = useSpellSorting(enrichedSpells, {
+  getSpell: (item) => item.spell
+});
+```
+```
+
+**Benefits:**
+- New developers quickly understand the codebase
+- Design decisions are preserved
+- Easier code reviews
+- Reduces "why was it done this way?" questions
+
 ## Core Principles
 
 **Code is a Liability**: Every line must justify itself. Delete whenever possible.

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, beforeAll, afterEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { useSpellbooks } from './useSpellbooks';
 import { storageService } from '../services/storage.service';
 import { db } from '../services/db';
@@ -29,12 +29,17 @@ describe('useSpellbooks', () => {
   });
 
   describe('initial state', () => {
-    it('should start with loading=true and empty spellbooks', () => {
+    it('should start with loading=true and empty spellbooks', async () => {
       const { result } = renderHook(() => useSpellbooks());
 
       expect(result.current.loading).toBe(true);
       expect(result.current.spellbooks).toEqual([]);
       expect(result.current.error).toBeNull();
+
+      // Wait for the useEffect to complete to avoid act() warnings
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
     });
 
     it('should load spellbooks on mount', async () => {
@@ -59,7 +64,9 @@ describe('useSpellbooks', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.createSpellbook({ name: 'New Spellbook' });
+      await act(async () => {
+        await result.current.createSpellbook({ name: 'New Spellbook' });
+      });
 
       // Wait for state to update
       await waitFor(() => {
@@ -76,13 +83,17 @@ describe('useSpellbooks', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.createSpellbook({ name: 'First' });
+      await act(async () => {
+        await result.current.createSpellbook({ name: 'First' });
+      });
 
       await waitFor(() => {
         expect(result.current.spellbooks).toHaveLength(1);
       });
 
-      await result.current.createSpellbook({ name: 'Second' });
+      await act(async () => {
+        await result.current.createSpellbook({ name: 'Second' });
+      });
 
       await waitFor(() => {
         expect(result.current.spellbooks).toHaveLength(2);
@@ -105,7 +116,9 @@ describe('useSpellbooks', () => {
 
       expect(result.current.spellbooks).toHaveLength(1);
 
-      await result.current.deleteSpellbook(created.id);
+      await act(async () => {
+        await result.current.deleteSpellbook(created.id);
+      });
 
       await waitFor(() => {
         expect(result.current.spellbooks).toHaveLength(0);
@@ -124,7 +137,9 @@ describe('useSpellbooks', () => {
 
       expect(result.current.spellbooks).toHaveLength(2);
 
-      await result.current.deleteSpellbook(toDelete.id);
+      await act(async () => {
+        await result.current.deleteSpellbook(toDelete.id);
+      });
 
       await waitFor(() => {
         expect(result.current.spellbooks).toHaveLength(1);
@@ -173,7 +188,9 @@ describe('useSpellbooks', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+      await act(async () => {
+        await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+      });
 
       // Should reload spellbooks after adding
       await waitFor(() => {
@@ -195,7 +212,9 @@ describe('useSpellbooks', () => {
       const beforeAdd = result.current.spellbooks.find(sb => sb.id === spellbook.id);
       expect(beforeAdd?.spells).toHaveLength(0);
 
-      await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+      await act(async () => {
+        await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+      });
 
       await waitFor(() => {
         const afterAdd = result.current.spellbooks.find(sb => sb.id === spellbook.id);
@@ -216,7 +235,9 @@ describe('useSpellbooks', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.removeSpellFromSpellbook(spellbook.id, 'fireball');
+      await act(async () => {
+        await result.current.removeSpellFromSpellbook(spellbook.id, 'fireball');
+      });
 
       await waitFor(() => {
         const updated = result.current.spellbooks.find(sb => sb.id === spellbook.id);
@@ -241,7 +262,9 @@ describe('useSpellbooks', () => {
       let updated = result.current.spellbooks.find(sb => sb.id === spellbook.id);
       expect(updated?.spells[0].prepared).toBe(false);
 
-      await result.current.togglePrepared(spellbook.id, 'fireball');
+      await act(async () => {
+        await result.current.togglePrepared(spellbook.id, 'fireball');
+      });
 
       // Should be prepared after toggle
       await waitFor(() => {
@@ -265,7 +288,9 @@ describe('useSpellbooks', () => {
       let updated = result.current.spellbooks.find(sb => sb.id === spellbook.id);
       expect(updated?.spells[0].prepared).toBe(true);
 
-      await result.current.togglePrepared(spellbook.id, 'fireball');
+      await act(async () => {
+        await result.current.togglePrepared(spellbook.id, 'fireball');
+      });
 
       // Should be unprepared after toggle
       await waitFor(() => {
@@ -286,7 +311,9 @@ describe('useSpellbooks', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.updateSpellNotes(spellbook.id, 'fireball', 'Use sparingly in taverns');
+      await act(async () => {
+        await result.current.updateSpellNotes(spellbook.id, 'fireball', 'Use sparingly in taverns');
+      });
 
       await waitFor(() => {
         const updated = result.current.spellbooks.find(sb => sb.id === spellbook.id);
@@ -307,7 +334,9 @@ describe('useSpellbooks', () => {
       const beforeUpdate = result.current.spellbooks.find(sb => sb.id === spellbook.id);
       expect(beforeUpdate?.spells[0].notes).toBe('');
 
-      await result.current.updateSpellNotes(spellbook.id, 'fireball', 'New note');
+      await act(async () => {
+        await result.current.updateSpellNotes(spellbook.id, 'fireball', 'New note');
+      });
 
       await waitFor(() => {
         const afterUpdate = result.current.spellbooks.find(sb => sb.id === spellbook.id);
@@ -333,7 +362,9 @@ describe('useSpellbooks', () => {
       expect(result.current.spellbooks).toHaveLength(0);
 
       // Refresh should load new spellbook
-      result.current.refreshSpellbooks();
+      act(() => {
+        result.current.refreshSpellbooks();
+      });
 
       await waitFor(() => {
         expect(result.current.spellbooks).toHaveLength(1);
@@ -354,9 +385,11 @@ describe('useSpellbooks', () => {
       const createSpy = vi.spyOn(storageService, 'createSpellbook');
       createSpy.mockRejectedValueOnce(new Error('Storage error'));
 
-      await expect(
-        result.current.createSpellbook({ name: 'Will Fail' })
-      ).rejects.toThrow('Storage error');
+      await act(async () => {
+        await expect(
+          result.current.createSpellbook({ name: 'Will Fail' })
+        ).rejects.toThrow('Storage error');
+      });
 
       await waitFor(() => {
         expect(result.current.error).toBeDefined();
@@ -378,9 +411,11 @@ describe('useSpellbooks', () => {
       const deleteSpy = vi.spyOn(storageService, 'deleteSpellbook');
       deleteSpy.mockRejectedValueOnce(new Error('Delete error'));
 
-      await expect(
-        result.current.deleteSpellbook('some-id')
-      ).rejects.toThrow('Delete error');
+      await act(async () => {
+        await expect(
+          result.current.deleteSpellbook('some-id')
+        ).rejects.toThrow('Delete error');
+      });
 
       await waitFor(() => {
         expect(result.current.error).toBeDefined();

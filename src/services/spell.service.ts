@@ -17,7 +17,8 @@ export class SpellService {
     }
 
     try {
-      const response = await fetch('/data/spells.json');
+      const basePath = import.meta.env.BASE_URL || '/';
+      const response = await fetch(`${basePath}data/spells.json`);
       if (!response.ok) {
         throw new Error(`Failed to load spells: ${response.statusText}`);
       }

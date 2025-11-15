@@ -1,0 +1,24 @@
+steps:
+  # Build the container image with BASE_PATH argument
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'BASE_PATH=${_BASE_PATH}'
+      - '-t'
+      - '${_IMAGE_NAME}'
+      - '.'
+
+  # Push the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_IMAGE_NAME}'
+
+# Substitutions for build variables
+substitutions:
+  _BASE_PATH: '/'
+  _IMAGE_NAME: 'gcr.io/${PROJECT_ID}/dnd-spellbook'
+
+images:
+  - '${_IMAGE_NAME}'

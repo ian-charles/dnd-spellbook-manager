@@ -234,5 +234,70 @@ describe('Spellbook Management E2E', () => {
 
       expect(newChecked).toBe(!initialChecked);
     }, 60000);
+
+    it('should show spell tooltip when clicking on spell row in spellbook', async () => {
+      // Get spellbook ID and navigate directly
+      await page.goto(`${baseUrl}#/spellbooks`);
+      await page.waitForSelector('[data-testid^="spellbook-item-"]', { timeout: 10000 });
+      const spellbookId = await page.$eval('[data-testid^="spellbook-item-"]', el => el.getAttribute('data-testid')?.replace('spellbook-item-', ''));
+
+      await page.goto(`${baseUrl}#/spellbooks/${spellbookId}`);
+      await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
+      await page.waitForSelector('.spell-row', { timeout: 10000 });
+
+      // Click the first spell row
+      await page.click('.spell-row');
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Check that tooltip is visible
+      const tooltip = await page.$('.spell-tooltip');
+      expect(tooltip).toBeTruthy();
+
+      // Verify tooltip is actually visible
+      const isVisible = await page.evaluate(() => {
+        const tooltip = document.querySelector('.spell-tooltip');
+        if (!tooltip) return false;
+        const styles = window.getComputedStyle(tooltip);
+        return styles.display !== 'none' && styles.visibility !== 'hidden' && styles.opacity !== '0';
+      });
+      expect(isVisible).toBe(true);
+    }, 60000);
+
+    it('should hide tooltip when clicking same spell row again in spellbook', async () => {
+      // Get spellbook ID and navigate directly
+      await page.goto(`${baseUrl}#/spellbooks`);
+      await page.waitForSelector('[data-testid^="spellbook-item-"]', { timeout: 10000 });
+      const spellbookId = await page.$eval('[data-testid^="spellbook-item-"]', el => el.getAttribute('data-testid')?.replace('spellbook-item-', ''));
+
+      await page.goto(`${baseUrl}#/spellbooks/${spellbookId}`);
+      await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
+      await page.waitForSelector('.spell-row', { timeout: 10000 });
+
+      // Click to show tooltip
+      await page.click('.spell-row');
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Verify tooltip is visible
+      let isVisible = await page.evaluate(() => {
+        const tooltip = document.querySelector('.spell-tooltip');
+        if (!tooltip) return false;
+        const styles = window.getComputedStyle(tooltip);
+        return styles.display !== 'none' && styles.visibility !== 'hidden' && styles.opacity !== '0';
+      });
+      expect(isVisible).toBe(true);
+
+      // Click the same row again to hide tooltip
+      await page.click('.spell-row');
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Verify tooltip is hidden
+      isVisible = await page.evaluate(() => {
+        const tooltip = document.querySelector('.spell-tooltip');
+        if (!tooltip) return true; // No tooltip element means it's hidden
+        const styles = window.getComputedStyle(tooltip);
+        return styles.display === 'none' || styles.visibility === 'hidden' || styles.opacity === '0';
+      });
+      expect(isVisible).toBe(true);
+    }, 60000);
   });
 });

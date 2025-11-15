@@ -8,16 +8,14 @@ A Progressive Web App for managing D&D 5e spellbooks. Built with React, TypeScri
 - **Spell Browser**: Search and filter through 1400+ D&D 5e spells from the SRD
 - **Advanced Filtering**: Filter by spell level, school, class, concentration, and ritual
 - **Real-time Search**: Instant client-side search across spell names and descriptions
+- **Spellbook Management**: Create, view, and delete custom spellbooks
+- **Spell Management**: Add/remove spells, mark as prepared, add notes
+- **Data Export/Import**: Backup and restore spellbooks via JSON files
 - **Responsive Design**: Works beautifully on desktop, tablet, and mobile
 - **Dark/Light Mode**: Automatic theme switching based on system preferences
 - **Offline-First**: All spell data bundled with the app for instant access
 
 ### 🚧 In Progress
-- Spellbook management (create, edit, delete spellbooks)
-- Spell detail view
-- Add spells to spellbooks
-- Mark spells as prepared
-- Data export/import for backups
 - PWA installation support
 
 ## Quick Start

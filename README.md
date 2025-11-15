@@ -36,6 +36,17 @@ npm run dev
 npm run build
 ```
 
+## Documentation
+
+Comprehensive documentation is available throughout the codebase:
+
+- **[Source Code Overview](src/README.md)** - Architecture, patterns, and design decisions
+  - **[Components](src/components/README.md)** - UI component architecture and composition
+  - **[Hooks](src/hooks/README.md)** - Custom React hooks and state management
+  - **[Services](src/services/README.md)** - Data access layer and business logic
+  - **[Types](src/types/README.md)** - TypeScript type definitions
+  - **[Utils](src/utils/README.md)** - Utility functions and formatters
+
 ## Development
 
 ### Prerequisites

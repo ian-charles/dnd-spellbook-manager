@@ -299,5 +299,43 @@ describe('Spellbook Management E2E', () => {
       });
       expect(isVisible).toBe(true);
     }, 60000);
+
+    it('should have sortable column headers in spellbook detail view', async () => {
+      // Get spellbook ID and navigate directly
+      await page.goto(`${baseUrl}#/spellbooks`);
+      await page.waitForSelector('[data-testid^="spellbook-item-"]', { timeout: 10000 });
+      const spellbookId = await page.$eval('[data-testid^="spellbook-item-"]', el => el.getAttribute('data-testid')?.replace('spellbook-item-', ''));
+
+      await page.goto(`${baseUrl}#/spellbooks/${spellbookId}`);
+      await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
+      await page.waitForSelector('.spell-row', { timeout: 10000 });
+
+      // Wait for the table to be in the spellbook detail view
+      const isInSpellbookDetail = await page.evaluate(() => {
+        return !!document.querySelector('[data-testid="spellbook-detail"]');
+      });
+      expect(isInSpellbookDetail).toBe(true);
+
+      // Find sortable headers in spellbook detail table
+      const hasSortableHeaders = await page.evaluate(() => {
+        const detail = document.querySelector('[data-testid="spellbook-detail"]');
+        if (!detail) return false;
+        const sortableHeaders = detail.querySelectorAll('th.sortable');
+        return sortableHeaders.length > 0;
+      });
+
+      // Sorting should be available
+      expect(hasSortableHeaders).toBe(true);
+
+      // Verify sort icons are present
+      const hasSortIcons = await page.evaluate(() => {
+        const detail = document.querySelector('[data-testid="spellbook-detail"]');
+        if (!detail) return false;
+        const sortIcons = detail.querySelectorAll('.sort-icon');
+        return sortIcons.length > 0;
+      });
+
+      expect(hasSortIcons).toBe(true);
+    }, 60000);
   });
 });

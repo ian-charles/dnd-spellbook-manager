@@ -1,9 +1,9 @@
-// E2E tests for spell hover tooltip functionality
+// E2E tests for spell expanding description functionality
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
 import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, wait } from './setup';
 
-describe('Spell Tooltip E2E', () => {
+describe('Spell Description E2E', () => {
   let page: Page;
 
   beforeAll(async () => {
@@ -15,29 +15,20 @@ describe('Spell Tooltip E2E', () => {
     await closeBrowser();
   });
 
-  it('should show tooltip when clicking on a spell row', async () => {
+  it('should expand spell description when clicking on a spell row', async () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
     // Click the first spell row
     await page.click('.spell-row');
-    await wait(300); // Wait for tooltip to appear
+    await wait(400); // Wait for expansion animation
 
-    // Check that tooltip is visible
-    const tooltip = await page.$('.spell-tooltip');
-    expect(tooltip).toBeTruthy();
-
-    // Verify tooltip is visible
-    const isVisible = await page.evaluate(() => {
-      const tooltip = document.querySelector('.spell-tooltip');
-      if (!tooltip) return false;
-      const styles = window.getComputedStyle(tooltip);
-      return styles.display !== 'none' && styles.visibility !== 'hidden' && styles.opacity !== '0';
-    });
-    expect(isVisible).toBe(true);
+    // Check that expanded row is visible
+    const expandedRow = await page.$('.spell-expanded-row');
+    expect(expandedRow).toBeTruthy();
   }, 30000);
 
-  it('should display spell name in tooltip', async () => {
+  it('should display spell name in expanded description', async () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
@@ -48,92 +39,69 @@ describe('Spell Tooltip E2E', () => {
 
     // Click the first spell row
     await page.click('.spell-row');
-    await wait(300);
+    await wait(400);
 
-    // Check that tooltip contains the spell name
-    const tooltipText = await page.$eval('.spell-tooltip', el => el.textContent || '');
-    expect(tooltipText).toContain(spellName);
+    // Check that expanded row contains the spell name
+    const expandedText = await page.$eval('.spell-expanded-row', el => el.textContent || '');
+    expect(expandedText).toContain(spellName);
   }, 30000);
 
-  it('should display spell description in tooltip', async () => {
+  it('should display spell description in expanded row', async () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
     // Click the first spell row
     await page.click('.spell-row');
-    await wait(300);
+    await wait(400);
 
-    // Check that tooltip contains description text
+    // Check that expanded row contains description text
     const hasDescription = await page.evaluate(() => {
-      const tooltip = document.querySelector('.spell-tooltip');
-      if (!tooltip) return false;
-      const text = tooltip.textContent || '';
+      const expandedRow = document.querySelector('.spell-expanded-row');
+      if (!expandedRow) return false;
+      const text = expandedRow.textContent || '';
       // Description should be reasonably long (more than just the spell name)
       return text.length > 50;
     });
     expect(hasDescription).toBe(true);
   }, 30000);
 
-  it('should hide tooltip when clicking the same spell row again', async () => {
+  it('should collapse description when clicking the same spell row again', async () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
-    // Click first spell row to show tooltip
+    // Click first spell row to expand
     await page.click('.spell-row');
-    await wait(300);
+    await wait(400);
 
-    // Verify tooltip is visible
-    let isVisible = await page.evaluate(() => {
-      const tooltip = document.querySelector('.spell-tooltip');
-      if (!tooltip) return false;
-      const styles = window.getComputedStyle(tooltip);
-      return styles.display !== 'none' && styles.visibility !== 'hidden' && styles.opacity !== '0';
-    });
-    expect(isVisible).toBe(true);
+    // Verify expanded row exists
+    let expandedRow = await page.$('.spell-expanded-row');
+    expect(expandedRow).toBeTruthy();
 
-    // Click the same row again to close tooltip
+    // Click the same row again to collapse
     await page.click('.spell-row');
-    await wait(300);
+    await wait(400);
 
-    // Verify tooltip is hidden
-    isVisible = await page.evaluate(() => {
-      const tooltip = document.querySelector('.spell-tooltip');
-      if (!tooltip) return false; // If no tooltip element, it's hidden
-      const styles = window.getComputedStyle(tooltip);
-      return styles.display !== 'none' && styles.visibility !== 'hidden' && styles.opacity !== '0';
-    });
-    expect(isVisible).toBe(false);
+    // Verify expanded row is removed
+    expandedRow = await page.$('.spell-expanded-row');
+    expect(expandedRow).toBeNull();
   }, 30000);
 
-  it.skip('should show different content when clicking different spells', async () => {
-    // TODO: Debug why clicking doesn't update tooltip content in Puppeteer
-    // Manual testing shows this works, but E2E test needs investigation
-  }, 30000);
-
-  it('should position tooltip below the clicked row', async () => {
+  it('should show expanded description below the clicked row', async () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
     // Click a spell row
     await page.click('.spell-row');
-    await wait(300);
+    await wait(400);
 
-    // Check tooltip position
-    const tooltipPosition = await page.evaluate(() => {
-      const tooltip = document.querySelector('.spell-tooltip') as HTMLElement;
-      if (!tooltip) return null;
-      const rect = tooltip.getBoundingClientRect();
-      return {
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height
-      };
+    // Check that expanded row exists and has content
+    const hasExpandedContent = await page.evaluate(() => {
+      const expandedRow = document.querySelector('.spell-expanded-row');
+      if (!expandedRow) return false;
+      const content = expandedRow.querySelector('.spell-expanded-content');
+      return !!content;
     });
 
-    expect(tooltipPosition).toBeTruthy();
-    // Tooltip should be visible on screen (not off-screen)
-    expect(tooltipPosition!.top).toBeGreaterThanOrEqual(0);
-    expect(tooltipPosition!.left).toBeGreaterThanOrEqual(0);
+    expect(hasExpandedContent).toBe(true);
   }, 30000);
 });

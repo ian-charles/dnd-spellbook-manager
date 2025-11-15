@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSpellbooks } from '../hooks/useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spell } from '../types/spell';
+import { SpellTooltip } from './SpellTooltip';
 import './SpellbookDetail.css';
 
 interface SpellbookDetailProps {
@@ -13,6 +14,9 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
   const { getSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
   const [spellbook, setSpellbook] = useState<any>(null);
   const [enrichedSpells, setEnrichedSpells] = useState<Array<{spell: Spell, prepared: boolean, notes: string}>>([]);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [tooltipSpell, setTooltipSpell] = useState<Spell | null>(null);
 
   useEffect(() => {
     loadSpellbook();
@@ -46,6 +50,22 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
     if (confirm(`Remove "${spellName}" from this spellbook?`)) {
       await removeSpellFromSpellbook(spellbookId, spellId);
       await loadSpellbook();
+    }
+  };
+
+  const handleRowClick = (spell: Spell, event: React.MouseEvent<HTMLTableRowElement>) => {
+    // Toggle tooltip: if clicking the same spell, hide it; otherwise show new spell
+    if (tooltipVisible && tooltipSpell?.id === spell.id) {
+      setTooltipVisible(false);
+      setTooltipSpell(null);
+    } else {
+      const row = event.currentTarget.getBoundingClientRect();
+      setTooltipSpell(spell);
+      setTooltipPosition({
+        x: row.left,
+        y: row.bottom + 5,
+      });
+      setTooltipVisible(true);
     }
   };
 
@@ -115,8 +135,9 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
                   key={spell.id}
                   className={`spell-row ${prepared ? 'prepared-row' : ''}`}
                   data-testid={`spellbook-spell-${spell.id}`}
+                  onClick={(e) => handleRowClick(spell, e)}
                 >
-                  <td className="prepared-col">
+                  <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="checkbox"
                       checked={prepared}
@@ -138,7 +159,7 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
                   <td>{spell.duration}</td>
                   <td className="classes-col">{spell.classes.join(', ')}</td>
                   <td className="source-col">{spell.source}</td>
-                  <td className="action-col">
+                  <td className="action-col" onClick={(e) => e.stopPropagation()}>
                     <button
                       className="btn-remove-small"
                       onClick={() => handleRemoveSpell(spell.id, spell.name)}
@@ -154,6 +175,11 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
           </table>
         </div>
       )}
+      <SpellTooltip
+        spell={tooltipSpell}
+        position={tooltipPosition}
+        visible={tooltipVisible}
+      />
     </div>
   );
 }

@@ -3,10 +3,9 @@ import { useSpellbooks } from '../hooks/useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spell } from '../types/spell';
 import { Spellbook } from '../types/spellbook';
-import { ExpandableSpellRow } from './ExpandableSpellRow';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText, getComponentsText, filterClasses } from '../utils/spellFormatters';
+import { getLevelText, getComponentsText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
 import './SpellbookDetail.css';
 
 interface SpellbookDetailProps {
@@ -162,53 +161,76 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
             </thead>
             <tbody>
               {sortedSpells.map(({ spell, prepared }) => (
-                <>
-                  <tr
-                    key={spell.id}
-                    className={`spell-row ${prepared ? 'prepared-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
-                    data-testid={`spellbook-spell-${spell.id}`}
-                    onClick={() => handleRowClick(spell.id)}
-                  >
-                    <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        checked={prepared}
-                        onChange={() => handleTogglePrepared(spell.id)}
-                        data-testid="toggle-prepared"
-                        aria-label={`Toggle ${spell.name} prepared status`}
-                      />
-                    </td>
-                    <td className="spell-name">
+                <tr
+                  key={spell.id}
+                  className={`spell-row ${prepared ? 'prepared-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                  data-testid={`spellbook-spell-${spell.id}`}
+                  onClick={() => handleRowClick(spell.id)}
+                >
+                  <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={prepared}
+                      onChange={() => handleTogglePrepared(spell.id)}
+                      data-testid="toggle-prepared"
+                      aria-label={`Toggle ${spell.name} prepared status`}
+                    />
+                  </td>
+                  <td className="spell-name">
+                    <div className="spell-name-header">
                       {spell.name}
                       {spell.concentration && <span className="badge badge-concentration">C</span>}
                       {spell.ritual && <span className="badge badge-ritual">R</span>}
-                    </td>
-                    <td className="level-col">{getLevelText(spell.level)}</td>
-                    <td className="school-col">{spell.school}</td>
-                    <td>{spell.castingTime}</td>
-                    <td>{spell.range}</td>
-                    <td className="components-col">{getComponentsText(spell)}</td>
-                    <td>{spell.duration}</td>
-                    <td className="classes-col">{filterClasses(spell.classes).join(', ')}</td>
-                    <td className="source-col">{spell.source}</td>
-                    <td className="action-col" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        className="btn-remove-small"
-                        onClick={() => handleRemoveSpell(spell.id, spell.name)}
-                        data-testid={`btn-remove-spell-${spell.id}`}
-                        aria-label={`Remove ${spell.name}`}
-                      >
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                  <ExpandableSpellRow
-                    key={`${spell.id}-expanded`}
-                    spell={spell}
-                    isExpanded={expandedSpellId === spell.id}
-                    colSpan={11}
-                  />
-                </>
+                    </div>
+                    {expandedSpellId === spell.id && (
+                      <div className="spell-inline-expansion">
+                        <div className="spell-meta">
+                          {getLevelText(spell.level)} {spell.school}
+                          {spell.concentration && <span className="badge badge-concentration">Concentration</span>}
+                          {spell.ritual && <span className="badge badge-ritual">Ritual</span>}
+                        </div>
+                        <div className="spell-expanded-details">
+                          <div><strong>Casting Time:</strong> {spell.castingTime}</div>
+                          <div><strong>Range:</strong> {spell.range}</div>
+                          <div><strong>Duration:</strong> {spell.duration}</div>
+                          <div>
+                            <strong>Components:</strong> {getComponentsWithMaterials(spell)}
+                          </div>
+                        </div>
+                        <div className="spell-expanded-description">
+                          {spell.description}
+                        </div>
+                        {spell.higherLevels && (
+                          <div className="spell-expanded-higher-levels">
+                            <strong>At Higher Levels:</strong> {spell.higherLevels}
+                          </div>
+                        )}
+                        <div className="spell-expanded-footer">
+                          <div><strong>Classes:</strong> {filterClasses(spell.classes).join(', ')}</div>
+                          <div className="spell-source">{spell.source}</div>
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                  <td className="level-col">{getLevelText(spell.level)}</td>
+                  <td className="school-col">{spell.school}</td>
+                  <td>{spell.castingTime}</td>
+                  <td>{spell.range}</td>
+                  <td className="components-col">{getComponentsText(spell)}</td>
+                  <td>{spell.duration}</td>
+                  <td className="classes-col">{filterClasses(spell.classes).join(', ')}</td>
+                  <td className="source-col">{spell.source}</td>
+                  <td className="action-col" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className="btn-remove-small"
+                      onClick={() => handleRemoveSpell(spell.id, spell.name)}
+                      data-testid={`btn-remove-spell-${spell.id}`}
+                      aria-label={`Remove ${spell.name}`}
+                    >
+                      ✕
+                    </button>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>

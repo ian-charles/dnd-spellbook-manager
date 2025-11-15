@@ -96,6 +96,15 @@
 }
 
 @media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .app {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   .app-header {
     padding: 1.5rem 1rem 1rem;
   }
@@ -118,6 +127,8 @@
 
   .app-main {
     padding: 1rem;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   .success-toast {

@@ -356,6 +356,35 @@ tests/
 - [ ] Performance acceptable
 - [ ] No commented code
 
+## Technical Debt Tracking
+
+**ALWAYS track technical debt as you accumulate it.** When you identify code duplication, type safety issues, unclear code, or refactoring opportunities:
+
+1. **Document immediately** in `TECH_DEBT.md` with:
+   - **Location**: File paths and line numbers
+   - **Issue**: What's wrong and why it matters
+   - **Impact**: Lines of code, maintenance risk, performance impact
+   - **Proposed Solution**: How to fix it
+   - **Effort**: Time estimate (Low/Medium/High)
+   - **Priority**: High/Medium/Low
+
+2. **When completing refactoring**: Move the item to "Completed Refactoring" section with completion date
+
+3. **Reference in code** for major debt: Add a comment with link to TECH_DEBT.md entry
+
+**Example tech debt entry:**
+```markdown
+### Sorting Logic Duplication (~90 lines)
+**Location**: SpellTable.tsx:105-150, SpellbookDetail.tsx:70-115
+**Issue**: Identical sorting logic in two components
+**Impact**: 90 lines duplicated, consistency risk
+**Solution**: Extract to useSpellSorting hook
+**Effort**: Medium (2-3 hours)
+**Priority**: High
+```
+
+This ensures tech debt is visible, prioritized, and addressed systematically rather than forgotten.
+
 ## Core Principles
 
 **Code is a Liability**: Every line must justify itself. Delete whenever possible.
@@ -365,6 +394,8 @@ tests/
 **Team Over Individual**: Consistency > preference. Reviews are learning opportunities.
 
 **Performance Matters**: Users don't care about elegance if it's slow.
+
+**Track Technical Debt**: Document it immediately in TECH_DEBT.md so it's never forgotten.
 
 ---
 

@@ -152,7 +152,7 @@ function App() {
             />
             <SpellTable
               spells={filteredSpells}
-              onAddToSpellbook={spellbooks.length > 0 ? handleAddToSpellbook : undefined}
+              onAddToSpellbook={handleAddToSpellbook}
             />
           </>
         )}

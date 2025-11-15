@@ -252,6 +252,83 @@
   border-radius: 12px;
 }
 
+/* Desktop inline expansion styles */
+.spell-inline-expansion {
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(100, 116, 139, 0.3);
+  animation: slideDown 0.3s ease-out;
+  color: #e2e8f0;
+}
+
+.spell-inline-expansion .spell-meta {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.spell-inline-expansion .spell-expanded-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.spell-inline-expansion .spell-expanded-details strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.spell-inline-expansion .spell-expanded-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 1.5rem 0;
+  color: var(--text-primary);
+}
+
+.spell-inline-expansion .spell-expanded-higher-levels {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: rgba(79, 70, 229, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-color);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.spell-inline-expansion .spell-expanded-higher-levels strong {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.spell-inline-expansion .spell-expanded-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(100, 116, 139, 0.2);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.spell-inline-expansion .spell-source {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .spell-table {
@@ -416,7 +493,7 @@
     position: absolute !important;
     display: block !important;
     top: 0.75rem;
-    right: 5rem;
+    right: 4rem;
     font-size: 0.75rem;
     font-weight: 700;
     background: rgba(102, 126, 234, 0.2);
@@ -426,6 +503,7 @@
     border: 1px solid rgba(102, 126, 234, 0.3);
     width: auto;
     text-align: center;
+    z-index: 10;
   }
 
   /* Action button positioned in top right */
@@ -433,8 +511,9 @@
     position: absolute !important;
     display: block !important;
     top: 0.75rem;
-    right: 1rem;
+    right: 0.5rem;
     width: auto;
+    z-index: 10;
   }
 
   .btn-add-small {

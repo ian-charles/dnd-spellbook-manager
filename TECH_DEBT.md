@@ -4,72 +4,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-### Code Duplication
-
-#### 1. Sorting Logic Duplication (~90 lines)
-**Location**: [SpellTable.tsx:105-150](src/components/SpellTable.tsx#L105-L150), [SpellbookDetail.tsx:70-115](src/components/SpellbookDetail.tsx#L70-L115)
-
-**Issue**: Nearly identical sorting logic exists in both `SpellTable` and `SpellbookDetail` components. This includes:
-- Sort state management (sortColumn, sortDirection)
-- handleSort function (~15 lines)
-- Sorting comparator logic (~30 lines)
-- Sort UI rendering
-
-**Impact**:
-- ~90 lines of duplicated code
-- Changes to sorting behavior require updates in multiple places
-- Inconsistent sorting behavior risk
-
-**Proposed Solution**: Create a `useSpellSorting` custom hook that encapsulates:
-- Sort state (column, direction)
-- Sort handler function
-- Sorted data computation
-- Return sorted data and sort control props
-
-**Effort**: Medium (2-3 hours)
-**Priority**: High
-
----
-
-#### 2. SortIcon Component Duplication
-**Location**: [SpellTable.tsx:187-196](src/components/SpellTable.tsx#L187-L196), [SpellbookDetail.tsx:152-161](src/components/SpellbookDetail.tsx#L152-L161)
-
-**Issue**: Identical `SortIcon` inline component defined in both files.
-
-**Impact**:
-- ~10 lines duplicated
-- Visual inconsistency risk
-- Harder to update sort indicators
-
-**Proposed Solution**: Extract to `src/components/SortIcon.tsx` as a shared component.
-
-**Effort**: Low (30 minutes)
-**Priority**: Medium
-
----
-
-### Type Safety Issues
-
-#### 3. Unsafe 'any' Types in SpellbookDetail
-**Location**: [SpellbookDetail.tsx](src/components/SpellbookDetail.tsx)
-
-**Issue**: Several uses of `any` type that bypass TypeScript's type checking.
-
-**Impact**:
-- Loss of type safety
-- Potential runtime errors
-- Reduced IDE autocomplete support
-
-**Proposed Solution**:
-- Define proper types for all values
-- Use union types where appropriate
-- Add proper type guards if needed
-
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
----
-
 ### Unclear/Unused Functionality
 
 #### 4. onSpellClick Prop - Defined But Never Used
@@ -107,6 +41,27 @@ This document tracks known technical debt, code quality issues, and refactoring 
 - **Removed from** [src/hooks/useSpellbooks.ts](src/hooks/useSpellbooks.ts):
   - `useSpellbook` - 84 lines
 - **Total eliminated**: 119 lines of unused code
+
+### ✅ Sorting Logic Refactoring (Completed 2025-11-14)
+- **Created**: [src/hooks/useSpellSorting.ts](src/hooks/useSpellSorting.ts)
+- **Updated**: [src/components/SpellTable.tsx](src/components/SpellTable.tsx), [src/components/SpellbookDetail.tsx](src/components/SpellbookDetail.tsx)
+- **Eliminated**: ~90 lines of duplicate sorting code
+- **Features**: Generic hook supporting both `Spell[]` and enriched spell arrays with `useMemo` optimization
+
+### ✅ SortIcon Component Extraction (Completed 2025-11-14)
+- **Created**: [src/components/SortIcon.tsx](src/components/SortIcon.tsx) and [src/components/SortIcon.css](src/components/SortIcon.css)
+- **Updated**: [src/components/SpellTable.tsx](src/components/SpellTable.tsx), [src/components/SpellbookDetail.tsx](src/components/SpellbookDetail.tsx)
+- **Eliminated**: ~10 lines of duplicate component code
+- **Benefit**: Consistent sort icons across all sortable tables
+
+### ✅ Type Safety Improvements in SpellbookDetail (Completed 2025-11-14)
+- **Updated**: [src/components/SpellbookDetail.tsx](src/components/SpellbookDetail.tsx)
+- **Changes**:
+  - Created `EnrichedSpell` interface to replace `any` types
+  - Changed `spellbook` state from `any` to `Spellbook | null`
+  - Added proper type predicate in `.filter()` using `entry is EnrichedSpell`
+  - Removed all unsafe `any` types from the component
+- **Benefit**: Full TypeScript type checking, better IDE support, reduced runtime error risk
 
 ---
 

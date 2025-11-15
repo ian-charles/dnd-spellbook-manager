@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import { useSpellbooks } from '../hooks/useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spell } from '../types/spell';
+import { Spellbook } from '../types/spellbook';
 import { ExpandableSpellRow } from './ExpandableSpellRow';
+import { SortIcon } from './SortIcon';
+import { useSpellSorting } from '../hooks/useSpellSorting';
 import { getLevelText, getComponentsText, filterClasses } from '../utils/spellFormatters';
 import './SpellbookDetail.css';
 
@@ -11,16 +14,21 @@ interface SpellbookDetailProps {
   onBack: () => void;
 }
 
-type SortColumn = 'name' | 'level' | 'school' | 'castingTime' | 'range' | 'duration' | 'source';
-type SortDirection = 'asc' | 'desc';
+interface EnrichedSpell {
+  spell: Spell;
+  prepared: boolean;
+  notes: string;
+}
 
 export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
   const { getSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
-  const [spellbook, setSpellbook] = useState<any>(null);
-  const [enrichedSpells, setEnrichedSpells] = useState<Array<{spell: Spell, prepared: boolean, notes: string}>>([]);
-  const [sortColumn, setSortColumn] = useState<SortColumn>('name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
+  const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
+  const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(
+    enrichedSpells,
+    { getSpell: (item) => item.spell }
+  );
 
   useEffect(() => {
     loadSpellbook();
@@ -32,14 +40,18 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       setSpellbook(sb);
 
       // Enrich spells with full data
-      const enriched = sb.spells.map((spellEntry: any) => {
-        const spell = spellService.getSpellById(spellEntry.spellId);
-        return {
-          spell: spell!,
-          prepared: spellEntry.prepared,
-          notes: spellEntry.notes || '',
-        };
-      }).filter((entry: any) => entry.spell !== undefined);
+      const enriched: EnrichedSpell[] = sb.spells
+        .map((spellEntry) => {
+          const spell = spellService.getSpellById(spellEntry.spellId);
+          if (!spell) return null;
+
+          return {
+            spell,
+            prepared: spellEntry.prepared,
+            notes: spellEntry.notes || '',
+          };
+        })
+        .filter((entry): entry is EnrichedSpell => entry !== null);
 
       setEnrichedSpells(enriched);
     }
@@ -55,61 +67,6 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       await removeSpellFromSpellbook(spellbookId, spellId);
       await loadSpellbook();
     }
-  };
-
-  const handleSort = (column: SortColumn) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
-  const getSortedSpells = () => {
-    const sorted = [...enrichedSpells].sort((a, b) => {
-      let aVal: any;
-      let bVal: any;
-
-      switch (sortColumn) {
-        case 'level':
-          aVal = a.spell.level;
-          bVal = b.spell.level;
-          break;
-        case 'name':
-          aVal = a.spell.name.toLowerCase();
-          bVal = b.spell.name.toLowerCase();
-          break;
-        case 'school':
-          aVal = a.spell.school.toLowerCase();
-          bVal = b.spell.school.toLowerCase();
-          break;
-        case 'castingTime':
-          aVal = a.spell.castingTime.toLowerCase();
-          bVal = b.spell.castingTime.toLowerCase();
-          break;
-        case 'range':
-          aVal = a.spell.range.toLowerCase();
-          bVal = b.spell.range.toLowerCase();
-          break;
-        case 'duration':
-          aVal = a.spell.duration.toLowerCase();
-          bVal = b.spell.duration.toLowerCase();
-          break;
-        case 'source':
-          aVal = a.spell.source.toLowerCase();
-          bVal = b.spell.source.toLowerCase();
-          break;
-        default:
-          return 0;
-      }
-
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    return sorted;
   };
 
   const handleRowClick = (spellId: string) => {
@@ -130,13 +87,6 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
   }
 
   const preparedCount = enrichedSpells.filter(s => s.prepared).length;
-
-  const SortIcon = ({ column }: { column: SortColumn }) => {
-    if (sortColumn !== column) {
-      return <span className="sort-icon">⇅</span>;
-    }
-    return <span className="sort-icon">{sortDirection === 'asc' ? '↑' : '↓'}</span>;
-  };
 
   return (
     <div className="spellbook-detail" data-testid="spellbook-detail">
@@ -166,52 +116,52 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
                 <th onClick={() => handleSort('name')} className="sortable">
                   <div className="th-content">
                     Spell Name
-                    <SortIcon column="name" />
+                    <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
                 <th onClick={() => handleSort('level')} className="sortable level-col">
                   <div className="th-content">
                     Level
-                    <SortIcon column="level" />
+                    <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
                 <th onClick={() => handleSort('school')} className="sortable">
                   <div className="th-content">
                     School
-                    <SortIcon column="school" />
+                    <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
                 <th onClick={() => handleSort('castingTime')} className="sortable">
                   <div className="th-content">
                     Time
-                    <SortIcon column="castingTime" />
+                    <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
                 <th onClick={() => handleSort('range')} className="sortable">
                   <div className="th-content">
                     Range
-                    <SortIcon column="range" />
+                    <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
                 <th className="components-col">Comp.</th>
                 <th onClick={() => handleSort('duration')} className="sortable">
                   <div className="th-content">
                     Duration
-                    <SortIcon column="duration" />
+                    <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
                 <th>Classes</th>
                 <th onClick={() => handleSort('source')} className="sortable">
                   <div className="th-content">
                     Source
-                    <SortIcon column="source" />
+                    <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
                 <th className="action-col">Remove</th>
               </tr>
             </thead>
             <tbody>
-              {getSortedSpells().map(({ spell, prepared }) => (
+              {sortedSpells.map(({ spell, prepared }) => (
                 <>
                   <tr
                     key={spell.id}

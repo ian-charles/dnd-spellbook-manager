@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Spell } from '../types/spell';
 import { ExpandableSpellRow } from './ExpandableSpellRow';
+import { SortIcon } from './SortIcon';
+import { useSpellSorting } from '../hooks/useSpellSorting';
 import { getLevelText, getComponentsText, filterClasses } from '../utils/spellFormatters';
 import './SpellTable.css';
 
@@ -10,69 +12,9 @@ interface SpellTableProps {
   onAddToSpellbook?: (spellId: string) => void;
 }
 
-type SortColumn = 'name' | 'level' | 'school' | 'castingTime' | 'range' | 'duration' | 'source';
-type SortDirection = 'asc' | 'desc';
-
 export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTableProps) {
-  const [sortColumn, setSortColumn] = useState<SortColumn>('name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
-
-  const handleSort = (column: SortColumn) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
-  const getSortedSpells = () => {
-    const sorted = [...spells].sort((a, b) => {
-      let aVal: any;
-      let bVal: any;
-
-      switch (sortColumn) {
-        case 'level':
-          aVal = a.level;
-          bVal = b.level;
-          break;
-        case 'name':
-          aVal = a.name.toLowerCase();
-          bVal = b.name.toLowerCase();
-          break;
-        case 'school':
-          aVal = a.school.toLowerCase();
-          bVal = b.school.toLowerCase();
-          break;
-        case 'castingTime':
-          aVal = a.castingTime.toLowerCase();
-          bVal = b.castingTime.toLowerCase();
-          break;
-        case 'range':
-          aVal = a.range.toLowerCase();
-          bVal = b.range.toLowerCase();
-          break;
-        case 'duration':
-          aVal = a.duration.toLowerCase();
-          bVal = b.duration.toLowerCase();
-          break;
-        case 'source':
-          aVal = a.source.toLowerCase();
-          bVal = b.source.toLowerCase();
-          break;
-        default:
-          return 0;
-      }
-
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    return sorted;
-  };
-
+  const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(spells);
 
   const handleRowClick = (spellId: string) => {
     // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell
@@ -83,13 +25,6 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
     }
   };
 
-  const SortIcon = ({ column }: { column: SortColumn }) => {
-    if (sortColumn !== column) {
-      return <span className="sort-icon">⇅</span>;
-    }
-    return <span className="sort-icon">{sortDirection === 'asc' ? '↑' : '↓'}</span>;
-  };
-
   if (spells.length === 0) {
     return (
       <div className="spell-table-empty">
@@ -97,8 +32,6 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
       </div>
     );
   }
-
-  const sortedSpells = getSortedSpells();
 
   return (
     <div className="spell-table-container">
@@ -108,45 +41,45 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
             <th onClick={() => handleSort('name')} className="sortable">
               <div className="th-content">
                 Spell Name
-                <SortIcon column="name" />
+                <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
             <th onClick={() => handleSort('level')} className="sortable level-col">
               <div className="th-content">
                 Level
-                <SortIcon column="level" />
+                <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
             <th onClick={() => handleSort('school')} className="sortable">
               <div className="th-content">
                 School
-                <SortIcon column="school" />
+                <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
             <th onClick={() => handleSort('castingTime')} className="sortable">
               <div className="th-content">
                 Time
-                <SortIcon column="castingTime" />
+                <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
             <th onClick={() => handleSort('range')} className="sortable">
               <div className="th-content">
                 Range
-                <SortIcon column="range" />
+                <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
             <th className="components-col">Comp.</th>
             <th onClick={() => handleSort('duration')} className="sortable">
               <div className="th-content">
                 Duration
-                <SortIcon column="duration" />
+                <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
             <th>Classes</th>
             <th onClick={() => handleSort('source')} className="sortable">
               <div className="th-content">
                 Source
-                <SortIcon column="source" />
+                <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
             {onAddToSpellbook && <th className="action-col">Action</th>}

@@ -10,10 +10,15 @@ interface SpellbookDetailProps {
   onBack: () => void;
 }
 
+type SortColumn = 'name' | 'level' | 'school' | 'castingTime' | 'range' | 'duration' | 'source';
+type SortDirection = 'asc' | 'desc';
+
 export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
   const { getSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
   const [spellbook, setSpellbook] = useState<any>(null);
   const [enrichedSpells, setEnrichedSpells] = useState<Array<{spell: Spell, prepared: boolean, notes: string}>>([]);
+  const [sortColumn, setSortColumn] = useState<SortColumn>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [tooltipSpell, setTooltipSpell] = useState<Spell | null>(null);
@@ -51,6 +56,61 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       await removeSpellFromSpellbook(spellbookId, spellId);
       await loadSpellbook();
     }
+  };
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortedSpells = () => {
+    const sorted = [...enrichedSpells].sort((a, b) => {
+      let aVal: any;
+      let bVal: any;
+
+      switch (sortColumn) {
+        case 'level':
+          aVal = a.spell.level;
+          bVal = b.spell.level;
+          break;
+        case 'name':
+          aVal = a.spell.name.toLowerCase();
+          bVal = b.spell.name.toLowerCase();
+          break;
+        case 'school':
+          aVal = a.spell.school.toLowerCase();
+          bVal = b.spell.school.toLowerCase();
+          break;
+        case 'castingTime':
+          aVal = a.spell.castingTime.toLowerCase();
+          bVal = b.spell.castingTime.toLowerCase();
+          break;
+        case 'range':
+          aVal = a.spell.range.toLowerCase();
+          bVal = b.spell.range.toLowerCase();
+          break;
+        case 'duration':
+          aVal = a.spell.duration.toLowerCase();
+          bVal = b.spell.duration.toLowerCase();
+          break;
+        case 'source':
+          aVal = a.spell.source.toLowerCase();
+          bVal = b.spell.source.toLowerCase();
+          break;
+        default:
+          return 0;
+      }
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
   };
 
   const handleRowClick = (spell: Spell, event: React.MouseEvent<HTMLTableRowElement>) => {
@@ -92,6 +152,13 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
     return parts.join(', ');
   };
 
+  const SortIcon = ({ column }: { column: SortColumn }) => {
+    if (sortColumn !== column) {
+      return <span className="sort-icon">⇅</span>;
+    }
+    return <span className="sort-icon">{sortDirection === 'asc' ? '↑' : '↓'}</span>;
+  };
+
   return (
     <div className="spellbook-detail" data-testid="spellbook-detail">
       <div className="spellbook-detail-header">
@@ -117,20 +184,55 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
             <thead>
               <tr>
                 <th className="prepared-col">Prep</th>
-                <th>Spell Name</th>
-                <th className="level-col">Level</th>
-                <th>School</th>
-                <th>Time</th>
-                <th>Range</th>
+                <th onClick={() => handleSort('name')} className="sortable">
+                  <div className="th-content">
+                    Spell Name
+                    <SortIcon column="name" />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('level')} className="sortable level-col">
+                  <div className="th-content">
+                    Level
+                    <SortIcon column="level" />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('school')} className="sortable">
+                  <div className="th-content">
+                    School
+                    <SortIcon column="school" />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('castingTime')} className="sortable">
+                  <div className="th-content">
+                    Time
+                    <SortIcon column="castingTime" />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('range')} className="sortable">
+                  <div className="th-content">
+                    Range
+                    <SortIcon column="range" />
+                  </div>
+                </th>
                 <th className="components-col">Comp.</th>
-                <th>Duration</th>
+                <th onClick={() => handleSort('duration')} className="sortable">
+                  <div className="th-content">
+                    Duration
+                    <SortIcon column="duration" />
+                  </div>
+                </th>
                 <th>Classes</th>
-                <th>Source</th>
+                <th onClick={() => handleSort('source')} className="sortable">
+                  <div className="th-content">
+                    Source
+                    <SortIcon column="source" />
+                  </div>
+                </th>
                 <th className="action-col">Remove</th>
               </tr>
             </thead>
             <tbody>
-              {enrichedSpells.map(({ spell, prepared }) => (
+              {getSortedSpells().map(({ spell, prepared }) => (
                 <tr
                   key={spell.id}
                   className={`spell-row ${prepared ? 'prepared-row' : ''}`}

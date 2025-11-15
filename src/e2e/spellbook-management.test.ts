@@ -235,7 +235,7 @@ describe('Spellbook Management E2E', () => {
       expect(newChecked).toBe(!initialChecked);
     }, 60000);
 
-    it('should show spell tooltip when clicking on spell row in spellbook', async () => {
+    it('should expand spell description when clicking on spell row in spellbook', async () => {
       // Get spellbook ID and navigate directly
       await page.goto(`${baseUrl}#/spellbooks`);
       await page.waitForSelector('[data-testid^="spellbook-item-"]', { timeout: 10000 });
@@ -247,23 +247,23 @@ describe('Spellbook Management E2E', () => {
 
       // Click the first spell row
       await page.click('.spell-row');
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      // Check that tooltip is visible
-      const tooltip = await page.$('.spell-tooltip');
-      expect(tooltip).toBeTruthy();
+      // Check that expanded description row is visible
+      const expandedRow = await page.$('.spell-expanded-row');
+      expect(expandedRow).toBeTruthy();
 
-      // Verify tooltip is actually visible
-      const isVisible = await page.evaluate(() => {
-        const tooltip = document.querySelector('.spell-tooltip');
-        if (!tooltip) return false;
-        const styles = window.getComputedStyle(tooltip);
-        return styles.display !== 'none' && styles.visibility !== 'hidden' && styles.opacity !== '0';
+      // Verify expanded row contains spell description
+      const hasDescription = await page.evaluate(() => {
+        const expandedRow = document.querySelector('.spell-expanded-row');
+        if (!expandedRow) return false;
+        const text = expandedRow.textContent || '';
+        return text.length > 50; // Should have substantial content
       });
-      expect(isVisible).toBe(true);
+      expect(hasDescription).toBe(true);
     }, 60000);
 
-    it('should hide tooltip when clicking same spell row again in spellbook', async () => {
+    it('should collapse description when clicking same spell row again in spellbook', async () => {
       // Get spellbook ID and navigate directly
       await page.goto(`${baseUrl}#/spellbooks`);
       await page.waitForSelector('[data-testid^="spellbook-item-"]', { timeout: 10000 });
@@ -273,31 +273,21 @@ describe('Spellbook Management E2E', () => {
       await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
       await page.waitForSelector('.spell-row', { timeout: 10000 });
 
-      // Click to show tooltip
+      // Click to expand description
       await page.click('.spell-row');
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      // Verify tooltip is visible
-      let isVisible = await page.evaluate(() => {
-        const tooltip = document.querySelector('.spell-tooltip');
-        if (!tooltip) return false;
-        const styles = window.getComputedStyle(tooltip);
-        return styles.display !== 'none' && styles.visibility !== 'hidden' && styles.opacity !== '0';
-      });
-      expect(isVisible).toBe(true);
+      // Verify expanded row is visible
+      let expandedRow = await page.$('.spell-expanded-row');
+      expect(expandedRow).toBeTruthy();
 
-      // Click the same row again to hide tooltip
+      // Click the same row again to collapse
       await page.click('.spell-row');
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      // Verify tooltip is hidden
-      isVisible = await page.evaluate(() => {
-        const tooltip = document.querySelector('.spell-tooltip');
-        if (!tooltip) return true; // No tooltip element means it's hidden
-        const styles = window.getComputedStyle(tooltip);
-        return styles.display === 'none' || styles.visibility === 'hidden' || styles.opacity === '0';
-      });
-      expect(isVisible).toBe(true);
+      // Verify expanded row is hidden/removed
+      expandedRow = await page.$('.spell-expanded-row');
+      expect(expandedRow).toBeNull();
     }, 60000);
 
     it('should have sortable column headers in spellbook detail view', async () => {

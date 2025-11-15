@@ -252,13 +252,38 @@
   border-radius: 12px;
 }
 
-/* Desktop inline expansion styles */
-.spell-inline-expansion {
-  margin-top: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(100, 116, 139, 0.3);
-  animation: slideDown 0.3s ease-out;
-  color: #e2e8f0;
+/* Desktop inline expansion styles - will be overridden on mobile */
+@media (min-width: 769px) {
+  /* Make expanded row wrap onto multiple rows */
+  .spell-row.expanded {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  /* First row: all the table cells */
+  .spell-row.expanded > td {
+    flex-shrink: 0;
+  }
+
+  /* Spell name column with expansion */
+  .spell-row.expanded .spell-name {
+    flex: 0 0 auto;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Expansion takes full width of table on second row */
+  .spell-inline-expansion {
+    flex: 1 1 100%;
+    margin-top: 0;
+    padding: 1.5rem;
+    border-top: 1px solid rgba(100, 116, 139, 0.3);
+    animation: slideDown 0.3s ease-out;
+    color: #e2e8f0;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 8px;
+  }
 }
 
 .spell-inline-expansion .spell-meta {
@@ -273,7 +298,7 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 1.5rem;
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(15, 23, 42, 0.6);
   border-radius: 8px;
   font-size: 0.9rem;
 }

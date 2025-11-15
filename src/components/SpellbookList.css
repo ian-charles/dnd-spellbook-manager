@@ -188,3 +188,76 @@
   gap: 1rem;
   margin-top: 1.5rem;
 }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .spellbook-list {
+    padding: 1rem;
+  }
+
+  .spellbook-list-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .spellbook-list-header h2 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .header-actions button {
+    width: 100%;
+  }
+
+  .spellbooks-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .spellbook-card {
+    padding: 1rem;
+  }
+
+  .spellbook-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .spellbook-card-actions {
+    flex-direction: column;
+  }
+
+  .spellbook-card-actions button {
+    width: 100%;
+  }
+
+  .dialog {
+    min-width: auto;
+    max-width: 95vw;
+    padding: 1.5rem;
+  }
+
+  .dialog h3 {
+    font-size: 1.25rem;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .dialog-actions button {
+    width: 100%;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.875rem 1rem;
+  }
+}

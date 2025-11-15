@@ -136,7 +136,12 @@ export class SpellService {
   getClasses(): string[] {
     const classes = new Set<string>();
     this.spells.forEach((spell) => {
-      spell.classes.forEach((c) => classes.add(c));
+      spell.classes.forEach((c) => {
+        // Filter out "Ritual Caster" as it's a feat, not a class
+        if (c.toLowerCase() !== 'ritual caster') {
+          classes.add(c);
+        }
+      });
     });
     return Array.from(classes).sort();
   }

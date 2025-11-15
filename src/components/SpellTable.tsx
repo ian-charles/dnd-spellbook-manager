@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Spell } from '../types/spell';
+import { ExpandableSpellRow } from './ExpandableSpellRow';
 import './SpellTable.css';
 
 interface SpellTableProps {
@@ -199,47 +200,12 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
                   </td>
                 )}
               </tr>
-              {expandedSpellId === spell.id && (
-                <tr key={`${spell.id}-expanded`} className="spell-expanded-row">
-                  <td colSpan={onAddToSpellbook ? 10 : 9}>
-                    <div className="spell-expanded-content">
-                      <div className="spell-expanded-header">
-                        <h3>{spell.name}</h3>
-                        <p className="spell-meta">
-                          {getLevelText(spell.level)} {spell.school}
-                          {spell.concentration && <span className="badge badge-concentration">Concentration</span>}
-                          {spell.ritual && <span className="badge badge-ritual">Ritual</span>}
-                        </p>
-                      </div>
-                      <div className="spell-expanded-details">
-                        <div><strong>Casting Time:</strong> {spell.castingTime}</div>
-                        <div><strong>Range:</strong> {spell.range}</div>
-                        <div><strong>Duration:</strong> {spell.duration}</div>
-                        <div>
-                          <strong>Components:</strong>{' '}
-                          {[
-                            spell.components.verbal && 'V',
-                            spell.components.somatic && 'S',
-                            spell.components.material && `M (${spell.materials})`
-                          ].filter(Boolean).join(', ')}
-                        </div>
-                      </div>
-                      <div className="spell-expanded-description">
-                        {spell.description}
-                      </div>
-                      {spell.higherLevels && (
-                        <div className="spell-expanded-higher-levels">
-                          <strong>At Higher Levels:</strong> {spell.higherLevels}
-                        </div>
-                      )}
-                      <div className="spell-expanded-footer">
-                        <div><strong>Classes:</strong> {filterClasses(spell.classes).join(', ')}</div>
-                        <div className="spell-source">{spell.source}</div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
+              <ExpandableSpellRow
+                key={`${spell.id}-expanded`}
+                spell={spell}
+                isExpanded={expandedSpellId === spell.id}
+                colSpan={onAddToSpellbook ? 10 : 9}
+              />
             </>
           ))}
         </tbody>

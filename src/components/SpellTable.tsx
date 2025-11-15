@@ -84,6 +84,10 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
     return parts.join(', ');
   };
 
+  const filterClasses = (classes: string[]) => {
+    return classes.filter(c => c.toLowerCase() !== 'ritual caster');
+  };
+
   const handleRowClick = (spellId: string) => {
     // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell
     if (expandedSpellId === spellId) {
@@ -181,7 +185,7 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
                 <td>{spell.range}</td>
                 <td className="components-col">{getComponentsText(spell)}</td>
                 <td>{spell.duration}</td>
-                <td className="classes-col">{spell.classes.join(', ')}</td>
+                <td className="classes-col">{filterClasses(spell.classes).join(', ')}</td>
                 <td className="source-col">{spell.source}</td>
                 {onAddToSpellbook && (
                   <td className="action-col" onClick={(e) => e.stopPropagation()}>
@@ -229,7 +233,7 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
                         </div>
                       )}
                       <div className="spell-expanded-footer">
-                        <div><strong>Classes:</strong> {spell.classes.join(', ')}</div>
+                        <div><strong>Classes:</strong> {filterClasses(spell.classes).join(', ')}</div>
                         <div className="spell-source">{spell.source}</div>
                       </div>
                     </div>

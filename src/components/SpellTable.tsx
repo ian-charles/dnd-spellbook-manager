@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Spell } from '../types/spell';
-import { SpellTooltip } from './SpellTooltip';
 import './SpellTable.css';
 
 interface SpellTableProps {
@@ -15,9 +14,7 @@ type SortDirection = 'asc' | 'desc';
 export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  const [tooltipSpell, setTooltipSpell] = useState<Spell | null>(null);
+  const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
@@ -87,19 +84,12 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
     return parts.join(', ');
   };
 
-  const handleRowClick = (spell: Spell, event: React.MouseEvent<HTMLTableRowElement>) => {
-    // Toggle tooltip: if clicking the same spell, hide it; otherwise show new spell
-    if (tooltipVisible && tooltipSpell?.id === spell.id) {
-      setTooltipVisible(false);
-      setTooltipSpell(null);
+  const handleRowClick = (spellId: string) => {
+    // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell
+    if (expandedSpellId === spellId) {
+      setExpandedSpellId(null);
     } else {
-      const row = event.currentTarget.getBoundingClientRect();
-      setTooltipSpell(spell);
-      setTooltipPosition({
-        x: row.left,
-        y: row.bottom + 5,
-      });
-      setTooltipVisible(true);
+      setExpandedSpellId(spellId);
     }
   };
 
@@ -174,44 +164,82 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
         </thead>
         <tbody>
           {sortedSpells.map((spell) => (
-            <tr
-              key={spell.id}
-              onClick={(e) => handleRowClick(spell, e)}
-              className="spell-row"
-            >
-              <td className="spell-name">
-                {spell.name}
-                {spell.concentration && <span className="badge badge-concentration">C</span>}
-                {spell.ritual && <span className="badge badge-ritual">R</span>}
-              </td>
-              <td className="level-col">{getLevelText(spell.level)}</td>
-              <td className="school-col">{spell.school}</td>
-              <td>{spell.castingTime}</td>
-              <td>{spell.range}</td>
-              <td className="components-col">{getComponentsText(spell)}</td>
-              <td>{spell.duration}</td>
-              <td className="classes-col">{spell.classes.join(', ')}</td>
-              <td className="source-col">{spell.source}</td>
-              {onAddToSpellbook && (
-                <td className="action-col" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    className="btn-add-small"
-                    onClick={() => onAddToSpellbook(spell.id)}
-                    data-testid="btn-add-spell"
-                  >
-                    +
-                  </button>
+            <>
+              <tr
+                key={spell.id}
+                onClick={() => handleRowClick(spell.id)}
+                className={`spell-row ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+              >
+                <td className="spell-name">
+                  {spell.name}
+                  {spell.concentration && <span className="badge badge-concentration">C</span>}
+                  {spell.ritual && <span className="badge badge-ritual">R</span>}
                 </td>
+                <td className="level-col">{getLevelText(spell.level)}</td>
+                <td className="school-col">{spell.school}</td>
+                <td>{spell.castingTime}</td>
+                <td>{spell.range}</td>
+                <td className="components-col">{getComponentsText(spell)}</td>
+                <td>{spell.duration}</td>
+                <td className="classes-col">{spell.classes.join(', ')}</td>
+                <td className="source-col">{spell.source}</td>
+                {onAddToSpellbook && (
+                  <td className="action-col" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className="btn-add-small"
+                      onClick={() => onAddToSpellbook(spell.id)}
+                      data-testid="btn-add-spell"
+                    >
+                      +
+                    </button>
+                  </td>
+                )}
+              </tr>
+              {expandedSpellId === spell.id && (
+                <tr key={`${spell.id}-expanded`} className="spell-expanded-row">
+                  <td colSpan={onAddToSpellbook ? 10 : 9}>
+                    <div className="spell-expanded-content">
+                      <div className="spell-expanded-header">
+                        <h3>{spell.name}</h3>
+                        <p className="spell-meta">
+                          {getLevelText(spell.level)} {spell.school}
+                          {spell.concentration && <span className="badge badge-concentration">Concentration</span>}
+                          {spell.ritual && <span className="badge badge-ritual">Ritual</span>}
+                        </p>
+                      </div>
+                      <div className="spell-expanded-details">
+                        <div><strong>Casting Time:</strong> {spell.castingTime}</div>
+                        <div><strong>Range:</strong> {spell.range}</div>
+                        <div><strong>Duration:</strong> {spell.duration}</div>
+                        <div>
+                          <strong>Components:</strong>{' '}
+                          {[
+                            spell.components.verbal && 'V',
+                            spell.components.somatic && 'S',
+                            spell.components.material && `M (${spell.materials})`
+                          ].filter(Boolean).join(', ')}
+                        </div>
+                      </div>
+                      <div className="spell-expanded-description">
+                        {spell.description}
+                      </div>
+                      {spell.higherLevels && (
+                        <div className="spell-expanded-higher-levels">
+                          <strong>At Higher Levels:</strong> {spell.higherLevels}
+                        </div>
+                      )}
+                      <div className="spell-expanded-footer">
+                        <div><strong>Classes:</strong> {spell.classes.join(', ')}</div>
+                        <div className="spell-source">{spell.source}</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
               )}
-            </tr>
+            </>
           ))}
         </tbody>
       </table>
-      <SpellTooltip
-        spell={tooltipSpell}
-        position={tooltipPosition}
-        visible={tooltipVisible}
-      />
     </div>
   );
 }

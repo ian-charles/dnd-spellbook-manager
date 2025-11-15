@@ -104,4 +104,25 @@ describe('Spell Description E2E', () => {
 
     expect(hasExpandedContent).toBe(true);
   }, 30000);
+
+  it('should not display "Ritual Caster" in classes list for ritual spells', async () => {
+    await page.goto(TEST_URL);
+    await waitForSpellsToLoad(page);
+
+    // Search for Alarm spell which has "ritual caster" in the data
+    await page.type('input[placeholder*="Search"]', 'Alarm');
+    await wait(400);
+
+    // Check the main table row classes column
+    const mainRowClasses = await page.$eval('.spell-row .classes-col', el => el.textContent || '');
+    expect(mainRowClasses.toLowerCase()).not.toContain('ritual caster');
+
+    // Click to expand the spell row
+    await page.click('.spell-row');
+    await wait(400);
+
+    // Check the expanded row footer classes
+    const expandedClasses = await page.$eval('.spell-expanded-footer', el => el.textContent || '');
+    expect(expandedClasses.toLowerCase()).not.toContain('ritual caster');
+  }, 30000);
 });

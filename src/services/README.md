@@ -7,6 +7,7 @@ Service layer for data access and business logic. Services encapsulate external 
 
 - **[spell.service.ts](spell.service.ts)**: Fetches and searches spell data from API
 - **[storage.service.ts](storage.service.ts)**: CRUD operations for spellbooks in IndexedDB
+- **[exportImport.service.ts](exportImport.service.ts)**: Export and import spellbooks as JSON
 - **[db.ts](db.ts)**: Dexie.js database schema and configuration
 
 ## Architecture
@@ -115,8 +116,31 @@ try {
 }
 ```
 
+### ExportImportService
+
+Handles backup and restore of spellbooks via JSON files.
+
+**Key Methods:**
+- `exportSpellbooks()`: Export all spellbooks as JSON string
+- `importSpellbooks(jsonString)`: Import spellbooks from JSON (skips duplicates)
+- `downloadSpellbooks()`: Trigger browser download of export file
+
+**Export Format:**
+```typescript
+interface ExportData {
+  version: string;        // Format version for compatibility
+  exportDate: string;     // ISO timestamp
+  spellbooks: Spellbook[]; // Full spellbook data
+}
+```
+
+**Import Behavior:**
+- Validates JSON structure and version
+- Skips spellbooks with duplicate IDs
+- Returns summary: `{ imported, skipped, errors }`
+- Does not overwrite existing data
+
 ## Future Enhancements
 
 - **Sync service**: Cloud backup for spellbooks
-- **Import/export service**: Share spellbooks via JSON
 - **Search service**: Full-text search with fuzzy matching

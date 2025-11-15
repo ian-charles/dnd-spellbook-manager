@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSpellbooks } from '../hooks/useSpellbooks';
+import { exportImportService } from '../services/exportImport.service';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -7,10 +8,12 @@ interface SpellbookListProps {
 }
 
 export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
-  const { spellbooks, loading, createSpellbook, deleteSpellbook } = useSpellbooks();
+  const { spellbooks, loading, createSpellbook, deleteSpellbook, refreshSpellbooks } = useSpellbooks();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newSpellbookName, setNewSpellbookName] = useState('');
   const [creating, setCreating] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +41,55 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     }
   };
 
+  const handleExport = async () => {
+    try {
+      await exportImportService.downloadSpellbooks();
+    } catch (error) {
+      console.error('Failed to export spellbooks:', error);
+      alert('Failed to export spellbooks. Please try again.');
+    }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImporting(true);
+    try {
+      const text = await file.text();
+      const result = await exportImportService.importSpellbooks(text);
+
+      // Show result
+      if (result.errors.length > 0) {
+        alert(
+          `Import completed with errors:\n\n` +
+            `Imported: ${result.imported}\n` +
+            `Skipped: ${result.skipped}\n` +
+            `Errors: ${result.errors.length}\n\n` +
+            result.errors.join('\n')
+        );
+      } else {
+        alert(`Import successful!\n\nImported: ${result.imported}\nSkipped: ${result.skipped}`);
+      }
+
+      // Refresh the spellbooks list
+      refreshSpellbooks();
+    } catch (error) {
+      console.error('Failed to import spellbooks:', error);
+      alert(`Failed to import spellbooks: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setImporting(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="spellbook-list">
@@ -51,14 +103,43 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     <div className="spellbook-list">
       <div className="spellbook-list-header">
         <h2 data-testid="spellbooks-header">My Spellbooks</h2>
-        <button
-          className="btn-primary"
-          data-testid="btn-create-spellbook"
-          onClick={() => setShowCreateDialog(true)}
-        >
-          + New Spellbook
-        </button>
+        <div className="header-actions">
+          <button
+            className="btn-secondary"
+            data-testid="btn-export-spellbooks"
+            onClick={handleExport}
+            disabled={spellbooks.length === 0}
+            title={spellbooks.length === 0 ? 'No spellbooks to export' : 'Export all spellbooks'}
+          >
+            Export
+          </button>
+          <button
+            className="btn-secondary"
+            data-testid="btn-import-spellbooks"
+            onClick={handleImportClick}
+            disabled={importing}
+          >
+            {importing ? 'Importing...' : 'Import'}
+          </button>
+          <button
+            className="btn-primary"
+            data-testid="btn-create-spellbook"
+            onClick={() => setShowCreateDialog(true)}
+          >
+            + New Spellbook
+          </button>
+        </div>
       </div>
+
+      {/* Hidden file input for import */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/json,.json"
+        onChange={handleImport}
+        style={{ display: 'none' }}
+        data-testid="file-input-import"
+      />
 
       {spellbooks.length === 0 ? (
         <div className="spellbooks-empty" data-testid="spellbooks-empty">

@@ -12,6 +12,11 @@ import {
  */
 export class StorageService {
   /**
+   * Expose db for advanced operations (like bulk import)
+   */
+  public db = db;
+
+  /**
    * Create a new spellbook
    */
   async createSpellbook(input: CreateSpellbookInput): Promise<Spellbook> {

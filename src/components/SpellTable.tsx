@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Spell } from '../types/spell';
 import { ExpandableSpellRow } from './ExpandableSpellRow';
+import { getLevelText, getComponentsText, filterClasses } from '../utils/spellFormatters';
 import './SpellTable.css';
 
 interface SpellTableProps {
@@ -72,22 +73,6 @@ export function SpellTable({ spells, onSpellClick, onAddToSpellbook }: SpellTabl
     return sorted;
   };
 
-  const getLevelText = (level: number) => {
-    if (level === 0) return 'Cantrip';
-    return level.toString();
-  };
-
-  const getComponentsText = (spell: Spell) => {
-    const parts: string[] = [];
-    if (spell.components.verbal) parts.push('V');
-    if (spell.components.somatic) parts.push('S');
-    if (spell.components.material) parts.push('M');
-    return parts.join(', ');
-  };
-
-  const filterClasses = (classes: string[]) => {
-    return classes.filter(c => c.toLowerCase() !== 'ritual caster');
-  };
 
   const handleRowClick = (spellId: string) => {
     // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell

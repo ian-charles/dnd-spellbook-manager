@@ -1,4 +1,5 @@
 import { Spell } from '../types/spell';
+import { getLevelText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
 import './ExpandableSpellRow.css';
 
 interface ExpandableSpellRowProps {
@@ -8,15 +9,6 @@ interface ExpandableSpellRowProps {
 }
 
 export function ExpandableSpellRow({ spell, isExpanded, colSpan }: ExpandableSpellRowProps) {
-  const getLevelText = (level: number) => {
-    if (level === 0) return 'Cantrip';
-    return level.toString();
-  };
-
-  const filterClasses = (classes: string[]) => {
-    return classes.filter(c => c.toLowerCase() !== 'ritual caster');
-  };
-
   if (!isExpanded) return null;
 
   return (
@@ -36,12 +28,7 @@ export function ExpandableSpellRow({ spell, isExpanded, colSpan }: ExpandableSpe
             <div><strong>Range:</strong> {spell.range}</div>
             <div><strong>Duration:</strong> {spell.duration}</div>
             <div>
-              <strong>Components:</strong>{' '}
-              {[
-                spell.components.verbal && 'V',
-                spell.components.somatic && 'S',
-                spell.components.material && `M (${spell.materials})`
-              ].filter(Boolean).join(', ')}
+              <strong>Components:</strong> {getComponentsWithMaterials(spell)}
             </div>
           </div>
           <div className="spell-expanded-description">

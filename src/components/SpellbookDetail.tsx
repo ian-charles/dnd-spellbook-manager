@@ -3,6 +3,7 @@ import { useSpellbooks } from '../hooks/useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spell } from '../types/spell';
 import { ExpandableSpellRow } from './ExpandableSpellRow';
+import { getLevelText, getComponentsText, filterClasses } from '../utils/spellFormatters';
 import './SpellbookDetail.css';
 
 interface SpellbookDetailProps {
@@ -129,23 +130,6 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
   }
 
   const preparedCount = enrichedSpells.filter(s => s.prepared).length;
-
-  const getLevelText = (level: number) => {
-    if (level === 0) return 'Cantrip';
-    return level.toString();
-  };
-
-  const getComponentsText = (spell: Spell) => {
-    const parts: string[] = [];
-    if (spell.components.verbal) parts.push('V');
-    if (spell.components.somatic) parts.push('S');
-    if (spell.components.material) parts.push('M');
-    return parts.join(', ');
-  };
-
-  const filterClasses = (classes: string[]) => {
-    return classes.filter(c => c.toLowerCase() !== 'ritual caster');
-  };
 
   const SortIcon = ({ column }: { column: SortColumn }) => {
     if (sortColumn !== column) {

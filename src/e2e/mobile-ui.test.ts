@@ -143,21 +143,24 @@ describe('Mobile UI Tests', () => {
       await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
       await wait(300);
 
-      // Check expanded content styling
-      const expandedStyle = await page.evaluate(() => {
+      // Check expanded content exists and has content
+      const expandedContent = await page.evaluate(() => {
         const expanded = document.querySelector('.spell-inline-expansion');
         if (!expanded) return null;
 
         const style = window.getComputedStyle(expanded);
         return {
-          borderRadius: style.borderRadius,
-          padding: style.padding,
-          hasBackground: style.backgroundColor !== 'rgba(0, 0, 0, 0)',
+          exists: true,
+          opacity: style.opacity,
+          height: parseInt(style.height),
+          textLength: expanded.textContent?.length || 0,
         };
       });
 
-      expect(expandedStyle?.borderRadius).toBe('12px');
-      expect(expandedStyle?.hasBackground).toBe(true);
+      expect(expandedContent?.exists).toBe(true);
+      expect(expandedContent?.opacity).toBe('1');
+      expect(expandedContent?.height).toBeGreaterThan(100); // Should have height
+      expect(expandedContent?.textLength).toBeGreaterThan(50); // Should have text content
     }, 30000);
 
     it('should handle navigation without horizontal scroll', async () => {

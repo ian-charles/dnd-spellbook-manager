@@ -397,8 +397,8 @@
     background: rgba(79, 70, 229, 0.15);
   }
 
-  /* Hide all columns except spell name, level, and action */
-  .spell-table td:not(.spell-name):not(.level-col):not(.action-col) {
+  /* Hide all columns except spell name, level, action, and expansion */
+  .spell-table td:not(.spell-name):not(.level-col):not(.action-col):not(.spell-expansion-cell) {
     display: none;
   }
 
@@ -407,12 +407,12 @@
     border: none;
   }
 
-  /* Spell name takes full width with padding for level badge */
+  /* Spell name takes full width with padding for level badge and action button */
   .spell-name {
     flex: 1 1 100%;
     font-size: 1.0625rem;
     font-weight: 600;
-    padding: 0.25rem 4rem 0.5rem 0;
+    padding: 0.25rem 5.5rem 0.5rem 0;
     margin: 0;
     min-width: 0;
     color: #a5b4fc;
@@ -427,12 +427,20 @@
     font-size: 0.6875rem;
   }
 
+  /* Expansion cell should take full width on mobile */
+  .spell-expansion-cell {
+    flex: 1 1 100%;
+    width: 100%;
+    display: block !important;
+  }
+
   /* Inline expansion - shows within the same card on mobile */
   .spell-inline-expansion {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid rgba(100, 116, 139, 0.3);
-    animation: slideDown 0.3s ease-out;
+    animation: slideDown 0.3s ease-out forwards;
+    opacity: 1;
     color: #e2e8f0;
   }
 

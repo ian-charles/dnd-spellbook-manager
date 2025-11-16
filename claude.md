@@ -21,7 +21,57 @@ Create a design doc for any work > 1 week or that affects architecture, performa
 
 ## Git Commits
 
-`<type>(<scope>): <subject>` - Types: `feat`, `fix`, `test`, `refactor`, `docs`, `perf`, `chore`
+### Format
+`<type>(<scope>): <subject>`
+
+### Types
+- `feat`: New feature
+- `fix`: Bug fix
+- `test`: Add or modify tests
+- `refactor`: Code refactoring (no behavior change)
+- `docs`: Documentation only
+- `perf`: Performance improvement
+- `chore`: Build process, dependencies, etc.
+
+### Rules
+1. **Always run tests before committing** - `npm test` must pass
+2. **Commit after each meaningful change**:
+   - After test passes (RED → GREEN)
+   - After refactoring (GREEN → REFACTOR)
+   - After each complete feature
+3. **Never commit**:
+   - Broken tests
+   - Commented-out code
+   - Debugging console.log statements
+   - Files with secrets (.env, credentials.json)
+4. **Write clear messages**:
+   - Subject: What changed (imperative mood: "add", not "added")
+   - Body: Why it changed (optional but recommended)
+
+### Examples
+```bash
+# Good commits
+git commit -m "test: add test for mobile spell expansion"
+git commit -m "fix: React Fragment key warning preventing mobile expansion"
+git commit -m "refactor: extract scroll behavior to helper function"
+
+# Bad commits
+git commit -m "fix stuff"  # Too vague
+git commit -m "WIP"  # Work in progress shouldn't be committed
+git commit -m "updated code"  # Doesn't explain what changed
+```
+
+### Before Every Commit
+```bash
+# Run tests
+npm test
+
+# Check what you're committing
+git diff --cached
+
+# Verify no debug code
+git diff --cached | grep -i "console.log\|debugger\|TODO"
+```
 
 ## Code Style
 
@@ -190,7 +240,7 @@ disallow_untyped_defs = True
 def test_user_purchase():
     # Arrange
     user = User(balance=100)
-    # Act  
+    # Act
     result = user.purchase(Item(price=50))
     # Assert
     assert result.success and user.balance == 50
@@ -198,55 +248,198 @@ def test_user_purchase():
 
 **Coverage**: Unit 80%+ • Integration for critical paths • E2E for happy paths
 
+### ALWAYS Run Tests
+1. **Before committing**: `npm test` must pass
+2. **After making changes**: Verify nothing broke
+3. **Before deploying**: Full test suite including E2E
+
+Never skip tests. If tests are slow, fix them. If tests are flaky, fix them. If tests don't exist, write them.
+
 ### UI Testing with Puppeteer
 
-Use Puppeteer for UI understanding and iteration where possible. It provides real browser testing and enables rapid UI development.
+**Critical UI Testing Requirements:**
+
+1. **Test Multiple Contexts**:
+   - Mobile (375x667 - iPhone SE)
+   - Tablet (768x1024 - iPad)
+   - Desktop (1920x1080 - Full HD)
+
+2. **Test Both Themes**:
+   - Light mode: `page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'light' }])`
+   - Dark mode: `page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }])`
+
+3. **Scroll to See Content** (like a real user):
+   ```javascript
+   // ALWAYS scroll elements into view before interacting
+   await element.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+   await wait(400); // Let scroll animation complete
+
+   await element.click();
+   await wait(500); // Let interaction complete
+
+   // Scroll result into view to verify
+   const result = await page.$('.result');
+   await result?.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+   ```
+
+4. **Capture Console Errors**:
+   ```javascript
+   // Monitor console for errors
+   const consoleMessages = [];
+   page.on('console', msg => {
+     console.log(`[CONSOLE ${msg.type()}]:`, msg.text());
+     consoleMessages.push({ type: msg.type(), text: msg.text() });
+   });
+
+   page.on('pageerror', error => {
+     console.log(`[PAGE ERROR]:`, error.message);
+     consoleMessages.push({ type: 'error', text: error.message });
+   });
+
+   // After test, check for errors
+   const errors = consoleMessages.filter(m => m.type === 'error');
+   if (errors.length > 0) {
+     console.log('Console errors found:', errors);
+   }
+   ```
+
+5. **Take Screenshots**:
+   ```javascript
+   // Before interaction
+   await page.screenshot({ path: 'before.png' });
+
+   // After interaction
+   await page.screenshot({ path: 'after.png' });
+
+   // Full page screenshot
+   await page.screenshot({ path: 'fullpage.png', fullPage: true });
+   ```
+
+### Complete UI Test Example
 
 ```javascript
-// Puppeteer for UI testing and iteration
 const puppeteer = require('puppeteer');
+const { wait } = require('./setup');
 
-describe('User Flow', () => {
+describe('Mobile Spell Expansion', () => {
   let browser, page;
-  
+  const consoleMessages = [];
+
   beforeAll(async () => {
-    browser = await puppeteer.launch({ 
-      headless: 'new',  // Use new headless mode
-      slowMo: 0,         // Set to 250 for debugging
+    browser = await puppeteer.launch({
+      headless: false,  // See what's happening (use true for CI)
+      devtools: true,   // Open DevTools
     });
     page = await browser.newPage();
+
+    // Capture console
+    page.on('console', msg => consoleMessages.push({ type: msg.type(), text: msg.text() }));
+    page.on('pageerror', err => consoleMessages.push({ type: 'error', text: err.message }));
   });
 
-  test('critical user journey', async () => {
-    await page.goto('http://localhost:3000');
-    
-    // Test actual user interactions
-    await page.waitForSelector('[data-testid="login-button"]');
-    await page.click('[data-testid="login-button"]');
-    
-    // Verify UI state
-    await page.waitForSelector('.dashboard');
-    const title = await page.$eval('h1', el => el.textContent);
-    expect(title).toBe('Dashboard');
-    
-    // Screenshot for visual regression
-    await page.screenshot({ path: 'dashboard.png' });
+  test('expansion works on mobile in dark mode', async () => {
+    // Set mobile viewport
+    await page.setViewport({ width: 375, height: 667 });
+
+    // Set dark mode
+    await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }]);
+
+    await page.goto('http://localhost:5173');
+    await page.waitForSelector('.spell-row', { timeout: 10000 });
+
+    // Get spell (5th one to test scrolling)
+    const spells = await page.$$('.spell-row');
+    const spell = spells[4];
+
+    // Scroll into view BEFORE clicking
+    await spell.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    await wait(400);
+
+    // Take before screenshot
+    await page.screenshot({ path: 'mobile-before.png' });
+
+    // Click
+    await spell.click();
+    await wait(500);
+
+    // Scroll expansion into view
+    const expansion = await page.$('.spell-inline-expansion');
+    await expansion?.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    await wait(300);
+
+    // Take after screenshot
+    await page.screenshot({ path: 'mobile-after.png' });
+
+    // Verify expansion visible with content
+    const expansionInfo = await page.evaluate(() => {
+      const exp = document.querySelector('.spell-inline-expansion');
+      return {
+        visible: exp && exp.getBoundingClientRect().height > 0,
+        hasText: exp && exp.textContent.length > 100,
+        description: exp?.querySelector('.spell-expanded-description')?.textContent.substring(0, 50)
+      };
+    });
+
+    expect(expansionInfo.visible).toBe(true);
+    expect(expansionInfo.hasText).toBe(true);
+    expect(expansionInfo.description).toBeTruthy();
+
+    // Check for console errors
+    const errors = consoleMessages.filter(m => m.type === 'error');
+    expect(errors).toHaveLength(0);
   });
-  
+
   afterAll(async () => {
     await browser.close();
   });
 });
 ```
 
-**Why Puppeteer:**
-- **Real browser testing**: Catches issues unit tests miss
-- **Visual regression**: Screenshot comparisons
-- **Performance metrics**: Measure actual load times
-- **Debugging**: Run headed mode to see what's happening
-- **User journey validation**: Test complete workflows
+**Why This Matters:**
+- **Scrolling**: Elements outside viewport won't be interactive - tests will fail or give false positives
+- **Console errors**: React warnings and errors often prevent UI from rendering correctly
+- **Multiple contexts**: Mobile users are ~50% of traffic - desktop-only testing misses half your users
+- **Screenshots**: Visual proof tests actually ran and UI looks correct
 
-Use `data-testid` attributes for reliable element selection.
+### Local Debugging Tools
+
+When working on UI features, create temporary debugging scripts to iterate quickly:
+
+```javascript
+// debug-feature.cjs (temporary file, don't commit)
+const puppeteer = require('puppeteer');
+
+async function debugFeature() {
+  const browser = await puppeteer.launch({
+    headless: false,  // Watch it run
+    devtools: true,   // See console
+    slowMo: 250       // Slow down to see actions
+  });
+
+  const page = await browser.newPage();
+
+  // Your debugging code here
+  await page.goto('http://localhost:5173');
+  // ... interact with UI
+
+  // Keep browser open
+  console.log('Browser open - press Ctrl+C when done');
+  await new Promise(resolve => setTimeout(resolve, 600000)); // 10 min
+
+  await browser.close();
+}
+
+debugFeature().catch(console.error);
+```
+
+**When to use debugging tools:**
+1. Building new UI features
+2. Investigating visual bugs
+3. Testing responsive behavior
+4. Verifying animations/transitions
+5. Checking console for errors
+
+**Always delete debugging scripts before committing** - use `.gitignore` or manual cleanup.
 
 ## Performance: Fast is my Favorite Feature
 

@@ -35,20 +35,25 @@ Create a design doc for any work > 1 week or that affects architecture, performa
 
 ### Rules
 1. **Always run tests before committing** - `npm test` must pass
-2. **Commit after each meaningful change**:
+2. **NEVER bypass git hooks with `--no-verify`** - Hooks exist for quality control:
+   - If pre-commit hook fails, fix the issue, don't bypass it
+   - If tests are slow, optimize them, don't skip them
+   - If hooks are broken, fix the hooks, don't bypass them
+   - Bypassing hooks = shipping broken code to production
+3. **Commit after each meaningful change**:
    - After test passes (RED → GREEN)
    - After refactoring (GREEN → REFACTOR)
    - After each complete feature
-3. **Single purpose per commit**:
+4. **Single purpose per commit**:
    - Each commit should have ONE clear purpose
    - If a commit has multiple unrelated changes, split it into multiple commits
    - Examples: Don't mix "fix bug" with "add feature" in same commit
-4. **Never commit**:
+5. **Never commit**:
    - Broken tests
    - Commented-out code
    - Debugging console.log statements
    - Files with secrets (.env, credentials.json)
-5. **Write clear messages**:
+6. **Write clear messages**:
    - Subject: What changed (imperative mood: "add", not "added")
    - Body: Why it changed (optional but recommended)
 

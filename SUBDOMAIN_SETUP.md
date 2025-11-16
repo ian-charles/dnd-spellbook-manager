@@ -212,7 +212,7 @@ Or use the GCP Console: Cloud Run → Manage Custom Domains → Delete mapping
 - **DNS Queries**: Depends on your DNS provider (typically free/included)
 - **Cloud Run**: Same as before (~$0-2/month for low traffic)
 
-## Benefits of Subdomain vs Subpath
+## Benefits of Using a Subdomain
 
 ✅ **Subdomain (spellbook.quantitydust.com)**:
 - Simpler setup (no load balancer needed)
@@ -220,12 +220,6 @@ Or use the GCP Console: Cloud Run → Manage Custom Domains → Delete mapping
 - No BASE_PATH configuration needed
 - Independent scaling and deployment
 - Easier to move to different infrastructure later
-
-❌ **Subpath (quantitydust.com/spellbook)**:
-- Requires load balancer setup
-- More complex BASE_PATH configuration
-- Shared domain means tighter coupling
-- Additional load balancer costs
 
 ## Next Steps
 

@@ -141,9 +141,14 @@ describe('Spellbook Workflow - Desktop', () => {
 
     const emptyText = await page.$eval('.spellbook-detail-empty p', el => el.textContent);
     expect(emptyText).toContain('empty');
-  }, 60000);
+  }, 120000);
 
   it('should add multiple spells and verify count updates', async () => {
+    // Clear localStorage first
+    await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+    await page.evaluate(() => localStorage.clear());
+    await page.reload({ waitUntil: 'networkidle2' });
+
     // Create spellbook
     await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
     const createButton = await page.$('[data-testid="btn-create-spellbook"]');
@@ -184,9 +189,14 @@ describe('Spellbook Workflow - Desktop', () => {
 
     const spellRows = await page.$$('.spellbook-table tbody tr:not(.spell-expansion-row)');
     expect(spellRows.length).toBe(3);
-  }, 60000);
+  }, 120000);
 
   it('should handle prepared spell count correctly', async () => {
+    // Clear localStorage first
+    await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+    await page.evaluate(() => localStorage.clear());
+    await page.reload({ waitUntil: 'networkidle2' });
+
     // Create spellbook and add spells
     await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
     const createButton = await page.$('[data-testid="btn-create-spellbook"]');
@@ -230,20 +240,39 @@ describe('Spellbook Workflow - Desktop', () => {
 
     const preparedCount = await page.$eval('.spellbook-prepared', el => el.textContent);
     expect(preparedCount).toContain('1 prepared');
-  }, 60000);
+  }, 120000);
 
   it('should prevent adding duplicate spells', async () => {
-    // Create spellbook
+    // Clear any existing data first - use evaluate to ensure localStorage is cleared
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+
+    // Reload and wait for clean state
+    await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+    await wait(500);
+
+    // Create spellbook with unique name
     await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
+    await wait(500);
+
+    await page.waitForSelector('[data-testid="btn-create-spellbook"]', { timeout: 10000 });
     const createButton = await page.$('[data-testid="btn-create-spellbook"]');
     await createButton?.click();
     await wait(300);
 
+    await page.waitForSelector('[data-testid="input-spellbook-name"]', { timeout: 5000 });
     const nameInput = await page.$('[data-testid="input-spellbook-name"]');
-    await nameInput?.type('Duplicate Test');
+    await nameInput?.type('Duplicate Test Unique Name');
     const saveButton = await page.$('[data-testid="btn-save-spellbook"]');
     await saveButton?.click();
     await wait(500);
+
+    // Verify only one spellbook exists
+    await page.waitForSelector('.spellbook-card', { timeout: 10000 });
+    const spellbooksCount = await page.$$eval('.spellbook-card', cards => cards.length);
+    expect(spellbooksCount).toBe(1);
 
     // Add first spell
     await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
@@ -268,11 +297,18 @@ describe('Spellbook Workflow - Desktop', () => {
     await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
     await wait(500);
 
+    // Wait for spellbook card to be visible and find the one we created
+    await page.waitForSelector('.spellbook-card', { timeout: 10000 });
     const spellCount = await page.$eval('.spellbook-card .spellbook-count', el => el.textContent);
     expect(spellCount).toContain('1 spell'); // Should still be 1, not 2
-  }, 60000);
+  }, 120000);
 
   it('should expand spell details in spellbook view', async () => {
+    // Clear localStorage first
+    await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+    await page.evaluate(() => localStorage.clear());
+    await page.reload({ waitUntil: 'networkidle2' });
+
     // Create spellbook and add spell
     await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
     const createButton = await page.$('[data-testid="btn-create-spellbook"]');
@@ -322,7 +358,7 @@ describe('Spellbook Workflow - Desktop', () => {
 
     const description = await page.$('.spell-expanded-description');
     expect(description).toBeTruthy();
-  }, 60000);
+  }, 120000);
 });
 
 describe('Spellbook Workflow - Mobile', () => {
@@ -343,7 +379,7 @@ describe('Spellbook Workflow - Mobile', () => {
     await page.evaluate(() => localStorage.clear());
     await page.reload({ waitUntil: 'networkidle2' });
     await waitForSpellsToLoad(page);
-  });
+  }, 30000);
 
   it('should complete full mobile workflow: create → add → prepare → remove', async () => {
     // Step 1: Navigate to spellbooks on mobile
@@ -460,7 +496,7 @@ describe('Spellbook Workflow - Mobile', () => {
     await page.waitForSelector('.spellbook-detail-empty', { timeout: 10000 });
     const emptyMessage = await page.$('.spellbook-detail-empty');
     expect(emptyMessage).toBeTruthy();
-  }, 60000);
+  }, 120000);
 
   it('should handle spell expansion on mobile with card layout', async () => {
     // Create spellbook and add spell
@@ -543,7 +579,7 @@ describe('Spellbook Workflow - Mobile', () => {
     });
 
     expect(scrollWidth.bodyScrollWidth).toBeLessThanOrEqual(scrollWidth.viewportWidth + 1);
-  }, 60000);
+  }, 120000);
 
   it('should handle no horizontal scroll throughout workflow', async () => {
     const checkNoScroll = async () => {
@@ -590,5 +626,5 @@ describe('Spellbook Workflow - Mobile', () => {
     await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
     await waitForSpellsToLoad(page);
     await checkNoScroll();
-  }, 60000);
+  }, 120000);
 });

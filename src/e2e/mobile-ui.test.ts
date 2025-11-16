@@ -90,40 +90,67 @@ describe('Mobile UI Tests', () => {
       const cardLayout = await page.evaluate(() => {
         const row = document.querySelector('.spell-table tbody tr');
         const levelCol = row?.querySelector('.level-col');
+        const actionCol = row?.querySelector('.action-col');
 
-        if (!levelCol) return null;
+        if (!levelCol || !actionCol) return null;
 
         const style = window.getComputedStyle(levelCol);
-        const rect = levelCol.getBoundingClientRect();
+        const levelRect = levelCol.getBoundingClientRect();
+        const actionRect = actionCol.getBoundingClientRect();
         const rowRect = row.getBoundingClientRect();
+
+        // Badge should be:
+        // 1. Positioned absolutely
+        // 2. In the top section (within 50px of top)
+        // 3. In the right section (more than halfway across the row)
+        // 4. Left of the action button (not overlapping)
+        const isInTopArea = levelRect.top <= (rowRect.top + 50);
+        const isInRightHalf = levelRect.left > (rowRect.left + rowRect.width / 2);
+        const isLeftOfButton = levelRect.right <= actionRect.left;
 
         return {
           position: style.position,
-          isInTopRight: rect.right >= (rowRect.right - 50) && rect.top <= (rowRect.top + 50),
+          isInTopArea,
+          isInRightHalf,
+          isLeftOfButton,
+          isValidLayout: isInTopArea && isInRightHalf && isLeftOfButton,
         };
       });
 
       expect(cardLayout?.position).toBe('absolute');
-      expect(cardLayout?.isInTopRight).toBe(true);
+      expect(cardLayout?.isValidLayout).toBe(true);
     }, 30000);
 
-    it('should display full-width add buttons on mobile cards', async () => {
+    it('should display touch-friendly action buttons positioned in top right', async () => {
       const firstButton = await page.$('.spell-table .btn-add-small');
       expect(firstButton).toBeTruthy();
 
-      const buttonWidth = await firstButton?.evaluate(el => {
+      const buttonInfo = await firstButton?.evaluate(el => {
         const parent = el.closest('tr');
         const parentRect = parent?.getBoundingClientRect();
         const buttonRect = el.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(el);
+
+        // Button should be:
+        // 1. Touch-friendly size (44x44 minimum)
+        // 2. Positioned absolutely in top right
+        // 3. Properly spaced from right edge
+        const isTouchFriendly = buttonRect.width >= 44 && buttonRect.height >= 44;
+        const isPositionedAbsolute = computedStyle.position === 'absolute';
+        const distanceFromRight = (parentRect?.right || 0) - buttonRect.right;
+        const isNearRightEdge = distanceFromRight >= 0 && distanceFromRight <= 20; // Within 20px of right edge
 
         return {
-          buttonWidth: buttonRect.width,
-          parentWidth: parentRect?.width || 0,
-          isFullWidth: buttonRect.width >= (parentRect?.width || 0) - 40, // Account for padding
+          width: buttonRect.width,
+          height: buttonRect.height,
+          isTouchFriendly,
+          isPositionedAbsolute,
+          isNearRightEdge,
+          isValidButton: isTouchFriendly && isPositionedAbsolute && isNearRightEdge,
         };
       });
 
-      expect(buttonWidth?.isFullWidth).toBe(true);
+      expect(buttonInfo?.isValidButton).toBe(true);
     }, 30000);
 
     it('should show spell expanded view as card on mobile', async () => {
@@ -165,7 +192,7 @@ describe('Mobile UI Tests', () => {
 
     it('should handle navigation without horizontal scroll', async () => {
       // Navigate to My Spellbooks
-      await page.click('a[href="/spellbooks"]');
+      await page.click('[data-testid="nav-spellbooks"]');
       await wait(500);
 
       const spellbooksScroll = await page.evaluate(() => {
@@ -179,7 +206,7 @@ describe('Mobile UI Tests', () => {
       expect(spellbooksScroll.scrollWidth).toBeLessThanOrEqual(spellbooksScroll.viewportWidth + 1);
 
       // Navigate back to Browse
-      await page.click('a[href="/"]');
+      await page.click('button:has-text("Browse Spells")');
       await waitForSpellsToLoad(page);
 
       const browseScroll = await page.evaluate(() => {
@@ -262,7 +289,7 @@ describe('Mobile UI Tests', () => {
 
     it('should display spellbook detail without horizontal scroll', async () => {
       // Navigate to spellbooks
-      await page.click('a[href="/spellbooks"]');
+      await page.click('[data-testid="nav-spellbooks"]');
       await wait(500);
 
       // Create a test spellbook

@@ -85,67 +85,73 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
         </thead>
         <tbody>
           {sortedSpells.map((spell) => (
-            <tr
-              key={spell.id}
-              onClick={() => handleRowClick(spell.id)}
-              className={`spell-row ${expandedSpellId === spell.id ? 'expanded' : ''}`}
-            >
-              <td className="spell-name">
-                <div className="spell-name-header">
-                  {spell.name}
-                  {spell.concentration && <span className="badge badge-concentration">C</span>}
-                  {spell.ritual && <span className="badge badge-ritual">R</span>}
-                </div>
-                {expandedSpellId === spell.id && (
-                  <div className="spell-inline-expansion">
-                    <div className="spell-meta">
-                      {getLevelText(spell.level)} {spell.school}
-                      {spell.concentration && <span className="badge badge-concentration">Concentration</span>}
-                      {spell.ritual && <span className="badge badge-ritual">Ritual</span>}
-                    </div>
-                    <div className="spell-expanded-details">
-                      <div><strong>Casting Time:</strong> {spell.castingTime}</div>
-                      <div><strong>Range:</strong> {spell.range}</div>
-                      <div><strong>Duration:</strong> {spell.duration}</div>
-                      <div>
-                        <strong>Components:</strong> {getComponentsWithMaterials(spell)}
-                      </div>
-                    </div>
-                    <div className="spell-expanded-description">
-                      {spell.description}
-                    </div>
-                    {spell.higherLevels && (
-                      <div className="spell-expanded-higher-levels">
-                        <strong>At Higher Levels:</strong> {spell.higherLevels}
-                      </div>
-                    )}
-                    <div className="spell-expanded-footer">
-                      <div><strong>Classes:</strong> {filterClasses(spell.classes).join(', ')}</div>
-                      <div className="spell-source">{spell.source}</div>
-                    </div>
+            <>
+              <tr
+                key={spell.id}
+                onClick={() => handleRowClick(spell.id)}
+                className={`spell-row ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+              >
+                <td className="spell-name">
+                  <div className="spell-name-header">
+                    {spell.name}
+                    {spell.concentration && <span className="badge badge-concentration">C</span>}
+                    {spell.ritual && <span className="badge badge-ritual">R</span>}
                   </div>
-                )}
-              </td>
-              <td className="level-col">{getLevelText(spell.level)}</td>
-              <td className="school-col">{spell.school}</td>
-              <td>{spell.castingTime}</td>
-              <td>{spell.range}</td>
-              <td className="components-col">{getComponentsText(spell)}</td>
-              <td>{spell.duration}</td>
-              <td className="classes-col">{filterClasses(spell.classes).join(', ')}</td>
-              <td className="source-col">{spell.source}</td>
-              {onAddToSpellbook && (
-                <td className="action-col" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    className="btn-add-small"
-                    onClick={() => onAddToSpellbook(spell.id)}
-                    data-testid="btn-add-spell"
-                  >
-                    +
-                  </button>
                 </td>
+                <td className="level-col">{getLevelText(spell.level)}</td>
+                <td className="school-col">{spell.school}</td>
+                <td>{spell.castingTime}</td>
+                <td>{spell.range}</td>
+                <td className="components-col">{getComponentsText(spell)}</td>
+                <td>{spell.duration}</td>
+                <td className="classes-col">{filterClasses(spell.classes).join(', ')}</td>
+                <td className="source-col">{spell.source}</td>
+                {onAddToSpellbook && (
+                  <td className="action-col" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className="btn-add-small"
+                      onClick={() => onAddToSpellbook(spell.id)}
+                      data-testid="btn-add-spell"
+                    >
+                      +
+                    </button>
+                  </td>
+                )}
+              </tr>
+              {expandedSpellId === spell.id && (
+                <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
+                  <td colSpan={onAddToSpellbook ? 10 : 9} className="spell-expansion-cell">
+                    <div className="spell-inline-expansion">
+                      <div className="spell-meta">
+                        {getLevelText(spell.level)} {spell.school}
+                        {spell.concentration && <span className="badge badge-concentration">Concentration</span>}
+                        {spell.ritual && <span className="badge badge-ritual">Ritual</span>}
+                      </div>
+                      <div className="spell-expanded-details">
+                        <div><strong>Casting Time:</strong> {spell.castingTime}</div>
+                        <div><strong>Range:</strong> {spell.range}</div>
+                        <div><strong>Duration:</strong> {spell.duration}</div>
+                        <div>
+                          <strong>Components:</strong> {getComponentsWithMaterials(spell)}
+                        </div>
+                      </div>
+                      <div className="spell-expanded-description">
+                        {spell.description}
+                      </div>
+                      {spell.higherLevels && (
+                        <div className="spell-expanded-higher-levels">
+                          <strong>At Higher Levels:</strong> {spell.higherLevels}
+                        </div>
+                      )}
+                      <div className="spell-expanded-footer">
+                        <div><strong>Classes:</strong> {filterClasses(spell.classes).join(', ')}</div>
+                        <div className="spell-source">{spell.source}</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
               )}
-            </tr>
+            </>
           ))}
         </tbody>
       </table>

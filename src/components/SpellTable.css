@@ -254,36 +254,31 @@
 
 /* Desktop inline expansion styles - will be overridden on mobile */
 @media (min-width: 769px) {
-  /* Make expanded row wrap onto multiple rows */
-  .spell-row.expanded {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  /* First row: all the table cells */
-  .spell-row.expanded > td {
-    flex-shrink: 0;
-  }
-
-  /* Spell name column with expansion */
+  /* Position spell name cell relatively so expansion can be positioned inside */
   .spell-row.expanded .spell-name {
-    flex: 0 0 auto;
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
+    position: relative;
   }
 
-  /* Expansion takes full width of table on second row */
+  /* Expansion positioned absolutely to span full table width */
   .spell-inline-expansion {
-    flex: 1 1 100%;
-    margin-top: 0;
-    padding: 1.5rem;
+    position: absolute;
+    left: -1rem;
+    right: -1rem;
+    margin-top: 1rem;
+    padding: 1.5rem 2rem;
     border-top: 1px solid var(--border-color);
     animation: slideDown 0.3s ease-out;
     color: var(--text-primary);
     background: var(--bg-secondary);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    max-width: none;
+  }
+
+  /* Add padding to expanded row to make space for absolutely positioned expansion */
+  .spell-row.expanded {
+    position: relative;
   }
 }
 

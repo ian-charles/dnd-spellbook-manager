@@ -39,12 +39,16 @@ Create a design doc for any work > 1 week or that affects architecture, performa
    - After test passes (RED → GREEN)
    - After refactoring (GREEN → REFACTOR)
    - After each complete feature
-3. **Never commit**:
+3. **Single purpose per commit**:
+   - Each commit should have ONE clear purpose
+   - If a commit has multiple unrelated changes, split it into multiple commits
+   - Examples: Don't mix "fix bug" with "add feature" in same commit
+4. **Never commit**:
    - Broken tests
    - Commented-out code
    - Debugging console.log statements
    - Files with secrets (.env, credentials.json)
-4. **Write clear messages**:
+5. **Write clear messages**:
    - Subject: What changed (imperative mood: "add", not "added")
    - Body: Why it changed (optional but recommended)
 

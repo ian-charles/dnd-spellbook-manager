@@ -254,20 +254,20 @@ describe('Spellbook Management E2E', () => {
       await page.click('.spell-row');
       await new Promise(resolve => setTimeout(resolve, 400));
 
-      // Scroll the expansion into view
-      const expansion = await page.$('.spell-expansion-row');
+      // In spellbook detail view, expansion is inline within the spell-name td, not a separate row
+      const expansion = await page.$('.spell-inline-expansion');
       await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // Check that expanded description row is visible
-      const expandedRow = await page.$('.spell-expansion-row');
-      expect(expandedRow).toBeTruthy();
+      // Check that expanded inline content is visible
+      const expandedContent = await page.$('.spell-inline-expansion');
+      expect(expandedContent).toBeTruthy();
 
-      // Verify expanded row contains spell description
+      // Verify expanded content contains spell description
       const hasDescription = await page.evaluate(() => {
-        const expandedRow = document.querySelector('.spell-expansion-row');
-        if (!expandedRow) return false;
-        const text = expandedRow.textContent || '';
+        const expandedContent = document.querySelector('.spell-inline-expansion');
+        if (!expandedContent) return false;
+        const text = expandedContent.textContent || '';
         return text.length > 50; // Should have substantial content
       });
       expect(hasDescription).toBe(true);
@@ -292,22 +292,22 @@ describe('Spellbook Management E2E', () => {
       await page.click('.spell-row');
       await new Promise(resolve => setTimeout(resolve, 400));
 
-      // Scroll the expansion into view
-      const expansion = await page.$('.spell-expansion-row');
+      // In spellbook detail view, expansion is inline within the spell-name td
+      const expansion = await page.$('.spell-inline-expansion');
       await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // Verify expanded row is visible
-      let expandedRow = await page.$('.spell-expansion-row');
-      expect(expandedRow).toBeTruthy();
+      // Verify expanded inline content is visible
+      let expandedContent = await page.$('.spell-inline-expansion');
+      expect(expandedContent).toBeTruthy();
 
       // Click the same row again to collapse
       await page.click('.spell-row');
       await new Promise(resolve => setTimeout(resolve, 400));
 
-      // Verify expanded row is hidden/removed
-      expandedRow = await page.$('.spell-expansion-row');
-      expect(expandedRow).toBeNull();
+      // Verify expanded content is hidden/removed
+      expandedContent = await page.$('.spell-inline-expansion');
+      expect(expandedContent).toBeNull();
     }, 60000);
 
     it('should have sortable column headers in spellbook detail view', async () => {

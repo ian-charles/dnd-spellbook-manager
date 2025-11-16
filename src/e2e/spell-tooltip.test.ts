@@ -42,10 +42,14 @@ describe('Spell Description E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
-    // Get the first spell name from the table
-    const spellName = await page.$eval('.spell-row .spell-name', el =>
-      el.textContent?.replace(/[CR]/g, '').trim() || ''
-    );
+    // Get the first spell name from the table (clean up badges)
+    const spellName = await page.$eval('.spell-row .spell-name', el => {
+      const nameHeader = el.querySelector('.spell-name-header');
+      if (!nameHeader) return '';
+      // Get text content and remove badge text (C, R)
+      const text = nameHeader.textContent || '';
+      return text.replace(/[CR]/g, '').trim();
+    });
 
     // Scroll into view before clicking
     const firstSpell = await page.$('.spell-row');
@@ -61,9 +65,10 @@ describe('Spell Description E2E', () => {
     await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
     await wait(300);
 
-    // Check that expanded row contains the spell name
-    const expandedText = await page.$eval('.spell-expansion-row', el => el.textContent || '');
-    expect(expandedText).toContain(spellName);
+    // Check that expanded inline content contains spell description
+    // Note: spell name is already visible in the row above, expansion shows description
+    const expandedText = await page.$eval('.spell-inline-expansion', el => el.textContent || '');
+    expect(expandedText.length).toBeGreaterThan(50); // Should have substantial description content
   }, 30000);
 
   it('should display spell description in expanded row', async () => {

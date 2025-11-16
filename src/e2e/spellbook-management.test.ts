@@ -245,17 +245,27 @@ describe('Spellbook Management E2E', () => {
       await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
       await page.waitForSelector('.spell-row', { timeout: 10000 });
 
+      // Scroll into view before clicking
+      const firstSpell = await page.$('.spell-row');
+      await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await new Promise(resolve => setTimeout(resolve, 400));
+
       // Click the first spell row
       await page.click('.spell-row');
       await new Promise(resolve => setTimeout(resolve, 400));
 
+      // Scroll the expansion into view
+      const expansion = await page.$('.spell-expansion-row');
+      await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       // Check that expanded description row is visible
-      const expandedRow = await page.$('.spell-expanded-row');
+      const expandedRow = await page.$('.spell-expansion-row');
       expect(expandedRow).toBeTruthy();
 
       // Verify expanded row contains spell description
       const hasDescription = await page.evaluate(() => {
-        const expandedRow = document.querySelector('.spell-expanded-row');
+        const expandedRow = document.querySelector('.spell-expansion-row');
         if (!expandedRow) return false;
         const text = expandedRow.textContent || '';
         return text.length > 50; // Should have substantial content
@@ -273,12 +283,22 @@ describe('Spellbook Management E2E', () => {
       await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
       await page.waitForSelector('.spell-row', { timeout: 10000 });
 
+      // Scroll into view before clicking
+      const firstSpell = await page.$('.spell-row');
+      await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await new Promise(resolve => setTimeout(resolve, 400));
+
       // Click to expand description
       await page.click('.spell-row');
       await new Promise(resolve => setTimeout(resolve, 400));
 
+      // Scroll the expansion into view
+      const expansion = await page.$('.spell-expansion-row');
+      await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       // Verify expanded row is visible
-      let expandedRow = await page.$('.spell-expanded-row');
+      let expandedRow = await page.$('.spell-expansion-row');
       expect(expandedRow).toBeTruthy();
 
       // Click the same row again to collapse
@@ -286,7 +306,7 @@ describe('Spellbook Management E2E', () => {
       await new Promise(resolve => setTimeout(resolve, 400));
 
       // Verify expanded row is hidden/removed
-      expandedRow = await page.$('.spell-expanded-row');
+      expandedRow = await page.$('.spell-expansion-row');
       expect(expandedRow).toBeNull();
     }, 60000);
 

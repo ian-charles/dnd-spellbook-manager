@@ -1,8 +1,8 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { wait } from './setup';
 
 const PROD_URL = 'https://spellbook.quantitydust.com';
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 describe('Production Site Tests', () => {
   let browser: Browser;
@@ -41,10 +41,20 @@ describe('Production Site Tests', () => {
     it('should expand spell inline on desktop', async () => {
       const spellRows = await page.$$('.spell-row');
       if (spellRows.length > 0) {
+        // Scroll into view before clicking
+        await spellRows[0].evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+        await wait(400);
+
         await spellRows[0].click();
         await wait(500);
-        const expansion = await page.$('.spell-inline-expansion');
-        console.log(expansion ? '✓ Desktop spell expansion works' : '✗ Desktop expansion NOT working');
+
+        // Scroll the expansion into view
+        const expansion = await page.$('.spell-expansion-row');
+        await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+        await wait(300);
+
+        const expansionContent = await page.$('.spell-inline-expansion');
+        console.log(expansionContent ? '✓ Desktop spell expansion works' : '✗ Desktop expansion NOT working');
       }
     }, 30000);
   });
@@ -86,10 +96,20 @@ describe('Production Site Tests', () => {
     it('should expand spell inline on mobile', async () => {
       const spellRows = await page.$$('.spell-row');
       if (spellRows.length > 0) {
+        // Scroll into view before clicking
+        await spellRows[0].evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+        await wait(400);
+
         await spellRows[0].click();
         await wait(500);
-        const expansion = await page.$('.spell-inline-expansion');
-        console.log(expansion ? '✓ Mobile spell expansion works' : '✗ Mobile expansion NOT working');
+
+        // Scroll the expansion into view
+        const expansion = await page.$('.spell-expansion-row');
+        await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+        await wait(300);
+
+        const expansionContent = await page.$('.spell-inline-expansion');
+        console.log(expansionContent ? '✓ Mobile spell expansion works' : '✗ Mobile expansion NOT working');
       }
     }, 30000);
 

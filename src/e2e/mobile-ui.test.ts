@@ -131,12 +131,21 @@ describe('Mobile UI Tests', () => {
       const firstSpell = await page.$('.spell-row');
       expect(firstSpell).toBeTruthy();
 
+      // Scroll into view before clicking
+      await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await wait(400);
+
       await firstSpell?.click();
       await wait(500); // Wait for animation
 
+      // Scroll the expansion into view
+      const expansion = await page.$('.spell-expansion-row');
+      await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await wait(300);
+
       // Check expanded content styling
       const expandedStyle = await page.evaluate(() => {
-        const expanded = document.querySelector('.spell-expanded-content');
+        const expanded = document.querySelector('.spell-inline-expansion');
         if (!expanded) return null;
 
         const style = window.getComputedStyle(expanded);

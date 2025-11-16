@@ -31,11 +31,20 @@ describe('UI Interactions - Desktop', () => {
       const firstSpell = await page.$('.spell-row');
       expect(firstSpell).toBeTruthy();
 
+      // Scroll into view before clicking
+      await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await wait(400);
+
       // Click to expand
       await firstSpell?.click();
       await wait(500);
 
-      const expandedContent = await page.$('.spell-expanded-content');
+      // Scroll the expansion into view
+      const expansion = await page.$('.spell-expansion-row');
+      await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await wait(300);
+
+      const expandedContent = await page.$('.spell-inline-expansion');
       expect(expandedContent).toBeTruthy();
 
       const isVisible = await expandedContent?.evaluate(el => {
@@ -47,10 +56,10 @@ describe('UI Interactions - Desktop', () => {
       await firstSpell?.click();
       await wait(500);
 
-      const stillExpanded = await page.$('.spell-expanded-content');
+      const stillExpanded = await page.$('.spell-inline-expansion');
       const isHidden = await stillExpanded?.evaluate(el => {
-        const parent = el.closest('.spell-expanded-row');
-        return parent?.classList.contains('spell-expanded-row') &&
+        const parent = el.closest('.spell-expansion-row');
+        return parent?.classList.contains('spell-expansion-row') &&
                el.textContent?.length === 0;
       });
       // Expanded content should exist but be empty or hidden
@@ -363,10 +372,20 @@ describe('UI Interactions - Mobile (375x667)', () => {
 
     it('should expand spell details on mobile', async () => {
       const firstSpell = await page.$('.spell-row');
+
+      // Scroll into view before clicking
+      await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await wait(400);
+
       await firstSpell?.click();
       await wait(500);
 
-      const expandedContent = await page.$('.spell-expanded-content');
+      // Scroll the expansion into view
+      const expansion = await page.$('.spell-expansion-row');
+      await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      await wait(300);
+
+      const expandedContent = await page.$('.spell-inline-expansion');
       expect(expandedContent).toBeTruthy();
 
       // Verify expanded content has card styling

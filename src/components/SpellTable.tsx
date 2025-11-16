@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
@@ -85,9 +85,8 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
         </thead>
         <tbody>
           {sortedSpells.map((spell) => (
-            <>
+            <Fragment key={spell.id}>
               <tr
-                key={spell.id}
                 onClick={() => handleRowClick(spell.id)}
                 className={`spell-row ${expandedSpellId === spell.id ? 'expanded' : ''}`}
               >
@@ -151,7 +150,7 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
                   </td>
                 </tr>
               )}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>

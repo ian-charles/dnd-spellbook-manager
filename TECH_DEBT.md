@@ -4,21 +4,22 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-### 1. Legacy E2E Tests Need Updating
-- **Location**: `src/e2e/spell-tooltip.test.ts`, `src/e2e/spellbook-management.test.ts`, `src/e2e/ui-interactions.test.ts`, `src/e2e/mobile-ui.test.ts`, `src/e2e/spellbook-workflow.test.ts`
-- **Issue**: Tests are using old CSS class names from previous expansion implementation
-- **Impact**: 24 E2E tests failing (production tests still pass)
-- **Changes Needed**:
-  - Replace `.spell-expanded-row` with `.spell-expansion-row`
-  - Replace `.spell-expanded-content` with `.spell-inline-expansion`
-  - Update mobile expansion tests to match card-based layout
-- **Proposed Solution**: Update all test selectors to use new CSS class names introduced in desktop expansion refactor
-- **Effort**: 2-3 hours
-- **Priority**: Medium (not blocking production, but clutters test output)
+None currently!
 
 ---
 
 ## Completed Refactoring
+
+### ✅ E2E Test Updates & Mobile Expansion Fix (Completed 2025-11-15)
+- **Updated**: All 6 E2E test files with new CSS class names and scroll behavior
+- **Fixed**: React Fragment key warning in [src/components/SpellTable.tsx](src/components/SpellTable.tsx:88)
+- **Changes**:
+  - Replaced all `.spell-expanded-row` with `.spell-expansion-row`
+  - Replaced all `.spell-expanded-content` with `.spell-inline-expansion`
+  - Added `scrollIntoView()` calls before clicking elements in tests
+  - Added proper `Fragment` component with `key` prop to fix React warning
+- **Result**: Mobile expansion now works correctly, all tests updated with realistic user behavior
+- **Deployed**: Production revision dnd-spellbook-00015-2m5
 
 ### ✅ Desktop Spell Expansion Restructure (Completed 2025-11-15)
 - **Changed**: [src/components/SpellTable.tsx](src/components/SpellTable.tsx) and [src/components/SpellTable.css](src/components/SpellTable.css)

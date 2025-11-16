@@ -166,7 +166,7 @@ describe('Spellbook Workflow - Desktop', () => {
     await spellbookCard?.click();
     await wait(500);
 
-    const spellRows = await page.$$('.spellbook-table tbody tr:not(.spell-expanded-row)');
+    const spellRows = await page.$$('.spellbook-table tbody tr:not(.spell-expansion-row)');
     expect(spellRows.length).toBe(3);
   }, 60000);
 
@@ -286,13 +286,22 @@ describe('Spellbook Workflow - Desktop', () => {
     await spellbookCard?.click();
     await wait(500);
 
-    // Click spell to expand
+    // Scroll into view before clicking
     const spellRow = await page.$('.spell-row');
+    await spellRow?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    await wait(400);
+
+    // Click spell to expand
     await spellRow?.click();
     await wait(500);
 
+    // Scroll the expansion into view
+    const expansion = await page.$('.spell-expansion-row');
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    await wait(300);
+
     // Verify expanded content appears
-    const expandedContent = await page.$('.spell-expanded-content');
+    const expandedContent = await page.$('.spell-inline-expansion');
     expect(expandedContent).toBeTruthy();
 
     const description = await page.$('.spell-expanded-description');
@@ -457,14 +466,23 @@ describe('Spellbook Workflow - Mobile', () => {
     await spellbookCard?.click();
     await wait(500);
 
-    // Expand spell
+    // Scroll into view before clicking
     const spellRow = await page.$('.spell-row');
+    await spellRow?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    await wait(400);
+
+    // Expand spell
     await spellRow?.click();
     await wait(500);
 
+    // Scroll the expansion into view
+    const expansion = await page.$('.spell-expansion-row');
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    await wait(300);
+
     // Verify expanded content has mobile card styling
     const expandedStyle = await page.evaluate(() => {
-      const expanded = document.querySelector('.spell-expanded-content');
+      const expanded = document.querySelector('.spell-inline-expansion');
       if (!expanded) return null;
 
       const style = window.getComputedStyle(expanded);

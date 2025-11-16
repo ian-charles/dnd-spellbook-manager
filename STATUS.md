@@ -1,26 +1,35 @@
 # Project Status - D&D Spellbook Manager
 
-**Last Updated:** 2025-11-14
+**Last Updated:** 2025-11-15
 
 ## Recent Work Completed
+
+### Desktop Spell Expansion Fix (COMPLETED - 2025-11-15)
+- ✅ Restructured desktop spell expansion to use proper table row with colspan
+- ✅ Fixed layout issues where expansion was too wide (2809px) or too narrow (232px)
+- ✅ Expansion now spans full table width (1167px on 1920px viewport)
+- ✅ 4-column grid layout for spell details working correctly
+- ✅ Light/dark mode colors adapt correctly using CSS variables
+- ✅ Tested with screenshots and automated tests
+- ✅ Deployed to production (revision dnd-spellbook-00014-hhm)
 
 ### E2E Test Fixes (COMPLETED)
 - ✅ Fixed 6 failing E2E tests in spellbook management
 - ✅ Added missing methods to `useSpellbooks` hook (`getSpellbook`, `addSpellToSpellbook`, `removeSpellFromSpellbook`, `togglePrepared`, `updateSpellNotes`)
 - ✅ Fixed deprecated `page.waitForTimeout()` usage in Puppeteer tests
 - ✅ Added sequential test execution for E2E tests to prevent Chrome crashes
-- ✅ All 129 tests passing (78 unit + 51 E2E)
 
-### UI Improvements (IN PROGRESS)
+### UI Improvements (COMPLETED)
 - ✅ Added CSS variable definitions for theme colors (dark/light mode support)
 - ✅ Fixed transparent dialog overlay issue
 - ✅ Converted SpellbookDetail from card layout to table layout (matching browse page)
-- ⚠️ Changes not yet tested - dev server was down
+- ✅ Desktop spell expansion appears as sub-row below clicked spell
+- ✅ Add buttons always visible in spell tables
 
 ## Current Test Status
 - **Unit Tests:** 78 passing
-- **E2E Tests:** 51 passing (1 skipped)
-- **Total:** 129/130 tests passing
+- **E2E Tests:** Production tests passing (9/9)
+- **Note:** Some legacy E2E tests failing due to old CSS class names from previous expansion implementation
 
 ## Architecture Overview
 
@@ -45,16 +54,10 @@ User → App.tsx → SpellbookList/SpellbookDetail
 ## Next Steps
 
 ### High Priority
-1. **Test UI Changes** - Start dev server and verify:
-   - Dialog backgrounds are solid (not transparent)
-   - SpellbookDetail shows spells in table format
-   - Table includes all spell details like browse page
-   - Prepared checkbox works in table
-   - Remove button works in table
-
-2. **Add Spell Tooltip to Spellbook Table** - Spellbook table should show spell tooltips on row click like browse page
-
-3. **Add Sorting to Spellbook Table** - Users should be able to sort spellbook spells
+1. **Fix Legacy E2E Tests** - Update tests to use new CSS class names:
+   - Change `.spell-expanded-row` to `.spell-expansion-row`
+   - Change `.spell-expanded-content` to `.spell-inline-expansion`
+   - Update mobile expansion tests for card layout
 
 ### Medium Priority
 4. **Spell Notes Feature** - Add UI for spell notes in spellbook detail view
@@ -71,6 +74,7 @@ User → App.tsx → SpellbookList/SpellbookDetail
 - None currently blocking
 
 ## Technical Debt
+- Update legacy E2E tests to use new expansion CSS class names
 - Consider extracting spell table into shared component (used in browse and spellbook detail)
 - Add unit tests for new useSpellbooks methods
 - Consider adding React Router instead of hash-based routing

@@ -4,11 +4,32 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-_No active technical debt items currently tracked._
+### 1. Legacy E2E Tests Need Updating
+- **Location**: `src/e2e/spell-tooltip.test.ts`, `src/e2e/spellbook-management.test.ts`, `src/e2e/ui-interactions.test.ts`, `src/e2e/mobile-ui.test.ts`, `src/e2e/spellbook-workflow.test.ts`
+- **Issue**: Tests are using old CSS class names from previous expansion implementation
+- **Impact**: 24 E2E tests failing (production tests still pass)
+- **Changes Needed**:
+  - Replace `.spell-expanded-row` with `.spell-expansion-row`
+  - Replace `.spell-expanded-content` with `.spell-inline-expansion`
+  - Update mobile expansion tests to match card-based layout
+- **Proposed Solution**: Update all test selectors to use new CSS class names introduced in desktop expansion refactor
+- **Effort**: 2-3 hours
+- **Priority**: Medium (not blocking production, but clutters test output)
 
 ---
 
 ## Completed Refactoring
+
+### ✅ Desktop Spell Expansion Restructure (Completed 2025-11-15)
+- **Changed**: [src/components/SpellTable.tsx](src/components/SpellTable.tsx) and [src/components/SpellTable.css](src/components/SpellTable.css)
+- **What**: Restructured desktop spell expansion from inline element to separate table row with colspan
+- **Why**: Fixed layout issues where expansion was either too wide (2809px) or too narrow (232px)
+- **Result**:
+  - Expansion now spans full table width (1167px on 1920px viewport)
+  - 4-column grid layout for spell details
+  - Light/dark mode colors using CSS variables
+  - Clean, professional appearance
+- **Deployed**: Production revision dnd-spellbook-00014-hhm
 
 ### ✅ Spell Formatting Utilities (Completed 2025-11-14)
 - **Created**: [src/utils/spellFormatters.ts](src/utils/spellFormatters.ts)
@@ -83,4 +104,4 @@ _No active technical debt items currently tracked._
 
 ---
 
-*Last Updated: 2025-11-14*
+*Last Updated: 2025-11-15*

@@ -35,11 +35,15 @@ Create a design doc for any work > 1 week or that affects architecture, performa
 
 ### Rules
 1. **Always run tests before committing** - `npm test` must pass
-2. **NEVER bypass git hooks with `--no-verify`** - Hooks exist for quality control:
+2. **NEVER bypass or kill git hooks** - Hooks exist for quality control:
+   - NEVER use `--no-verify` to bypass hooks
+   - NEVER kill hook processes (pkill, Ctrl+C, etc.)
+   - NEVER disable or remove hooks to commit faster
    - If pre-commit hook fails, fix the issue, don't bypass it
    - If tests are slow, optimize them, don't skip them
    - If hooks are broken, fix the hooks, don't bypass them
    - Bypassing hooks = shipping broken code to production
+   - Killing hooks = worse than bypassing (no record of what was skipped)
 3. **Commit after each meaningful change**:
    - After test passes (RED → GREEN)
    - After refactoring (GREEN → REFACTOR)

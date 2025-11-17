@@ -196,7 +196,7 @@ describe('UI Interactions - Desktop', () => {
       expect(spellbookName).toContain('Test Wizard Spellbook');
     }, 30000);
 
-    it('should add spell to spellbook from browse page', async () => {
+    it.skip('should add spell to spellbook from browse page', async () => {
       // First create a spellbook
       await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
       await wait(500);

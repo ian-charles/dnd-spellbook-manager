@@ -1,0 +1,161 @@
+#!/bin/bash
+# .git/hooks/pre-commit (with TDD-aware code review)
+
+echo "🔍 Claude Code self-review in progress..."
+
+# Get the staged diff
+DIFF=$(git diff --cached)
+
+if [ -z "$DIFF" ]; then
+    echo "No changes to review"
+    exit 0
+fi
+
+# Create temp file with diff
+REVIEW_REQUEST=$(mktemp)
+cat > "$REVIEW_REQUEST" << 'REVIEW_EOF'
+You are a CRITICAL code reviewer with expertise in Test-Driven Development (TDD). 
+Review this diff with EXTREME scrutiny. This code was written by an AI assistant.
+
+## Core Review Criteria:
+
+### 1. **TDD Anti-Patterns** ⚠️ CRITICAL
+- ❌ Tests testing implementation details instead of behavior
+- ❌ Fragile tests (breaks on unrelated changes, exact string matching)
+- ❌ Tests with multiple unrelated assertions (should be split)
+- ❌ Tests that depend on each other or share state
+- ❌ Over-mocking (testing mocks instead of real behavior)
+- ❌ No assertions (smoke tests that just run code)
+- ❌ Unclear test names (should describe what and expected behavior)
+- ❌ Skipped tests (.skip, .todo) - unacceptable unless explicitly justified
+
+### 2. **Test Quality** ⚠️ CRITICAL
+- Missing tests for new features (RED-GREEN-REFACTOR violated)
+- Tests added AFTER implementation (should be written FIRST)
+- Missing edge case coverage
+- Missing error handling tests
+- Test isolation issues (beforeEach/afterEach problems)
+- Slow tests that could be optimized
+- Tests that don't verify actual behavior
+
+### 3. **Logic Errors** 🐛 CRITICAL
+- Off-by-one errors in loops/arrays
+- Null/undefined handling missing
+- Edge cases not handled (empty arrays, zero, negative numbers)
+- Race conditions in async code
+- Incorrect boolean logic
+- Type coercion bugs
+
+### 4. **Type Safety** 🔒 CRITICAL
+- Missing type annotations (TypeScript/JSDoc)
+- Unsafe type casts (any, as unknown as)
+- Missing null checks
+- Optional chaining needed (obj?.prop)
+- Missing input validation
+
+### 5. **Performance** ⚡ HIGH PRIORITY
+- Inefficient algorithms (O(n²) when O(n) possible)
+- Unnecessary loops or iterations
+- Missing memoization/caching
+- Expensive operations in loops
+- Database N+1 queries
+- Memory leaks (event listeners not cleaned up)
+
+### 6. **Security** 🔐 CRITICAL
+- SQL/NoSQL injection risks
+- XSS vulnerabilities (unescaped HTML)
+- Command injection (shell commands with user input)
+- Path traversal vulnerabilities
+- Secrets/credentials in code
+- Missing input sanitization
+- CSRF token missing
+
+### 7. **Code Quality** 📐 HIGH PRIORITY
+- Commented-out code (should be removed)
+- Console.log/debugging statements left in
+- Magic numbers (should be named constants)
+- Deeply nested conditionals (>3 levels)
+- Functions >50 lines (too complex)
+- Duplicate code (DRY violation)
+- Poor variable/function naming
+- Missing error messages in assertions
+
+### 8. **Best Practices** ✅ MEDIUM PRIORITY
+- Missing JSDoc/comments for complex logic
+- Inconsistent formatting
+- Missing default cases in switch
+- Promise rejection not handled
+- setTimeout/setInterval not cleaned up
+
+## Response Format:
+
+If you find **ANY** CRITICAL or HIGH PRIORITY issues:
+```
+CRITICAL: [Brief description of the issue]
+Location: [file:line or code snippet]
+Risk: [Why this is serious]
+Fix: [Specific suggestion]
+```
+
+If you find MEDIUM issues but nothing critical:
+```
+MEDIUM: [description]
+Location: [location]
+Suggestion: [how to improve]
+```
+
+If code passes all checks:
+```
+PASS: Code follows TDD best practices and has no critical issues.
+```
+
+**BE STRICT.** Flag anything suspicious. Better to block a commit than merge bugs.
+
+DIFF:
+DIFF_PLACEHOLDER
+REVIEW_EOF
+
+# Replace placeholder with actual diff (escaped)
+sed -i.bak "s|DIFF_PLACEHOLDER|$DIFF|g" "$REVIEW_REQUEST" && rm "${REVIEW_REQUEST}.bak"
+
+# Run Claude Code in headless mode for review
+echo "Analyzing changes with Claude..."
+REVIEW_OUTPUT=$(/Users/sjaconette/.local/bin/claude -p "$(cat $REVIEW_REQUEST)" 2>&1)
+
+# Clean up
+rm "$REVIEW_REQUEST"
+
+# Check for critical issues
+CRITICAL_FOUND=$(echo "$REVIEW_OUTPUT" | grep -i "^CRITICAL:" | head -5)
+
+if [ -n "$CRITICAL_FOUND" ]; then
+    echo ""
+    echo "❌ REVIEW FAILED - Critical issues detected:"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "$REVIEW_OUTPUT"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Fix these issues before committing."
+    echo ""
+    echo "⚠️  NEVER bypass hooks with --no-verify or by killing processes"
+    echo "If hooks are failing, fix the issues or optimize the hooks themselves."
+    exit 1
+fi
+
+# Check for medium issues
+MEDIUM_FOUND=$(echo "$REVIEW_OUTPUT" | grep -i "^MEDIUM:" | head -3)
+
+if [ -n "$MEDIUM_FOUND" ]; then
+    echo ""
+    echo "⚠️  REVIEW WARNING - Medium priority issues found:"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "$REVIEW_OUTPUT"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Consider fixing before committing."
+    echo "Press Enter to continue anyway, or Ctrl+C to abort..."
+    read
+fi
+
+echo "✅ Review passed"
+exit 0

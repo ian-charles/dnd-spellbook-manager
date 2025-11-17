@@ -1,6 +1,5 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import puppeteer, { Browser, Page } from 'puppeteer';
-import { wait } from './setup';
 
 const PROD_URL = 'https://spellbook.quantitydust.com';
 
@@ -42,16 +41,49 @@ describe('Production Site Tests', () => {
       const spellRows = await page.$$('.spell-row');
       if (spellRows.length > 0) {
         // Scroll into view before clicking
-        await spellRows[0].evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-        await wait(400);
+        await spellRows[0].evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+        // Wait for element to be in viewport
+        await page.waitForFunction(
+          (el) => {
+            const rect = el.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+          },
+          { timeout: 10000 },
+          spellRows[0]
+        );
 
         await spellRows[0].click();
-        await wait(500);
+
+        // Wait for expansion to appear with content
+        await page.waitForFunction(
+          () => {
+            const expansion = document.querySelector('.spell-inline-expansion');
+            return expansion && expansion.textContent && expansion.textContent.length > 50;
+          },
+          { timeout: 10000 }
+        );
 
         // Scroll the expansion into view
-        const expansion = await page.$('.spell-expansion-row');
-        await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-        await wait(300);
+        const expansion = await page.$('.spell-inline-expansion');
+        await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+        // Verify expansion is visible (at least partially in viewport)
+        await page.waitForFunction(
+          () => {
+            const el = document.querySelector('.spell-inline-expansion');
+            if (!el) return false;
+            const rect = el.getBoundingClientRect();
+            const styles = window.getComputedStyle(el);
+            // Check if element exists, is visible, and has content
+            return styles.display !== 'none' &&
+                   rect.height > 0 &&
+                   (el.textContent?.length || 0) > 50 &&
+                   rect.top < window.innerHeight &&
+                   rect.bottom > 0;
+          },
+          { timeout: 10000 }
+        );
 
         const expansionContent = await page.$('.spell-inline-expansion');
         console.log(expansionContent ? '✓ Desktop spell expansion works' : '✗ Desktop expansion NOT working');
@@ -97,16 +129,49 @@ describe('Production Site Tests', () => {
       const spellRows = await page.$$('.spell-row');
       if (spellRows.length > 0) {
         // Scroll into view before clicking
-        await spellRows[0].evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-        await wait(400);
+        await spellRows[0].evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+        // Wait for element to be in viewport
+        await page.waitForFunction(
+          (el) => {
+            const rect = el.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+          },
+          { timeout: 10000 },
+          spellRows[0]
+        );
 
         await spellRows[0].click();
-        await wait(500);
+
+        // Wait for expansion to appear with content
+        await page.waitForFunction(
+          () => {
+            const expansion = document.querySelector('.spell-inline-expansion');
+            return expansion && expansion.textContent && expansion.textContent.length > 50;
+          },
+          { timeout: 10000 }
+        );
 
         // Scroll the expansion into view
-        const expansion = await page.$('.spell-expansion-row');
-        await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-        await wait(300);
+        const expansion = await page.$('.spell-inline-expansion');
+        await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+        // Verify expansion is visible (at least partially in viewport)
+        await page.waitForFunction(
+          () => {
+            const el = document.querySelector('.spell-inline-expansion');
+            if (!el) return false;
+            const rect = el.getBoundingClientRect();
+            const styles = window.getComputedStyle(el);
+            // Check if element exists, is visible, and has content
+            return styles.display !== 'none' &&
+                   rect.height > 0 &&
+                   (el.textContent?.length || 0) > 50 &&
+                   rect.top < window.innerHeight &&
+                   rect.bottom > 0;
+          },
+          { timeout: 10000 }
+        );
 
         const expansionContent = await page.$('.spell-inline-expansion');
         console.log(expansionContent ? '✓ Mobile spell expansion works' : '✗ Mobile expansion NOT working');

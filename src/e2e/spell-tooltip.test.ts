@@ -1,7 +1,7 @@
 // E2E tests for spell expanding description functionality
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
-import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, wait } from './setup';
+import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
 
 describe('Spell Description E2E', () => {
   let page: Page;
@@ -21,17 +21,37 @@ describe('Spell Description E2E', () => {
 
     // Scroll into view before clicking
     const firstSpell = await page.$('.spell-row');
-    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(400);
+    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for element to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      firstSpell
+    );
 
     // Click the first spell row
     await page.click('.spell-row');
-    await wait(400); // Wait for expansion animation
+
+    // Wait for expansion to appear
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
-    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(300);
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for expansion to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      expansion
+    );
 
     // Check that expanded row is visible
     const expandedRow = await page.$('.spell-expansion-row');
@@ -53,17 +73,37 @@ describe('Spell Description E2E', () => {
 
     // Scroll into view before clicking
     const firstSpell = await page.$('.spell-row');
-    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(400);
+    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for element to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      firstSpell
+    );
 
     // Click the first spell row
     await page.click('.spell-row');
-    await wait(400);
+
+    // Wait for expansion to appear
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
-    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(300);
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for expansion to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      expansion
+    );
 
     // Check that expanded inline content contains spell description
     // Note: spell name is already visible in the row above, expansion shows description
@@ -77,17 +117,37 @@ describe('Spell Description E2E', () => {
 
     // Scroll into view before clicking
     const firstSpell = await page.$('.spell-row');
-    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(400);
+    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for element to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      firstSpell
+    );
 
     // Click the first spell row
     await page.click('.spell-row');
-    await wait(400);
+
+    // Wait for expansion to appear
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
-    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(300);
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for expansion to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      expansion
+    );
 
     // Check that expanded row contains description text
     const hasDescription = await page.evaluate(() => {
@@ -106,17 +166,37 @@ describe('Spell Description E2E', () => {
 
     // Scroll into view before clicking
     const firstSpell = await page.$('.spell-row');
-    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(400);
+    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for element to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      firstSpell
+    );
 
     // Click first spell row to expand
     await page.click('.spell-row');
-    await wait(400);
+
+    // Wait for expansion to appear
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
-    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(300);
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for expansion to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      expansion
+    );
 
     // Verify expanded row exists
     let expandedRow = await page.$('.spell-expansion-row');
@@ -124,7 +204,15 @@ describe('Spell Description E2E', () => {
 
     // Click the same row again to collapse
     await page.click('.spell-row');
-    await wait(400);
+
+    // Wait for expansion to be removed/hidden
+    await page.waitForFunction(
+      () => {
+        const row = document.querySelector('.spell-expansion-row');
+        return !row || row.textContent?.length === 0;
+      },
+      { timeout: 5000 }
+    );
 
     // Verify expanded row is removed
     expandedRow = await page.$('.spell-expansion-row');
@@ -137,17 +225,37 @@ describe('Spell Description E2E', () => {
 
     // Scroll into view before clicking
     const firstSpell = await page.$('.spell-row');
-    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(400);
+    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for element to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      firstSpell
+    );
 
     // Click a spell row
     await page.click('.spell-row');
-    await wait(400);
+
+    // Wait for expansion to appear
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
-    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(300);
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for expansion to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      expansion
+    );
 
     // Check that expanded row exists and has content
     const hasExpandedContent = await page.evaluate(() => {
@@ -164,9 +272,21 @@ describe('Spell Description E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Search for Alarm spell which has "ritual caster" in the data
     await page.type('input[placeholder*="Search"]', 'Alarm');
-    await wait(400);
+
+    // Wait for search to filter results
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Check the main table row classes column
     const mainRowClasses = await page.$eval('.spell-row .classes-col', el => el.textContent || '');
@@ -174,17 +294,37 @@ describe('Spell Description E2E', () => {
 
     // Scroll into view before clicking
     const firstSpell = await page.$('.spell-row');
-    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(400);
+    await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for element to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      firstSpell
+    );
 
     // Click to expand the spell row
     await page.click('.spell-row');
-    await wait(400);
+
+    // Wait for expansion to appear
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
-    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(300);
+    await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+    // Wait for expansion to be in viewport
+    await page.waitForFunction(
+      (el) => {
+        const rect = el?.getBoundingClientRect();
+        return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      expansion
+    );
 
     // Check the expanded row footer classes
     const expandedClasses = await page.$eval('.spell-expanded-footer', el => el.textContent || '');

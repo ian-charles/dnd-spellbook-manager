@@ -1,7 +1,7 @@
 // E2E tests for spell search functionality
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
-import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, wait } from './setup';
+import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
 
 describe('Spell Search E2E', () => {
   let page: Page;
@@ -19,9 +19,21 @@ describe('Spell Search E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Type in search box
     await page.type('.search-input', 'fireball');
-    await wait(500);
+
+    // Wait for search results to update - spell count should change
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Verify results
     const spellNames = await page.$$eval('.spell-name', cells =>
@@ -35,9 +47,21 @@ describe('Spell Search E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Type uppercase search
     await page.type('.search-input', 'MAGIC');
-    await wait(500);
+
+    // Wait for search results to update
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Should find magic-related spells
     const spellNames = await page.$$eval('.spell-name', cells =>
@@ -51,9 +75,21 @@ describe('Spell Search E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Search for wizard spells
     await page.type('.search-input', 'wizard');
-    await wait(500);
+
+    // Wait for search results to update
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Verify all results include wizard
     const classesCells = await page.$$eval('.classes-col', cells =>
@@ -66,9 +102,21 @@ describe('Spell Search E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Search for evocation spells
     await page.type('.search-input', 'evocation');
-    await wait(500);
+
+    // Wait for search results to update
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Verify all results are evocation school
     const schoolCells = await page.$$eval('.school-col', cells =>
@@ -83,7 +131,9 @@ describe('Spell Search E2E', () => {
 
     // Search for non-existent spell
     await page.type('.search-input', 'zzzznonexistent');
-    await wait(500);
+
+    // Wait for empty message to appear
+    await page.waitForSelector('.spell-table-empty', { visible: true, timeout: 5000 });
 
     // Should show empty message
     const emptyMessage = await page.$('.spell-table-empty');
@@ -99,12 +149,28 @@ describe('Spell Search E2E', () => {
 
     // Search for something
     await page.type('.search-input', 'fireball');
-    await wait(500);
+
+    // Wait for search to filter results
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Clear search
     await page.click('.search-input', { clickCount: 3 });
     await page.keyboard.press('Backspace');
-    await wait(500);
+
+    // Wait for all spells to be shown again
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Should show all spells again
     const headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -115,9 +181,21 @@ describe('Spell Search E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Search for wizard spells
     await page.type('.search-input', 'wizard');
-    await wait(300);
+
+    // Wait for search to filter results
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Filter by level 1
     await page.evaluate(() => {
@@ -125,7 +203,16 @@ describe('Spell Search E2E', () => {
       const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
       if (levelBtn) (levelBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
+        const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
+        return levelBtn?.classList.contains('active');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify results match both criteria
     const classesCells = await page.$$eval('td.classes-col', cells =>

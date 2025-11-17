@@ -1,6 +1,17 @@
 // Mobile UI E2E tests to verify responsive layout and no horizontal scrolling
 import { Page } from 'puppeteer';
-import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, wait } from './setup';
+import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
+import {
+  TIMEOUTS,
+  VIEWPORTS,
+  SELECTORS,
+  TEST_IDS,
+} from './config';
+import {
+  navigateAndWait,
+  expandSpellRow,
+  scrollIntoViewport,
+} from './helpers';
 
 describe('Mobile UI Tests', () => {
   let page: Page;
@@ -8,7 +19,7 @@ describe('Mobile UI Tests', () => {
   beforeAll(async () => {
     const setup = await setupBrowser();
     page = setup.page;
-  }, 30000);
+  }, TIMEOUTS.LONG);
 
   afterAll(async () => {
     await closeBrowser();
@@ -17,8 +28,8 @@ describe('Mobile UI Tests', () => {
   describe('Mobile Viewport (375x667 - iPhone SE)', () => {
     beforeEach(async () => {
       // Set mobile viewport
-      await page.setViewport({ width: 375, height: 667 });
-      await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+      await page.setViewport(VIEWPORTS.MOBILE_SMALL);
+      await navigateAndWait(page, TEST_URL);
       await waitForSpellsToLoad(page);
     });
 
@@ -52,7 +63,7 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(hasOverflow).toBe(false);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should display spell cards instead of table on mobile', async () => {
       // Check that table structure is converted to cards
@@ -65,7 +76,7 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(isCardLayout).toBe(true);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should have touch-friendly button sizes (minimum 44px)', async () => {
       // Check add to spellbook buttons
@@ -81,7 +92,7 @@ describe('Mobile UI Tests', () => {
         expect(size.width).toBeGreaterThanOrEqual(44);
         expect(size.height).toBeGreaterThanOrEqual(44);
       }
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should display spell cards with level badge in top right', async () => {
       const firstCard = await page.$('.spell-table tbody tr');
@@ -119,7 +130,7 @@ describe('Mobile UI Tests', () => {
 
       expect(cardLayout?.position).toBe('absolute');
       expect(cardLayout?.isValidLayout).toBe(true);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should display touch-friendly action buttons positioned in top right', async () => {
       const firstButton = await page.$('.spell-table .btn-add-small');
@@ -152,24 +163,11 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(buttonInfo?.isValidButton).toBe(true);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should show spell expanded view as card on mobile', async () => {
-      // Click on first spell to expand
-      const firstSpell = await page.$('.spell-row');
-      expect(firstSpell).toBeTruthy();
-
-      // Scroll into view before clicking
-      await firstSpell?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-      await wait(400);
-
-      await firstSpell?.click();
-      await wait(500); // Wait for animation
-
-      // Scroll the expansion into view
-      const expansion = await page.$('.spell-expansion-row');
-      await expansion?.evaluate((el: Element) => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-      await wait(300);
+      // Use helper to expand first spell
+      await expandSpellRow(page, 0);
 
       // Check expanded content exists and has content
       const expandedContent = await page.evaluate(() => {
@@ -189,12 +187,17 @@ describe('Mobile UI Tests', () => {
       expect(expandedContent?.opacity).toBe('1');
       expect(expandedContent?.height).toBeGreaterThan(100); // Should have height
       expect(expandedContent?.textLength).toBeGreaterThan(50); // Should have text content
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should handle navigation without horizontal scroll', async () => {
       // Navigate to My Spellbooks
-      await page.click('[data-testid="nav-spellbooks"]');
-      await wait(500);
+      await page.click(TEST_IDS.NAV_SPELLBOOKS);
+
+      // Wait for navigation to complete by checking URL hash
+      await page.waitForFunction(
+        () => window.location.hash.includes('/spellbooks'),
+        { timeout: TIMEOUTS.SHORT }
+      );
 
       const spellbooksScroll = await page.evaluate(() => {
         return {
@@ -222,13 +225,13 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(browseScroll.scrollWidth).toBeLessThanOrEqual(browseScroll.viewportWidth + 1);
-    }, 30000);
+    }, TIMEOUTS.LONG);
   });
 
   describe('Tablet Viewport (768x1024 - iPad)', () => {
     beforeEach(async () => {
-      await page.setViewport({ width: 768, height: 1024 });
-      await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+      await page.setViewport(VIEWPORTS.TABLET);
+      await navigateAndWait(page, TEST_URL);
       await waitForSpellsToLoad(page);
     });
 
@@ -241,7 +244,7 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(scrollWidth.bodyScrollWidth).toBeLessThanOrEqual(scrollWidth.viewportWidth + 1);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should show some columns hidden on tablet (768px breakpoint)', async () => {
       const columnVisibility = await page.evaluate(() => {
@@ -254,13 +257,13 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(columnVisibility.sourceHidden).toBe(true);
-    }, 30000);
+    }, TIMEOUTS.LONG);
   });
 
   describe('Large Mobile Viewport (414x896 - iPhone 14 Pro Max)', () => {
     beforeEach(async () => {
-      await page.setViewport({ width: 414, height: 896 });
-      await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+      await page.setViewport(VIEWPORTS.MOBILE_LARGE);
+      await navigateAndWait(page, TEST_URL);
       await waitForSpellsToLoad(page);
     });
 
@@ -273,7 +276,7 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(scrollWidth.bodyScrollWidth).toBeLessThanOrEqual(scrollWidth.viewportWidth + 1);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should use card layout on large mobile devices', async () => {
       const isCardLayout = await page.evaluate(() => {
@@ -283,19 +286,24 @@ describe('Mobile UI Tests', () => {
       });
 
       expect(isCardLayout).toBe(true);
-    }, 30000);
+    }, TIMEOUTS.LONG);
   });
 
   describe('Spellbook Detail Mobile View', () => {
     beforeEach(async () => {
-      await page.setViewport({ width: 375, height: 667 });
-      await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
+      await page.setViewport(VIEWPORTS.MOBILE_SMALL);
+      await navigateAndWait(page, TEST_URL);
     });
 
     it('should display spellbook list without horizontal scroll', async () => {
       // Navigate to spellbooks
-      await page.click('[data-testid="nav-spellbooks"]');
-      await wait(500);
+      await page.click(TEST_IDS.NAV_SPELLBOOKS);
+
+      // Wait for navigation to complete
+      await page.waitForFunction(
+        () => window.location.hash.includes('/spellbooks'),
+        { timeout: TIMEOUTS.SHORT }
+      );
 
       // Check no horizontal scroll on spellbooks page
       const listScroll = await page.evaluate(() => ({
@@ -304,6 +312,6 @@ describe('Mobile UI Tests', () => {
       }));
 
       expect(listScroll.scrollWidth).toBeLessThanOrEqual(listScroll.viewportWidth + 1);
-    }, 30000);
+    }, TIMEOUTS.LONG);
   });
 });

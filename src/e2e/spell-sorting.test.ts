@@ -1,7 +1,7 @@
 // E2E tests for spell table sorting functionality
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
-import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, wait } from './setup';
+import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
 
 describe('Spell Table Sorting E2E', () => {
   let page: Page;
@@ -35,13 +35,25 @@ describe('Spell Table Sorting E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial first spell name
+    const initialFirstName = await page.$eval('.spell-name', el => el.textContent?.trim() || '');
+
     // Click name header to sort descending
     await page.evaluate(() => {
       const headers = Array.from(document.querySelectorAll('th.sortable'));
       const nameHeader = headers.find(h => h.textContent?.includes('Spell Name'));
       if (nameHeader) (nameHeader as HTMLElement).click();
     });
-    await wait(300);
+
+    // Wait for sort to complete by checking that first spell changed
+    await page.waitForFunction(
+      (oldName) => {
+        const firstSpell = document.querySelector('.spell-name');
+        return firstSpell && firstSpell.textContent?.trim() !== oldName;
+      },
+      { timeout: 5000 },
+      initialFirstName
+    );
 
     // Get first few spell names
     const spellNames = await page.$$eval('.spell-name', cells =>
@@ -58,9 +70,22 @@ describe('Spell Table Sorting E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial first level
+    const initialFirstLevel = await page.$eval('td.level-col', el => el.textContent?.trim() || '');
+
     // Click level header
     await page.click('th.sortable.level-col');
-    await wait(300);
+
+    // Wait for sort to complete by checking if order changed or sort icon appeared
+    await page.waitForFunction(
+      (oldLevel) => {
+        const firstLevel = document.querySelector('td.level-col');
+        const levelHeader = document.querySelector('th.sortable.level-col .sort-icon');
+        return (firstLevel && firstLevel.textContent?.trim() !== oldLevel) || levelHeader;
+      },
+      { timeout: 5000 },
+      initialFirstLevel
+    );
 
     // Get first few levels
     const levels = await page.$$eval('td.level-col', cells =>
@@ -80,13 +105,25 @@ describe('Spell Table Sorting E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial first school
+    const initialFirstSchool = await page.$eval('.school-col', el => el.textContent?.trim() || '');
+
     // Click school header
     await page.evaluate(() => {
       const headers = Array.from(document.querySelectorAll('th.sortable'));
       const schoolHeader = headers.find(h => h.textContent?.includes('School'));
       if (schoolHeader) (schoolHeader as HTMLElement).click();
     });
-    await wait(300);
+
+    // Wait for sort to complete
+    await page.waitForFunction(
+      (oldSchool) => {
+        const firstSchool = document.querySelector('.school-col');
+        return firstSchool && firstSchool.textContent?.trim() !== oldSchool;
+      },
+      { timeout: 5000 },
+      initialFirstSchool
+    );
 
     // Get first few schools
     const schools = await page.$$eval('.school-col', cells =>
@@ -109,7 +146,16 @@ describe('Spell Table Sorting E2E', () => {
       const timeHeader = headers.find(h => h.textContent?.includes('Time'));
       if (timeHeader) (timeHeader as HTMLElement).click();
     });
-    await wait(300);
+
+    // Wait for sort icon to appear indicating sort completed
+    await page.waitForFunction(
+      () => {
+        const timeHeader = Array.from(document.querySelectorAll('th.sortable'))
+          .find(h => h.textContent?.includes('Time'));
+        return timeHeader?.querySelector('.sort-icon');
+      },
+      { timeout: 5000 }
+    );
 
     // Just verify no errors and sorting happened
     const castingTimes = await page.$$eval('td:nth-child(4)', cells =>
@@ -129,7 +175,16 @@ describe('Spell Table Sorting E2E', () => {
       const rangeHeader = headers.find(h => h.textContent?.includes('Range'));
       if (rangeHeader) (rangeHeader as HTMLElement).click();
     });
-    await wait(300);
+
+    // Wait for sort icon to appear indicating sort completed
+    await page.waitForFunction(
+      () => {
+        const rangeHeader = Array.from(document.querySelectorAll('th.sortable'))
+          .find(h => h.textContent?.includes('Range'));
+        return rangeHeader?.querySelector('.sort-icon');
+      },
+      { timeout: 5000 }
+    );
 
     // Just verify no errors and sorting happened
     const ranges = await page.$$eval('td:nth-child(5)', cells =>
@@ -149,7 +204,16 @@ describe('Spell Table Sorting E2E', () => {
       const durationHeader = headers.find(h => h.textContent?.includes('Duration'));
       if (durationHeader) (durationHeader as HTMLElement).click();
     });
-    await wait(300);
+
+    // Wait for sort icon to appear indicating sort completed
+    await page.waitForFunction(
+      () => {
+        const durationHeader = Array.from(document.querySelectorAll('th.sortable'))
+          .find(h => h.textContent?.includes('Duration'));
+        return durationHeader?.querySelector('.sort-icon');
+      },
+      { timeout: 5000 }
+    );
 
     // Just verify no errors and sorting happened
     const durations = await page.$$eval('td:nth-child(7)', cells =>
@@ -180,7 +244,12 @@ describe('Spell Table Sorting E2E', () => {
 
     // Sort by level
     await page.click('th.sortable.level-col');
-    await wait(300);
+
+    // Wait for sort to complete
+    await page.waitForFunction(
+      () => document.querySelector('th.sortable.level-col .sort-icon'),
+      { timeout: 5000 }
+    );
 
     // Apply a filter
     await page.evaluate(() => {
@@ -188,7 +257,16 @@ describe('Spell Table Sorting E2E', () => {
       const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
       if (levelBtn) (levelBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for filter to be applied - check that button is active
+    await page.waitForFunction(
+      () => {
+        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
+        const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
+        return levelBtn?.classList.contains('active');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify results are still sorted by level
     const levels = await page.$$eval('td.level-col', cells =>

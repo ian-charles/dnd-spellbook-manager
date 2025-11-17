@@ -1,10 +1,12 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { TEST_URL, TIMEOUTS, VIEWPORTS } from './config';
 
 let browser: Browser;
 let page: Page;
 
-export const TEST_URL = 'http://localhost:5173';
-export const TEST_TIMEOUT = 30000;
+// Re-export for backwards compatibility
+export { TEST_URL };
+export const TEST_TIMEOUT = TIMEOUTS.LONG;
 
 export async function setupBrowser() {
   browser = await puppeteer.launch({
@@ -12,7 +14,7 @@ export async function setupBrowser() {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 800 });
+  await page.setViewport(VIEWPORTS.DESKTOP);
   return { browser, page };
 }
 
@@ -31,23 +33,17 @@ export function getPage() {
 
 export async function waitForSpellsToLoad(page: Page) {
   // Wait for the spell table to be present
-  await page.waitForSelector('.spell-table', { timeout: 10000 });
+  await page.waitForSelector('.spell-table', { timeout: TIMEOUTS.MEDIUM });
   // Wait a bit for React to finish rendering
   await page.waitForFunction(
     () => {
       const rows = document.querySelectorAll('.spell-row');
       return rows.length > 0;
     },
-    { timeout: 10000 }
+    { timeout: TIMEOUTS.MEDIUM }
   );
 }
 
-/**
- * Helper to wait for a duration (replacement for deprecated page.waitForTimeout)
- */
-export async function wait(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 /**
  * Clear spellbook data from IndexedDB without affecting spell data.

@@ -1,7 +1,7 @@
 // E2E tests for spell filtering functionality
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
-import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, wait } from './setup';
+import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
 
 describe('Spell Filtering E2E', () => {
   let page: Page;
@@ -39,7 +39,16 @@ describe('Spell Filtering E2E', () => {
       const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
       if (levelBtn) (levelBtn as HTMLElement).click();
     });
-    await wait(500); // Wait for filter to apply
+
+    // Wait for filter to be applied - button becomes active
+    await page.waitForFunction(
+      () => {
+        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
+        const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
+        return levelBtn?.classList.contains('active');
+      },
+      { timeout: 5000 }
+    );
 
     // Check that results are filtered
     const headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -63,7 +72,16 @@ describe('Spell Filtering E2E', () => {
       const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
       if (evocationBtn) (evocationBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
+        const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
+        return evocationBtn?.classList.contains('active');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify all visible spells are evocation
     const schoolCells = await page.$$eval('.school-col', cells =>
@@ -82,7 +100,16 @@ describe('Spell Filtering E2E', () => {
       const wizardBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'wizard');
       if (wizardBtn) (wizardBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
+        const wizardBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'wizard');
+        return wizardBtn?.classList.contains('active');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify all visible spells include wizard
     const classesCells = await page.$$eval('.classes-col', cells =>
@@ -95,6 +122,9 @@ describe('Spell Filtering E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Click concentration checkbox
     await page.evaluate(() => {
       const labels = Array.from(document.querySelectorAll('.checkbox-label'));
@@ -106,7 +136,16 @@ describe('Spell Filtering E2E', () => {
         if (checkbox) checkbox.click();
       }
     });
-    await wait(500);
+
+    // Wait for filter to be applied - spell count should change
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Verify all visible spells have concentration badge
     const spellNames = await page.$$eval('.spell-name', cells =>
@@ -119,6 +158,9 @@ describe('Spell Filtering E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Click ritual checkbox
     await page.evaluate(() => {
       const labels = Array.from(document.querySelectorAll('.checkbox-label'));
@@ -130,7 +172,16 @@ describe('Spell Filtering E2E', () => {
         if (checkbox) checkbox.click();
       }
     });
-    await wait(500);
+
+    // Wait for filter to be applied - spell count should change
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Verify all visible spells have ritual badge
     const spellNames = await page.$$eval('.spell-name', cells =>
@@ -143,6 +194,9 @@ describe('Spell Filtering E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
+    // Get initial spell count
+    const initialCount = await page.$$eval('.spell-row', rows => rows.length);
+
     // Click verbal component checkbox
     await page.evaluate(() => {
       const labels = Array.from(document.querySelectorAll('.checkbox-label'));
@@ -154,7 +208,16 @@ describe('Spell Filtering E2E', () => {
         if (checkbox) checkbox.click();
       }
     });
-    await wait(500);
+
+    // Wait for filter to be applied - spell count should change
+    await page.waitForFunction(
+      (oldCount) => {
+        const newCount = document.querySelectorAll('.spell-row').length;
+        return newCount !== oldCount && newCount > 0;
+      },
+      { timeout: 5000 },
+      initialCount
+    );
 
     // Verify all visible spells have V component
     const componentsCells = await page.$$eval('td.components-col', cells =>
@@ -173,7 +236,16 @@ describe('Spell Filtering E2E', () => {
       const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
       if (levelBtn) (levelBtn as HTMLElement).click();
     });
-    await wait(300);
+
+    // Wait for first filter to be applied
+    await page.waitForFunction(
+      () => {
+        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
+        const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
+        return levelBtn?.classList.contains('active');
+      },
+      { timeout: 5000 }
+    );
 
     // Click evocation
     await page.evaluate(() => {
@@ -181,7 +253,16 @@ describe('Spell Filtering E2E', () => {
       const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
       if (evocationBtn) (evocationBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for second filter to be applied
+    await page.waitForFunction(
+      () => {
+        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
+        const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
+        return evocationBtn?.classList.contains('active');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify results match both filters
     const levelCells = await page.$$eval('td.level-col', cells =>
@@ -205,11 +286,27 @@ describe('Spell Filtering E2E', () => {
       const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
       if (levelBtn) (levelBtn as HTMLElement).click();
     });
-    await wait(300);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Click clear button
     await page.click('.btn-clear-filters');
-    await wait(500);
+
+    // Wait for all spells to be shown again
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Check that all spells are shown again
     const headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -226,7 +323,15 @@ describe('Spell Filtering E2E', () => {
       const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
       if (levelBtn) (levelBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify filter is applied
     let headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -238,7 +343,15 @@ describe('Spell Filtering E2E', () => {
       const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
       if (levelBtn) (levelBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for all spells to be shown again
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify all spells are shown again
     headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -255,7 +368,15 @@ describe('Spell Filtering E2E', () => {
       const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
       if (evocationBtn) (evocationBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify filter is applied
     let headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -267,7 +388,15 @@ describe('Spell Filtering E2E', () => {
       const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
       if (evocationBtn) (evocationBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for all spells to be shown again
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify all spells are shown again
     headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -284,7 +413,15 @@ describe('Spell Filtering E2E', () => {
       const wizardBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'wizard');
       if (wizardBtn) (wizardBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify filter is applied
     let headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -296,7 +433,15 @@ describe('Spell Filtering E2E', () => {
       const wizardBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'wizard');
       if (wizardBtn) (wizardBtn as HTMLElement).click();
     });
-    await wait(500);
+
+    // Wait for all spells to be shown again
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify all spells are shown again
     headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -318,7 +463,15 @@ describe('Spell Filtering E2E', () => {
         if (checkbox) checkbox.click();
       }
     });
-    await wait(500);
+
+    // Wait for filter to be applied
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify filter is applied
     let headerText = await page.$eval('.browse-header p', el => el.textContent);
@@ -335,7 +488,15 @@ describe('Spell Filtering E2E', () => {
         if (checkbox) checkbox.click();
       }
     });
-    await wait(500);
+
+    // Wait for all spells to be shown again
+    await page.waitForFunction(
+      () => {
+        const header = document.querySelector('.browse-header p');
+        return header && header.textContent?.includes('319 results');
+      },
+      { timeout: 5000 }
+    );
 
     // Verify all spells are shown again
     headerText = await page.$eval('.browse-header p', el => el.textContent);

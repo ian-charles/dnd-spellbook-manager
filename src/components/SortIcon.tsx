@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
 import './SortIcon.css';
 
@@ -10,10 +11,13 @@ interface SortIconProps {
 /**
  * Icon component for sortable table headers.
  * Shows ⇅ for inactive columns and ↑/↓ for active sort direction.
+ *
+ * Memoized to prevent unnecessary re-renders when parent re-renders
+ * but props haven't changed.
  */
-export function SortIcon({ column, currentColumn, currentDirection }: SortIconProps) {
+export const SortIcon = memo(function SortIcon({ column, currentColumn, currentDirection }: SortIconProps) {
   if (currentColumn !== column) {
     return <span className="sort-icon">⇅</span>;
   }
   return <span className="sort-icon">{currentDirection === 'asc' ? '↑' : '↓'}</span>;
-}
+});

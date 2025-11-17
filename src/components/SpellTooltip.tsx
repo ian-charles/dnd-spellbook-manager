@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Spell } from '../types/spell';
 import './SpellTooltip.css';
 
@@ -7,7 +8,13 @@ interface SpellTooltipProps {
   visible: boolean;
 }
 
-export function SpellTooltip({ spell, position, visible }: SpellTooltipProps) {
+/**
+ * Tooltip component for displaying spell details on hover.
+ *
+ * Memoized to prevent unnecessary re-renders when parent re-renders
+ * but props (spell, position, visible) haven't changed.
+ */
+export const SpellTooltip = memo(function SpellTooltip({ spell, position, visible }: SpellTooltipProps) {
   if (!spell || !visible) {
     return null;
   }
@@ -75,4 +82,4 @@ export function SpellTooltip({ spell, position, visible }: SpellTooltipProps) {
       </div>
     </div>
   );
-}
+});

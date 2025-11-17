@@ -1,6 +1,15 @@
 # Project Status - D&D Spellbook Manager
 
-**Last Updated:** 2025-11-15
+**Last Updated:** 2025-11-17
+
+## Current Status
+
+**Phase 1 MVP: ✅ COMPLETE**
+- All core features implemented
+- 212 E2E tests + 104 unit tests = 316 total tests
+- **100% test pass rate** achieved
+- Successfully deployed to Google Cloud Run
+- Production URL: https://dnd-spellbook-329000244472.us-central1.run.app
 
 ## Recent Work Completed
 
@@ -51,13 +60,158 @@ User → App.tsx → SpellbookList/SpellbookDetail
 - `SpellTable.tsx` - Sortable spell table for browse view
 - `useSpellbooks.ts` - Hook for spellbook CRUD operations
 
-## Next Steps
+## Architecture Improvements Roadmap
+
+Based on comprehensive React 18 best practices analysis (January 2025):
+
+### 🔴 HIGH Priority (Immediate Implementation)
+
+#### 1. Add Error Boundary Component
+**Status**: 🟡 In Progress
+**Impact**: HIGH - Prevents entire app crashes, improves user experience
+**Effort**: Low (30 minutes)
+
+**Implementation**:
+- Create `src/components/ErrorBoundary.tsx` (class component)
+- Create `src/components/ErrorBoundary.css` for error UI
+- Wrap `<App />` in `<ErrorBoundary>` in `src/main.tsx`
+- Add error logging and user-friendly error messages
+
+**Files**: NEW: ErrorBoundary.tsx, ErrorBoundary.css | MODIFIED: main.tsx
+
+---
+
+#### 2. Refactor App.tsx - Split Large Component
+**Status**: ⚪ Not Started
+**Impact**: HIGH - Improves maintainability, testability, separation of concerns
+**Effort**: Medium (2-3 hours)
+
+**Description**: App.tsx is 214 lines and violates single responsibility. Split into smaller focused components.
+
+**Implementation**:
+- Extract routing logic → `src/hooks/useHashRouter.ts`
+- Extract modal state → `src/hooks/useModal.ts`
+- Extract toast notifications → `src/hooks/useToast.ts`
+- Create `src/components/Layout.tsx` for header/navigation wrapper
+
+**Files**: MODIFIED: App.tsx (~80 lines) | NEW: useHashRouter.ts, useModal.ts, useToast.ts, Layout.tsx
+
+---
+
+#### 3. Add React.memo to Pure Components
+**Status**: ⚪ Not Started
+**Impact**: MEDIUM-HIGH - Prevents unnecessary re-renders, improves performance
+**Effort**: Low (1 hour)
+
+**Components to Optimize**:
+- `SortIcon.tsx`
+- `SpellTooltip.tsx`
+- Other pure presentational components
+
+**Files**: MODIFIED: SortIcon.tsx, SpellTooltip.tsx
+
+---
+
+#### 4. Replace Browser Alerts with Custom Modal
+**Status**: ⚪ Not Started
+**Impact**: MEDIUM-HIGH - Better UX, consistent styling, accessibility
+**Effort**: Medium (2 hours)
+
+**Description**: Replace `confirm()` and `alert()` with custom modal component for deletions and errors.
+
+**Implementation**:
+- Create `src/components/ConfirmDialog.tsx` with custom modal
+- Replace all `window.confirm()` calls
+- Add keyboard navigation (Escape to cancel, Enter to confirm)
+- Update E2E tests to interact with custom modal instead of browser dialogs
+
+**Files**: NEW: ConfirmDialog.tsx, ConfirmDialog.css | MODIFIED: SpellbookDetail.tsx, MySpellbooks.tsx
+
+---
+
+### 🟡 MEDIUM Priority (Next Sprint)
+
+#### 5. Refactor SpellbookDetail - Separate Data and Presentation
+**Impact**: MEDIUM - Better testability, reusability
+**Effort**: Medium (2-3 hours)
+
+Split 241-line component into container (data) and presentational (UI) components.
+
+---
+
+#### 6. Consolidate SpellFilters State with useReducer
+**Impact**: MEDIUM - Cleaner state management
+**Effort**: Low-Medium (1-2 hours)
+
+SpellFilters has 8 separate useState calls. Consolidate into single useReducer.
+
+---
+
+#### 7. Add Loading States for Better UX
+**Impact**: MEDIUM - Better perceived performance
+**Effort**: Low (1 hour)
+
+Add loading skeletons/spinners for async operations.
+
+---
+
+#### 8. Optimize useSpellbooks Hook - Reduce Reloads
+**Impact**: MEDIUM - Reduces database queries
+**Effort**: Medium (2 hours)
+
+Use optimistic updates instead of reloading all spellbooks after every operation.
+
+---
+
+#### 9. Add Keyboard Navigation
+**Impact**: MEDIUM - Accessibility improvement
+**Effort**: Medium (2 hours)
+
+Add keyboard shortcuts: Enter to expand, Escape to close, / to focus search.
+
+---
+
+#### 10. Add ARIA Labels for Screen Readers
+**Impact**: MEDIUM - Accessibility compliance
+**Effort**: Low-Medium (1-2 hours)
+
+Add proper ARIA attributes for screen reader support.
+
+---
+
+### 🟢 LOW Priority (Future Enhancements)
+
+#### 11. Add useMemo/useCallback for Expensive Operations
+**Effort**: Low (1 hour)
+
+#### 12. Debounce Search Input
+**Effort**: Low (30 minutes)
+
+#### 13. Add Undo/Redo for Spellbook Operations
+**Effort**: High (4-6 hours)
+
+#### 14. Extract Additional Custom Hooks
+**Effort**: Low (1 hour)
+
+#### 15. Add Comprehensive Error Handling
+**Effort**: Medium (2-3 hours)
+
+---
+
+## Next Immediate Steps
+
+1. ✅ **CURRENT**: Implement Error Boundary component (Priority #1)
+2. Refactor App.tsx to extract routing and modal hooks
+3. Add React.memo to pure components
+4. Replace browser dialogs with custom modals
+5. Update E2E tests for custom modal interactions
+
+---
+
+## Legacy Next Steps (Pre-Architecture Review)
 
 ### High Priority
-1. **Fix Legacy E2E Tests** - Update tests to use new CSS class names:
-   - Change `.spell-expanded-row` to `.spell-expansion-row`
-   - Change `.spell-expanded-content` to `.spell-inline-expansion`
-   - Update mobile expansion tests for card layout
+1. ~~**Fix Legacy E2E Tests**~~ ✅ COMPLETE - All 212 E2E tests passing
 
 ### Medium Priority
 4. **Spell Notes Feature** - Add UI for spell notes in spellbook detail view

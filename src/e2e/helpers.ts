@@ -425,12 +425,6 @@ export async function removeSpellFromSpellbook(
     return rows.length;
   });
 
-  // Set up dialog handler BEFORE clicking the button
-  // Browser confirm() dialogs need to be handled via page.on('dialog')
-  page.once('dialog', async (dialog) => {
-    await dialog.accept();
-  });
-
   // Wait for remove button
   await waitForElementVisible(page, SELECTORS.BTN_REMOVE_SMALL, TIMEOUTS.MEDIUM);
 
@@ -446,6 +440,15 @@ export async function removeSpellFromSpellbook(
   if (removeButton) {
     await scrollIntoViewport(page, removeButton);
     await removeButton.click();
+  }
+
+  // Wait for custom ConfirmDialog to appear
+  await waitForElementVisible(page, '[data-testid="confirm-dialog-overlay"]', TIMEOUTS.MEDIUM);
+
+  // Click the confirm button in the custom dialog
+  const confirmButton = await page.$('[data-testid="confirm-dialog-confirm"]');
+  if (confirmButton) {
+    await confirmButton.click();
   }
 
   // Wait for spell to be removed (count decreased or empty state appears)

@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { useSpellbooks } from '../hooks/useSpellbooks';
 import { exportImportService } from '../services/exportImport.service';
+import { ConfirmDialog } from './ConfirmDialog';
+import { AlertDialog } from './AlertDialog';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -14,6 +16,24 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
   const [creating, setCreating] = useState(false);
   const [importing, setImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Dialog states
+  const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellbookId: string; spellbookName: string }>({
+    isOpen: false,
+    spellbookId: '',
+    spellbookName: '',
+  });
+  const [alertDialog, setAlertDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    variant: 'error' | 'success' | 'warning' | 'info';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    variant: 'info',
+  });
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +51,28 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (confirm(`Delete spellbook "${name}"?`)) {
-      try {
-        await deleteSpellbook(id);
-      } catch (error) {
-        console.error('Failed to delete spellbook:', error);
-      }
+  const handleDelete = (id: string, name: string) => {
+    setConfirmDialog({ isOpen: true, spellbookId: id, spellbookName: name });
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteSpellbook(confirmDialog.spellbookId);
+      setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
+    } catch (error) {
+      console.error('Failed to delete spellbook:', error);
+      setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
+      setAlertDialog({
+        isOpen: true,
+        title: 'Delete Failed',
+        message: 'Failed to delete spellbook. Please try again.',
+        variant: 'error',
+      });
     }
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
   };
 
   const handleExport = async () => {
@@ -46,7 +80,12 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       await exportImportService.downloadSpellbooks();
     } catch (error) {
       console.error('Failed to export spellbooks:', error);
-      alert('Failed to export spellbooks. Please try again.');
+      setAlertDialog({
+        isOpen: true,
+        title: 'Export Failed',
+        message: 'Failed to export spellbooks. Please try again.',
+        variant: 'error',
+      });
     }
   };
 
@@ -65,22 +104,35 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
 
       // Show result
       if (result.errors.length > 0) {
-        alert(
-          `Import completed with errors:\n\n` +
+        setAlertDialog({
+          isOpen: true,
+          title: 'Import Completed with Errors',
+          message:
             `Imported: ${result.imported}\n` +
             `Skipped: ${result.skipped}\n` +
             `Errors: ${result.errors.length}\n\n` +
-            result.errors.join('\n')
-        );
+            result.errors.join('\n'),
+          variant: 'warning',
+        });
       } else {
-        alert(`Import successful!\n\nImported: ${result.imported}\nSkipped: ${result.skipped}`);
+        setAlertDialog({
+          isOpen: true,
+          title: 'Import Successful',
+          message: `Imported: ${result.imported}\nSkipped: ${result.skipped}`,
+          variant: 'success',
+        });
       }
 
       // Refresh the spellbooks list
       refreshSpellbooks();
     } catch (error) {
       console.error('Failed to import spellbooks:', error);
-      alert(`Failed to import spellbooks: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setAlertDialog({
+        isOpen: true,
+        title: 'Import Failed',
+        message: `Failed to import spellbooks: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: 'error',
+      });
     } finally {
       setImporting(false);
       // Reset file input
@@ -223,6 +275,27 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
           </div>
         </div>
       )}
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        title="Delete Spellbook"
+        message={`Delete spellbook "${confirmDialog.spellbookName}"?`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
+
+      {/* Alert Dialog */}
+      <AlertDialog
+        isOpen={alertDialog.isOpen}
+        title={alertDialog.title}
+        message={alertDialog.message}
+        variant={alertDialog.variant}
+        onClose={() => setAlertDialog({ ...alertDialog, isOpen: false })}
+      />
     </div>
   );
 }

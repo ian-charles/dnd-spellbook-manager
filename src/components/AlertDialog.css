@@ -1,0 +1,164 @@
+/**
+ * AlertDialog Styles
+ *
+ * Custom alert dialog styles with dark mode support.
+ */
+
+/* Overlay */
+.alert-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* Dialog container */
+.alert-dialog {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 480px;
+  width: 100%;
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.alert-dialog-header {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.alert-dialog-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Body */
+.alert-dialog-body {
+  padding: 1.5rem;
+}
+
+.alert-dialog-message {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  white-space: pre-wrap; /* Preserve line breaks */
+}
+
+/* Footer */
+.alert-dialog-footer {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--border-color);
+}
+
+.alert-dialog-footer button {
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  min-width: 100px;
+}
+
+/* Primary button */
+.alert-dialog-footer .btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
+
+.alert-dialog-footer .btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.alert-dialog-footer .btn-primary:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Variant-specific styling */
+.alert-dialog-footer .btn-error {
+  background: #dc3545;
+}
+
+.alert-dialog-footer .btn-error:hover {
+  background: #c82333;
+}
+
+.alert-dialog-footer .btn-success {
+  background: #28a745;
+}
+
+.alert-dialog-footer .btn-success:hover {
+  background: #218838;
+}
+
+.alert-dialog-footer .btn-warning {
+  background: #ffc107;
+  color: #000;
+}
+
+.alert-dialog-footer .btn-warning:hover {
+  background: #e0a800;
+}
+
+.alert-dialog-footer .btn-info {
+  background: #17a2b8;
+}
+
+.alert-dialog-footer .btn-info:hover {
+  background: #138496;
+}
+
+/* Variant-specific dialog header colors */
+.alert-dialog-error .alert-dialog-title {
+  color: #dc3545;
+}
+
+.alert-dialog-success .alert-dialog-title {
+  color: #28a745;
+}
+
+.alert-dialog-warning .alert-dialog-title {
+  color: #ffc107;
+}
+
+.alert-dialog-info .alert-dialog-title {
+  color: #17a2b8;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .alert-dialog {
+    max-width: 100%;
+    margin: 1rem;
+  }
+
+  .alert-dialog-footer button {
+    width: 100%;
+  }
+}

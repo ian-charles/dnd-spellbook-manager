@@ -4,6 +4,7 @@ import { SpellTable } from './components/SpellTable';
 import { SpellFilters } from './components/SpellFilters';
 import { SpellbookList } from './components/SpellbookList';
 import { SpellbookDetail } from './components/SpellbookDetail';
+import { AlertDialog } from './components/AlertDialog';
 import { useSpells } from './hooks/useSpells';
 import { useSpellbooks } from './hooks/useSpellbooks';
 import { useHashRouter } from './hooks/useHashRouter';
@@ -33,6 +34,19 @@ function App() {
   // Toast hook for success messages
   const { isVisible: showToast, showToast: displayToast } = useToast();
 
+  // Alert dialog state
+  const [alertDialog, setAlertDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    variant: 'error' | 'success' | 'warning' | 'info';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    variant: 'info',
+  });
+
   // Spell filtering state
   const [filters, setFilters] = useState<Filters>({});
   const [filteredSpells, setFilteredSpells] = useState<Spell[]>([]);
@@ -58,7 +72,12 @@ function App() {
 
   const handleAddToSpellbook = (spellId: string) => {
     if (spellbooks.length === 0) {
-      alert('Create a spellbook first!');
+      setAlertDialog({
+        isOpen: true,
+        title: 'No Spellbooks',
+        message: 'Create a spellbook first!',
+        variant: 'info',
+      });
       navigateToSpellbooks();
       return;
     }
@@ -74,7 +93,13 @@ function App() {
         displayToast('✓ Spell added to spellbook!');
       } catch (error) {
         console.error('Failed to add spell:', error);
-        alert('Failed to add spell. It might already be in this spellbook.');
+        spellbookSelector.closeModal();
+        setAlertDialog({
+          isOpen: true,
+          title: 'Failed to Add Spell',
+          message: 'Failed to add spell. It might already be in this spellbook.',
+          variant: 'error',
+        });
       }
     }
   };
@@ -181,6 +206,15 @@ function App() {
           ✓ Spell added to spellbook!
         </div>
       )}
+
+      {/* Alert Dialog */}
+      <AlertDialog
+        isOpen={alertDialog.isOpen}
+        title={alertDialog.title}
+        message={alertDialog.message}
+        variant={alertDialog.variant}
+        onClose={() => setAlertDialog({ ...alertDialog, isOpen: false })}
+      />
     </Layout>
   );
 }

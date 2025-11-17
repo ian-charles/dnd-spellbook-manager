@@ -1,7 +1,7 @@
 // Comprehensive UI interaction tests for desktop and mobile
 import { Page } from 'puppeteer';
 import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, clearSpellbookData } from './setup';
-import { createSpellbook, navigateAndWait } from './helpers';
+import { createSpellbook, navigateAndWait, waitForElementVisible } from './helpers';
 import { TIMEOUTS } from './config';
 
 describe('UI Interactions - Desktop', () => {
@@ -397,13 +397,16 @@ describe('UI Interactions - Desktop', () => {
 
       expect(deleteButton).toBeTruthy();
 
-      // Set up dialog handler BEFORE clicking delete
-      page.once('dialog', async (dialog) => {
-        await dialog.accept();
-      });
-
       // Act: Delete the specific spellbook
       await deleteButton.evaluate((btn: Element) => (btn as HTMLElement).click());
+
+      // Wait for custom ConfirmDialog to appear
+      await waitForElementVisible(page, '[data-testid="confirm-dialog-overlay"]', TIMEOUTS.MEDIUM);
+
+      // Click the confirm button in the custom dialog
+      const confirmButton = await page.$('[data-testid="confirm-dialog-confirm"]');
+      expect(confirmButton).toBeTruthy();
+      await confirmButton!.click();
 
       // Assert: Verify spellbook is deleted
       await page.waitForFunction(

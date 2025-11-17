@@ -4,6 +4,7 @@ import { spellService } from '../services/spell.service';
 import { Spell } from '../types/spell';
 import { Spellbook } from '../types/spellbook';
 import { SortIcon } from './SortIcon';
+import { ConfirmDialog } from './ConfirmDialog';
 import { useSpellSorting } from '../hooks/useSpellSorting';
 import { getLevelText, getComponentsText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
 import './SpellbookDetail.css';
@@ -24,6 +25,11 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
   const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
   const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellId: string; spellName: string }>({
+    isOpen: false,
+    spellId: '',
+    spellName: '',
+  });
   const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(
     enrichedSpells,
     { getSpell: (item) => item.spell }
@@ -61,11 +67,18 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
     await loadSpellbook();
   };
 
-  const handleRemoveSpell = async (spellId: string, spellName: string) => {
-    if (confirm(`Remove "${spellName}" from this spellbook?`)) {
-      await removeSpellFromSpellbook(spellbookId, spellId);
-      await loadSpellbook();
-    }
+  const handleRemoveSpell = (spellId: string, spellName: string) => {
+    setConfirmDialog({ isOpen: true, spellId, spellName });
+  };
+
+  const handleConfirmRemove = async () => {
+    await removeSpellFromSpellbook(spellbookId, confirmDialog.spellId);
+    setConfirmDialog({ isOpen: false, spellId: '', spellName: '' });
+    await loadSpellbook();
+  };
+
+  const handleCancelRemove = () => {
+    setConfirmDialog({ isOpen: false, spellId: '', spellName: '' });
   };
 
   const handleRowClick = (spellId: string) => {
@@ -236,6 +249,18 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
           </table>
         </div>
       )}
+
+      {/* Confirm Remove Dialog */}
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        title="Remove Spell"
+        message={`Remove "${confirmDialog.spellName}" from this spellbook?`}
+        confirmLabel="Remove"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={handleConfirmRemove}
+        onCancel={handleCancelRemove}
+      />
     </div>
   );
 }

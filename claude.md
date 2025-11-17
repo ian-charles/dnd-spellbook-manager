@@ -39,6 +39,7 @@ Create a design doc for any work > 1 week or that affects architecture, performa
    - NEVER use `--no-verify` to bypass hooks
    - NEVER kill hook processes (pkill, Ctrl+C, etc.)
    - NEVER disable or remove hooks to commit faster
+   - NEVER modify git hooks unless explicitly instructed to do so
    - If pre-commit hook fails, fix the issue, don't bypass it
    - If tests are slow, optimize them, don't skip them
    - If hooks are broken, fix the hooks, don't bypass them
@@ -281,21 +282,73 @@ Never skip tests. If tests are slow, fix them. If tests are flaky, fix them. If 
    - Light mode: `page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'light' }])`
    - Dark mode: `page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }])`
 
-3. **Scroll to See Content** (like a real user):
+3. **NEVER use wait() or sleep() with arbitrary durations**:
+
+   ❌ **ANTI-PATTERN - Arbitrary waits**:
    ```javascript
-   // ALWAYS scroll elements into view before interacting
-   await element.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-   await wait(400); // Let scroll animation complete
-
-   await element.click();
-   await wait(500); // Let interaction complete
-
-   // Scroll result into view to verify
-   const result = await page.$('.result');
-   await result?.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+   await wait(500);  // WRONG! Race condition waiting to happen
+   await wait(1000); // WRONG! Flaky and slow
+   await page.waitForTimeout(300); // WRONG! Deprecated and brittle
    ```
 
-4. **Capture Console Errors**:
+   ✅ **CORRECT - Wait for specific state with timeout**:
+   ```javascript
+   // Wait for element to exist
+   await page.waitForSelector('.result', { timeout: 10000 });
+
+   // Wait for element to be visible
+   await page.waitForSelector('.modal', { visible: true, timeout: 5000 });
+
+   // Wait for navigation to complete
+   await page.goto(url, { waitUntil: 'networkidle2' });
+
+   // Wait for specific condition
+   await page.waitForFunction(
+     () => document.querySelector('.count')?.textContent === '5',
+     { timeout: 10000 }
+   );
+
+   // Wait for element to disappear
+   await page.waitForFunction(
+     () => !document.querySelector('.loading-spinner'),
+     { timeout: 5000 }
+   );
+   ```
+
+   **Why arbitrary waits are bad**:
+   - **Flaky**: May work locally but fail in CI or on slower machines
+   - **Slow**: Often wait longer than necessary "to be safe"
+   - **Race conditions**: Don't guarantee the state you actually need
+   - **Maintenance nightmare**: Magic numbers that need tweaking when app changes
+
+   **When you think you need wait()**:
+   - Ask: "What state am I actually waiting for?"
+   - Use `waitForSelector`, `waitForFunction`, or `waitForNavigation`
+   - Set appropriate timeout (default 30000ms is often fine)
+   - If you absolutely must wait for animation, use `waitForFunction` to check CSS animation state
+
+4. **Scroll to See Content** (like a real user):
+   ```javascript
+   // ALWAYS scroll elements into view before interacting
+   await element.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+
+   // Wait for element to be in viewport and clickable
+   await page.waitForFunction(
+     (el) => {
+       const rect = el.getBoundingClientRect();
+       return rect.top >= 0 && rect.bottom <= window.innerHeight;
+     },
+     { timeout: 5000 },
+     element
+   );
+
+   await element.click();
+
+   // Wait for result to appear
+   await page.waitForSelector('.result', { visible: true, timeout: 5000 });
+   ```
+
+5. **Capture Console Errors**:
    ```javascript
    // Monitor console for errors
    const consoleMessages = [];
@@ -316,7 +369,7 @@ Never skip tests. If tests are slow, fix them. If tests are flaky, fix them. If 
    }
    ```
 
-5. **Take Screenshots**:
+6. **Take Screenshots**:
    ```javascript
    // Before interaction
    await page.screenshot({ path: 'before.png' });
@@ -332,7 +385,6 @@ Never skip tests. If tests are slow, fix them. If tests are flaky, fix them. If 
 
 ```javascript
 const puppeteer = require('puppeteer');
-const { wait } = require('./setup');
 
 describe('Mobile Spell Expansion', () => {
   let browser, page;
@@ -357,28 +409,30 @@ describe('Mobile Spell Expansion', () => {
     // Set dark mode
     await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }]);
 
-    await page.goto('http://localhost:5173');
+    await page.goto('http://localhost:5173', { waitUntil: 'networkidle2' });
     await page.waitForSelector('.spell-row', { timeout: 10000 });
 
     // Get spell (5th one to test scrolling)
     const spells = await page.$$('.spell-row');
     const spell = spells[4];
 
-    // Scroll into view BEFORE clicking
-    await spell.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(400);
+    // Scroll into view and wait for it to be in viewport
+    await spell.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'center' }));
+    await page.waitForFunction(
+      (el) => {
+        const rect = el.getBoundingClientRect();
+        return rect.top >= 0 && rect.bottom <= window.innerHeight;
+      },
+      { timeout: 5000 },
+      spell
+    );
 
     // Take before screenshot
     await page.screenshot({ path: 'mobile-before.png' });
 
-    // Click
+    // Click and wait for expansion to appear
     await spell.click();
-    await wait(500);
-
-    // Scroll expansion into view
-    const expansion = await page.$('.spell-inline-expansion');
-    await expansion?.evaluate(el => el.scrollIntoView({ behavior: 'smooth', block: 'center' }));
-    await wait(300);
+    await page.waitForSelector('.spell-inline-expansion', { visible: true, timeout: 5000 });
 
     // Take after screenshot
     await page.screenshot({ path: 'mobile-after.png' });

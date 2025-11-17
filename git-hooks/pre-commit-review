@@ -27,7 +27,14 @@ Review this diff with EXTREME scrutiny. This code was written by an AI assistant
 - ❌ Over-mocking (testing mocks instead of real behavior)
 - ❌ No assertions (smoke tests that just run code)
 - ❌ Unclear test names (should describe what and expected behavior)
-- ❌ Skipped tests (.skip, .todo) - unacceptable unless explicitly justified
+- ❌ **SKIPPED TESTS (.skip, .todo, it.skip, describe.skip) ARE NEVER ACCEPTABLE**
+  * Skipped tests = broken code being committed
+  * If test is failing, FIX THE CODE or FIX THE TEST
+  * If test is slow, OPTIMIZE THE TEST
+  * If test is flaky, FIX THE FLAKINESS (add proper waits, fix race conditions)
+  * NEVER skip tests to "commit faster" - this defeats the entire purpose of TDD
+  * Tests are documentation of working behavior - skipped tests = undocumented broken features
+  * The ONLY exception: tests for features not yet implemented (but then code shouldn't be added either)
 
 ### 2. **Test Quality** ⚠️ CRITICAL
 - Missing tests for new features (RED-GREEN-REFACTOR violated)

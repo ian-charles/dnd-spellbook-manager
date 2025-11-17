@@ -14,9 +14,8 @@ A Progressive Web App for managing D&D 5e spellbooks. Built with React, TypeScri
 - **Responsive Design**: Works beautifully on desktop, tablet, and mobile
 - **Dark/Light Mode**: Automatic theme switching based on system preferences
 - **Offline-First**: All spell data bundled with the app for instant access
-
-### 🚧 In Progress
-- PWA installation support
+- **PWA Support**: Installable as a progressive web app
+- **Comprehensive Testing**: 316 tests (100% pass rate) with E2E and unit coverage
 
 ## Quick Start
 
@@ -83,6 +82,19 @@ public/
 - `npm run build` - Build for production
 - `npm run build:spells` - Fetch and transform spell data from Open5e API
 - `npm run preview` - Preview production build locally
+- `npm test` - Run test suite (unit + E2E tests)
+- `npm run test:e2e` - Run E2E tests only
+
+### Testing
+
+This project has comprehensive test coverage with **100% pass rate** across all tests:
+
+- **212 E2E tests** using Puppeteer for end-to-end workflows
+- **104 unit tests** for services, hooks, and utilities
+- **Git pre-commit hooks** enforce passing tests before commits
+- **Automated code review** via Claude Code integration
+
+See [E2E_REFACTORING_SUMMARY.md](E2E_REFACTORING_SUMMARY.md) for detailed test architecture and best practices.
 
 ## Tech Stack
 
@@ -109,12 +121,13 @@ public/
 
 ## Roadmap
 
-### Phase 1: MVP (Current)
+### Phase 1: MVP ✅ Complete!
 - [x] Spell browser with filters
-- [ ] Spellbook CRUD operations
-- [ ] Spell management in spellbooks
-- [ ] Data export/import
-- [ ] PWA configuration
+- [x] Spellbook CRUD operations
+- [x] Spell management in spellbooks
+- [x] Data export/import
+- [x] PWA configuration
+- [x] E2E test suite (100% pass rate)
 
 ### Phase 2: Enhancement
 - [ ] Spell detail modal

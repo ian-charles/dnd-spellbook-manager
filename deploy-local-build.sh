@@ -44,9 +44,9 @@ gcloud artifacts repositories create "${REPOSITORY}" \
 echo "Configuring Docker authentication..."
 gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
 
-# Build the Docker image locally
-echo "Building Docker image locally..."
-docker build -t "${IMAGE_NAME}:latest" .
+# Build the Docker image locally for AMD64 (Cloud Run requirement)
+echo "Building Docker image locally for linux/amd64..."
+docker buildx build --platform linux/amd64 -t "${IMAGE_NAME}:latest" --load .
 
 # Push the image to Artifact Registry
 echo "Pushing image to Artifact Registry..."

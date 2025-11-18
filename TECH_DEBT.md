@@ -30,14 +30,13 @@ loading: boolean;
 
 ### ✅ Magic Strings Extracted to Constants (Completed 2025-11-17)
 - **Created**: [src/constants/messages.ts](src/constants/messages.ts) with 60+ message constants
-- **Created**: [src/constants/messages.test.ts](src/constants/messages.test.ts) with 42 unit tests
 - **Updated**: [src/App.tsx](src/App.tsx) - 8 magic strings replaced
 - **Updated**: [src/components/SpellbookList.tsx](src/components/SpellbookList.tsx) - 13 magic strings replaced
 - **Updated**: [src/components/SpellbookDetailView.tsx](src/components/SpellbookDetailView.tsx) - 4 magic strings replaced
 - **Eliminated**: 25+ hardcoded UI messages across 3 components
 - **Eliminated**: Duplicate "✓ Spell added to spellbook!" at App.tsx:203
+- **Removed**: Change detector tests (anti-pattern) - constants don't need tests that just verify string equality
 - **Result**: Single source of truth for all user-facing text, foundation for i18n, type-safe message access
-- **Test Results**: 451/451 tests passing (42 new tests for message constants)
 
 ### ✅ Inline Loading JSX Extracted to LoadingButton Component (Completed 2025-11-17)
 - **Created**: [src/components/LoadingButton.tsx](src/components/LoadingButton.tsx) - reusable loading button component

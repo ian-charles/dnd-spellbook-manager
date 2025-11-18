@@ -9,11 +9,22 @@ import React from 'react';
 import LoadingSpinner from './LoadingSpinner';
 
 export interface LoadingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Whether the button is in loading state */
+  /**
+   * Whether the button is in loading state.
+   * When true, the button is disabled and displays loadingText with a spinner.
+   * The children content is hidden during loading state.
+   */
   loading: boolean;
-  /** Text to display when loading */
+  /**
+   * Text to display when the button is in loading state.
+   * This text replaces the children and is shown alongside a spinner.
+   * Only visible when loading is true.
+   */
   loadingText: string;
-  /** Children to display when not loading */
+  /**
+   * Content to display when the button is not loading.
+   * This is hidden and replaced by loadingText when loading is true.
+   */
   children: React.ReactNode;
 }
 

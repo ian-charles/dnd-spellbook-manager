@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Post-commit hook to automatically push changes to remote
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Pushing changes to remote..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+git push
+
+if [ $? -eq 0 ]; then
+  echo "✅ Changes pushed successfully"
+else
+  echo "⚠️  Push failed - you may need to pull first or resolve conflicts"
+  echo "Run 'git push' manually when ready"
+fi

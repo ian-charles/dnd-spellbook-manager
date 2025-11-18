@@ -1,0 +1,300 @@
+#!/bin/bash
+# .git/hooks/pre-commit (with TDD-aware code review)
+
+echo "🔍 Claude Code self-review in progress..."
+
+# Create review logs directory if it doesn't exist
+REVIEW_LOG_DIR=".git/code-review-logs"
+mkdir -p "$REVIEW_LOG_DIR"
+
+# Create timestamped log file
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+REVIEW_LOG_FILE="$REVIEW_LOG_DIR/review_$TIMESTAMP.log"
+
+# Get list of staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "No changes to review"
+    exit 0
+fi
+
+# Build review context with full file contents
+REVIEW_CONTEXT=""
+for FILE in $STAGED_FILES; do
+    REVIEW_CONTEXT+="
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE: $FILE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+$(git show :$FILE)
+
+"
+done
+
+# Create temp file with review request
+REVIEW_REQUEST=$(mktemp)
+cat > "$REVIEW_REQUEST" << 'REVIEW_EOF'
+You are a CRITICAL code reviewer with expertise in Test-Driven Development (TDD).
+Review the FULL CONTENTS of each changed file with EXTREME scrutiny. This code was written by an AI assistant.
+
+You will see the complete contents of every file being committed (not just diffs).
+This allows you to spot issues that require broader context to identify.
+
+## Core Review Criteria:
+
+### 1. **TDD Anti-Patterns** ⚠️ CRITICAL
+- ❌ Tests testing implementation details instead of behavior
+- ❌ Fragile tests (breaks on unrelated changes, exact string matching)
+- ❌ Tests with multiple unrelated assertions (should be split)
+- ❌ Tests that depend on each other or share state
+- ❌ Over-mocking (testing mocks instead of real behavior)
+- ❌ No assertions (smoke tests that just run code)
+- ❌ Unclear test names (should describe what and expected behavior)
+- ❌ **SKIPPED TESTS (.skip, .todo, it.skip, describe.skip) ARE NEVER ACCEPTABLE**
+  * Skipped tests = broken code being committed
+  * If test is failing, FIX THE CODE or FIX THE TEST
+  * If test is slow, OPTIMIZE THE TEST
+  * If test is flaky, FIX THE FLAKINESS (add proper waits, fix race conditions)
+  * NEVER skip tests to "commit faster" - this defeats the entire purpose of TDD
+  * Tests are documentation of working behavior - skipped tests = undocumented broken features
+  * The ONLY exception: tests for features not yet implemented (but then code shouldn't be added either)
+
+### 2. **Test Quality** ⚠️ CRITICAL
+- Missing tests for new features (RED-GREEN-REFACTOR violated)
+- Tests added AFTER implementation (should be written FIRST)
+- Missing edge case coverage
+- Missing error handling tests
+- Test isolation issues (beforeEach/afterEach problems)
+- Slow tests that could be optimized
+- Tests that don't verify actual behavior
+
+### 3. **Logic Errors** 🐛 CRITICAL
+- Off-by-one errors in loops/arrays
+- Null/undefined handling missing
+- Edge cases not handled (empty arrays, zero, negative numbers)
+- Race conditions in async code
+- Incorrect boolean logic
+- Type coercion bugs
+
+### 4. **Type Safety** 🔒 CRITICAL
+- Missing type annotations (TypeScript/JSDoc)
+- Unsafe type casts (any, as unknown as)
+- Missing null checks
+- Optional chaining needed (obj?.prop)
+- Missing input validation
+
+### 5. **Performance** ⚡ HIGH PRIORITY
+- Inefficient algorithms (O(n²) when O(n) possible)
+- Unnecessary loops or iterations
+- Missing memoization/caching
+- Expensive operations in loops
+- Database N+1 queries
+- Memory leaks (event listeners not cleaned up)
+
+### 6. **Security** 🔐 CRITICAL
+- SQL/NoSQL injection risks
+- XSS vulnerabilities (unescaped HTML)
+- Command injection (shell commands with user input)
+- Path traversal vulnerabilities
+- Secrets/credentials in code
+- Missing input sanitization
+- CSRF token missing
+
+### 7. **Code Quality** 📐 HIGH PRIORITY
+- Commented-out code (should be removed)
+- Console.log/debugging statements left in
+- Magic numbers (should be named constants)
+- Deeply nested conditionals (>3 levels)
+- Functions >50 lines (too complex)
+- Duplicate code (DRY violation)
+- Poor variable/function naming
+- Missing error messages in assertions
+
+### 8. **Best Practices** ✅ MEDIUM PRIORITY
+- Missing JSDoc/comments for complex logic
+- Inconsistent formatting
+- Missing default cases in switch
+- Promise rejection not handled
+- setTimeout/setInterval not cleaned up
+
+### 9. **Tech Debt Documentation** ⚠️ CRITICAL ENFORCEMENT
+**IF** you report ANY MEDIUM priority issues:
+1. Check if TECH_DEBT.md file exists in the repository root
+2. If TECH_DEBT.md is MISSING → Report this as a CRITICAL issue:
+   ```
+   CRITICAL: TECH_DEBT.md file is missing but MEDIUM issues were found
+   Location: Repository root
+   Risk: Medium priority issues will not be tracked for future improvement
+   Fix: Create TECH_DEBT.md and document all MEDIUM issues before committing
+   ```
+
+3. If TECH_DEBT.md EXISTS → Report this as a CRITICAL issue:
+   ```
+   CRITICAL: MEDIUM issues found but not documented in TECH_DEBT.md
+   Location: TECH_DEBT.md
+   Risk: Technical debt will accumulate without tracking
+   Fix: Add the following MEDIUM issues to TECH_DEBT.md:
+   [List each MEDIUM issue here]
+   ```
+
+**This rule enforces accountability**: Every non-critical issue MUST be documented for future remediation.
+
+## Response Format:
+
+If you find **ANY** CRITICAL or HIGH PRIORITY issues:
+```
+CRITICAL: [Brief description of the issue]
+Location: [file:line or code snippet]
+Risk: [Why this is serious]
+Fix: [Specific suggestion]
+```
+
+If you find MEDIUM issues but nothing critical:
+```
+MEDIUM: [description]
+Location: [location]
+Suggestion: [how to improve]
+```
+
+**IMPORTANT**: After listing MEDIUM issues, ALWAYS check Tech Debt Documentation rule (#9) and report CRITICAL issue if:
+- TECH_DEBT.md is missing, OR
+- MEDIUM issues are not documented in TECH_DEBT.md
+
+If code passes all checks:
+```
+PASS: Code follows TDD best practices and has no critical issues.
+```
+
+**BE STRICT.** Flag anything suspicious. Better to block a commit than merge bugs.
+
+FILES:
+FILES_PLACEHOLDER
+REVIEW_EOF
+
+# Replace placeholder with actual file contents
+# Use printf to properly escape the content
+printf '%s\n' "g/FILES_PLACEHOLDER/d" "i" "$REVIEW_CONTEXT" "." "w" | ed -s "$REVIEW_REQUEST" 2>/dev/null || {
+  # Fallback: use a simpler approach with a temp file
+  TEMP_FILE=$(mktemp)
+  head -n -1 "$REVIEW_REQUEST" > "$TEMP_FILE"
+  echo "$REVIEW_CONTEXT" >> "$TEMP_FILE"
+  mv "$TEMP_FILE" "$REVIEW_REQUEST"
+}
+
+# Write review header to log file
+cat > "$REVIEW_LOG_FILE" << LOG_HEADER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Code Review Log
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Timestamp: $TIMESTAMP
+Reviewer: Claude Code (AI)
+Branch: $(git branch --show-current)
+Commit: $(git rev-parse --short HEAD 2>/dev/null || echo "pending")
+
+Files Reviewed:
+$(echo "$STAGED_FILES" | sed 's/^/  - /')
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Review Output:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LOG_HEADER
+
+# Run Claude Code in headless mode for review
+echo "Analyzing changes with Claude..."
+REVIEW_OUTPUT=$(/Users/sjaconette/.local/bin/claude -p "$(cat $REVIEW_REQUEST)" 2>&1)
+
+# Append review output to log file
+echo "$REVIEW_OUTPUT" >> "$REVIEW_LOG_FILE"
+
+# Add footer to log
+cat >> "$REVIEW_LOG_FILE" << LOG_FOOTER
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+End of Review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LOG_FOOTER
+
+# Clean up
+rm "$REVIEW_REQUEST"
+
+# Check for critical issues
+# Strip markdown formatting (**text**) before checking - the AI reviewer uses markdown bold
+CRITICAL_FOUND=$(echo "$REVIEW_OUTPUT" | sed 's/^\*\*//; s/\*\*:/:/' | grep -i "^CRITICAL:" | head -5)
+
+if [ -n "$CRITICAL_FOUND" ]; then
+    echo ""
+    echo "❌ REVIEW FAILED - Critical issues detected:"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "$REVIEW_OUTPUT"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Fix these issues before committing."
+    echo ""
+    echo "📝 Full review saved to: $REVIEW_LOG_FILE"
+    echo ""
+    echo "⚠️  NEVER bypass hooks with --no-verify or by killing processes"
+    echo "If hooks are failing, fix the issues or optimize the hooks themselves."
+    exit 1
+fi
+
+# Check for medium issues
+# Strip markdown formatting (**text**) before checking
+MEDIUM_FOUND=$(echo "$REVIEW_OUTPUT" | sed 's/^\*\*//; s/\*\*:/:/' | grep -i "^MEDIUM:" | head -3)
+
+if [ -n "$MEDIUM_FOUND" ]; then
+    echo ""
+    echo "⚠️  REVIEW WARNING - Medium priority issues found:"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "$REVIEW_OUTPUT"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+
+    # Check if TECH_DEBT.md exists
+    TECH_DEBT_FILE="TECH_DEBT.md"
+    if [ ! -f "$TECH_DEBT_FILE" ]; then
+        echo "❌ BLOCKING: Medium priority issues must be documented in $TECH_DEBT_FILE"
+        echo ""
+        echo "These issues are not critical enough to block deployment, but should be"
+        echo "tracked for future improvement."
+        echo ""
+        echo "Please create $TECH_DEBT_FILE and document these issues before committing."
+        echo ""
+        echo "📝 Full review saved to: $REVIEW_LOG_FILE"
+        exit 1
+    fi
+
+    # Extract issue summaries to check if they're documented
+    UNDOCUMENTED_ISSUES=""
+    while IFS= read -r ISSUE_LINE; do
+        # Extract the issue description (everything after "MEDIUM: ")
+        ISSUE_DESC=$(echo "$ISSUE_LINE" | sed 's/^MEDIUM: //')
+
+        # Check if this issue is mentioned in TECH_DEBT.md
+        if ! grep -q -F "$ISSUE_DESC" "$TECH_DEBT_FILE"; then
+            UNDOCUMENTED_ISSUES+="$ISSUE_LINE\n"
+        fi
+    done < <(echo "$REVIEW_OUTPUT" | grep -i "^MEDIUM:")
+
+    if [ -n "$UNDOCUMENTED_ISSUES" ]; then
+        echo "❌ BLOCKING: Medium priority issues must be documented in $TECH_DEBT.md"
+        echo ""
+        echo "The following issues are not documented:"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo -e "$UNDOCUMENTED_ISSUES"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        echo "Please add these issues to $TECH_DEBT.md before committing."
+        echo ""
+        echo "📝 Full review saved to: $REVIEW_LOG_FILE"
+        exit 1
+    fi
+
+    echo "✅ All medium priority issues are documented in $TECH_DEBT_FILE"
+    echo "📝 Full review saved to: $REVIEW_LOG_FILE"
+fi
+
+echo "✅ Review passed"
+echo "📝 Review log saved to: $REVIEW_LOG_FILE"
+exit 0

@@ -1,5 +1,16 @@
-import { useState } from 'react';
+/**
+ * SpellFilters Component
+ *
+ * Filter UI for spell browsing.
+ * Uses useFilterReducer hook for centralized state management.
+ *
+ * Refactored to use useReducer instead of 9 separate useState calls.
+ * This provides cleaner, more predictable state management.
+ */
+
+import { useEffect } from 'react';
 import { SpellFilters as Filters } from '../types/spell';
+import { useFilterReducer } from '../hooks/useFilterReducer';
 import './SpellFilters.css';
 
 interface SpellFiltersProps {
@@ -9,103 +20,44 @@ interface SpellFiltersProps {
 }
 
 export function SpellFilters({ onFiltersChange, schools, classes }: SpellFiltersProps) {
-  const [searchText, setSearchText] = useState('');
-  const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
-  const [selectedSchools, setSelectedSchools] = useState<string[]>([]);
-  const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
-  const [concentrationOnly, setConcentrationOnly] = useState(false);
-  const [ritualOnly, setRitualOnly] = useState(false);
-  const [verbalOnly, setVerbalOnly] = useState(false);
-  const [somaticOnly, setSomaticOnly] = useState(false);
-  const [materialOnly, setMaterialOnly] = useState(false);
+  const {
+    state,
+    setSearchText: setSearchTextAction,
+    toggleLevel,
+    toggleSchool,
+    toggleClass,
+    toggleConcentration,
+    toggleRitual,
+    toggleVerbal,
+    toggleSomatic,
+    toggleMaterial,
+    clearFilters: clearFiltersAction,
+  } = useFilterReducer();
 
   const levels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  const updateFilters = (updates: Partial<Filters>) => {
+  // Update parent component whenever filter state changes
+  useEffect(() => {
     const filters: Filters = {
-      searchText: 'searchText' in updates ? updates.searchText : searchText,
-      levels: 'levels' in updates ? updates.levels : (selectedLevels.length > 0 ? selectedLevels : undefined),
-      schools: 'schools' in updates ? updates.schools : (selectedSchools.length > 0 ? selectedSchools : undefined),
-      classes: 'classes' in updates ? updates.classes : (selectedClasses.length > 0 ? selectedClasses : undefined),
-      concentration: 'concentration' in updates ? updates.concentration : (concentrationOnly || undefined),
-      ritual: 'ritual' in updates ? updates.ritual : (ritualOnly || undefined),
-      componentVerbal: 'componentVerbal' in updates ? updates.componentVerbal : (verbalOnly || undefined),
-      componentSomatic: 'componentSomatic' in updates ? updates.componentSomatic : (somaticOnly || undefined),
-      componentMaterial: 'componentMaterial' in updates ? updates.componentMaterial : (materialOnly || undefined),
+      searchText: state.searchText,
+      levels: state.selectedLevels.length > 0 ? state.selectedLevels : undefined,
+      schools: state.selectedSchools.length > 0 ? state.selectedSchools : undefined,
+      classes: state.selectedClasses.length > 0 ? state.selectedClasses : undefined,
+      concentration: state.concentrationOnly || undefined,
+      ritual: state.ritualOnly || undefined,
+      componentVerbal: state.verbalOnly || undefined,
+      componentSomatic: state.somaticOnly || undefined,
+      componentMaterial: state.materialOnly || undefined,
     };
     onFiltersChange(filters);
-  };
+  }, [state, onFiltersChange]);
 
   const handleSearchChange = (value: string) => {
-    setSearchText(value);
-    updateFilters({ searchText: value });
+    setSearchTextAction(value);
   };
 
-  const toggleLevel = (level: number) => {
-    const newLevels = selectedLevels.includes(level)
-      ? selectedLevels.filter((l) => l !== level)
-      : [...selectedLevels, level];
-    setSelectedLevels(newLevels);
-    updateFilters({ levels: newLevels.length > 0 ? newLevels : undefined });
-  };
-
-  const toggleSchool = (school: string) => {
-    const newSchools = selectedSchools.includes(school)
-      ? selectedSchools.filter((s) => s !== school)
-      : [...selectedSchools, school];
-    setSelectedSchools(newSchools);
-    updateFilters({ schools: newSchools.length > 0 ? newSchools : undefined });
-  };
-
-  const toggleClass = (className: string) => {
-    const newClasses = selectedClasses.includes(className)
-      ? selectedClasses.filter((c) => c !== className)
-      : [...selectedClasses, className];
-    setSelectedClasses(newClasses);
-    updateFilters({ classes: newClasses.length > 0 ? newClasses : undefined });
-  };
-
-  const toggleConcentration = () => {
-    const newValue = !concentrationOnly;
-    setConcentrationOnly(newValue);
-    updateFilters({ concentration: newValue || undefined });
-  };
-
-  const toggleRitual = () => {
-    const newValue = !ritualOnly;
-    setRitualOnly(newValue);
-    updateFilters({ ritual: newValue || undefined });
-  };
-
-  const toggleVerbal = () => {
-    const newValue = !verbalOnly;
-    setVerbalOnly(newValue);
-    updateFilters({ componentVerbal: newValue || undefined });
-  };
-
-  const toggleSomatic = () => {
-    const newValue = !somaticOnly;
-    setSomaticOnly(newValue);
-    updateFilters({ componentSomatic: newValue || undefined });
-  };
-
-  const toggleMaterial = () => {
-    const newValue = !materialOnly;
-    setMaterialOnly(newValue);
-    updateFilters({ componentMaterial: newValue || undefined });
-  };
-
-  const clearFilters = () => {
-    setSearchText('');
-    setSelectedLevels([]);
-    setSelectedSchools([]);
-    setSelectedClasses([]);
-    setConcentrationOnly(false);
-    setRitualOnly(false);
-    setVerbalOnly(false);
-    setSomaticOnly(false);
-    setMaterialOnly(false);
-    onFiltersChange({});
+  const handleClearFilters = () => {
+    clearFiltersAction();
   };
 
   return (
@@ -114,7 +66,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
         <input
           type="text"
           placeholder="Search spells..."
-          value={searchText}
+          value={state.searchText}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="search-input"
         />
@@ -126,7 +78,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           {levels.map((level) => (
             <button
               key={level}
-              className={`filter-btn ${selectedLevels.includes(level) ? 'active' : ''}`}
+              className={`filter-btn ${state.selectedLevels.includes(level) ? 'active' : ''}`}
               onClick={() => toggleLevel(level)}
             >
               {level === 0 ? 'Cantrip' : level}
@@ -141,7 +93,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           {schools.map((school) => (
             <button
               key={school}
-              className={`filter-btn ${selectedSchools.includes(school) ? 'active' : ''}`}
+              className={`filter-btn ${state.selectedSchools.includes(school) ? 'active' : ''}`}
               onClick={() => toggleSchool(school)}
             >
               {school}
@@ -156,7 +108,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           {classes.map((className) => (
             <button
               key={className}
-              className={`filter-btn ${selectedClasses.includes(className) ? 'active' : ''}`}
+              className={`filter-btn ${state.selectedClasses.includes(className) ? 'active' : ''}`}
               onClick={() => toggleClass(className)}
             >
               {className}
@@ -171,7 +123,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           <label className="checkbox-label">
             <input
               type="checkbox"
-              checked={verbalOnly}
+              checked={state.verbalOnly}
               onChange={toggleVerbal}
             />
             <span>Verbal (V)</span>
@@ -179,7 +131,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           <label className="checkbox-label">
             <input
               type="checkbox"
-              checked={somaticOnly}
+              checked={state.somaticOnly}
               onChange={toggleSomatic}
             />
             <span>Somatic (S)</span>
@@ -187,7 +139,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           <label className="checkbox-label">
             <input
               type="checkbox"
-              checked={materialOnly}
+              checked={state.materialOnly}
               onChange={toggleMaterial}
             />
             <span>Material (M)</span>
@@ -201,7 +153,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           <label className="checkbox-label">
             <input
               type="checkbox"
-              checked={concentrationOnly}
+              checked={state.concentrationOnly}
               onChange={toggleConcentration}
             />
             <span>Concentration</span>
@@ -209,7 +161,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           <label className="checkbox-label">
             <input
               type="checkbox"
-              checked={ritualOnly}
+              checked={state.ritualOnly}
               onChange={toggleRitual}
             />
             <span>Ritual</span>
@@ -217,7 +169,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
         </div>
       </div>
 
-      <button className="btn-clear-filters" onClick={clearFilters}>
+      <button className="btn-clear-filters" onClick={handleClearFilters}>
         Clear All Filters
       </button>
     </div>

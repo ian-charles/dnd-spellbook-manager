@@ -1,7 +1,7 @@
 // Comprehensive UI interaction tests for desktop and mobile
 import { Page } from 'puppeteer';
 import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad, clearSpellbookData } from './setup';
-import { createSpellbook, navigateAndWait, waitForElementVisible } from './helpers';
+import { createSpellbook, navigateAndWait, waitForElementVisible, clickSpellbookCard } from './helpers';
 import { TIMEOUTS } from './config';
 
 describe('UI Interactions - Desktop', () => {
@@ -336,43 +336,52 @@ describe('UI Interactions - Desktop', () => {
     }, 30000);
 
     it('should view spellbook details', async () => {
-      // Create a spellbook first
-      await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
+      // Create a spellbook first using helper
+      await createSpellbook(page, TEST_URL, 'Detail View Test');
 
-      // Wait for and click create button using test ID
-      await page.waitForSelector('[data-testid="btn-create-spellbook"]', { visible: true, timeout: 10000 });
-      const createButton = await page.$('[data-testid="btn-create-spellbook"]');
-      expect(createButton).toBeTruthy();
-      await createButton?.click();
+      // Wait for the specific spellbook card to be visible
+      await page.waitForFunction(
+        (name) => {
+          const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
+          return cards.some(card => card.textContent?.includes(name));
+        },
+        { timeout: TIMEOUTS.MEDIUM },
+        'Detail View Test'
+      );
 
-      // Wait for modal to appear
-      await page.waitForSelector('[data-testid="input-spellbook-name"]', { visible: true, timeout: 10000 });
+      // Click the card that matches the created spellbook name
+      await page.evaluate(() => {
+        const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
+        const targetCard = cards.find(card => card.textContent?.includes('Detail View Test'));
+        if (!targetCard) {
+          throw new Error('Could not find spellbook card with name "Detail View Test"');
+        }
+        (targetCard as HTMLElement).click();
+      });
 
-      const nameInput = await page.$('[data-testid="input-spellbook-name"]');
-      await nameInput?.type('Detail View Test');
+      // Wait for navigation and detail page to load
+      await waitForElementVisible(page, '.spellbook-detail-header', TIMEOUTS.MEDIUM);
 
-      const saveButton = await page.$('[data-testid="btn-save-spellbook"]');
-      await saveButton?.click();
+      // Verify we're on detail page by checking URL hash
+      await page.waitForFunction(
+        () => window.location.hash.includes('/spellbooks/'),
+        { timeout: TIMEOUTS.MEDIUM }
+      );
 
-      // Wait for spellbook card to appear
-      await page.waitForSelector('.spellbook-card-content', { timeout: 5000 });
+      const hash = await page.evaluate(() => window.location.hash);
+      expect(hash).toContain('/spellbooks/');
 
-      // Click on spellbook card
-      const spellbookCard = await page.$('.spellbook-card-content');
-      await spellbookCard?.click();
-
-      // Wait for navigation to detail page
-      await page.waitForSelector('.spellbook-detail-header', { visible: true, timeout: 10000 });
-      await page.waitForSelector('.spellbook-detail-header h2', { visible: true, timeout: 10000 });
-
-      // Verify we're on detail page
+      // Verify header contains the correct spellbook name
       const detailHeader = await page.$('.spellbook-detail-header h2');
       expect(detailHeader).toBeTruthy();
 
       const headerText = await detailHeader?.evaluate(el => el.textContent);
-      // Header should contain the spellbook name we created
-      expect(headerText).toBeTruthy();
-      expect(headerText?.length).toBeGreaterThan(0);
+      expect(headerText).toContain('Detail View Test');
+
+      // Verify either empty state or spellbook table is present
+      const hasEmptyState = await page.$('.spellbook-detail-empty');
+      const hasTable = await page.$('.spellbook-table');
+      expect(hasEmptyState || hasTable).toBeTruthy();
     }, 30000);
 
     it('should delete a spellbook', async () => {
@@ -660,38 +669,52 @@ describe('UI Interactions - Mobile (375x667)', () => {
     }, 30000);
 
     it('should view spellbook details on mobile', async () => {
-      // Create a spellbook
-      await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
+      // Create a spellbook using helper
+      await createSpellbook(page, TEST_URL, 'Mobile Detail Test');
 
-      // Wait for and find create button
-      await page.waitForSelector('[data-testid="btn-create-spellbook"]', { timeout: 10000 });
-      const createButton = await page.$('[data-testid="btn-create-spellbook"]');
-      expect(createButton).toBeTruthy();
+      // Wait for the specific spellbook card to be visible
+      await page.waitForFunction(
+        (name) => {
+          const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
+          return cards.some(card => card.textContent?.includes(name));
+        },
+        { timeout: TIMEOUTS.MEDIUM },
+        'Mobile Detail Test'
+      );
 
-      await createButton?.click();
+      // Click the card that matches the created spellbook name
+      await page.evaluate(() => {
+        const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
+        const targetCard = cards.find(card => card.textContent?.includes('Mobile Detail Test'));
+        if (!targetCard) {
+          throw new Error('Could not find spellbook card with name "Mobile Detail Test"');
+        }
+        (targetCard as HTMLElement).click();
+      });
 
-      // Wait for modal to appear
-      await page.waitForSelector('input[type="text"]', { timeout: 5000 });
-      const nameInput = await page.$('input[type="text"]');
-      await nameInput?.type('Mobile Detail Test');
+      // Wait for navigation and detail page to load
+      await waitForElementVisible(page, '.spellbook-detail-header', TIMEOUTS.MEDIUM);
+      await page.waitForSelector('[data-testid="spellbook-detail"]', { visible: true, timeout: TIMEOUTS.MEDIUM });
 
-      const dialogButtons = await page.$$('.dialog-actions button');
-      await dialogButtons[dialogButtons.length - 1]?.click();
+      // Verify we're on detail page by checking URL hash
+      await page.waitForFunction(
+        () => window.location.hash.includes('/spellbooks/'),
+        { timeout: TIMEOUTS.MEDIUM }
+      );
 
-      // Wait for spellbook card to appear, then click on it
-      await page.waitForSelector('.spellbook-card-content', { timeout: 10000 });
-      const spellbookCard = await page.$('.spellbook-card-content');
-      await spellbookCard?.click();
+      const hash = await page.evaluate(() => window.location.hash);
+      expect(hash).toContain('/spellbooks/');
 
-      // Verify we're on detail page - check for detail container
-      await page.waitForSelector('[data-testid="spellbook-detail"]', { timeout: 10000 });
+      // Verify detail container is present
       const detailContainer = await page.$('[data-testid="spellbook-detail"]');
       expect(detailContainer).toBeTruthy();
 
-      // Wait for header to appear
-      await page.waitForSelector('.spellbook-detail-header h2', { timeout: 5000 });
+      // Verify header is present with correct name
       const detailHeader = await page.$('.spellbook-detail-header h2');
       expect(detailHeader).toBeTruthy();
+
+      const headerText = await detailHeader?.evaluate(el => el.textContent);
+      expect(headerText).toContain('Mobile Detail Test');
     }, 30000);
   });
 });

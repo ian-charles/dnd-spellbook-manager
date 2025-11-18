@@ -14,6 +14,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import LoadingSpinner from './LoadingSpinner';
 import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
 import { getLevelText, getComponentsText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
+import { MESSAGES } from '../constants/messages';
 import './SpellbookDetail.css';
 
 export interface EnrichedSpell {
@@ -63,7 +64,7 @@ export function SpellbookDetailView({
   if (!spellbook) {
     return (
       <div className="spellbook-detail">
-        <LoadingSpinner message="Loading spellbook..." />
+        <LoadingSpinner message={MESSAGES.LOADING.SPELLBOOK} />
       </div>
     );
   }
@@ -74,7 +75,7 @@ export function SpellbookDetailView({
     <div className="spellbook-detail" data-testid="spellbook-detail">
       <div className="spellbook-detail-header">
         <button className="btn-back" onClick={onBack}>
-          ← Back to Spellbooks
+          {MESSAGES.DIALOG.BACK_TO_SPELLBOOKS}
         </button>
         <div>
           <h2 data-testid="spellbook-detail-name">{spellbook.name}</h2>
@@ -86,8 +87,8 @@ export function SpellbookDetailView({
 
       {enrichedSpells.length === 0 ? (
         <div className="spellbook-detail-empty">
-          <p>This spellbook is empty.</p>
-          <p>Go to the Browse tab to add spells!</p>
+          <p>{MESSAGES.EMPTY_STATES.SPELLBOOK_IS_EMPTY}</p>
+          <p>{MESSAGES.EMPTY_STATES.GO_TO_BROWSE}</p>
         </div>
       ) : (
         <div className="spellbook-table-container" data-testid="spellbook-spell-list">
@@ -223,8 +224,8 @@ export function SpellbookDetailView({
       {/* Confirm Remove Dialog */}
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
-        title="Remove Spell"
-        message={`Remove "${confirmDialog.spellName}" from this spellbook?`}
+        title={MESSAGES.DIALOG.REMOVE_SPELL}
+        message={MESSAGES.DIALOG.REMOVE_SPELL_CONFIRM.replace('{spellName}', confirmDialog.spellName)}
         confirmLabel="Remove"
         cancelLabel="Cancel"
         variant="danger"

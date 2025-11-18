@@ -13,6 +13,7 @@ import { useModal } from './hooks/useModal';
 import { useToast } from './hooks/useToast';
 import { spellService } from './services/spell.service';
 import { SpellFilters as Filters, Spell } from './types/spell';
+import { MESSAGES } from './constants/messages';
 import './App.css';
 
 function App() {
@@ -75,8 +76,8 @@ function App() {
     if (spellbooks.length === 0) {
       setAlertDialog({
         isOpen: true,
-        title: 'No Spellbooks',
-        message: 'Create a spellbook first!',
+        title: MESSAGES.INFO.NO_SPELLBOOKS,
+        message: MESSAGES.INFO.CREATE_SPELLBOOK_FIRST,
         variant: 'info',
       });
       navigateToSpellbooks();
@@ -91,13 +92,13 @@ function App() {
       try {
         await addSpellToSpellbook(spellbookId, spellId);
         spellbookSelector.closeModal();
-        displayToast('✓ Spell added to spellbook!');
+        displayToast(MESSAGES.SUCCESS.SPELL_ADDED);
       } catch (error) {
         spellbookSelector.closeModal();
         setAlertDialog({
           isOpen: true,
-          title: 'Failed to Add Spell',
-          message: error instanceof Error ? error.message : 'Failed to add spell. It might already be in this spellbook.',
+          title: MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
+          message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_ADD_SPELL_GENERIC,
           variant: 'error',
         });
       }
@@ -108,7 +109,7 @@ function App() {
   if (loading) {
     return (
       <div className="app">
-        <LoadingSpinner size="large" message="Loading spells from the archive..." />
+        <LoadingSpinner size="large" message={MESSAGES.LOADING.SPELLS} />
       </div>
     );
   }
@@ -118,7 +119,7 @@ function App() {
     return (
       <div className="app">
         <div className="error">
-          <h2>Error loading spells</h2>
+          <h2>{MESSAGES.ERROR.ERROR_LOADING_SPELLS}</h2>
           <p>{error.message}</p>
         </div>
       </div>
@@ -170,8 +171,8 @@ function App() {
       {spellbookSelector.isOpen && (
         <div className="dialog-overlay" data-testid="spellbook-selector">
           <div className="dialog">
-            <h3>Add to Spellbook</h3>
-            <p>Select a spellbook:</p>
+            <h3>{MESSAGES.DIALOG.ADD_TO_SPELLBOOK}</h3>
+            <p>{MESSAGES.DIALOG.SELECT_SPELLBOOK}</p>
             <div className="spellbook-selector-list">
               {spellbooks.map((spellbook) => (
                 <button
@@ -200,7 +201,7 @@ function App() {
       {/* Success Toast */}
       {showToast && (
         <div className="success-toast" data-testid="add-spell-success">
-          ✓ Spell added to spellbook!
+          {MESSAGES.SUCCESS.SPELL_ADDED}
         </div>
       )}
 

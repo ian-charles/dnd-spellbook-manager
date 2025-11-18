@@ -5,6 +5,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import LoadingSpinner from './LoadingSpinner';
 import LoadingSkeleton from './LoadingSkeleton';
+import { MESSAGES } from '../constants/messages';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -49,8 +50,8 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     } catch (error) {
       setAlertDialog({
         isOpen: true,
-        title: 'Creation Failed',
-        message: error instanceof Error ? error.message : 'Failed to create spellbook. Please try again.',
+        title: MESSAGES.ERROR.CREATION_FAILED,
+        message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_CREATE_SPELLBOOK,
         variant: 'error',
       });
     } finally {
@@ -70,8 +71,8 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
       setAlertDialog({
         isOpen: true,
-        title: 'Delete Failed',
-        message: 'Failed to delete spellbook. Please try again.',
+        title: MESSAGES.ERROR.DELETE_FAILED,
+        message: MESSAGES.ERROR.FAILED_TO_DELETE_SPELLBOOK,
         variant: 'error',
       });
     }
@@ -87,8 +88,8 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     } catch (error) {
       setAlertDialog({
         isOpen: true,
-        title: 'Export Failed',
-        message: 'Failed to export spellbooks. Please try again.',
+        title: MESSAGES.ERROR.EXPORT_FAILED,
+        message: MESSAGES.ERROR.FAILED_TO_EXPORT_SPELLBOOKS,
         variant: 'error',
       });
     }
@@ -111,19 +112,19 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       if (result.errors.length > 0) {
         setAlertDialog({
           isOpen: true,
-          title: 'Import Completed with Errors',
+          title: MESSAGES.ERROR.IMPORT_WITH_ERRORS,
           message:
-            `Imported: ${result.imported}\n` +
-            `Skipped: ${result.skipped}\n` +
-            `Errors: ${result.errors.length}\n\n` +
+            `${MESSAGES.IMPORT.IMPORTED_LABEL} ${result.imported}\n` +
+            `${MESSAGES.IMPORT.SKIPPED_LABEL} ${result.skipped}\n` +
+            `${MESSAGES.IMPORT.ERRORS_LABEL} ${result.errors.length}\n\n` +
             result.errors.join('\n'),
           variant: 'warning',
         });
       } else {
         setAlertDialog({
           isOpen: true,
-          title: 'Import Successful',
-          message: `Imported: ${result.imported}\nSkipped: ${result.skipped}`,
+          title: MESSAGES.SUCCESS.IMPORT_SUCCESS,
+          message: `${MESSAGES.IMPORT.IMPORTED_LABEL} ${result.imported}\n${MESSAGES.IMPORT.SKIPPED_LABEL} ${result.skipped}`,
           variant: 'success',
         });
       }
@@ -133,8 +134,8 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     } catch (error) {
       setAlertDialog({
         isOpen: true,
-        title: 'Import Failed',
-        message: `Failed to import spellbooks: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        title: MESSAGES.ERROR.IMPORT_FAILED,
+        message: `${MESSAGES.ERROR.FAILED_TO_IMPORT_SPELLBOOKS} ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: 'error',
       });
     } finally {
@@ -150,7 +151,7 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     return (
       <div className="spellbook-list">
         <h2 data-testid="spellbooks-header">My Spellbooks</h2>
-        <LoadingSpinner message="Loading spellbooks..." />
+        <LoadingSpinner message={MESSAGES.LOADING.SPELLBOOKS} />
       </div>
     );
   }
@@ -165,9 +166,9 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
             data-testid="btn-export-spellbooks"
             onClick={handleExport}
             disabled={spellbooks.length === 0}
-            title={spellbooks.length === 0 ? 'No spellbooks to export' : 'Export all spellbooks'}
+            title={spellbooks.length === 0 ? MESSAGES.TOOLTIPS.NO_SPELLBOOKS_TO_EXPORT : MESSAGES.TOOLTIPS.EXPORT_ALL_SPELLBOOKS}
           >
-            Export
+            {MESSAGES.BUTTONS.EXPORT}
           </button>
           <button
             className="btn-secondary"
@@ -180,7 +181,7 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
                 <LoadingSpinner size="small" inline /> Importing...
               </>
             ) : (
-              'Import'
+              MESSAGES.BUTTONS.IMPORT
             )}
           </button>
           <button
@@ -205,8 +206,8 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
 
       {spellbooks.length === 0 ? (
         <div className="spellbooks-empty" data-testid="spellbooks-empty">
-          <p>You don't have any spellbooks yet.</p>
-          <p>Click "New Spellbook" to create your first one!</p>
+          <p>{MESSAGES.EMPTY_STATES.NO_SPELLBOOKS_YET}</p>
+          <p>{MESSAGES.EMPTY_STATES.CLICK_NEW_SPELLBOOK}</p>
         </div>
       ) : (
         <div className="spellbooks-grid">
@@ -245,17 +246,17 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       {showCreateDialog && (
         <div className="dialog-overlay" data-testid="create-spellbook-dialog">
           <div className="dialog">
-            <h3>Create New Spellbook</h3>
+            <h3>{MESSAGES.BUTTONS.CREATE_NEW_SPELLBOOK}</h3>
             <form onSubmit={handleCreate}>
               <div className="form-group">
-                <label htmlFor="spellbook-name">Spellbook Name</label>
+                <label htmlFor="spellbook-name">{MESSAGES.FORMS.SPELLBOOK_NAME_LABEL}</label>
                 <input
                   type="text"
                   id="spellbook-name"
                   data-testid="input-spellbook-name"
                   value={newSpellbookName}
                   onChange={(e) => setNewSpellbookName(e.target.value)}
-                  placeholder="e.g., My Wizard Spells"
+                  placeholder={MESSAGES.FORMS.SPELLBOOK_NAME_PLACEHOLDER}
                   autoFocus
                   required
                 />

@@ -70,6 +70,15 @@ SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" \
     --region="${REGION}" \
     --format='value(status.url)')
 
+# Write production URL to .env.production for future builds
+echo "Writing production URL to .env.production..."
+cat > .env.production << ENV_EOF
+# Production environment variables
+# Generated automatically by deploy-local-build.sh
+VITE_PRODUCTION_URL=${SERVICE_URL}
+VITE_APP_VERSION=$(node -p "require('./package.json').version")
+ENV_EOF
+
 echo "=========================================="
 echo "Deployment complete!"
 echo "Service URL: ${SERVICE_URL}"

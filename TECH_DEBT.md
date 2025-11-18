@@ -4,84 +4,50 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-### Magic Strings Should Be Constants
-**Location - App.tsx**:
-- Line 94: "✓ Spell added to spellbook!" (toast message)
-- Line 100: "Failed to Add Spell" (alert title)
-- Line 111: "Loading spells from the archive..." (loading message)
-- Line 122: "Error loading spells" (error heading)
-- Line 203: "✓ Spell added to spellbook!" (DUPLICATE - toast JSX)
+### Missing comprehensive JSDoc documentation for LoadingButton public API
+**Location**: [src/components/LoadingButton.tsx:11-14](src/components/LoadingButton.tsx#L11)
 
-**Location - SpellbookList.tsx**:
-- Line 52: "Creation Failed", "Failed to create spellbook. Please try again."
-- Line 68: "Delete Failed", "Failed to delete spellbook. Please try again."
-- Line 84: "Export Failed", "Failed to export spellbooks. Please try again."
-- Line 108: "Import Completed with Errors", "Imported:", "Skipped:", "Errors:"
-- Line 119: "Import Successful"
-- Line 130: "Import Failed", "Failed to import spellbooks:"
-- Line 148: "Loading spellbooks..."
-- Line 161: "Export", "No spellbooks to export", "Export all spellbooks"
-- Line 169: "Import"
-- Line 191: "You don't have any spellbooks yet.", 'Click "New Spellbook" to create your first one!'
-- Line 220: "Create New Spellbook"
-- Line 224: "Spellbook Name"
-- Line 229: "e.g., My Wizard Spells"
+**Issue**: LoadingButtonProps interface has minimal inline comments but lacks comprehensive JSDoc documentation explaining when each prop is used and how they interact
 
-**Location - SpellbookDetailView.tsx**:
-- Line 66: "Loading spellbook..."
+**Impact**: Developers using this component may not understand that loadingText replaces children or that disabled combines with loading state
 
-**Issue**: User-facing messages hardcoded as magic strings throughout the codebase (20+ locations)
-
-**Impact**: 20+ locations across 3 files, inconsistency risk, harder to maintain, i18n support would require finding all hardcoded strings, App.tsx:203 duplicates line 94
-
-**Solution**: Create constants file for user messages (e.g., `src/constants/messages.ts` or `src/constants/ui.ts`) with:
+**Solution**: Add detailed JSDoc to each prop:
 ```typescript
-export const MESSAGES = {
-  LOADING: {
-    SPELLS: 'Loading spells from the archive...',
-    SPELLBOOKS: 'Loading spellbooks...',
-    SPELLBOOK: 'Loading spellbook...',
-  },
-  SUCCESS: {
-    SPELL_ADDED: '✓ Spell added to spellbook!',
-  },
-  // etc...
-};
+/**
+ * Whether the button is in loading state.
+ * When true, the button is disabled and displays loadingText with a spinner.
+ */
+loading: boolean;
 ```
 
-**Effort**: Low (30-45 minutes)
+**Effort**: Low (15 minutes)
 
-**Priority**: Medium - Improves maintainability and sets foundation for future i18n support
-
----
-
-### Inline Loading State JSX
-**Location**:
-- [src/components/SpellbookList.tsx:176-178](src/components/SpellbookList.tsx#L176) - Import button loading state
-- [src/components/SpellbookList.tsx:281-283](src/components/SpellbookList.tsx#L281) - Create button loading state
-
-**Issue**: Loading button content duplicated inline across components
-
-**Impact**: 2 locations with duplicated pattern `<LoadingSpinner size="small" inline /> Text...`, inconsistent loading UI pattern
-
-**Solution**: Extract to reusable component or helper function:
-```typescript
-// Option 1: LoadingButton component
-<LoadingButton loading={importing} loadingText="Importing..." onClick={handleImport}>
-  Import
-</LoadingButton>
-
-// Option 2: Helper function
-{renderButtonContent(importing, 'Import', 'Importing...')}
-```
-
-**Effort**: Low (1 hour)
-
-**Priority**: Medium - Reduces duplication, improves consistency
+**Priority**: Medium - Component works but documentation could prevent misuse
 
 ---
 
 ## Completed Refactoring
+
+### ✅ Magic Strings Extracted to Constants (Completed 2025-11-17)
+- **Created**: [src/constants/messages.ts](src/constants/messages.ts) with 60+ message constants
+- **Created**: [src/constants/messages.test.ts](src/constants/messages.test.ts) with 42 unit tests
+- **Updated**: [src/App.tsx](src/App.tsx) - 8 magic strings replaced
+- **Updated**: [src/components/SpellbookList.tsx](src/components/SpellbookList.tsx) - 13 magic strings replaced
+- **Updated**: [src/components/SpellbookDetailView.tsx](src/components/SpellbookDetailView.tsx) - 4 magic strings replaced
+- **Eliminated**: 25+ hardcoded UI messages across 3 components
+- **Eliminated**: Duplicate "✓ Spell added to spellbook!" at App.tsx:203
+- **Result**: Single source of truth for all user-facing text, foundation for i18n, type-safe message access
+- **Test Results**: 451/451 tests passing (42 new tests for message constants)
+
+### ✅ Inline Loading JSX Extracted to LoadingButton Component (Completed 2025-11-17)
+- **Created**: [src/components/LoadingButton.tsx](src/components/LoadingButton.tsx) - reusable loading button component
+- **Created**: [src/components/LoadingButton.test.tsx](src/components/LoadingButton.test.tsx) with 15 unit tests
+- **Updated**: [src/components/SpellbookList.tsx](src/components/SpellbookList.tsx) - 2 inline loading JSX patterns refactored
+- **Eliminated**: Duplicated `<LoadingSpinner size="small" inline /> Text...` pattern at 2 locations
+- **Fixed**: Refactored 2 tests to test behavior instead of implementation details (CSS classes)
+- **Result**: DRY principle applied, single source of truth for loading button UI, consistent loading UX, TDD best practices followed
+- **Test Results**: 466/466 tests passing (15 new tests for LoadingButton)
+- **Known Issues**: 1 remaining medium-priority tech debt item (missing comprehensive JSDoc)
 
 ### ✅ E2E Test Updates & Mobile Expansion Fix (Completed 2025-11-15)
 - **Updated**: All 6 E2E test files with new CSS class names and scroll behavior

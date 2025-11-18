@@ -5,6 +5,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import LoadingSpinner from './LoadingSpinner';
 import LoadingSkeleton from './LoadingSkeleton';
+import { LoadingButton } from './LoadingButton';
 import { MESSAGES } from '../constants/messages';
 import './SpellbookList.css';
 
@@ -170,20 +171,15 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
           >
             {MESSAGES.BUTTONS.EXPORT}
           </button>
-          <button
+          <LoadingButton
             className="btn-secondary"
             data-testid="btn-import-spellbooks"
             onClick={handleImportClick}
-            disabled={importing}
+            loading={importing}
+            loadingText="Importing..."
           >
-            {importing ? (
-              <>
-                <LoadingSpinner size="small" inline /> Importing...
-              </>
-            ) : (
-              MESSAGES.BUTTONS.IMPORT
-            )}
-          </button>
+            {MESSAGES.BUTTONS.IMPORT}
+          </LoadingButton>
           <button
             className="btn-primary"
             data-testid="btn-create-spellbook"
@@ -273,20 +269,16 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
                 >
                   Cancel
                 </button>
-                <button
+                <LoadingButton
                   type="submit"
                   className="btn-primary"
                   data-testid="btn-save-spellbook"
-                  disabled={creating || !newSpellbookName.trim()}
+                  loading={creating}
+                  loadingText="Creating..."
+                  disabled={!newSpellbookName.trim()}
                 >
-                  {creating ? (
-                    <>
-                      <LoadingSpinner size="small" inline /> Creating...
-                    </>
-                  ) : (
-                    'Create'
-                  )}
-                </button>
+                  Create
+                </LoadingButton>
               </div>
             </form>
           </div>

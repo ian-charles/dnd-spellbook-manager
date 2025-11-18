@@ -4,7 +4,13 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-_No active technical debt items at this time._
+### Missing Unit Tests for SpellbookList Component
+**Location**: [src/components/SpellbookList.tsx](src/components/SpellbookList.tsx) (280+ lines)
+**Issue**: No unit test coverage for complex component with state management, error handling, and user interactions
+**Impact**: High risk of regressions, no behavior documentation, covered by E2E tests but lacks fast unit test feedback
+**Solution**: Create comprehensive unit tests covering all user flows and edge cases
+**Effort**: High (4-6 hours for ~40-50 tests)
+**Priority**: Medium (E2E tests provide coverage, but unit tests would improve development speed)
 
 ---
 

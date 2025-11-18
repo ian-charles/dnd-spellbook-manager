@@ -4,7 +4,6 @@ import { exportImportService } from '../services/exportImport.service';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import LoadingSpinner from './LoadingSpinner';
-import LoadingSkeleton from './LoadingSkeleton';
 import { LoadingButton } from './LoadingButton';
 import { MESSAGES } from '../constants/messages';
 import './SpellbookList.css';

@@ -1,7 +1,7 @@
 /**
  * AlertDialog Styles
  *
- * Custom alert dialog styles with dark mode support.
+ * Custom alert dialog styles using design tokens.
  */
 
 /* Overlay */
@@ -15,18 +15,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
 }
 
 /* Dialog container */
 .alert-dialog {
-  background: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
   max-width: 480px;
   width: 100%;
-  animation: slideIn 0.2s ease-out;
+  animation: slideIn var(--transition-fast) ease-out;
 }
 
 @keyframes slideIn {
@@ -42,120 +42,123 @@
 
 /* Header */
 .alert-dialog-header {
-  padding: 1.5rem 1.5rem 1rem;
-  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .alert-dialog-title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
 }
 
 /* Body */
 .alert-dialog-body {
-  padding: 1.5rem;
+  padding: var(--space-6);
 }
 
 .alert-dialog-message {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
   white-space: pre-wrap; /* Preserve line breaks */
 }
 
 /* Footer */
 .alert-dialog-footer {
-  padding: 1rem 1.5rem 1.5rem;
+  padding: var(--space-4) var(--space-6) var(--space-6);
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--color-border-primary);
 }
 
 .alert-dialog-footer button {
-  padding: 0.625rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.9375rem;
-  font-weight: 500;
+  padding: var(--btn-padding-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   border: none;
   min-width: 100px;
 }
 
 /* Primary button */
 .alert-dialog-footer .btn-primary {
-  background: var(--accent-color);
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
 }
 
 .alert-dialog-footer .btn-primary:hover {
-  background: var(--accent-hover);
+  background: var(--color-primary-hover);
 }
 
 .alert-dialog-footer .btn-primary:focus {
-  outline: 2px solid var(--accent-color);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
 /* Variant-specific styling */
 .alert-dialog-footer .btn-error {
-  background: #dc3545;
+  background: var(--color-error);
+  color: white;
 }
 
 .alert-dialog-footer .btn-error:hover {
-  background: #c82333;
+  background: var(--color-error-hover);
 }
 
 .alert-dialog-footer .btn-success {
-  background: #28a745;
+  background: var(--color-success);
+  color: white;
 }
 
 .alert-dialog-footer .btn-success:hover {
-  background: #218838;
+  background: var(--color-success-hover);
 }
 
 .alert-dialog-footer .btn-warning {
-  background: #ffc107;
-  color: #000;
+  background: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .alert-dialog-footer .btn-warning:hover {
-  background: #e0a800;
+  background: var(--color-warning-hover);
 }
 
 .alert-dialog-footer .btn-info {
-  background: #17a2b8;
+  background: var(--color-info);
+  color: white;
 }
 
 .alert-dialog-footer .btn-info:hover {
-  background: #138496;
+  background: var(--color-info-hover);
 }
 
 /* Variant-specific dialog header colors */
 .alert-dialog-error .alert-dialog-title {
-  color: #dc3545;
+  color: var(--color-error);
 }
 
 .alert-dialog-success .alert-dialog-title {
-  color: #28a745;
+  color: var(--color-success);
 }
 
 .alert-dialog-warning .alert-dialog-title {
-  color: #ffc107;
+  color: var(--color-warning);
 }
 
 .alert-dialog-info .alert-dialog-title {
-  color: #17a2b8;
+  color: var(--color-info);
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .alert-dialog {
     max-width: 100%;
-    margin: 1rem;
+    margin: var(--space-4);
   }
 
   .alert-dialog-footer button {

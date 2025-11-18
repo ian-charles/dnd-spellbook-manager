@@ -1,7 +1,7 @@
 /**
  * ConfirmDialog Styles
  *
- * Custom confirmation dialog styles with dark mode support.
+ * Custom confirmation dialog styles using design tokens.
  */
 
 /* Overlay */
@@ -15,18 +15,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
 }
 
 /* Dialog container */
 .confirm-dialog {
-  background: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
   max-width: 480px;
   width: 100%;
-  animation: slideIn 0.2s ease-out;
+  animation: slideIn var(--transition-fast) ease-out;
 }
 
 @keyframes slideIn {
@@ -42,124 +42,127 @@
 
 /* Header */
 .confirm-dialog-header {
-  padding: 1.5rem 1.5rem 1rem;
-  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .confirm-dialog-title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
 }
 
 /* Body */
 .confirm-dialog-body {
-  padding: 1.5rem;
+  padding: var(--space-6);
 }
 
 .confirm-dialog-message {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
   white-space: pre-wrap; /* Preserve line breaks */
 }
 
 /* Footer */
 .confirm-dialog-footer {
-  padding: 1rem 1.5rem 1.5rem;
+  padding: var(--space-4) var(--space-6) var(--space-6);
   display: flex;
-  gap: 0.75rem;
+  gap: var(--space-3);
   justify-content: flex-end;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--color-border-primary);
 }
 
 .confirm-dialog-footer button {
-  padding: 0.625rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.9375rem;
-  font-weight: 500;
+  padding: var(--btn-padding-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   border: none;
   min-width: 80px;
 }
 
 /* Secondary button (Cancel) */
 .confirm-dialog-footer .btn-secondary {
-  background: var(--btn-secondary-bg);
-  color: var(--btn-secondary-text);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-primary);
 }
 
 .confirm-dialog-footer .btn-secondary:hover {
-  background: var(--btn-secondary-hover);
+  background: var(--color-hover-strong);
 }
 
 .confirm-dialog-footer .btn-secondary:focus {
-  outline: 2px solid var(--accent-color);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
 /* Primary button (Confirm) */
 .confirm-dialog-footer .btn-primary {
-  background: var(--accent-color);
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
 }
 
 .confirm-dialog-footer .btn-primary:hover {
-  background: var(--accent-hover);
+  background: var(--color-primary-hover);
 }
 
 .confirm-dialog-footer .btn-primary:focus {
-  outline: 2px solid var(--accent-color);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
 /* Variant-specific styling for confirm button */
 .confirm-dialog-footer .btn-danger {
-  background: #dc3545;
+  background: var(--color-error);
+  color: white;
 }
 
 .confirm-dialog-footer .btn-danger:hover {
-  background: #c82333;
+  background: var(--color-error-hover);
 }
 
 .confirm-dialog-footer .btn-warning {
-  background: #ffc107;
-  color: #000;
+  background: var(--color-warning);
+  color: var(--color-warning-text);
 }
 
 .confirm-dialog-footer .btn-warning:hover {
-  background: #e0a800;
+  background: var(--color-warning-hover);
 }
 
 .confirm-dialog-footer .btn-info {
-  background: #17a2b8;
+  background: var(--color-info);
+  color: white;
 }
 
 .confirm-dialog-footer .btn-info:hover {
-  background: #138496;
+  background: var(--color-info-hover);
 }
 
 /* Variant-specific dialog header colors */
 .confirm-dialog-danger .confirm-dialog-title {
-  color: #dc3545;
+  color: var(--color-error);
 }
 
 .confirm-dialog-warning .confirm-dialog-title {
-  color: #ffc107;
+  color: var(--color-warning);
 }
 
 .confirm-dialog-info .confirm-dialog-title {
-  color: #17a2b8;
+  color: var(--color-info);
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .confirm-dialog {
     max-width: 100%;
-    margin: 1rem;
+    margin: var(--space-4);
   }
 
   .confirm-dialog-footer {

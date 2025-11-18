@@ -60,6 +60,18 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
     clearFiltersAction();
   };
 
+  // Check if any filters are active
+  const hasActiveFilters =
+    state.searchText.length > 0 ||
+    state.selectedLevels.length > 0 ||
+    state.selectedSchools.length > 0 ||
+    state.selectedClasses.length > 0 ||
+    state.concentrationOnly ||
+    state.ritualOnly ||
+    state.verbalOnly ||
+    state.somaticOnly ||
+    state.materialOnly;
+
   return (
     <div className="spell-filters">
       <div className="search-box">
@@ -169,9 +181,11 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
         </div>
       </div>
 
-      <button className="btn-clear-filters" onClick={handleClearFilters}>
-        Clear All Filters
-      </button>
+      {hasActiveFilters && (
+        <button className="btn-clear-filters" onClick={handleClearFilters}>
+          Clear All Filters
+        </button>
+      )}
     </div>
   );
 }

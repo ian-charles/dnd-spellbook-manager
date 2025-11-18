@@ -1,0 +1,203 @@
+/**
+ * Shared Mobile Table Styles
+ *
+ * Common mobile responsive styles for spell tables used in both:
+ * - SpellTable component (browse view)
+ * - SpellbookDetail component (spellbook view)
+ *
+ * Uses design tokens with light-dark() function for automatic theming.
+ * This file eliminates ~200 lines of duplicated CSS between the two components.
+ */
+
+@media (max-width: 768px) {
+  /* Container - remove desktop table styling */
+  .spell-table-container,
+  .spellbook-table-container {
+    padding: 0;
+    background: transparent;
+    border: none;
+    overflow-x: visible;
+  }
+
+  /* Hide table headers on mobile */
+  .spell-table thead,
+  .spellbook-table thead {
+    display: none;
+  }
+
+  /* Convert table to block layout */
+  .spell-table,
+  .spell-table tbody,
+  .spellbook-table,
+  .spellbook-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  /* Card-style rows */
+  .spell-table tbody tr,
+  .spellbook-table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+    background: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 41, 59, 0.6));
+    border: 1px solid light-dark(rgba(226, 232, 240, 0.8), rgba(100, 116, 139, 0.3));
+    border-radius: var(--radius-xl);
+    padding: var(--space-3) var(--space-4) var(--space-4);
+    border-left: 4px solid var(--color-primary);
+    position: relative;
+    min-height: 60px;
+    box-shadow: light-dark(0 1px 3px rgba(0, 0, 0, 0.05), none);
+  }
+
+  .spell-table tbody tr:hover,
+  .spellbook-table tbody tr:hover {
+    background: light-dark(rgba(248, 250, 252, 0.95), rgba(30, 41, 59, 0.8));
+  }
+
+  .spell-row.expanded {
+    background: light-dark(rgba(237, 233, 254, 0.3), rgba(79, 70, 229, 0.15));
+  }
+
+  /* Prepared row styling (spellbook only) */
+  .spellbook-table .prepared-row {
+    background: light-dark(rgba(237, 233, 254, 0.25), rgba(79, 70, 229, 0.15));
+  }
+
+  .spellbook-table .prepared-row:hover {
+    background: light-dark(rgba(237, 233, 254, 0.35), rgba(79, 70, 229, 0.2));
+  }
+
+  /* Remove default cell padding and borders */
+  .spell-table td,
+  .spellbook-table td {
+    padding: 0;
+    border: none;
+  }
+
+  /* Spell name - full width with padding for controls */
+  .spell-name {
+    flex: 1 1 100%;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-1) 5.5rem var(--space-2) 0;
+    margin: 0;
+    min-width: 0;
+    color: light-dark(#4c1d95, #a5b4fc);
+    line-height: var(--line-height-snug);
+    order: 1;
+  }
+
+  /* Spellbook has different right padding for prepared checkbox */
+  .spellbook-table .spell-name {
+    padding-right: 6rem;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    margin: var(--space-2) var(--space-1) 0 0;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+  }
+
+  /* Expansion cell takes full width */
+  .spell-expansion-cell {
+    flex: 1 1 100%;
+    width: 100%;
+    display: block !important;
+  }
+
+  /* Inline expansion within card */
+  .spell-inline-expansion,
+  .spellbook-table .spell-inline-expansion {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid light-dark(rgba(203, 213, 225, 0.6), rgba(100, 116, 139, 0.3));
+    animation: slideDown var(--transition-base) forwards;
+    opacity: 1;
+    color: light-dark(#1e293b, #e2e8f0);
+  }
+
+  .spell-inline-expansion .spell-meta,
+  .spellbook-table .spell-inline-expansion .spell-meta {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-4);
+    color: var(--color-text-secondary);
+  }
+
+  .spell-inline-expansion .spell-expanded-details,
+  .spellbook-table .spell-inline-expansion .spell-expanded-details {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
+    background: light-dark(rgba(241, 245, 249, 0.6), rgba(15, 23, 42, 0.4));
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    color: light-dark(#1e293b, #e2e8f0);
+  }
+
+  .spell-inline-expansion .spell-expanded-details strong,
+  .spellbook-table .spell-inline-expansion .spell-expanded-details strong {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-secondary);
+  }
+
+  .spell-inline-expansion .spell-expanded-description,
+  .spellbook-table .spell-inline-expansion .spell-expanded-description {
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-relaxed);
+    margin: var(--space-4) 0;
+    color: var(--color-text-primary);
+  }
+
+  .spell-inline-expansion .spell-expanded-higher-levels,
+  .spellbook-table .spell-inline-expansion .spell-expanded-higher-levels {
+    margin: var(--space-4) 0;
+    padding: var(--space-4);
+    background: light-dark(rgba(237, 233, 254, 0.4), rgba(79, 70, 229, 0.05));
+    border-radius: var(--radius-lg);
+    border-left: 3px solid var(--color-primary);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .spell-inline-expansion .spell-expanded-higher-levels strong,
+  .spellbook-table .spell-inline-expansion .spell-expanded-higher-levels strong {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-base);
+    color: var(--color-primary);
+  }
+
+  .spell-inline-expansion .spell-expanded-footer,
+  .spellbook-table .spell-inline-expansion .spell-expanded-footer {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid light-dark(rgba(203, 213, 225, 0.4), rgba(100, 116, 139, 0.2));
+    font-size: var(--font-size-base);
+  }
+
+  .spell-inline-expansion .spell-source,
+  .spellbook-table .spell-inline-expansion .spell-source {
+    margin-top: var(--space-2);
+    color: var(--color-text-secondary);
+    font-style: italic;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Hide old separate expanded row - we use inline expansion */
+  .spell-expanded-row {
+    display: none;
+  }
+
+  .spellbook-table .spell-expanded-row {
+    display: none;
+  }
+}

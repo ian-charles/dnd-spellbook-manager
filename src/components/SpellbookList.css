@@ -1,12 +1,18 @@
+/**
+ * SpellbookList Component Styles
+ *
+ * Uses design tokens for consistent theming.
+ */
+
 .spellbook-list {
-  padding: 2rem;
+  padding: var(--space-8);
 }
 
 .spellbook-list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .spellbook-list-header h2 {
@@ -15,78 +21,78 @@
 
 .header-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: var(--space-3);
   align-items: center;
 }
 
 .spellbooks-empty {
   text-align: center;
-  padding: 4rem 2rem;
-  color: var(--text-secondary);
+  padding: var(--space-16) var(--space-8);
+  color: var(--color-text-secondary);
 }
 
 .spellbooks-empty p {
-  margin: 0.5rem 0;
+  margin: var(--space-2) 0;
 }
 
 .spellbooks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: var(--space-6);
 }
 
 .spellbook-card {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.5rem;
-  background: var(--bg-secondary);
-  transition: all 0.2s;
+  border: var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  background: var(--color-bg-secondary);
+  transition: all var(--transition-base);
 }
 
 .spellbook-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
 .spellbook-card-content {
   cursor: pointer;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 .spellbook-card h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--font-size-xl);
 }
 
 .spellbook-count,
 .spellbook-prepared {
-  margin: 0.25rem 0;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  margin: var(--space-1) 0;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
 }
 
 .spellbook-card-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-primary);
 }
 
 .btn-primary {
-  padding: 0.75rem 1.5rem;
-  background: var(--primary-color, #4f46e5);
-  color: white;
+  padding: var(--btn-padding-md);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition-base);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover, #4338ca);
+  background: var(--color-primary-hover);
 }
 
 .btn-primary:disabled {
@@ -95,19 +101,19 @@
 }
 
 .btn-secondary {
-  padding: 0.75rem 1.5rem;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
+  padding: var(--btn-padding-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-base);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--bg-hover);
+  background: var(--color-hover-strong);
 }
 
 .btn-secondary:disabled {
@@ -116,18 +122,18 @@
 }
 
 .btn-danger-small {
-  padding: 0.5rem 1rem;
-  background: #dc2626;
+  padding: var(--btn-padding-sm);
+  background: var(--color-error);
   color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition-base);
 }
 
 .btn-danger-small:hover {
-  background: #b91c1c;
+  background: var(--color-error-hover);
 }
 
 .dialog-overlay {
@@ -140,76 +146,76 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: var(--z-modal);
 }
 
 .dialog {
-  background: var(--bg-primary);
-  padding: 2rem;
-  border-radius: 12px;
+  background: var(--color-bg-primary);
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
   min-width: 400px;
   max-width: 90vw;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-xl);
 }
 
 .dialog h3 {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 var(--space-6) 0;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-weight-medium);
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 1rem;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  padding: var(--input-padding);
+  border: var(--input-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus-primary);
 }
 
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
   .spellbook-list {
-    padding: 1rem;
+    padding: var(--space-4);
   }
 
   .spellbook-list-header {
     flex-direction: column;
     align-items: stretch;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
   }
 
   .spellbook-list-header h2 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-2xl);
     text-align: center;
   }
 
   .header-actions {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
 
   .header-actions button {
@@ -218,15 +224,15 @@
 
   .spellbooks-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: var(--space-4);
   }
 
   .spellbook-card {
-    padding: 1rem;
+    padding: var(--space-4);
   }
 
   .spellbook-card h3 {
-    font-size: 1.1rem;
+    font-size: var(--font-size-lg);
   }
 
   .spellbook-card-actions {
@@ -240,16 +246,16 @@
   .dialog {
     min-width: auto;
     max-width: 95vw;
-    padding: 1.5rem;
+    padding: var(--space-6);
   }
 
   .dialog h3 {
-    font-size: 1.25rem;
+    font-size: var(--font-size-xl);
   }
 
   .dialog-actions {
     flex-direction: column-reverse;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
 
   .dialog-actions button {
@@ -258,6 +264,6 @@
 
   .btn-primary,
   .btn-secondary {
-    padding: 0.875rem 1rem;
+    padding: var(--space-3) var(--space-4);
   }
 }

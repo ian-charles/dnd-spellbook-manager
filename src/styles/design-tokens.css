@@ -1,0 +1,240 @@
+/**
+ * Design Token System
+ *
+ * Centralized design tokens using modern CSS light-dark() function.
+ * This eliminates the need for duplicate @media (prefers-color-scheme) blocks.
+ *
+ * Browser Support: Chrome 123+, Edge 123+, Safari 17.5+ (March 2024+)
+ *
+ * Token Categories:
+ * - Colors (semantic, not hardcoded)
+ * - Spacing (T-shirt scale)
+ * - Typography (scale + weights)
+ * - Shadows
+ * - Borders & Radii
+ * - Transitions
+ */
+
+:root {
+  /* ========================================
+     COLOR TOKENS
+     Uses light-dark(light-value, dark-value)
+     ======================================== */
+
+  /* Background Colors */
+  --color-bg-primary: light-dark(#ffffff, #0f172a);
+  --color-bg-secondary: light-dark(#f8fafc, #1e293b);
+  --color-bg-tertiary: light-dark(#f1f5f9, #334155);
+  --color-bg-elevated: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 41, 59, 0.6));
+
+  /* Background - Translucent variations */
+  --color-bg-overlay: light-dark(rgba(248, 250, 252, 0.9), rgba(30, 41, 59, 0.4));
+  --color-bg-overlay-strong: light-dark(rgba(248, 250, 252, 0.95), rgba(30, 41, 59, 0.6));
+  --color-bg-card: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 41, 59, 0.6));
+  --color-bg-input: light-dark(#ffffff, rgba(15, 23, 42, 0.6));
+
+  /* Text Colors */
+  --color-text-primary: light-dark(#0f172a, rgba(255, 255, 255, 0.87));
+  --color-text-secondary: light-dark(#64748b, #94a3b8);
+  --color-text-tertiary: light-dark(#94a3b8, #64748b);
+  --color-text-muted: light-dark(#cbd5e1, #475569);
+  --color-text-inverse: light-dark(rgba(255, 255, 255, 0.87), #0f172a);
+
+  /* Text - Contextual */
+  --color-text-on-primary: #ffffff;
+  --color-text-link: light-dark(#4c1d95, #a5b4fc);
+  --color-text-heading: light-dark(#334155, #cbd5e1);
+  --color-text-label: light-dark(#475569, #cbd5e1);
+
+  /* Border Colors */
+  --color-border-primary: light-dark(#e2e8f0, rgba(100, 116, 139, 0.3));
+  --color-border-secondary: light-dark(#cbd5e1, rgba(100, 116, 139, 0.2));
+  --color-border-tertiary: light-dark(rgba(226, 232, 240, 0.8), rgba(100, 116, 139, 0.15));
+  --color-border-strong: light-dark(rgba(203, 213, 225, 0.8), rgba(100, 116, 139, 0.4));
+  --color-border-focus: #667eea;
+
+  /* Brand Colors */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-light: light-dark(rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.2));
+  --color-primary-lighter: light-dark(rgba(79, 70, 229, 0.05), rgba(79, 70, 229, 0.1));
+
+  /* Accent Colors */
+  --color-accent: #667eea;
+  --color-accent-light: light-dark(rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.2));
+  --color-accent-lighter: light-dark(rgba(102, 126, 234, 0.05), rgba(102, 126, 234, 0.1));
+
+  /* Semantic Colors - Success */
+  --color-success: light-dark(#059669, #10b981);
+  --color-success-bg: light-dark(rgba(5, 150, 105, 0.1), rgba(16, 185, 129, 0.1));
+  --color-success-border: light-dark(rgba(5, 150, 105, 0.2), rgba(16, 185, 129, 0.2));
+
+  /* Semantic Colors - Warning */
+  --color-warning: light-dark(#d97706, #fbbf24);
+  --color-warning-bg: light-dark(rgba(217, 119, 6, 0.1), rgba(251, 191, 36, 0.1));
+  --color-warning-border: light-dark(rgba(217, 119, 6, 0.2), rgba(251, 191, 36, 0.2));
+
+  /* Semantic Colors - Error/Danger */
+  --color-error: light-dark(#dc2626, #ef4444);
+  --color-error-bg: light-dark(rgba(220, 38, 38, 0.05), rgba(239, 68, 68, 0.1));
+  --color-error-border: light-dark(rgba(220, 38, 38, 0.2), rgba(239, 68, 68, 0.3));
+  --color-error-text: light-dark(#dc2626, #fca5a5);
+  --color-error-hover: light-dark(#b91c1c, #dc2626);
+
+  /* Semantic Colors - Info */
+  --color-info: light-dark(#0284c7, #38bdf8);
+  --color-info-bg: light-dark(rgba(2, 132, 199, 0.1), rgba(56, 189, 248, 0.1));
+  --color-info-border: light-dark(rgba(2, 132, 199, 0.2), rgba(56, 189, 248, 0.2));
+
+  /* Badge/Tag Colors */
+  --color-badge-concentration-bg: light-dark(#fef3c7, rgba(251, 191, 36, 0.2));
+  --color-badge-concentration-text: light-dark(#92400e, #fbbf24);
+  --color-badge-concentration-border: light-dark(transparent, rgba(251, 191, 36, 0.3));
+
+  --color-badge-ritual-bg: light-dark(#ddd6fe, rgba(147, 51, 234, 0.2));
+  --color-badge-ritual-text: light-dark(#5b21b6, #a78bfa);
+  --color-badge-ritual-border: light-dark(transparent, rgba(147, 51, 234, 0.3));
+
+  /* Interactive States */
+  --color-hover: light-dark(#f1f5f9, rgba(100, 116, 139, 0.15));
+  --color-hover-strong: light-dark(#e2e8f0, rgba(100, 116, 139, 0.2));
+  --color-active: light-dark(rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.15));
+  --color-active-strong: light-dark(rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.2));
+
+  /* Prepared/Selected States (for spellbook) */
+  --color-prepared-bg: light-dark(rgba(237, 233, 254, 0.25), rgba(79, 70, 229, 0.15));
+  --color-prepared-hover: light-dark(rgba(237, 233, 254, 0.35), rgba(79, 70, 229, 0.2));
+  --color-expanded-bg: light-dark(rgba(237, 233, 254, 0.3), rgba(79, 70, 229, 0.1));
+
+  /* Level Badge Colors */
+  --color-level-bg: light-dark(rgba(102, 126, 234, 0.15), rgba(102, 126, 234, 0.2));
+  --color-level-text: light-dark(#4c1d95, #a5b4fc);
+  --color-level-border: light-dark(rgba(102, 126, 234, 0.25), rgba(102, 126, 234, 0.3));
+
+  /* ========================================
+     SPACING SCALE (T-shirt sizing)
+     Based on 4px (0.25rem) grid
+     ======================================== */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* Semantic spacing tokens */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-2xl: var(--space-12);
+
+  /* ========================================
+     TYPOGRAPHY SCALE
+     ======================================== */
+
+  /* Font Sizes */
+  --font-size-xs: 0.6875rem;    /* 11px */
+  --font-size-sm: 0.75rem;      /* 12px */
+  --font-size-base: 0.875rem;   /* 14px */
+  --font-size-md: 1rem;         /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 2rem;        /* 32px */
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.05em;
+
+  /* ========================================
+     BORDER RADII
+     ======================================== */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* ========================================
+     SHADOWS
+     ======================================== */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+  /* Focus shadow */
+  --shadow-focus: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  --shadow-focus-primary: 0 0 0 3px rgba(79, 70, 229, 0.1);
+
+  /* ========================================
+     TRANSITIONS
+     ======================================== */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 100;
+  --z-overlay: 1000;
+  --z-modal: 2000;
+  --z-toast: 3000;
+
+  /* ========================================
+     COMPONENT-SPECIFIC TOKENS
+     ======================================== */
+
+  /* Buttons */
+  --btn-padding-sm: var(--space-2) var(--space-4);
+  --btn-padding-md: var(--space-3) var(--space-6);
+  --btn-padding-lg: var(--space-4) var(--space-8);
+
+  /* Input fields */
+  --input-padding: var(--space-3) var(--space-4);
+  --input-border: 1px solid var(--color-border-primary);
+  --input-border-focus: 1px solid var(--color-border-focus);
+
+  /* Cards */
+  --card-padding: var(--space-6);
+  --card-padding-sm: var(--space-4);
+  --card-border: 1px solid var(--color-border-primary);
+  --card-radius: var(--radius-xl);
+}
+
+/* ========================================
+   LEGACY COMPATIBILITY
+   For gradual migration, keep old variable names pointing to new tokens
+   These can be removed once all components are migrated
+   ======================================== */
+:root {
+  --bg-primary: var(--color-bg-primary);
+  --bg-secondary: var(--color-bg-secondary);
+  --bg-hover: var(--color-hover-strong);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --border-color: var(--color-border-primary);
+  --primary-color: var(--color-primary);
+  --primary-hover: var(--color-primary-hover);
+}

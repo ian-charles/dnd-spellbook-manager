@@ -1,0 +1,322 @@
+/**
+ * Shared Desktop Table Styles
+ *
+ * Common desktop table styles shared between:
+ * - SpellTable component (browse view)
+ * - SpellbookDetail component (spellbook view)
+ *
+ * Uses design tokens with light-dark() function for automatic theming.
+ * This eliminates ~150+ lines of duplicated CSS.
+ */
+
+/* Base table styles */
+.spell-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-base);
+}
+
+.spell-table thead {
+  background: light-dark(rgba(241, 245, 249, 0.9), rgba(15, 23, 42, 0.6));
+  position: sticky;
+  top: 0;
+  z-index: var(--z-dropdown);
+}
+
+.spell-table th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+  border-bottom: 2px solid var(--color-border-primary);
+  white-space: nowrap;
+}
+
+.spell-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-fast);
+}
+
+.spell-table th.sortable:hover {
+  background: var(--color-hover);
+}
+
+.th-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: space-between;
+}
+
+.sort-icon {
+  opacity: 0.5;
+  font-size: var(--font-size-base);
+}
+
+.spell-table th.sortable:hover .sort-icon {
+  opacity: 1;
+}
+
+.spell-table tbody tr {
+  border-bottom: 1px solid var(--color-border-secondary);
+  transition: background-color var(--transition-fast);
+}
+
+.spell-row {
+  cursor: pointer;
+}
+
+.spell-row:hover {
+  background: var(--color-hover);
+}
+
+.spell-row.expanded {
+  background: var(--color-expanded-bg);
+}
+
+/* Expansion row animation */
+.spell-expanded-row {
+  background: var(--color-bg-secondary);
+  animation: slideDown var(--transition-slow);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spell-expanded-content {
+  padding: var(--space-6);
+  border-left: 3px solid var(--color-primary);
+}
+
+.spell-expanded-header h3 {
+  margin: 0 0 var(--space-2) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+}
+
+.spell-meta {
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--font-size-base);
+}
+
+.spell-expanded-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+}
+
+.spell-expanded-details div {
+  font-size: var(--font-size-base);
+}
+
+.spell-expanded-details strong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.spell-expanded-description {
+  margin: var(--space-4) 0;
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+}
+
+.spell-expanded-higher-levels {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  background: var(--color-primary-lighter);
+  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--color-primary);
+}
+
+.spell-expanded-higher-levels strong {
+  color: var(--color-primary);
+}
+
+.spell-expanded-footer {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-base);
+}
+
+.spell-source {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* Table cells */
+.spell-table td {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-primary);
+  vertical-align: top;
+}
+
+.spell-name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-link);
+  min-width: 200px;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.125rem var(--space-1);
+  margin-left: var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  vertical-align: middle;
+}
+
+.badge-concentration {
+  background: var(--color-badge-concentration-bg);
+  color: var(--color-badge-concentration-text);
+  border: 1px solid var(--color-badge-concentration-border);
+}
+
+.badge-ritual {
+  background: var(--color-badge-ritual-bg);
+  color: var(--color-badge-ritual-text);
+  border: 1px solid var(--color-badge-ritual-border);
+}
+
+/* Column-specific styling */
+.level-col {
+  text-align: center;
+  width: 80px;
+}
+
+.school-col {
+  text-transform: capitalize;
+  min-width: 120px;
+}
+
+.components-col {
+  text-align: center;
+  font-family: monospace;
+  width: 80px;
+  color: var(--color-text-secondary);
+}
+
+.classes-col {
+  text-transform: capitalize;
+  color: var(--color-text-secondary);
+  min-width: 150px;
+}
+
+.source-col {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  min-width: 150px;
+}
+
+.action-col {
+  width: 60px;
+  text-align: center;
+}
+
+/* Desktop inline expansion (for new sub-row pattern) */
+@media (min-width: 769px) {
+  .spell-expansion-row {
+    background: var(--color-bg-secondary);
+    animation: slideDown var(--transition-slow);
+  }
+
+  .spell-expansion-cell {
+    padding: 0 !important;
+  }
+
+  .spell-inline-expansion {
+    padding: var(--space-6) var(--space-8);
+    color: var(--color-text-primary);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    margin: var(--space-2) var(--space-4);
+  }
+
+  .spell-inline-expansion .spell-meta {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-4);
+    color: var(--color-text-secondary);
+  }
+
+  .spell-inline-expansion .spell-expanded-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    padding: var(--space-6);
+    background: var(--color-hover);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    border: 1px solid var(--color-border-primary);
+  }
+
+  .spell-inline-expansion .spell-expanded-details strong {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .spell-inline-expansion .spell-expanded-description {
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-relaxed);
+    margin: var(--space-6) 0;
+    color: var(--color-text-primary);
+  }
+
+  .spell-inline-expansion .spell-expanded-higher-levels {
+    margin: var(--space-6) 0;
+    padding: var(--space-6);
+    background: var(--color-primary-lighter);
+    border-radius: var(--radius-lg);
+    border-left: 3px solid var(--color-primary);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .spell-inline-expansion .spell-expanded-higher-levels strong {
+    display: block;
+    margin-bottom: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .spell-inline-expansion .spell-expanded-footer {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border-secondary);
+    font-size: var(--font-size-base);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .spell-inline-expansion .spell-source {
+    color: var(--color-text-secondary);
+    font-style: italic;
+    font-size: var(--font-size-base);
+  }
+}

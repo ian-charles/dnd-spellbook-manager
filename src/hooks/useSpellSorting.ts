@@ -93,8 +93,15 @@ export function useSpellSorting<T = Spell>(
           return 0;
       }
 
+      // Primary sort
       if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
       if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+
+      // Secondary sort by name (always ascending for tiebreaker consistency)
+      const nameA = spellA.name.toLowerCase();
+      const nameB = spellB.name.toLowerCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
       return 0;
     });
   }, [data, sortColumn, sortDirection, getSpell]);

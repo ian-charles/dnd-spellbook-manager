@@ -4,31 +4,27 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-### Missing Unit Tests for useSpellSorting Hook
-**Location**: [src/hooks/useSpellSorting.ts](src/hooks/useSpellSorting.ts)
-
-**Issue**: The useSpellSorting hook lacks direct unit tests. While the utility functions it depends on (getCastingTimeValue, getRangeValue, getDurationValue) are thoroughly tested in src/utils/spellSortValues.test.ts, the hook's own behavior is untested.
-
-**Impact**:
-- Sort direction toggling logic untested
-- Generic type handling with `getSpell` extractor untested
-- Initial state configuration untested
-- Edge cases (empty arrays, single items) untested
-
-**Proposed Solution**: Add React Testing Library tests for useSpellSorting hook covering:
-- Default sorting behavior (name ascending)
-- Sort direction toggle on same column
-- Reset to ascending on different column
-- Custom `getSpell` extractor with enriched objects
-- Edge cases (empty array, single item, null values)
-
-**Effort**: Low (1-2 hours)
-
-**Priority**: Medium
+_No active technical debt items at this time._
 
 ---
 
 ## Completed Refactoring
+
+### ✅ Unit Tests for useSpellSorting Hook + Secondary Sort (Completed 2025-11-18)
+- **Created**: [src/hooks/useSpellSorting.test.ts](src/hooks/useSpellSorting.test.ts) with 23 comprehensive tests
+- **Updated**: [src/hooks/useSpellSorting.ts](src/hooks/useSpellSorting.ts#L100-L105) - added secondary sort by name
+- **Test Coverage**:
+  - Default sorting behavior (name ascending)
+  - Sort direction toggling on same column
+  - Column switching resets to ascending
+  - Custom `getSpell` extractor with enriched objects
+  - Edge cases (empty array, single item, duplicates)
+  - Secondary sort by name for all columns
+  - Reactive updates when data changes
+- **Feature Enhancement**: All sorts now use spell name as tiebreaker (always ascending)
+- **Result**: Hook fully tested with 23 unit tests, improved UX with consistent alphabetical tiebreakers
+
+
 
 ### ✅ Comprehensive JSDoc for LoadingButton (Completed 2025-11-18)
 - **Updated**: [src/components/LoadingButton.tsx:11-28](src/components/LoadingButton.tsx#L11) - comprehensive JSDoc for all props

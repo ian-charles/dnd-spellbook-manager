@@ -3,6 +3,8 @@ import { useSpellbooks } from '../hooks/useSpellbooks';
 import { exportImportService } from '../services/exportImport.service';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
+import LoadingSpinner from './LoadingSpinner';
+import LoadingSkeleton from './LoadingSkeleton';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -146,7 +148,7 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     return (
       <div className="spellbook-list">
         <h2 data-testid="spellbooks-header">My Spellbooks</h2>
-        <p>Loading spellbooks...</p>
+        <LoadingSpinner message="Loading spellbooks..." />
       </div>
     );
   }
@@ -171,7 +173,13 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
             onClick={handleImportClick}
             disabled={importing}
           >
-            {importing ? 'Importing...' : 'Import'}
+            {importing ? (
+              <>
+                <LoadingSpinner size="small" inline /> Importing...
+              </>
+            ) : (
+              'Import'
+            )}
           </button>
           <button
             className="btn-primary"
@@ -268,7 +276,13 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
                   data-testid="btn-save-spellbook"
                   disabled={creating || !newSpellbookName.trim()}
                 >
-                  {creating ? 'Creating...' : 'Create'}
+                  {creating ? (
+                    <>
+                      <LoadingSpinner size="small" inline /> Creating...
+                    </>
+                  ) : (
+                    'Create'
+                  )}
                 </button>
               </div>
             </form>

@@ -5,6 +5,7 @@ import { SpellFilters } from './components/SpellFilters';
 import { SpellbookList } from './components/SpellbookList';
 import { SpellbookDetail } from './components/SpellbookDetail';
 import { AlertDialog } from './components/AlertDialog';
+import LoadingSpinner from './components/LoadingSpinner';
 import { useSpells } from './hooks/useSpells';
 import { useSpellbooks } from './hooks/useSpellbooks';
 import { useHashRouter } from './hooks/useHashRouter';
@@ -108,10 +109,7 @@ function App() {
   if (loading) {
     return (
       <div className="app">
-        <div className="loading">
-          <h2>Loading spells...</h2>
-          <p>Fetching spell data from the archive...</p>
-        </div>
+        <LoadingSpinner size="large" message="Loading spells from the archive..." />
       </div>
     );
   }

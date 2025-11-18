@@ -93,12 +93,11 @@ function App() {
         spellbookSelector.closeModal();
         displayToast('✓ Spell added to spellbook!');
       } catch (error) {
-        console.error('Failed to add spell:', error);
         spellbookSelector.closeModal();
         setAlertDialog({
           isOpen: true,
           title: 'Failed to Add Spell',
-          message: 'Failed to add spell. It might already be in this spellbook.',
+          message: error instanceof Error ? error.message : 'Failed to add spell. It might already be in this spellbook.',
           variant: 'error',
         });
       }

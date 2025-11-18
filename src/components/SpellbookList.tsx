@@ -47,7 +47,12 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       setNewSpellbookName('');
       setShowCreateDialog(false);
     } catch (error) {
-      console.error('Failed to create spellbook:', error);
+      setAlertDialog({
+        isOpen: true,
+        title: 'Creation Failed',
+        message: error instanceof Error ? error.message : 'Failed to create spellbook. Please try again.',
+        variant: 'error',
+      });
     } finally {
       setCreating(false);
     }
@@ -62,7 +67,6 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       await deleteSpellbook(confirmDialog.spellbookId);
       setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
     } catch (error) {
-      console.error('Failed to delete spellbook:', error);
       setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
       setAlertDialog({
         isOpen: true,
@@ -81,7 +85,6 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     try {
       await exportImportService.downloadSpellbooks();
     } catch (error) {
-      console.error('Failed to export spellbooks:', error);
       setAlertDialog({
         isOpen: true,
         title: 'Export Failed',
@@ -128,7 +131,6 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       // Refresh the spellbooks list
       refreshSpellbooks();
     } catch (error) {
-      console.error('Failed to import spellbooks:', error);
       setAlertDialog({
         isOpen: true,
         title: 'Import Failed',

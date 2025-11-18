@@ -11,6 +11,7 @@ import { Spell } from '../types/spell';
 import { Spellbook } from '../types/spellbook';
 import { SortIcon } from './SortIcon';
 import { ConfirmDialog } from './ConfirmDialog';
+import LoadingSpinner from './LoadingSpinner';
 import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
 import { getLevelText, getComponentsText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
 import './SpellbookDetail.css';
@@ -62,7 +63,7 @@ export function SpellbookDetailView({
   if (!spellbook) {
     return (
       <div className="spellbook-detail">
-        <p>Loading spellbook...</p>
+        <LoadingSpinner message="Loading spellbook..." />
       </div>
     );
   }

@@ -4,7 +4,80 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-None currently!
+### Magic Strings Should Be Constants
+**Location - App.tsx**:
+- Line 94: "✓ Spell added to spellbook!" (toast message)
+- Line 100: "Failed to Add Spell" (alert title)
+- Line 111: "Loading spells from the archive..." (loading message)
+- Line 122: "Error loading spells" (error heading)
+- Line 203: "✓ Spell added to spellbook!" (DUPLICATE - toast JSX)
+
+**Location - SpellbookList.tsx**:
+- Line 52: "Creation Failed", "Failed to create spellbook. Please try again."
+- Line 68: "Delete Failed", "Failed to delete spellbook. Please try again."
+- Line 84: "Export Failed", "Failed to export spellbooks. Please try again."
+- Line 108: "Import Completed with Errors", "Imported:", "Skipped:", "Errors:"
+- Line 119: "Import Successful"
+- Line 130: "Import Failed", "Failed to import spellbooks:"
+- Line 148: "Loading spellbooks..."
+- Line 161: "Export", "No spellbooks to export", "Export all spellbooks"
+- Line 169: "Import"
+- Line 191: "You don't have any spellbooks yet.", 'Click "New Spellbook" to create your first one!'
+- Line 220: "Create New Spellbook"
+- Line 224: "Spellbook Name"
+- Line 229: "e.g., My Wizard Spells"
+
+**Location - SpellbookDetailView.tsx**:
+- Line 66: "Loading spellbook..."
+
+**Issue**: User-facing messages hardcoded as magic strings throughout the codebase (20+ locations)
+
+**Impact**: 20+ locations across 3 files, inconsistency risk, harder to maintain, i18n support would require finding all hardcoded strings, App.tsx:203 duplicates line 94
+
+**Solution**: Create constants file for user messages (e.g., `src/constants/messages.ts` or `src/constants/ui.ts`) with:
+```typescript
+export const MESSAGES = {
+  LOADING: {
+    SPELLS: 'Loading spells from the archive...',
+    SPELLBOOKS: 'Loading spellbooks...',
+    SPELLBOOK: 'Loading spellbook...',
+  },
+  SUCCESS: {
+    SPELL_ADDED: '✓ Spell added to spellbook!',
+  },
+  // etc...
+};
+```
+
+**Effort**: Low (30-45 minutes)
+
+**Priority**: Medium - Improves maintainability and sets foundation for future i18n support
+
+---
+
+### Inline Loading State JSX
+**Location**:
+- [src/components/SpellbookList.tsx:176-178](src/components/SpellbookList.tsx#L176) - Import button loading state
+- [src/components/SpellbookList.tsx:281-283](src/components/SpellbookList.tsx#L281) - Create button loading state
+
+**Issue**: Loading button content duplicated inline across components
+
+**Impact**: 2 locations with duplicated pattern `<LoadingSpinner size="small" inline /> Text...`, inconsistent loading UI pattern
+
+**Solution**: Extract to reusable component or helper function:
+```typescript
+// Option 1: LoadingButton component
+<LoadingButton loading={importing} loadingText="Importing..." onClick={handleImport}>
+  Import
+</LoadingButton>
+
+// Option 2: Helper function
+{renderButtonContent(importing, 'Import', 'Importing...')}
+```
+
+**Effort**: Low (1 hour)
+
+**Priority**: Medium - Reduces duplication, improves consistency
 
 ---
 
@@ -105,4 +178,4 @@ None currently!
 
 ---
 
-*Last Updated: 2025-11-15*
+*Last Updated: 2025-11-17*

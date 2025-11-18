@@ -4,7 +4,27 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-_No active technical debt items at this time._
+### Missing Unit Tests for useSpellSorting Hook
+**Location**: [src/hooks/useSpellSorting.ts](src/hooks/useSpellSorting.ts)
+
+**Issue**: The useSpellSorting hook lacks direct unit tests. While the utility functions it depends on (getCastingTimeValue, getRangeValue, getDurationValue) are thoroughly tested in src/utils/spellSortValues.test.ts, the hook's own behavior is untested.
+
+**Impact**:
+- Sort direction toggling logic untested
+- Generic type handling with `getSpell` extractor untested
+- Initial state configuration untested
+- Edge cases (empty arrays, single items) untested
+
+**Proposed Solution**: Add React Testing Library tests for useSpellSorting hook covering:
+- Default sorting behavior (name ascending)
+- Sort direction toggle on same column
+- Reset to ascending on different column
+- Custom `getSpell` extractor with enriched objects
+- Edge cases (empty array, single item, null values)
+
+**Effort**: Low (1-2 hours)
+
+**Priority**: Medium
 
 ---
 

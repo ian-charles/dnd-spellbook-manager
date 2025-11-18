@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Spell } from '../types/spell';
+import { getCastingTimeValue, getRangeValue, getDurationValue } from '../utils/spellSortValues';
 
 export type SortColumn = 'name' | 'level' | 'school' | 'castingTime' | 'range' | 'duration' | 'source';
 export type SortDirection = 'asc' | 'desc';
@@ -73,16 +74,16 @@ export function useSpellSorting<T = Spell>(
           bVal = spellB.school.toLowerCase();
           break;
         case 'castingTime':
-          aVal = spellA.castingTime.toLowerCase();
-          bVal = spellB.castingTime.toLowerCase();
+          aVal = getCastingTimeValue(spellA.castingTime);
+          bVal = getCastingTimeValue(spellB.castingTime);
           break;
         case 'range':
-          aVal = spellA.range.toLowerCase();
-          bVal = spellB.range.toLowerCase();
+          aVal = getRangeValue(spellA.range);
+          bVal = getRangeValue(spellB.range);
           break;
         case 'duration':
-          aVal = spellA.duration.toLowerCase();
-          bVal = spellB.duration.toLowerCase();
+          aVal = getDurationValue(spellA.duration);
+          bVal = getDurationValue(spellB.duration);
           break;
         case 'source':
           aVal = spellA.source.toLowerCase();

@@ -21,9 +21,21 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Step 2: Checking Dev Server"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+# Function to check if port is in use (cross-platform)
+check_port() {
+  if command -v lsof &> /dev/null; then
+    # Unix/Mac: use lsof
+    lsof -Pi :5173 -sTCP:LISTEN -t >/dev/null 2>&1
+  else
+    # Windows Git Bash: use netstat
+    netstat -ano 2>/dev/null | grep -q ":5173.*LISTENING"
+  fi
+  return $?
+}
+
 # Check if dev server is already running on port 5173
 SERVER_RUNNING=false
-if lsof -Pi :5173 -sTCP:LISTEN -t >/dev/null 2>&1 ; then
+if check_port; then
   echo "✅ Dev server already running on port 5173"
   SERVER_RUNNING=true
 else
@@ -34,7 +46,7 @@ else
   # Wait for server to be ready (max 30 seconds)
   echo "⏳ Waiting for dev server to be ready..."
   for i in {1..30}; do
-    if lsof -Pi :5173 -sTCP:LISTEN -t >/dev/null 2>&1 ; then
+    if check_port; then
       echo "✅ Dev server started on port 5173"
       SERVER_RUNNING=true
       break
@@ -55,7 +67,8 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Step 3: Running Tests"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-npx vitest --run
+# Run unit tests only (exclude e2e tests which require Puppeteer)
+npx vitest --run --exclude "src/e2e/**"
 TEST_EXIT_CODE=$?
 
 # Step 4: Clean up dev server if we started it

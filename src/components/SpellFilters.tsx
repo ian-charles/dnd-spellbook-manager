@@ -122,6 +122,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               key={className}
               className={`filter-btn ${state.selectedClasses.includes(className) ? 'active' : ''}`}
               onClick={() => toggleClass(className)}
+              data-class={className}
             >
               {className}
             </button>
@@ -130,54 +131,53 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
       </div>
 
       <div className="filter-section">
-        <h3>Components</h3>
-        <div className="filter-checkboxes">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={state.verbalOnly}
-              onChange={toggleVerbal}
-            />
-            <span>Verbal (V)</span>
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={state.somaticOnly}
-              onChange={toggleSomatic}
-            />
-            <span>Somatic (S)</span>
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={state.materialOnly}
-              onChange={toggleMaterial}
-            />
-            <span>Material (M)</span>
-          </label>
-        </div>
-      </div>
-
-      <div className="filter-section">
-        <h3>Properties</h3>
-        <div className="filter-checkboxes">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={state.concentrationOnly}
-              onChange={toggleConcentration}
-            />
-            <span>Concentration</span>
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={state.ritualOnly}
-              onChange={toggleRitual}
-            />
-            <span>Ritual</span>
-          </label>
+        <div className="filter-checkboxes-inline">
+          <div>
+            <h3>Components</h3>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={state.verbalOnly}
+                onChange={toggleVerbal}
+              />
+              <span>Verbal (V)</span>
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={state.somaticOnly}
+                onChange={toggleSomatic}
+              />
+              <span>Somatic (S)</span>
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={state.materialOnly}
+                onChange={toggleMaterial}
+              />
+              <span>Material (M)</span>
+            </label>
+          </div>
+          <div>
+            <h3>Properties</h3>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={state.concentrationOnly}
+                onChange={toggleConcentration}
+              />
+              <span>Concentration</span>
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={state.ritualOnly}
+                onChange={toggleRitual}
+              />
+              <span>Ritual</span>
+            </label>
+          </div>
         </div>
       </div>
 

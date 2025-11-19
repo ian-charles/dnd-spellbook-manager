@@ -2,8 +2,31 @@ import { useState, Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText, getComponentsText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
+import { getLevelText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
 import './SpellTable.css';
+
+function ComponentBadges({ spell }: { spell: Spell }) {
+  return (
+    <div className="component-badges">
+      {spell.components.verbal && <span className="component-badge badge-verbal">V</span>}
+      {spell.components.somatic && <span className="component-badge badge-somatic">S</span>}
+      {spell.components.material && <span className="component-badge badge-material">M</span>}
+    </div>
+  );
+}
+
+function ClassBadges({ classes }: { classes: string[] }) {
+  const filteredClasses = filterClasses(classes);
+  return (
+    <div className="class-badges">
+      {filteredClasses.map((className) => (
+        <span key={className} className={`class-badge class-badge-${className.toLowerCase()}`}>
+          {className.substring(0, 3).toUpperCase()}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 interface SpellTableProps {
   spells: Spell[];
@@ -101,9 +124,9 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
                 <td className="school-col">{spell.school}</td>
                 <td>{spell.castingTime}</td>
                 <td>{spell.range}</td>
-                <td className="components-col">{getComponentsText(spell)}</td>
+                <td className="components-col"><ComponentBadges spell={spell} /></td>
                 <td>{spell.duration}</td>
-                <td className="classes-col">{filterClasses(spell.classes).join(', ')}</td>
+                <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
                 <td className="source-col">{spell.source}</td>
                 {onAddToSpellbook && (
                   <td className="action-col" onClick={(e) => e.stopPropagation()}>

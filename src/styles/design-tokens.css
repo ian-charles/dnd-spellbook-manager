@@ -87,13 +87,13 @@
   --color-info-border: light-dark(rgba(2, 132, 199, 0.2), rgba(56, 189, 248, 0.2));
 
   /* Badge/Tag Colors */
-  --color-badge-concentration-bg: light-dark(#fef3c7, rgba(251, 191, 36, 0.2));
-  --color-badge-concentration-text: light-dark(#92400e, #fbbf24);
-  --color-badge-concentration-border: light-dark(transparent, rgba(251, 191, 36, 0.3));
+  --color-badge-concentration-bg: light-dark(rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.25));
+  --color-badge-concentration-text: light-dark(#0e7490, #67e8f9);
+  --color-badge-concentration-border: light-dark(#06b6d4, #06b6d4);
 
-  --color-badge-ritual-bg: light-dark(#ddd6fe, rgba(147, 51, 234, 0.2));
-  --color-badge-ritual-text: light-dark(#5b21b6, #a78bfa);
-  --color-badge-ritual-border: light-dark(transparent, rgba(147, 51, 234, 0.3));
+  --color-badge-ritual-bg: light-dark(rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.25));
+  --color-badge-ritual-text: light-dark(#15803d, #86efac);
+  --color-badge-ritual-border: light-dark(#22c55e, #22c55e);
 
   /* Interactive States */
   --color-hover: light-dark(#f1f5f9, rgba(100, 116, 139, 0.15));

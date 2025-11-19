@@ -10,14 +10,14 @@ export function getLevelText(level: number): string {
 }
 
 /**
- * Formats spell components as a comma-separated string (e.g., "V, S, M").
+ * Formats spell components as a compact string (e.g., "V,S,M").
  */
 export function getComponentsText(spell: Spell): string {
   const parts: string[] = [];
   if (spell.components.verbal) parts.push('V');
   if (spell.components.somatic) parts.push('S');
   if (spell.components.material) parts.push('M');
-  return parts.join(', ');
+  return parts.join(',');
 }
 
 /**

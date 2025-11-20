@@ -193,37 +193,59 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
           <p>{MESSAGES.EMPTY_STATES.CLICK_NEW_SPELLBOOK}</p>
         </div>
       ) : (
-        <div className="spellbooks-grid">
-          {spellbooks.map((spellbook) => (
-            <div
-              key={spellbook.id}
-              className="spellbook-card"
-              data-testid={`spellbook-item-${spellbook.id}`}
-            >
-              <div onClick={() => onSpellbookClick(spellbook.id)} className="spellbook-card-content">
-                <h3 data-testid="spellbook-name">{spellbook.name}</h3>
-                <p className="spellbook-count">
-                  {spellbook.spells.length} spell{spellbook.spells.length !== 1 ? 's' : ''}
-                </p>
-                <p className="spellbook-prepared">
-                  {spellbook.spells.filter(s => s.prepared).length} prepared
-                </p>
-              </div>
-              <div className="spellbook-card-actions">
-                <button
-                  className="btn-danger-small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(spellbook.id, spellbook.name);
-                  }}
-                  data-testid={`btn-delete-spellbook-${spellbook.id}`}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+        <table className="spellbooks-table" data-testid="spellbooks-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Spells</th>
+              <th>Ability</th>
+              <th>Attack</th>
+              <th>Save DC</th>
+              <th>Last Updated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {spellbooks.map((spellbook) => (
+              <tr
+                key={spellbook.id}
+                className="spellbook-row"
+                data-testid={`spellbook-row-${spellbook.id}`}
+                onClick={() => onSpellbookClick(spellbook.id)}
+              >
+                <td className="spellbook-name" data-testid="spellbook-name" data-label="Name">
+                  {spellbook.name}
+                </td>
+                <td className="spellbook-spell-count" data-label="Spells">
+                  {spellbook.spells.length}
+                </td>
+                <td className="spellbook-ability" data-label="Ability">
+                  {spellbook.spellcastingAbility || 'N/A'}
+                </td>
+                <td className="spellbook-attack" data-label="Attack">
+                  {spellbook.spellAttackModifier !== undefined
+                    ? `+${spellbook.spellAttackModifier}`
+                    : 'N/A'}
+                </td>
+                <td className="spellbook-save-dc" data-label="Save DC">
+                  {spellbook.spellSaveDC ?? 'N/A'}
+                </td>
+                <td className="spellbook-updated" data-label="Last Updated">
+                  {new Date(spellbook.updated).toLocaleDateString()}
+                </td>
+                <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    className="btn-danger-small"
+                    onClick={() => handleDelete(spellbook.id, spellbook.name)}
+                    data-testid={`btn-delete-spellbook-${spellbook.id}`}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
 
       {/* Create Spellbook Modal */}

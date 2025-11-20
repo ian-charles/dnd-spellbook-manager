@@ -10,10 +10,16 @@ export interface Spellbook {
   spells: SpellbookSpell[];
   created: string;
   updated: string;
+  spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
+  spellAttackModifier?: number;
+  spellSaveDC?: number;
 }
 
 export interface CreateSpellbookInput {
   name: string;
+  spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
+  spellAttackModifier?: number;
+  spellSaveDC?: number;
 }
 
 export interface UpdateSpellbookInput {

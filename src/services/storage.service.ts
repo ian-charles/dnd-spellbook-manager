@@ -27,6 +27,9 @@ export class StorageService {
       spells: [],
       created: now,
       updated: now,
+      spellcastingAbility: input.spellcastingAbility,
+      spellAttackModifier: input.spellAttackModifier,
+      spellSaveDC: input.spellSaveDC,
     };
 
     await db.spellbooks.add(spellbook);

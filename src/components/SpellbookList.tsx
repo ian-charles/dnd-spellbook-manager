@@ -3,8 +3,10 @@ import { useSpellbooks } from '../hooks/useSpellbooks';
 import { exportImportService } from '../services/exportImport.service';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
+import { CreateSpellbookModal } from './CreateSpellbookModal';
 import LoadingSpinner from './LoadingSpinner';
 import { LoadingButton } from './LoadingButton';
+import { CreateSpellbookInput } from '../types/spellbook';
 import { MESSAGES } from '../constants/messages';
 import './SpellbookList.css';
 
@@ -14,9 +16,7 @@ interface SpellbookListProps {
 
 export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
   const { spellbooks, loading, createSpellbook, deleteSpellbook, refreshSpellbooks } = useSpellbooks();
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [newSpellbookName, setNewSpellbookName] = useState('');
-  const [creating, setCreating] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [importing, setImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,24 +38,12 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     variant: 'info',
   });
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newSpellbookName.trim()) return;
-
-    setCreating(true);
+  const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
     try {
-      await createSpellbook({ name: newSpellbookName.trim() });
-      setNewSpellbookName('');
-      setShowCreateDialog(false);
+      await createSpellbook(input);
+      setCreateModalOpen(false);
     } catch (error) {
-      setAlertDialog({
-        isOpen: true,
-        title: MESSAGES.ERROR.CREATION_FAILED,
-        message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_CREATE_SPELLBOOK,
-        variant: 'error',
-      });
-    } finally {
-      setCreating(false);
+      throw error; // Let the modal handle the error
     }
   };
 
@@ -182,7 +170,7 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
           <button
             className="btn-primary"
             data-testid="btn-create-spellbook"
-            onClick={() => setShowCreateDialog(true)}
+            onClick={() => setCreateModalOpen(true)}
           >
             + New Spellbook
           </button>
@@ -238,51 +226,13 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
         </div>
       )}
 
-      {showCreateDialog && (
-        <div className="dialog-overlay" data-testid="create-spellbook-dialog">
-          <div className="dialog">
-            <h3>{MESSAGES.BUTTONS.CREATE_NEW_SPELLBOOK}</h3>
-            <form onSubmit={handleCreate}>
-              <div className="form-group">
-                <label htmlFor="spellbook-name">{MESSAGES.FORMS.SPELLBOOK_NAME_LABEL}</label>
-                <input
-                  type="text"
-                  id="spellbook-name"
-                  data-testid="input-spellbook-name"
-                  value={newSpellbookName}
-                  onChange={(e) => setNewSpellbookName(e.target.value)}
-                  placeholder={MESSAGES.FORMS.SPELLBOOK_NAME_PLACEHOLDER}
-                  autoFocus
-                  required
-                />
-              </div>
-              <div className="dialog-actions">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => {
-                    setShowCreateDialog(false);
-                    setNewSpellbookName('');
-                  }}
-                  disabled={creating}
-                >
-                  Cancel
-                </button>
-                <LoadingButton
-                  type="submit"
-                  className="btn-primary"
-                  data-testid="btn-save-spellbook"
-                  loading={creating}
-                  loadingText="Creating..."
-                  disabled={!newSpellbookName.trim()}
-                >
-                  Create
-                </LoadingButton>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Create Spellbook Modal */}
+      <CreateSpellbookModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onCreate={handleCreateSpellbook}
+        existingNames={spellbooks.map(sb => sb.name)}
+      />
 
       {/* Confirm Delete Dialog */}
       <ConfirmDialog

@@ -5,6 +5,7 @@ import { SpellFilters } from './components/SpellFilters';
 import { SpellbookList } from './components/SpellbookList';
 import { SpellbookDetail } from './components/SpellbookDetail';
 import { AlertDialog } from './components/AlertDialog';
+import { CreateSpellbookModal } from './components/CreateSpellbookModal';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useSpells } from './hooks/useSpells';
 import { useSpellbooks } from './hooks/useSpellbooks';
@@ -13,13 +14,14 @@ import { useModal } from './hooks/useModal';
 import { useToast } from './hooks/useToast';
 import { spellService } from './services/spell.service';
 import { SpellFilters as Filters, Spell } from './types/spell';
+import { CreateSpellbookInput } from './types/spellbook';
 import { MESSAGES } from './constants/messages';
 import './App.css';
 
 function App() {
   // Data hooks
   const { spells, loading, error } = useSpells();
-  const { spellbooks, addSpellToSpellbook } = useSpellbooks();
+  const { spellbooks, addSpellToSpellbook, createSpellbook } = useSpellbooks();
 
   // Routing hook
   const {
@@ -55,6 +57,14 @@ function App() {
   const [schools, setSchools] = useState<string[]>([]);
   const [classes, setClasses] = useState<string[]>([]);
 
+  // Selected spells state (persists across filter changes)
+  const [selectedSpellIds, setSelectedSpellIds] = useState<Set<string>>(new Set());
+  const [targetSpellbookId, setTargetSpellbookId] = useState<string>('');
+
+  // Create spellbook modal state
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [pendingSpellIds, setPendingSpellIds] = useState<Set<string>>(new Set());
+
   // Initialize schools and classes when spells load
   useEffect(() => {
     if (!loading && spells.length > 0) {
@@ -72,36 +82,95 @@ function App() {
     }
   }, [filters, spells, loading]);
 
-  const handleAddToSpellbook = (spellId: string) => {
-    if (spellbooks.length === 0) {
+  const handleAddToSpellbook = async () => {
+    if (selectedSpellIds.size === 0) {
       setAlertDialog({
         isOpen: true,
-        title: MESSAGES.INFO.NO_SPELLBOOKS,
-        message: MESSAGES.INFO.CREATE_SPELLBOOK_FIRST,
+        title: 'No Spells Selected',
+        message: 'Please select at least one spell to add to a spellbook.',
         variant: 'info',
       });
-      navigateToSpellbooks();
       return;
     }
-    spellbookSelector.openModal(spellId);
+
+    if (!targetSpellbookId) {
+      setAlertDialog({
+        isOpen: true,
+        title: 'No Spellbook Selected',
+        message: 'Please select a spellbook from the dropdown menu.',
+        variant: 'info',
+      });
+      return;
+    }
+
+    // If "new" is selected, open create spellbook modal with pending spells
+    if (targetSpellbookId === 'new') {
+      setPendingSpellIds(new Set(selectedSpellIds));
+      setCreateModalOpen(true);
+      return;
+    }
+
+    try {
+      // Add all selected spells to the spellbook
+      for (const spellId of selectedSpellIds) {
+        await addSpellToSpellbook(targetSpellbookId, spellId);
+      }
+      setSelectedSpellIds(new Set()); // Clear selection after adding
+      const count = selectedSpellIds.size;
+      displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
+    } catch (error) {
+      setAlertDialog({
+        isOpen: true,
+        title: MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
+        message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_ADD_SPELL_GENERIC,
+        variant: 'error',
+      });
+    }
+  };
+
+  const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
+    try {
+      const newSpellbook = await createSpellbook(input);
+
+      // If there are pending spells, add them to the new spellbook
+      if (pendingSpellIds.size > 0) {
+        for (const spellId of pendingSpellIds) {
+          await addSpellToSpellbook(newSpellbook.id, spellId);
+        }
+        const count = pendingSpellIds.size;
+        displayToast(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
+        setPendingSpellIds(new Set());
+        setSelectedSpellIds(new Set());
+      } else {
+        displayToast('Spellbook created successfully');
+      }
+
+      setCreateModalOpen(false);
+    } catch (error) {
+      throw error; // Let the modal handle the error
+    }
   };
 
   const handleSelectSpellbook = async (spellbookId: string) => {
-    const spellId = spellbookSelector.data;
-    if (spellId) {
-      try {
+    if (selectedSpellIds.size === 0) return;
+
+    try {
+      // Add all selected spells to the spellbook
+      for (const spellId of selectedSpellIds) {
         await addSpellToSpellbook(spellbookId, spellId);
-        spellbookSelector.closeModal();
-        displayToast(MESSAGES.SUCCESS.SPELL_ADDED);
-      } catch (error) {
-        spellbookSelector.closeModal();
-        setAlertDialog({
-          isOpen: true,
-          title: MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
-          message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_ADD_SPELL_GENERIC,
-          variant: 'error',
-        });
       }
+      spellbookSelector.closeModal();
+      setSelectedSpellIds(new Set()); // Clear selection after adding
+      const count = selectedSpellIds.size;
+      displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
+    } catch (error) {
+      spellbookSelector.closeModal();
+      setAlertDialog({
+        isOpen: true,
+        title: MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
+        message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_ADD_SPELL_GENERIC,
+        variant: 'error',
+      });
     }
   };
 
@@ -140,6 +209,7 @@ function App() {
           <div className="browse-header">
             <p>
               Browse {spells.length} spells • {filteredSpells.length} results
+              {selectedSpellIds.size > 0 && ` • ${selectedSpellIds.size} selected`}
             </p>
           </div>
           <SpellFilters
@@ -147,8 +217,36 @@ function App() {
             schools={schools}
             classes={classes}
           />
+          {selectedSpellIds.size > 0 && (
+            <div className="batch-add-container">
+              <select
+                className="spellbook-dropdown"
+                value={targetSpellbookId}
+                onChange={(e) => setTargetSpellbookId(e.target.value)}
+                data-testid="spellbook-dropdown"
+              >
+                <option value="">Select a spellbook...</option>
+                <option value="new">+ Create New Spellbook</option>
+                {spellbooks.map((spellbook) => (
+                  <option key={spellbook.id} value={spellbook.id}>
+                    {spellbook.name} ({spellbook.spells.length} spells)
+                  </option>
+                ))}
+              </select>
+              <button
+                className="btn-primary"
+                onClick={handleAddToSpellbook}
+                data-testid="btn-add-selected"
+                disabled={!targetSpellbookId}
+              >
+                Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
+              </button>
+            </div>
+          )}
           <SpellTable
             spells={filteredSpells}
+            selectedSpellIds={selectedSpellIds}
+            onSelectionChange={setSelectedSpellIds}
             onAddToSpellbook={handleAddToSpellbook}
           />
         </>
@@ -172,7 +270,11 @@ function App() {
         <div className="dialog-overlay" data-testid="spellbook-selector">
           <div className="dialog">
             <h3>{MESSAGES.DIALOG.ADD_TO_SPELLBOOK}</h3>
-            <p>{MESSAGES.DIALOG.SELECT_SPELLBOOK}</p>
+            <p>
+              {selectedSpellIds.size === 1
+                ? MESSAGES.DIALOG.SELECT_SPELLBOOK
+                : `Select a spellbook to add ${selectedSpellIds.size} spells to:`}
+            </p>
             <div className="spellbook-selector-list">
               {spellbooks.map((spellbook) => (
                 <button
@@ -197,6 +299,17 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Create Spellbook Modal */}
+      <CreateSpellbookModal
+        isOpen={createModalOpen}
+        onClose={() => {
+          setCreateModalOpen(false);
+          setPendingSpellIds(new Set());
+        }}
+        onCreate={handleCreateSpellbook}
+        existingNames={spellbooks.map(sb => sb.name)}
+      />
 
       {/* Success Toast */}
       {showToast && (

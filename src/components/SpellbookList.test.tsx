@@ -170,8 +170,8 @@ describe('SpellbookList', () => {
       const createButton = screen.getByTestId('btn-create-spellbook');
       fireEvent.click(createButton);
 
-      expect(screen.getByTestId('create-spellbook-dialog')).toBeTruthy();
       expect(screen.getByText('Create New Spellbook')).toBeTruthy();
+      expect(screen.getByTestId('spellbook-name-input')).toBeTruthy();
     });
 
     it('should close dialog when Cancel button is clicked', () => {
@@ -181,11 +181,15 @@ describe('SpellbookList', () => {
       const createButton = screen.getByTestId('btn-create-spellbook');
       fireEvent.click(createButton);
 
+      // Verify modal is open
+      expect(screen.getByText('Create New Spellbook')).toBeTruthy();
+
       // Close dialog
       const cancelButton = screen.getByText('Cancel');
       fireEvent.click(cancelButton);
 
-      expect(screen.queryByTestId('create-spellbook-dialog')).toBeNull();
+      // Verify modal is closed
+      expect(screen.queryByText('Create New Spellbook')).toBeNull();
     });
 
     it('should create spellbook with valid name', async () => {
@@ -197,11 +201,11 @@ describe('SpellbookList', () => {
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
 
       // Enter name
-      const input = screen.getByTestId('input-spellbook-name');
+      const input = screen.getByTestId('spellbook-name-input');
       fireEvent.change(input, { target: { value: 'New Spellbook' } });
 
       // Submit
-      const saveButton = screen.getByTestId('btn-save-spellbook');
+      const saveButton = screen.getByTestId('create-button');
       fireEvent.click(saveButton);
 
       await waitFor(() => {
@@ -210,7 +214,7 @@ describe('SpellbookList', () => {
 
       // Dialog should close after successful creation
       await waitFor(() => {
-        expect(screen.queryByTestId('create-spellbook-dialog')).toBeNull();
+        expect(screen.queryByText('Create New Spellbook')).toBeNull();
       });
     });
 
@@ -223,39 +227,49 @@ describe('SpellbookList', () => {
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
 
       // Enter name with whitespace
-      const input = screen.getByTestId('input-spellbook-name');
+      const input = screen.getByTestId('spellbook-name-input');
       fireEvent.change(input, { target: { value: '  Spaced Name  ' } });
 
       // Submit
-      fireEvent.click(screen.getByTestId('btn-save-spellbook'));
+      fireEvent.click(screen.getByTestId('create-button'));
 
       await waitFor(() => {
         expect(mockCreateSpellbook).toHaveBeenCalledWith({ name: 'Spaced Name' });
       });
     });
 
-    it('should disable save button when name is empty', () => {
+    it('should show validation error when name is empty', async () => {
       render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
 
       // Open dialog
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
 
-      const saveButton = screen.getByTestId('btn-save-spellbook');
-      expect(saveButton).toBeDisabled();
+      // Try to submit without entering a name
+      fireEvent.click(screen.getByTestId('create-button'));
+
+      // Should show validation error
+      await waitFor(() => {
+        expect(screen.getByText('Spellbook name is required')).toBeTruthy();
+      });
     });
 
-    it('should disable save button when name is only whitespace', () => {
+    it('should show validation error when name is only whitespace', async () => {
       render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
 
       // Open dialog
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
 
       // Enter whitespace
-      const input = screen.getByTestId('input-spellbook-name');
+      const input = screen.getByTestId('spellbook-name-input');
       fireEvent.change(input, { target: { value: '   ' } });
 
-      const saveButton = screen.getByTestId('btn-save-spellbook');
-      expect(saveButton).toBeDisabled();
+      // Try to submit
+      fireEvent.click(screen.getByTestId('create-button'));
+
+      // Should show validation error
+      await waitFor(() => {
+        expect(screen.getByText('Spellbook name is required')).toBeTruthy();
+      });
     });
 
     it('should show error alert when creation fails', async () => {
@@ -265,12 +279,12 @@ describe('SpellbookList', () => {
 
       // Open dialog and create spellbook
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
-      const input = screen.getByTestId('input-spellbook-name');
+      const input = screen.getByTestId('spellbook-name-input');
       fireEvent.change(input, { target: { value: 'Test' } });
-      fireEvent.click(screen.getByTestId('btn-save-spellbook'));
+      fireEvent.click(screen.getByTestId('create-button'));
 
       await waitFor(() => {
-        expect(screen.getByText('Creation Failed')).toBeTruthy();
+        // New modal shows error inline, not in a separate alert dialog
         expect(screen.getByText('Database error')).toBeTruthy();
       });
     });
@@ -287,9 +301,9 @@ describe('SpellbookList', () => {
 
       // Open dialog and submit
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
-      const input = screen.getByTestId('input-spellbook-name');
+      const input = screen.getByTestId('spellbook-name-input');
       fireEvent.change(input, { target: { value: 'Test' } });
-      fireEvent.click(screen.getByTestId('btn-save-spellbook'));
+      fireEvent.click(screen.getByTestId('create-button'));
 
       // Should show loading state
       await waitFor(() => {
@@ -565,7 +579,7 @@ describe('SpellbookList', () => {
 
       // Open dialog and enter text
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
-      const input = screen.getByTestId('input-spellbook-name') as HTMLInputElement;
+      const input = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'Test Name' } });
 
       // Cancel
@@ -573,7 +587,7 @@ describe('SpellbookList', () => {
 
       // Reopen dialog - input should be empty
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
-      const newInput = screen.getByTestId('input-spellbook-name') as HTMLInputElement;
+      const newInput = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
       expect(newInput.value).toBe('');
     });
   });

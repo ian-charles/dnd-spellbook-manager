@@ -58,12 +58,56 @@
 .browse-header {
   text-align: center;
   margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
 }
 
 .browse-header p {
   font-size: var(--font-size-md);
   color: var(--color-text-secondary);
   margin: 0;
+}
+
+.batch-add-container {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: center;
+  margin: var(--space-6) 0;
+  padding: var(--space-4);
+  background: var(--color-bg-overlay);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.spellbook-dropdown {
+  flex: 1;
+  max-width: 400px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-input);
+  border: var(--input-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.spellbook-dropdown:hover {
+  border-color: var(--color-border-focus);
+}
+
+.spellbook-dropdown:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.batch-add-container .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .app-main {
@@ -135,6 +179,20 @@
     padding: var(--space-4);
     max-width: 100vw;
     overflow-x: hidden;
+  }
+
+  .batch-add-container {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .spellbook-dropdown {
+    width: 100%;
+    max-width: none;
+  }
+
+  .batch-add-container .btn-primary {
+    width: 100%;
   }
 
   .success-toast {

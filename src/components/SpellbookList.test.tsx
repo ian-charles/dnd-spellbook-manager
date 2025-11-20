@@ -43,6 +43,11 @@ describe('SpellbookList', () => {
         { spellId: 'spell-1', prepared: true, notes: '' },
         { spellId: 'spell-2', prepared: false, notes: '' },
       ],
+      created: '2024-01-01T10:00:00Z',
+      updated: '2024-01-15T14:30:00Z',
+      spellcastingAbility: 'INT' as const,
+      spellAttackModifier: 7,
+      spellSaveDC: 15,
     },
     {
       id: 'spellbook-2',
@@ -50,6 +55,11 @@ describe('SpellbookList', () => {
       spells: [
         { spellId: 'spell-3', prepared: true, notes: '' },
       ],
+      created: '2024-02-01T08:00:00Z',
+      updated: '2024-02-10T12:00:00Z',
+      spellcastingAbility: 'WIS' as const,
+      spellAttackModifier: 5,
+      spellSaveDC: 13,
     },
   ];
 
@@ -589,6 +599,105 @@ describe('SpellbookList', () => {
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
       const newInput = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
       expect(newInput.value).toBe('');
+    });
+  });
+
+  describe('Table Layout', () => {
+    beforeEach(() => {
+      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
+        spellbooks: mockSpellbooks,
+        loading: false,
+        createSpellbook: mockCreateSpellbook,
+        deleteSpellbook: mockDeleteSpellbook,
+        refreshSpellbooks: mockRefreshSpellbooks,
+      });
+    });
+
+    it('should render spellbooks as a table', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const table = screen.getByTestId('spellbooks-table');
+      expect(table).toBeTruthy();
+      expect(table.tagName).toBe('TABLE');
+    });
+
+    it('should display table headers', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      expect(screen.getByText('Name')).toBeTruthy();
+      expect(screen.getByText('Spells')).toBeTruthy();
+      expect(screen.getByText('Ability')).toBeTruthy();
+      expect(screen.getByText('Attack')).toBeTruthy();
+      expect(screen.getByText('Save DC')).toBeTruthy();
+      expect(screen.getByText('Last Updated')).toBeTruthy();
+      expect(screen.getByText('Actions')).toBeTruthy();
+    });
+
+    it('should display spellbook data in table rows', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      // Check first spellbook
+      expect(screen.getByText('My First Spellbook')).toBeTruthy();
+      expect(screen.getByText('2')).toBeTruthy(); // spell count
+      expect(screen.getByText('INT')).toBeTruthy();
+      expect(screen.getByText('+7')).toBeTruthy();
+      expect(screen.getByText('15')).toBeTruthy();
+
+      // Check second spellbook
+      expect(screen.getByText('Adventure Spells')).toBeTruthy();
+      expect(screen.getByText('1')).toBeTruthy();
+      expect(screen.getByText('WIS')).toBeTruthy();
+      expect(screen.getByText('+5')).toBeTruthy();
+      expect(screen.getByText('13')).toBeTruthy();
+    });
+
+    it('should display formatted timestamp for last updated', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      // The exact format depends on implementation, but should contain date info
+      const table = screen.getByTestId('spellbooks-table');
+      expect(table.textContent).toContain('2024');
+    });
+
+    it('should display N/A for missing spellcasting stats', () => {
+      const spellbooksWithMissingStats = [
+        {
+          id: 'spellbook-3',
+          name: 'Incomplete Spellbook',
+          spells: [],
+          created: '2024-01-01T10:00:00Z',
+          updated: '2024-01-01T10:00:00Z',
+        },
+      ];
+
+      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
+        spellbooks: spellbooksWithMissingStats,
+        loading: false,
+        createSpellbook: mockCreateSpellbook,
+        deleteSpellbook: mockDeleteSpellbook,
+        refreshSpellbooks: mockRefreshSpellbooks,
+      });
+
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const naElements = screen.getAllByText('N/A');
+      expect(naElements.length).toBeGreaterThanOrEqual(3); // Ability, Attack, Save DC
+    });
+
+    it('should call onSpellbookClick when table row is clicked', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const firstRow = screen.getByTestId('spellbook-row-spellbook-1');
+      fireEvent.click(firstRow);
+
+      expect(mockOnSpellbookClick).toHaveBeenCalledWith('spellbook-1');
+    });
+
+    it('should render delete button in actions column', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const deleteButtons = screen.getAllByText('Delete');
+      expect(deleteButtons.length).toBe(2);
     });
   });
 });

@@ -700,4 +700,82 @@ describe('SpellbookList', () => {
       expect(deleteButtons.length).toBe(2);
     });
   });
+
+  describe('Copy Spellbook', () => {
+    beforeEach(() => {
+      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
+        spellbooks: mockSpellbooks,
+        loading: false,
+        createSpellbook: mockCreateSpellbook,
+        deleteSpellbook: mockDeleteSpellbook,
+        refreshSpellbooks: mockRefreshSpellbooks,
+      });
+    });
+
+    it('should render copy button in actions column', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const copyButtons = screen.getAllByText('Copy');
+      expect(copyButtons.length).toBe(2);
+    });
+
+    it('should open create modal with pre-filled data when copy is clicked', async () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
+      fireEvent.click(copyButtons[0]);
+
+      // Modal should open with pre-filled data from first spellbook
+      await waitFor(() => {
+        const nameInput = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
+        expect(nameInput.value).toBe('My First Spellbook (Copy)');
+      });
+
+      // Check spellcasting ability is pre-selected
+      const intButton = screen.getByTestId('ability-int');
+      expect(intButton).toHaveClass('active');
+
+      // Check attack modifier and save DC are pre-filled
+      const attackInput = screen.getByTestId('attack-modifier-input') as HTMLInputElement;
+      const saveDCInput = screen.getByTestId('save-dc-input') as HTMLInputElement;
+      expect(attackInput.value).toBe('7');
+      expect(saveDCInput.value).toBe('15');
+    });
+
+    it('should not trigger row click when copy button is clicked', () => {
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
+      fireEvent.click(copyButtons[0]);
+
+      expect(mockOnSpellbookClick).not.toHaveBeenCalled();
+    });
+
+    it('should allow creating a new spellbook with copied data and unique name', async () => {
+      mockCreateSpellbook.mockResolvedValue(undefined);
+
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
+      fireEvent.click(copyButtons[0]);
+
+      // Change the name to be unique
+      await waitFor(() => {
+        const nameInput = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
+        fireEvent.change(nameInput, { target: { value: 'My Copied Spellbook' } });
+      });
+
+      const createButton = screen.getByTestId('create-button');
+      fireEvent.click(createButton);
+
+      await waitFor(() => {
+        expect(mockCreateSpellbook).toHaveBeenCalledWith({
+          name: 'My Copied Spellbook',
+          spellcastingAbility: 'INT',
+          spellAttackModifier: 7,
+          spellSaveDC: 15,
+        });
+      });
+    });
+  });
 });

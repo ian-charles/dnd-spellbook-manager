@@ -17,6 +17,12 @@ interface SpellbookListProps {
 export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
   const { spellbooks, loading, createSpellbook, deleteSpellbook, refreshSpellbooks } = useSpellbooks();
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [copyData, setCopyData] = useState<{
+    name: string;
+    spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
+    spellAttackModifier?: number;
+    spellSaveDC?: number;
+  } | undefined>(undefined);
   const [importing, setImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -42,9 +48,23 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     try {
       await createSpellbook(input);
       setCreateModalOpen(false);
+      setCopyData(undefined);
     } catch (error) {
       throw error; // Let the modal handle the error
     }
+  };
+
+  const handleCopy = (id: string) => {
+    const spellbook = spellbooks.find(sb => sb.id === id);
+    if (!spellbook) return;
+
+    setCopyData({
+      name: `${spellbook.name} (Copy)`,
+      spellcastingAbility: spellbook.spellcastingAbility,
+      spellAttackModifier: spellbook.spellAttackModifier,
+      spellSaveDC: spellbook.spellSaveDC,
+    });
+    setCreateModalOpen(true);
   };
 
   const handleDelete = (id: string, name: string) => {
@@ -235,6 +255,13 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
                 </td>
                 <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
                   <button
+                    className="btn-secondary-small"
+                    onClick={() => handleCopy(spellbook.id)}
+                    data-testid={`btn-copy-spellbook-${spellbook.id}`}
+                  >
+                    Copy
+                  </button>
+                  <button
                     className="btn-danger-small"
                     onClick={() => handleDelete(spellbook.id, spellbook.name)}
                     data-testid={`btn-delete-spellbook-${spellbook.id}`}
@@ -251,9 +278,13 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       {/* Create Spellbook Modal */}
       <CreateSpellbookModal
         isOpen={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
+        onClose={() => {
+          setCreateModalOpen(false);
+          setCopyData(undefined);
+        }}
         onCreate={handleCreateSpellbook}
         existingNames={spellbooks.map(sb => sb.name)}
+        initialData={copyData}
       />
 
       {/* Confirm Delete Dialog */}

@@ -7,6 +7,12 @@ interface CreateSpellbookModalProps {
   onClose: () => void;
   onCreate: (input: CreateSpellbookInput) => Promise<void>;
   existingNames: string[];
+  initialData?: {
+    name?: string;
+    spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
+    spellAttackModifier?: number;
+    spellSaveDC?: number;
+  };
 }
 
 export function CreateSpellbookModal({
@@ -14,6 +20,7 @@ export function CreateSpellbookModal({
   onClose,
   onCreate,
   existingNames,
+  initialData,
 }: CreateSpellbookModalProps) {
   const [name, setName] = useState('');
   const [spellcastingAbility, setSpellcastingAbility] = useState<'INT' | 'WIS' | 'CHA' | ''>('');
@@ -22,9 +29,18 @@ export function CreateSpellbookModal({
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Reset form when modal closes
+  // Initialize or reset form when modal opens/closes
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen && initialData) {
+      // Pre-fill with initial data
+      setName(initialData.name || '');
+      setSpellcastingAbility(initialData.spellcastingAbility || '');
+      setSpellAttackModifier(initialData.spellAttackModifier !== undefined ? String(initialData.spellAttackModifier) : '');
+      setSpellSaveDC(initialData.spellSaveDC !== undefined ? String(initialData.spellSaveDC) : '');
+      setError('');
+      setLoading(false);
+    } else if (!isOpen) {
+      // Reset form when modal closes
       setName('');
       setSpellcastingAbility('');
       setSpellAttackModifier('');
@@ -32,7 +48,7 @@ export function CreateSpellbookModal({
       setError('');
       setLoading(false);
     }
-  }, [isOpen]);
+  }, [isOpen, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

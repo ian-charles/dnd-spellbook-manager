@@ -30,10 +30,12 @@ function ClassBadges({ classes }: { classes: string[] }) {
 
 interface SpellTableProps {
   spells: Spell[];
+  selectedSpellIds?: Set<string>;
+  onSelectionChange?: (selectedIds: Set<string>) => void;
   onAddToSpellbook?: (spellId: string) => void;
 }
 
-export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
+export function SpellTable({ spells, selectedSpellIds = new Set(), onSelectionChange, onAddToSpellbook }: SpellTableProps) {
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
   const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(spells);
 
@@ -44,6 +46,18 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
     } else {
       setExpandedSpellId(spellId);
     }
+  };
+
+  const handleCheckboxToggle = (spellId: string) => {
+    if (!onSelectionChange) return;
+
+    const newSelection = new Set(selectedSpellIds);
+    if (newSelection.has(spellId)) {
+      newSelection.delete(spellId);
+    } else {
+      newSelection.add(spellId);
+    }
+    onSelectionChange(newSelection);
   };
 
   if (spells.length === 0) {
@@ -59,6 +73,7 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
       <table className="spell-table">
         <thead>
           <tr>
+            {onAddToSpellbook && <th className="checkbox-col"></th>}
             <th onClick={() => handleSort('name')} className="sortable">
               <div className="th-content">
                 Spell Name
@@ -103,7 +118,6 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
                 <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
-            {onAddToSpellbook && <th className="action-col">Action</th>}
           </tr>
         </thead>
         <tbody>
@@ -113,6 +127,16 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
                 onClick={() => handleRowClick(spell.id)}
                 className={`spell-row ${expandedSpellId === spell.id ? 'expanded' : ''}`}
               >
+                {onAddToSpellbook && (
+                  <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selectedSpellIds.has(spell.id)}
+                      onChange={() => handleCheckboxToggle(spell.id)}
+                      data-testid="spell-checkbox"
+                    />
+                  </td>
+                )}
                 <td className="spell-name">
                   <div className="spell-name-header">
                     {spell.name}
@@ -128,17 +152,6 @@ export function SpellTable({ spells, onAddToSpellbook }: SpellTableProps) {
                 <td>{spell.duration}</td>
                 <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
                 <td className="source-col">{spell.source}</td>
-                {onAddToSpellbook && (
-                  <td className="action-col" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      className="btn-add-small"
-                      onClick={() => onAddToSpellbook(spell.id)}
-                      data-testid="btn-add-spell"
-                    >
-                      +
-                    </button>
-                  </td>
-                )}
               </tr>
               {expandedSpellId === spell.id && (
                 <tr key={`${spell.id}-expansion`} className="spell-expansion-row">

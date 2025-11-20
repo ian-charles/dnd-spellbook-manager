@@ -19,23 +19,18 @@
   padding: var(--space-4);
 }
 
-/* Add button - browse page specific */
-.btn-add-small {
-  padding: var(--space-1) var(--space-3);
-  background: var(--color-accent-light);
-  color: var(--color-text-link);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  transition: all var(--transition-base);
+/* Checkbox column */
+.checkbox-col {
+  width: 40px;
+  text-align: center;
+  padding: var(--space-3) var(--space-2) !important;
 }
 
-.btn-add-small:hover {
-  background: var(--color-accent-lighter);
-  border-color: var(--color-accent);
-  transform: scale(1.1);
+.checkbox-col input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  cursor: pointer;
+  accent-color: var(--color-accent);
 }
 
 /* Empty state */
@@ -67,9 +62,30 @@
 
 /* Mobile responsive - component-specific overrides */
 @media (max-width: 768px) {
-  /* Hide all columns except spell name, level, action, and expansion */
-  .spell-table td:not(.spell-name):not(.level-col):not(.action-col):not(.spell-expansion-cell) {
+  /* Hide all columns except checkbox, spell name, level, and expansion */
+  .spell-table td:not(.checkbox-col):not(.spell-name):not(.level-col):not(.spell-expansion-cell) {
     display: none;
+  }
+
+  .spell-table th:not(.checkbox-col) {
+    display: none;
+  }
+
+  /* Checkbox column on mobile - left side */
+  .spell-table .checkbox-col {
+    position: absolute !important;
+    display: block !important;
+    top: var(--space-3);
+    left: var(--space-2);
+    width: auto;
+    z-index: var(--z-dropdown);
+  }
+
+  .spell-table .checkbox-col input[type="checkbox"] {
+    min-width: 44px;
+    min-height: 44px;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   /* Level badge in the top right */
@@ -77,7 +93,7 @@
     position: absolute !important;
     display: block !important;
     top: var(--space-3);
-    right: var(--space-16);
+    right: var(--space-2);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     background: var(--color-level-bg);
@@ -90,27 +106,8 @@
     z-index: var(--z-dropdown);
   }
 
-  /* Action button positioned in top right */
-  .spell-table .action-col {
-    position: absolute !important;
-    display: block !important;
-    top: var(--space-3);
-    right: var(--space-2);
-    width: auto;
-    z-index: var(--z-dropdown);
-  }
-
-  .spell-table .btn-add-small {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    font-size: var(--font-size-lg);
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-md);
-    font-weight: var(--font-weight-semibold);
+  /* Adjust spell name to make room for checkbox on left */
+  .spell-table .spell-name {
+    padding-left: var(--space-16) !important;
   }
 }

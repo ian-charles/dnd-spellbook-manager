@@ -82,91 +82,91 @@
 }
 
 /* Class-specific colors for filter buttons */
-.filter-btn[data-class="Bard"] {
+.filter-btn[data-class="bard"] {
   background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
   border-color: light-dark(#a78bfa, #7c3aed);
   color: light-dark(#6d28d9, #c4b5fd);
 }
 
-.filter-btn[data-class="Bard"]:hover,
-.filter-btn[data-class="Bard"].active {
+.filter-btn[data-class="bard"]:hover,
+.filter-btn[data-class="bard"].active {
   background: light-dark(rgba(196, 181, 253, 0.35), rgba(196, 181, 253, 0.3));
 }
 
-.filter-btn[data-class="Cleric"] {
+.filter-btn[data-class="cleric"] {
   background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
   border-color: light-dark(#fbbf24, #eab308);
   color: light-dark(#b45309, #fde047);
 }
 
-.filter-btn[data-class="Cleric"]:hover,
-.filter-btn[data-class="Cleric"].active {
+.filter-btn[data-class="cleric"]:hover,
+.filter-btn[data-class="cleric"].active {
   background: light-dark(rgba(253, 224, 71, 0.35), rgba(253, 224, 71, 0.3));
 }
 
-.filter-btn[data-class="Druid"] {
+.filter-btn[data-class="druid"] {
   background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
   border-color: light-dark(#4ade80, #22c55e);
   color: light-dark(#16a34a, #86efac);
 }
 
-.filter-btn[data-class="Druid"]:hover,
-.filter-btn[data-class="Druid"].active {
+.filter-btn[data-class="druid"]:hover,
+.filter-btn[data-class="druid"].active {
   background: light-dark(rgba(134, 239, 172, 0.35), rgba(134, 239, 172, 0.3));
 }
 
-.filter-btn[data-class="Paladin"] {
-  background: light-dark(rgba(147, 197, 253, 0.2), rgba(147, 197, 253, 0.15));
-  border-color: light-dark(#60a5fa, #3b82f6);
-  color: light-dark(#1d4ed8, #93c5fd);
+.filter-btn[data-class="paladin"] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
 }
 
-.filter-btn[data-class="Paladin"]:hover,
-.filter-btn[data-class="Paladin"].active {
-  background: light-dark(rgba(147, 197, 253, 0.35), rgba(147, 197, 253, 0.3));
+.filter-btn[data-class="paladin"]:hover,
+.filter-btn[data-class="paladin"].active {
+  background: light-dark(rgba(148, 163, 184, 0.35), rgba(148, 163, 184, 0.3));
 }
 
-.filter-btn[data-class="Ranger"] {
+.filter-btn[data-class="ranger"] {
   background: light-dark(rgba(217, 119, 6, 0.15), rgba(217, 119, 6, 0.2));
   border-color: light-dark(#d97706, #ea580c);
   color: light-dark(#92400e, #fdba74);
 }
 
-.filter-btn[data-class="Ranger"]:hover,
-.filter-btn[data-class="Ranger"].active {
+.filter-btn[data-class="ranger"]:hover,
+.filter-btn[data-class="ranger"].active {
   background: light-dark(rgba(217, 119, 6, 0.3), rgba(217, 119, 6, 0.35));
 }
 
-.filter-btn[data-class="Sorcerer"] {
+.filter-btn[data-class="sorcerer"] {
   background: light-dark(rgba(248, 113, 113, 0.2), rgba(248, 113, 113, 0.15));
   border-color: light-dark(#f87171, #ef4444);
   color: light-dark(#dc2626, #fca5a5);
 }
 
-.filter-btn[data-class="Sorcerer"]:hover,
-.filter-btn[data-class="Sorcerer"].active {
+.filter-btn[data-class="sorcerer"]:hover,
+.filter-btn[data-class="sorcerer"].active {
   background: light-dark(rgba(248, 113, 113, 0.35), rgba(248, 113, 113, 0.3));
 }
 
-.filter-btn[data-class="Warlock"] {
+.filter-btn[data-class="warlock"] {
   background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
   border-color: light-dark(#fb923c, #f97316);
   color: light-dark(#ea580c, #fdba74);
 }
 
-.filter-btn[data-class="Warlock"]:hover,
-.filter-btn[data-class="Warlock"].active {
+.filter-btn[data-class="warlock"]:hover,
+.filter-btn[data-class="warlock"].active {
   background: light-dark(rgba(251, 146, 60, 0.35), rgba(251, 146, 60, 0.3));
 }
 
-.filter-btn[data-class="Wizard"] {
+.filter-btn[data-class="wizard"] {
   background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
   border-color: light-dark(#3b82f6, #2563eb);
   color: light-dark(#1e40af, #93c5fd);
 }
 
-.filter-btn[data-class="Wizard"]:hover,
-.filter-btn[data-class="Wizard"].active {
+.filter-btn[data-class="wizard"]:hover,
+.filter-btn[data-class="wizard"].active {
   background: light-dark(rgba(96, 165, 250, 0.35), rgba(96, 165, 250, 0.3));
 }
 

@@ -274,9 +274,9 @@
 }
 
 .class-badge-paladin {
-  background: light-dark(rgba(147, 197, 253, 0.2), rgba(147, 197, 253, 0.15));
-  border: 1px solid light-dark(#60a5fa, #3b82f6);
-  color: light-dark(#1d4ed8, #93c5fd);
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border: 1px solid light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
 }
 
 .class-badge-ranger {

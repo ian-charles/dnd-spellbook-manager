@@ -74,14 +74,20 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
 
   return (
     <div className="spell-filters">
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="Search spells..."
-          value={state.searchText}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="search-input"
-        />
+      <div className="filter-section">
+        <h3>Class</h3>
+        <div className="filter-buttons">
+          {classes.map((className) => (
+            <button
+              key={className}
+              className={`filter-btn ${state.selectedClasses.includes(className) ? 'active' : ''}`}
+              onClick={() => toggleClass(className)}
+              data-class={className}
+            >
+              {className}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="filter-section">
@@ -109,22 +115,6 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               onClick={() => toggleSchool(school)}
             >
               {school}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="filter-section">
-        <h3>Class</h3>
-        <div className="filter-buttons">
-          {classes.map((className) => (
-            <button
-              key={className}
-              className={`filter-btn ${state.selectedClasses.includes(className) ? 'active' : ''}`}
-              onClick={() => toggleClass(className)}
-              data-class={className}
-            >
-              {className}
             </button>
           ))}
         </div>
@@ -179,6 +169,16 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
             </label>
           </div>
         </div>
+      </div>
+
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="Search spells..."
+          value={state.searchText}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="search-input"
+        />
       </div>
 
       {hasActiveFilters && (

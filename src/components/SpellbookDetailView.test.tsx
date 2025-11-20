@@ -36,7 +36,7 @@ const mockSpell2: Spell = {
   school: 'Abjuration',
   castingTime: '1 reaction',
   range: 'Self',
-  components: { verbal: true, somatic: true },
+  components: { verbal: true, somatic: true, material: false },
   duration: '1 round',
   description: 'An invisible barrier of magical force appears...',
   classes: ['Wizard', 'Sorcerer'],
@@ -52,7 +52,7 @@ const mockSpell3: Spell = {
   school: 'Divination',
   castingTime: '1 action',
   range: '30 feet',
-  components: { verbal: true, somatic: true },
+  components: { verbal: true, somatic: true, material: false },
   duration: 'Concentration, up to 10 minutes',
   description: 'For the duration, you sense the presence of magic...',
   classes: ['Wizard', 'Cleric', 'Bard'],
@@ -71,11 +71,15 @@ const mockSpellbook: Spellbook = {
   id: 'sb-1',
   name: 'My Spellbook',
   spells: [
-    { spellId: 'spell-1', prepared: true },
-    { spellId: 'spell-2', prepared: false },
-    { spellId: 'spell-3', prepared: true },
+    { spellId: 'spell-1', prepared: true, notes: '' },
+    { spellId: 'spell-2', prepared: false, notes: '' },
+    { spellId: 'spell-3', prepared: true, notes: '' },
   ],
-  createdAt: '2025-01-01T00:00:00.000Z',
+  created: '2025-01-01T00:00:00.000Z',
+  updated: '2025-01-15T12:00:00.000Z',
+  spellcastingAbility: 'INT',
+  spellAttackModifier: 7,
+  spellSaveDC: 15,
 };
 
 // Default props for testing
@@ -87,6 +91,7 @@ const defaultProps = {
   sortColumn: 'name' as const,
   sortDirection: 'asc' as const,
   confirmDialog: { isOpen: false, spellId: '', spellName: '' },
+  editModalOpen: false,
   onBack: vi.fn(),
   onSort: vi.fn(),
   onTogglePrepared: vi.fn(),
@@ -94,6 +99,10 @@ const defaultProps = {
   onConfirmRemove: vi.fn(),
   onCancelRemove: vi.fn(),
   onRowClick: vi.fn(),
+  onEdit: vi.fn(),
+  onEditClose: vi.fn(),
+  onEditSave: vi.fn(),
+  existingNames: [],
 };
 
 describe('SpellbookDetailView', () => {
@@ -521,6 +530,111 @@ describe('SpellbookDetailView', () => {
 
       const removeButton = screen.getByTestId('btn-remove-spell-spell-1');
       expect(removeButton.getAttribute('aria-label')).toBe('Remove Fireball');
+    });
+  });
+
+  describe('Spellbook Attributes', () => {
+    it('should display spellcasting ability', () => {
+      render(<SpellbookDetailView {...defaultProps} />);
+
+      expect(screen.getByText(/INT/)).toBeTruthy();
+    });
+
+    it('should display spell attack modifier', () => {
+      render(<SpellbookDetailView {...defaultProps} />);
+
+      expect(screen.getByText(/\+7/)).toBeTruthy();
+    });
+
+    it('should display spell save DC', () => {
+      render(<SpellbookDetailView {...defaultProps} />);
+
+      expect(screen.getByText(/DC 15/)).toBeTruthy();
+    });
+
+    it('should display last updated timestamp', () => {
+      render(<SpellbookDetailView {...defaultProps} />);
+
+      expect(screen.getByText(/1\/15\/2025/)).toBeTruthy();
+    });
+
+    it('should display N/A when spellcasting ability is not set', () => {
+      const spellbookWithoutAbility = { ...mockSpellbook, spellcastingAbility: undefined };
+      render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutAbility} />);
+
+      expect(screen.getByText(/Ability: N\/A/)).toBeTruthy();
+    });
+
+    it('should display N/A when spell attack modifier is not set', () => {
+      const spellbookWithoutModifier = { ...mockSpellbook, spellAttackModifier: undefined };
+      render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutModifier} />);
+
+      expect(screen.getByText(/Attack: N\/A/)).toBeTruthy();
+    });
+
+    it('should display N/A when spell save DC is not set', () => {
+      const spellbookWithoutDC = { ...mockSpellbook, spellSaveDC: undefined };
+      render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutDC} />);
+
+      expect(screen.getByText(/DC: N\/A/)).toBeTruthy();
+    });
+  });
+
+  describe('Edit Button', () => {
+    it('should render edit button', () => {
+      render(<SpellbookDetailView {...defaultProps} />);
+
+      expect(screen.getByTestId('btn-edit-spellbook')).toBeTruthy();
+    });
+
+    it('should call onEdit when edit button clicked', async () => {
+      const user = userEvent.setup();
+      const onEdit = vi.fn();
+
+      render(<SpellbookDetailView {...defaultProps} onEdit={onEdit} />);
+
+      const editButton = screen.getByTestId('btn-edit-spellbook');
+      await user.click(editButton);
+
+      expect(onEdit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render edit modal when editModalOpen is true', () => {
+      render(<SpellbookDetailView {...defaultProps} editModalOpen={true} />);
+
+      expect(screen.getByText('Edit Spellbook')).toBeTruthy();
+    });
+
+    it('should call onEditClose when modal close button clicked', async () => {
+      const user = userEvent.setup();
+      const onEditClose = vi.fn();
+
+      render(<SpellbookDetailView {...defaultProps} editModalOpen={true} onEditClose={onEditClose} />);
+
+      const cancelButton = screen.getByTestId('cancel-button');
+      await user.click(cancelButton);
+
+      expect(onEditClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onEditSave with updated data when save button clicked', async () => {
+      const user = userEvent.setup();
+      const onEditSave = vi.fn();
+
+      render(<SpellbookDetailView {...defaultProps} editModalOpen={true} onEditSave={onEditSave} />);
+
+      const nameInput = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
+      await user.clear(nameInput);
+      await user.type(nameInput, 'Updated Spellbook');
+
+      const saveButton = screen.getByTestId('create-button');
+      await user.click(saveButton);
+
+      expect(onEditSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Updated Spellbook',
+        })
+      );
     });
   });
 });

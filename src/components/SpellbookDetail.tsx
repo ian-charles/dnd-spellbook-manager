@@ -14,7 +14,7 @@
 import { useState, useEffect } from 'react';
 import { useSpellbooks } from '../hooks/useSpellbooks';
 import { spellService } from '../services/spell.service';
-import { Spellbook } from '../types/spellbook';
+import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { useSpellSorting } from '../hooks/useSpellSorting';
 import { SpellbookDetailView, EnrichedSpell } from './SpellbookDetailView';
 
@@ -24,10 +24,11 @@ interface SpellbookDetailProps {
 }
 
 export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
-  const { getSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
+  const { spellbooks, getSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
   const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
   const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellId: string; spellName: string }>({
     isOpen: false,
     spellId: '',
@@ -93,6 +94,25 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
     }
   };
 
+  const handleEdit = () => {
+    setEditModalOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setEditModalOpen(false);
+  };
+
+  const handleEditSave = async (input: CreateSpellbookInput) => {
+    await updateSpellbook(spellbookId, {
+      name: input.name,
+      spellcastingAbility: input.spellcastingAbility,
+      spellAttackModifier: input.spellAttackModifier,
+      spellSaveDC: input.spellSaveDC,
+    });
+    setEditModalOpen(false);
+    await loadSpellbook();
+  };
+
   // Delegate rendering to presentational component
   return (
     <SpellbookDetailView
@@ -103,6 +123,7 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       sortColumn={sortColumn}
       sortDirection={sortDirection}
       confirmDialog={confirmDialog}
+      editModalOpen={editModalOpen}
       onBack={onBack}
       onSort={handleSort}
       onTogglePrepared={handleTogglePrepared}
@@ -110,6 +131,10 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       onConfirmRemove={handleConfirmRemove}
       onCancelRemove={handleCancelRemove}
       onRowClick={handleRowClick}
+      onEdit={handleEdit}
+      onEditClose={handleEditClose}
+      onEditSave={handleEditSave}
+      existingNames={spellbooks.map(sb => sb.name)}
     />
   );
 }

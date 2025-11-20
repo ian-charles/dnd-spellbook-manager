@@ -20,7 +20,9 @@
       "Bash(npm run test:e2e:*)",
       "Bash(cross-env TEST_ENV=e2e npx vitest:*)",
       "Bash(npx cross-env:*)",
-      "Bash(npm run test:unit:*)"
+      "Bash(npm run test:unit:*)",
+      "Bash(git pull:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

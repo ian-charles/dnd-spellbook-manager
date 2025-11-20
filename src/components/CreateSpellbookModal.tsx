@@ -13,6 +13,7 @@ interface CreateSpellbookModalProps {
     spellAttackModifier?: number;
     spellSaveDC?: number;
   };
+  title?: string;
 }
 
 export function CreateSpellbookModal({
@@ -21,6 +22,7 @@ export function CreateSpellbookModal({
   onCreate,
   existingNames,
   initialData,
+  title = 'Create New Spellbook',
 }: CreateSpellbookModalProps) {
   const [name, setName] = useState('');
   const [spellcastingAbility, setSpellcastingAbility] = useState<'INT' | 'WIS' | 'CHA' | ''>('');
@@ -120,7 +122,7 @@ export function CreateSpellbookModal({
   return (
     <div className="dialog-overlay" onClick={onClose}>
       <div className="dialog create-spellbook-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>Create New Spellbook</h3>
+        <h3>{title}</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="spellbook-name">

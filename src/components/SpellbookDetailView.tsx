@@ -8,9 +8,10 @@
  */
 
 import { Spell } from '../types/spell';
-import { Spellbook } from '../types/spellbook';
+import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { SortIcon } from './SortIcon';
 import { ConfirmDialog } from './ConfirmDialog';
+import { CreateSpellbookModal } from './CreateSpellbookModal';
 import LoadingSpinner from './LoadingSpinner';
 import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
 import { getLevelText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
@@ -58,6 +59,7 @@ export interface SpellbookDetailViewProps {
     spellId: string;
     spellName: string;
   };
+  editModalOpen: boolean;
   onBack: () => void;
   onSort: (column: SortColumn) => void;
   onTogglePrepared: (spellId: string) => void;
@@ -65,6 +67,10 @@ export interface SpellbookDetailViewProps {
   onConfirmRemove: () => void;
   onCancelRemove: () => void;
   onRowClick: (spellId: string) => void;
+  onEdit: () => void;
+  onEditClose: () => void;
+  onEditSave: (input: CreateSpellbookInput) => Promise<void>;
+  existingNames: string[];
 }
 
 export function SpellbookDetailView({
@@ -75,6 +81,7 @@ export function SpellbookDetailView({
   sortColumn,
   sortDirection,
   confirmDialog,
+  editModalOpen,
   onBack,
   onSort,
   onTogglePrepared,
@@ -82,6 +89,10 @@ export function SpellbookDetailView({
   onConfirmRemove,
   onCancelRemove,
   onRowClick,
+  onEdit,
+  onEditClose,
+  onEditSave,
+  existingNames,
 }: SpellbookDetailViewProps) {
   // Loading state
   if (!spellbook) {
@@ -100,11 +111,34 @@ export function SpellbookDetailView({
         <button className="btn-back" onClick={onBack}>
           {MESSAGES.DIALOG.BACK_TO_SPELLBOOKS}
         </button>
-        <div>
-          <h2 data-testid="spellbook-detail-name">{spellbook.name}</h2>
+        <div className="spellbook-header-content">
+          <div className="spellbook-header-top">
+            <h2 data-testid="spellbook-detail-name">{spellbook.name}</h2>
+            <button
+              className="btn-secondary"
+              onClick={onEdit}
+              data-testid="btn-edit-spellbook"
+            >
+              Edit
+            </button>
+          </div>
           <p className="spellbook-stats">
             {enrichedSpells.length} spell{enrichedSpells.length !== 1 ? 's' : ''} · {preparedCount} prepared
           </p>
+          <div className="spellbook-attributes">
+            <span>
+              <strong>Ability:</strong> {spellbook.spellcastingAbility || 'N/A'}
+            </span>
+            <span>
+              <strong>Attack:</strong> {spellbook.spellAttackModifier !== undefined ? `+${spellbook.spellAttackModifier}` : 'N/A'}
+            </span>
+            <span>
+              <strong>DC:</strong> {spellbook.spellSaveDC !== undefined ? `DC ${spellbook.spellSaveDC}` : 'N/A'}
+            </span>
+            <span>
+              <strong>Last Updated:</strong> {new Date(spellbook.updated).toLocaleDateString()}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -254,6 +288,21 @@ export function SpellbookDetailView({
         variant="danger"
         onConfirm={onConfirmRemove}
         onCancel={onCancelRemove}
+      />
+
+      {/* Edit Spellbook Modal */}
+      <CreateSpellbookModal
+        isOpen={editModalOpen}
+        onClose={onEditClose}
+        onCreate={onEditSave}
+        existingNames={existingNames.filter(name => name !== spellbook.name)}
+        initialData={{
+          name: spellbook.name,
+          spellcastingAbility: spellbook.spellcastingAbility,
+          spellAttackModifier: spellbook.spellAttackModifier,
+          spellSaveDC: spellbook.spellSaveDC,
+        }}
+        title="Edit Spellbook"
       />
     </div>
   );

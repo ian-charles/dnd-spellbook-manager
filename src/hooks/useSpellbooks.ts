@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { storageService } from '../services/storage.service';
-import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
+import { Spellbook, CreateSpellbookInput, UpdateSpellbookInput } from '../types/spellbook';
 
 /**
  * Hook to manage spellbooks
@@ -31,6 +31,16 @@ export function useSpellbooks() {
       const newBook = await storageService.createSpellbook(input);
       setSpellbooks([...spellbooks, newBook]);
       return newBook;
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    }
+  };
+
+  const updateSpellbook = async (id: string, updates: UpdateSpellbookInput) => {
+    try {
+      await storageService.updateSpellbook(id, updates);
+      await loadSpellbooks();
     } catch (err) {
       setError(err as Error);
       throw err;
@@ -80,6 +90,7 @@ export function useSpellbooks() {
     loading,
     error,
     createSpellbook,
+    updateSpellbook,
     deleteSpellbook,
     refreshSpellbooks,
     getSpellbook,

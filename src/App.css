@@ -105,7 +105,8 @@
   box-shadow: var(--shadow-focus);
 }
 
-.batch-add-container .btn-primary:disabled {
+.batch-add-container .btn-primary:disabled,
+.batch-add-container .btn-secondary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -191,7 +192,8 @@
     max-width: none;
   }
 
-  .batch-add-container .btn-primary {
+  .batch-add-container .btn-primary,
+  .batch-add-container .btn-secondary {
     width: 100%;
   }
 

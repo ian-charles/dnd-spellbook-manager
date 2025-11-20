@@ -217,32 +217,38 @@ function App() {
             schools={schools}
             classes={classes}
           />
-          {selectedSpellIds.size > 0 && (
-            <div className="batch-add-container">
-              <select
-                className="spellbook-dropdown"
-                value={targetSpellbookId}
-                onChange={(e) => setTargetSpellbookId(e.target.value)}
-                data-testid="spellbook-dropdown"
-              >
-                <option value="">Select a spellbook...</option>
-                <option value="new">+ Create New Spellbook</option>
-                {spellbooks.map((spellbook) => (
-                  <option key={spellbook.id} value={spellbook.id}>
-                    {spellbook.name} ({spellbook.spells.length} spells)
-                  </option>
-                ))}
-              </select>
-              <button
-                className="btn-primary"
-                onClick={handleAddToSpellbook}
-                data-testid="btn-add-selected"
-                disabled={!targetSpellbookId}
-              >
-                Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
-              </button>
-            </div>
-          )}
+          <div className="batch-add-container">
+            <button
+              className="btn-secondary"
+              onClick={() => setSelectedSpellIds(new Set())}
+              data-testid="btn-unselect-all"
+              disabled={selectedSpellIds.size === 0}
+            >
+              Unselect All
+            </button>
+            <select
+              className="spellbook-dropdown"
+              value={targetSpellbookId}
+              onChange={(e) => setTargetSpellbookId(e.target.value)}
+              data-testid="spellbook-dropdown"
+            >
+              <option value="">Select a spellbook...</option>
+              <option value="new">+ Create New Spellbook</option>
+              {spellbooks.map((spellbook) => (
+                <option key={spellbook.id} value={spellbook.id}>
+                  {spellbook.name} ({spellbook.spells.length} spells)
+                </option>
+              ))}
+            </select>
+            <button
+              className="btn-primary"
+              onClick={handleAddToSpellbook}
+              data-testid="btn-add-selected"
+              disabled={selectedSpellIds.size === 0 || !targetSpellbookId}
+            >
+              Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
+            </button>
+          </div>
           <SpellTable
             spells={filteredSpells}
             selectedSpellIds={selectedSpellIds}

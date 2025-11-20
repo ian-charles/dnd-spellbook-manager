@@ -34,6 +34,7 @@ describe('SpellbookList', () => {
   const mockCreateSpellbook = vi.fn();
   const mockDeleteSpellbook = vi.fn();
   const mockRefreshSpellbooks = vi.fn();
+  const mockAddSpellToSpellbook = vi.fn();
 
   const mockSpellbooks = [
     {
@@ -79,6 +80,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
 
       render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
@@ -96,6 +98,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -123,6 +126,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -171,6 +175,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -337,6 +342,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -399,6 +405,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -438,6 +445,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -581,6 +589,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -610,6 +619,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -676,6 +686,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
 
       render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
@@ -709,6 +720,7 @@ describe('SpellbookList', () => {
         createSpellbook: mockCreateSpellbook,
         deleteSpellbook: mockDeleteSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
+        addSpellToSpellbook: mockAddSpellToSpellbook,
       });
     });
 
@@ -775,6 +787,33 @@ describe('SpellbookList', () => {
           spellAttackModifier: 7,
           spellSaveDC: 15,
         });
+      });
+    });
+
+    it('should copy all spells from the source spellbook', async () => {
+      const newSpellbookId = 'new-spellbook-123';
+      mockCreateSpellbook.mockResolvedValue({ id: newSpellbookId });
+      mockAddSpellToSpellbook.mockResolvedValue(undefined);
+
+      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+
+      const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
+      fireEvent.click(copyButtons[0]); // Copy first spellbook with 2 spells
+
+      // Change the name to be unique
+      await waitFor(() => {
+        const nameInput = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
+        fireEvent.change(nameInput, { target: { value: 'My Copied Spellbook' } });
+      });
+
+      const createButton = screen.getByTestId('create-button');
+      fireEvent.click(createButton);
+
+      // Verify all spells were copied
+      await waitFor(() => {
+        expect(mockAddSpellToSpellbook).toHaveBeenCalledTimes(2);
+        expect(mockAddSpellToSpellbook).toHaveBeenCalledWith(newSpellbookId, 'spell-1');
+        expect(mockAddSpellToSpellbook).toHaveBeenCalledWith(newSpellbookId, 'spell-2');
       });
     });
   });

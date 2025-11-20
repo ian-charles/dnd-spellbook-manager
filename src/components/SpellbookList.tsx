@@ -15,13 +15,14 @@ interface SpellbookListProps {
 }
 
 export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
-  const { spellbooks, loading, createSpellbook, deleteSpellbook, refreshSpellbooks } = useSpellbooks();
+  const { spellbooks, loading, createSpellbook, deleteSpellbook, refreshSpellbooks, addSpellToSpellbook } = useSpellbooks();
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [copyData, setCopyData] = useState<{
     name: string;
     spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
     spellAttackModifier?: number;
     spellSaveDC?: number;
+    sourceSpellbookId?: string;
   } | undefined>(undefined);
   const [importing, setImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +47,19 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
 
   const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
     try {
-      await createSpellbook(input);
+      const newSpellbook = await createSpellbook(input);
+
+      // If this is a copy operation, copy all spells from the source spellbook
+      if (copyData?.sourceSpellbookId) {
+        const sourceSpellbook = spellbooks.find(sb => sb.id === copyData.sourceSpellbookId);
+        if (sourceSpellbook) {
+          // Copy all spells from the source spellbook to the new one
+          for (const spell of sourceSpellbook.spells) {
+            await addSpellToSpellbook(newSpellbook.id, spell.spellId);
+          }
+        }
+      }
+
       setCreateModalOpen(false);
       setCopyData(undefined);
     } catch (error) {
@@ -63,6 +76,7 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       spellcastingAbility: spellbook.spellcastingAbility,
       spellAttackModifier: spellbook.spellAttackModifier,
       spellSaveDC: spellbook.spellSaveDC,
+      sourceSpellbookId: id,
     });
     setCreateModalOpen(true);
   };

@@ -74,18 +74,31 @@
   display: flex;
   gap: var(--space-6);
   flex-wrap: wrap;
-  font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-primary);
 }
 
 .spellbook-attributes span {
   display: flex;
+  flex-direction: column;
   gap: var(--space-1);
 }
 
 .spellbook-attributes strong {
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spellbook-attributes span > :not(strong) {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
 }
 
 .spellbook-detail-empty {
@@ -170,8 +183,13 @@
   }
 
   .spellbook-attributes {
-    flex-direction: column;
-    gap: var(--space-2);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .spellbook-attributes span:last-child {
+    grid-column: 1 / -1;
   }
 
   /* Hide all columns except spell name, prepared, and action */

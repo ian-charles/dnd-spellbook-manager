@@ -127,16 +127,20 @@ export function SpellbookDetailView({
           </p>
           <div className="spellbook-attributes">
             <span>
-              <strong>Ability:</strong> {spellbook.spellcastingAbility || 'N/A'}
+              <strong>Ability</strong>
+              <span>{spellbook.spellcastingAbility || 'N/A'}</span>
             </span>
             <span>
-              <strong>Attack:</strong> {spellbook.spellAttackModifier !== undefined ? `+${spellbook.spellAttackModifier}` : 'N/A'}
+              <strong>Attack</strong>
+              <span>{spellbook.spellAttackModifier !== undefined ? `+${spellbook.spellAttackModifier}` : 'N/A'}</span>
             </span>
             <span>
-              <strong>DC:</strong> {spellbook.spellSaveDC !== undefined ? `DC ${spellbook.spellSaveDC}` : 'N/A'}
+              <strong>Save DC</strong>
+              <span>{spellbook.spellSaveDC !== undefined ? spellbook.spellSaveDC : 'N/A'}</span>
             </span>
             <span>
-              <strong>Last Updated:</strong> {new Date(spellbook.updated).toLocaleDateString()}
+              <strong>Last Updated</strong>
+              <span>{new Date(spellbook.updated).toLocaleDateString()}</span>
             </span>
           </div>
         </div>

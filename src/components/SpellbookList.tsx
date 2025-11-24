@@ -60,6 +60,9 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
         }
       }
 
+      // Ensure spellbooks list is refreshed to show the new/updated spellbook
+      refreshSpellbooks();
+
       setCreateModalOpen(false);
       setCopyData(undefined);
     } catch (error) {

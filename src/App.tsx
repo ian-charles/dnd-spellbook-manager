@@ -21,7 +21,7 @@ import './App.css';
 function App() {
   // Data hooks
   const { spells, loading, error } = useSpells();
-  const { spellbooks, addSpellToSpellbook, createSpellbook } = useSpellbooks();
+  const { spellbooks, addSpellToSpellbook, createSpellbook, refreshSpellbooks } = useSpellbooks();
 
   // Routing hook
   const {
@@ -115,6 +115,10 @@ function App() {
       for (const spellId of selectedSpellIds) {
         await addSpellToSpellbook(targetSpellbookId, spellId);
       }
+
+      // Ensure spellbooks list is refreshed to show updated spell counts
+      refreshSpellbooks();
+
       setSelectedSpellIds(new Set()); // Clear selection after adding
       const count = selectedSpellIds.size;
       displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
@@ -144,6 +148,9 @@ function App() {
       } else {
         displayToast('Spellbook created successfully');
       }
+
+      // Ensure spellbooks list is refreshed to show the new spellbook with all spells
+      refreshSpellbooks();
 
       setCreateModalOpen(false);
     } catch (error) {

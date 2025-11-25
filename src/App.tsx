@@ -21,7 +21,14 @@ import './App.css';
 function App() {
   // Data hooks
   const { spells, loading, error } = useSpells();
-  const { spellbooks, addSpellToSpellbook, createSpellbook, refreshSpellbooks } = useSpellbooks();
+  const {
+    spellbooks,
+    loading: spellbooksLoading,
+    addSpellToSpellbook,
+    createSpellbook,
+    deleteSpellbook,
+    refreshSpellbooks,
+  } = useSpellbooks();
 
   // Routing hook
   const {
@@ -117,7 +124,7 @@ function App() {
       }
 
       // Ensure spellbooks list is refreshed to show updated spell counts
-      refreshSpellbooks();
+      await refreshSpellbooks();
 
       setSelectedSpellIds(new Set()); // Clear selection after adding
       const count = selectedSpellIds.size;
@@ -145,12 +152,13 @@ function App() {
         displayToast(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
         setPendingSpellIds(new Set());
         setSelectedSpellIds(new Set());
+        // Ensure spellbooks list is refreshed after all spells added
+        await refreshSpellbooks();
       } else {
         displayToast('Spellbook created successfully');
+        // Refresh to show new spellbook
+        await refreshSpellbooks();
       }
-
-      // Ensure spellbooks list is refreshed to show the new spellbook with all spells
-      refreshSpellbooks();
 
       setCreateModalOpen(false);
     } catch (error) {
@@ -267,7 +275,15 @@ function App() {
 
       {/* Spellbooks List View */}
       {currentView === 'spellbooks' && (
-        <SpellbookList onSpellbookClick={navigateToSpellbookDetail} />
+        <SpellbookList
+          spellbooks={spellbooks}
+          loading={spellbooksLoading}
+          onSpellbookClick={navigateToSpellbookDetail}
+          onCreateSpellbook={createSpellbook}
+          onDeleteSpellbook={deleteSpellbook}
+          onRefreshSpellbooks={refreshSpellbooks}
+          onAddSpellToSpellbook={addSpellToSpellbook}
+        />
       )}
 
       {/* Spellbook Detail View */}

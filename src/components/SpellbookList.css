@@ -35,6 +35,47 @@
   margin: var(--space-2) 0;
 }
 
+.spellbook-search {
+  position: relative;
+  margin-bottom: var(--space-6);
+}
+
+.spellbook-search .search-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: all var(--transition-base);
+}
+
+.spellbook-search .search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus-primary);
+}
+
+.spellbook-search .btn-clear-search {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-2);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  transition: color var(--transition-base);
+}
+
+.spellbook-search .btn-clear-search:hover {
+  color: var(--color-text-primary);
+}
+
 .spellbooks-table {
   width: 100%;
   border-collapse: collapse;
@@ -54,6 +95,22 @@
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-md);
   color: var(--color-text-heading);
+}
+
+.spellbooks-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-base);
+}
+
+.spellbooks-table th.sortable:hover {
+  background: var(--color-hover);
+}
+
+.spellbooks-table .th-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .spellbooks-table tbody tr {

@@ -1,21 +1,37 @@
-import { useState, useRef } from 'react';
-import { useSpellbooks } from '../hooks/useSpellbooks';
+import { useState, useRef, useMemo } from 'react';
 import { exportImportService } from '../services/exportImport.service';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
+import { SortIcon } from './SortIcon';
 import LoadingSpinner from './LoadingSpinner';
 import { LoadingButton } from './LoadingButton';
-import { CreateSpellbookInput } from '../types/spellbook';
+import { CreateSpellbookInput, Spellbook } from '../types/spellbook';
 import { MESSAGES } from '../constants/messages';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
+  spellbooks: Spellbook[];
+  loading: boolean;
   onSpellbookClick: (spellbookId: string) => void;
+  onCreateSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
+  onDeleteSpellbook: (id: string) => Promise<void>;
+  onRefreshSpellbooks: () => Promise<void>;
+  onAddSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
 }
 
-export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
-  const { spellbooks, loading, createSpellbook, deleteSpellbook, refreshSpellbooks, addSpellToSpellbook } = useSpellbooks();
+type SortColumn = 'name' | 'spells' | 'ability' | 'attack' | 'saveDC' | 'updated';
+type SortDirection = 'asc' | 'desc';
+
+export function SpellbookList({
+  spellbooks,
+  loading,
+  onSpellbookClick,
+  onCreateSpellbook,
+  onDeleteSpellbook,
+  onRefreshSpellbooks,
+  onAddSpellToSpellbook,
+}: SpellbookListProps) {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [copyData, setCopyData] = useState<{
     name: string;
@@ -25,6 +41,9 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     sourceSpellbookId?: string;
   } | undefined>(undefined);
   const [importing, setImporting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortColumn, setSortColumn] = useState<SortColumn>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Dialog states
@@ -45,9 +64,72 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
     variant: 'info',
   });
 
+  // Filter and sort spellbooks
+  const filteredAndSortedSpellbooks = useMemo(() => {
+    // Filter by search query
+    let filtered = spellbooks;
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = spellbooks.filter(sb =>
+        sb.name.toLowerCase().includes(query)
+      );
+    }
+
+    // Sort
+    const sorted = [...filtered].sort((a, b) => {
+      let aVal: string | number;
+      let bVal: string | number;
+
+      switch (sortColumn) {
+        case 'name':
+          aVal = a.name.toLowerCase();
+          bVal = b.name.toLowerCase();
+          break;
+        case 'spells':
+          aVal = a.spells.length;
+          bVal = b.spells.length;
+          break;
+        case 'ability':
+          aVal = a.spellcastingAbility || '';
+          bVal = b.spellcastingAbility || '';
+          break;
+        case 'attack':
+          aVal = a.spellAttackModifier ?? -999;
+          bVal = b.spellAttackModifier ?? -999;
+          break;
+        case 'saveDC':
+          aVal = a.spellSaveDC ?? -999;
+          bVal = b.spellSaveDC ?? -999;
+          break;
+        case 'updated':
+          aVal = new Date(a.updated).getTime();
+          bVal = new Date(b.updated).getTime();
+          break;
+        default:
+          aVal = a.name.toLowerCase();
+          bVal = b.name.toLowerCase();
+      }
+
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }, [spellbooks, searchQuery, sortColumn, sortDirection]);
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
   const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
     try {
-      const newSpellbook = await createSpellbook(input);
+      const newSpellbook = await onCreateSpellbook(input);
 
       // If this is a copy operation, copy all spells from the source spellbook
       if (copyData?.sourceSpellbookId) {
@@ -55,13 +137,15 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
         if (sourceSpellbook) {
           // Copy all spells from the source spellbook to the new one
           for (const spell of sourceSpellbook.spells) {
-            await addSpellToSpellbook(newSpellbook.id, spell.spellId);
+            await onAddSpellToSpellbook(newSpellbook.id, spell.spellId);
           }
         }
+        // Ensure spellbooks list is refreshed after copying all spells
+        await onRefreshSpellbooks();
+      } else {
+        // Ensure spellbooks list is refreshed for new spellbook
+        await onRefreshSpellbooks();
       }
-
-      // Ensure spellbooks list is refreshed to show the new/updated spellbook
-      refreshSpellbooks();
 
       setCreateModalOpen(false);
       setCopyData(undefined);
@@ -90,7 +174,7 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteSpellbook(confirmDialog.spellbookId);
+      await onDeleteSpellbook(confirmDialog.spellbookId);
       setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
     } catch (error) {
       setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
@@ -155,7 +239,7 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
       }
 
       // Refresh the spellbooks list
-      refreshSpellbooks();
+      onRefreshSpellbooks();
     } catch (error) {
       setAlertDialog({
         isOpen: true,
@@ -230,20 +314,73 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
           <p>{MESSAGES.EMPTY_STATES.CLICK_NEW_SPELLBOOK}</p>
         </div>
       ) : (
-        <table className="spellbooks-table" data-testid="spellbooks-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Spells</th>
-              <th>Ability</th>
-              <th>Attack</th>
-              <th>Save DC</th>
-              <th>Last Updated</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {spellbooks.map((spellbook) => (
+        <>
+          {/* Search box */}
+          <div className="spellbook-search">
+            <input
+              type="text"
+              placeholder="Search spellbooks by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+              data-testid="spellbook-search-input"
+            />
+            {searchQuery && (
+              <button
+                className="btn-clear-search"
+                onClick={() => setSearchQuery('')}
+                data-testid="btn-clear-search"
+                aria-label="Clear search"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <table className="spellbooks-table" data-testid="spellbooks-table">
+            <thead>
+              <tr>
+                <th onClick={() => handleSort('name')} className="sortable">
+                  <div className="th-content">
+                    Spellbook Name
+                    <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('spells')} className="sortable">
+                  <div className="th-content">
+                    Spells
+                    <SortIcon column="spells" currentColumn={sortColumn} currentDirection={sortDirection} />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('ability')} className="sortable">
+                  <div className="th-content">
+                    Ability
+                    <SortIcon column="ability" currentColumn={sortColumn} currentDirection={sortDirection} />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('attack')} className="sortable">
+                  <div className="th-content">
+                    Attack
+                    <SortIcon column="attack" currentColumn={sortColumn} currentDirection={sortDirection} />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('saveDC')} className="sortable">
+                  <div className="th-content">
+                    Save DC
+                    <SortIcon column="saveDC" currentColumn={sortColumn} currentDirection={sortDirection} />
+                  </div>
+                </th>
+                <th onClick={() => handleSort('updated')} className="sortable">
+                  <div className="th-content">
+                    Last Updated
+                    <SortIcon column="updated" currentColumn={sortColumn} currentDirection={sortDirection} />
+                  </div>
+                </th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAndSortedSpellbooks.map((spellbook) => (
               <tr
                 key={spellbook.id}
                 className="spellbook-row"
@@ -287,9 +424,10 @@ export function SpellbookList({ onSpellbookClick }: SpellbookListProps) {
                   </button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
 
       {/* Create Spellbook Modal */}

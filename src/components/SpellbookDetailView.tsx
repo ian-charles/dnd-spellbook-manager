@@ -60,6 +60,7 @@ export interface SpellbookDetailViewProps {
     spellName: string;
   };
   editModalOpen: boolean;
+  showPreparedOnly: boolean;
   onBack: () => void;
   onSort: (column: SortColumn) => void;
   onTogglePrepared: (spellId: string) => void;
@@ -70,6 +71,8 @@ export interface SpellbookDetailViewProps {
   onEdit: () => void;
   onEditClose: () => void;
   onEditSave: (input: CreateSpellbookInput) => Promise<void>;
+  onToggleShowPreparedOnly: () => void;
+  onSelectAllPrepared: () => void;
   existingNames: string[];
 }
 
@@ -82,6 +85,7 @@ export function SpellbookDetailView({
   sortDirection,
   confirmDialog,
   editModalOpen,
+  showPreparedOnly,
   onBack,
   onSort,
   onTogglePrepared,
@@ -92,6 +96,8 @@ export function SpellbookDetailView({
   onEdit,
   onEditClose,
   onEditSave,
+  onToggleShowPreparedOnly,
+  onSelectAllPrepared,
   existingNames,
 }: SpellbookDetailViewProps) {
   // Loading state
@@ -104,6 +110,7 @@ export function SpellbookDetailView({
   }
 
   const preparedCount = enrichedSpells.filter(s => s.prepared).length;
+  const allPrepared = enrichedSpells.length > 0 && enrichedSpells.every(s => s.prepared);
 
   return (
     <div className="spellbook-detail" data-testid="spellbook-detail">
@@ -152,7 +159,29 @@ export function SpellbookDetailView({
           <p>{MESSAGES.EMPTY_STATES.GO_TO_BROWSE}</p>
         </div>
       ) : (
-        <div className="spellbook-table-container" data-testid="spellbook-spell-list">
+        <>
+          {/* Filter and Select All Controls */}
+          <div className="spellbook-controls">
+            <label className="filter-checkbox-label">
+              <input
+                type="checkbox"
+                checked={showPreparedOnly}
+                onChange={onToggleShowPreparedOnly}
+                data-testid="filter-prepared-only"
+              />
+              <span>Show Prepared Only</span>
+            </label>
+            <button
+              className="btn-secondary"
+              onClick={onSelectAllPrepared}
+              data-testid="btn-select-all-prepared"
+              disabled={enrichedSpells.length === 0}
+            >
+              {allPrepared ? 'Deselect All' : 'Select All'}
+            </button>
+          </div>
+
+          <div className="spellbook-table-container" data-testid="spellbook-spell-list">
           <table className="spell-table spellbook-table">
             <thead>
               <tr>
@@ -194,7 +223,6 @@ export function SpellbookDetailView({
                     <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
                   </div>
                 </th>
-                <th>Classes</th>
                 <th onClick={() => onSort('source')} className="sortable">
                   <div className="th-content">
                     Source
@@ -235,7 +263,6 @@ export function SpellbookDetailView({
                     <td>{spell.range}</td>
                     <td className="components-col"><ComponentBadges spell={spell} /></td>
                     <td>{spell.duration}</td>
-                    <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
                     <td className="source-col">{spell.source}</td>
                     <td className="action-col" onClick={(e) => e.stopPropagation()}>
                       <button
@@ -250,21 +277,8 @@ export function SpellbookDetailView({
                   </tr>
                   {expandedSpellId === spell.id && (
                     <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
-                      <td colSpan={11} className="spell-expansion-cell">
+                      <td colSpan={10} className="spell-expansion-cell">
                         <div className="spell-inline-expansion">
-                          <div className="spell-meta">
-                            {getLevelText(spell.level)} {spell.school}
-                            {spell.concentration && <span className="badge badge-concentration">Concentration</span>}
-                            {spell.ritual && <span className="badge badge-ritual">Ritual</span>}
-                          </div>
-                          <div className="spell-expanded-details">
-                            <div><strong>Casting Time:</strong> {spell.castingTime}</div>
-                            <div><strong>Range:</strong> {spell.range}</div>
-                            <div><strong>Duration:</strong> {spell.duration}</div>
-                            <div>
-                              <strong>Components:</strong> {getComponentsWithMaterials(spell)}
-                            </div>
-                          </div>
                           <div className="spell-expanded-description">
                             {spell.description}
                           </div>
@@ -274,8 +288,9 @@ export function SpellbookDetailView({
                             </div>
                           )}
                           <div className="spell-expanded-footer">
-                            <div><strong>Classes:</strong> {filterClasses(spell.classes).join(', ')}</div>
-                            <div className="spell-source">{spell.source}</div>
+                            <div>
+                              <strong>Classes:</strong> <ClassBadges classes={spell.classes} />
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -286,6 +301,7 @@ export function SpellbookDetailView({
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {/* Confirm Remove Dialog */}

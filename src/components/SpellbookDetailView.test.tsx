@@ -92,6 +92,7 @@ const defaultProps = {
   sortDirection: 'asc' as const,
   confirmDialog: { isOpen: false, spellId: '', spellName: '' },
   editModalOpen: false,
+  showPreparedOnly: false,
   onBack: vi.fn(),
   onSort: vi.fn(),
   onTogglePrepared: vi.fn(),
@@ -102,6 +103,8 @@ const defaultProps = {
   onEdit: vi.fn(),
   onEditClose: vi.fn(),
   onEditSave: vi.fn(),
+  onToggleShowPreparedOnly: vi.fn(),
+  onSelectAllPrepared: vi.fn(),
   existingNames: [],
 };
 

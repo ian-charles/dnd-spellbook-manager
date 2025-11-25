@@ -11,7 +11,7 @@
  * - Business logic (enriching spells with full data)
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSpellbooks } from '../hooks/useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
@@ -29,13 +29,23 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
   const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [showPreparedOnly, setShowPreparedOnly] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellId: string; spellName: string }>({
     isOpen: false,
     spellId: '',
     spellName: '',
   });
+
+  // Filter spells based on prepared status
+  const filteredSpells = useMemo(() => {
+    if (showPreparedOnly) {
+      return enrichedSpells.filter(s => s.prepared);
+    }
+    return enrichedSpells;
+  }, [enrichedSpells, showPreparedOnly]);
+
   const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(
-    enrichedSpells,
+    filteredSpells,
     { getSpell: (item) => item.spell }
   );
 
@@ -113,6 +123,28 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
     await loadSpellbook();
   };
 
+  const handleToggleShowPreparedOnly = () => {
+    setShowPreparedOnly(!showPreparedOnly);
+  };
+
+  const handleSelectAllPrepared = async () => {
+    // Determine if we should select all or deselect all
+    const allPrepared = enrichedSpells.every(s => s.prepared);
+
+    // Toggle all spells
+    for (const spell of enrichedSpells) {
+      if (allPrepared && spell.prepared) {
+        // If all are prepared, deselect all
+        await togglePrepared(spell.spell.id);
+      } else if (!allPrepared && !spell.prepared) {
+        // If not all are prepared, select all unprepared
+        await togglePrepared(spell.spell.id);
+      }
+    }
+
+    await loadSpellbook();
+  };
+
   // Delegate rendering to presentational component
   return (
     <SpellbookDetailView
@@ -124,6 +156,7 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       sortDirection={sortDirection}
       confirmDialog={confirmDialog}
       editModalOpen={editModalOpen}
+      showPreparedOnly={showPreparedOnly}
       onBack={onBack}
       onSort={handleSort}
       onTogglePrepared={handleTogglePrepared}
@@ -134,6 +167,8 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       onEdit={handleEdit}
       onEditClose={handleEditClose}
       onEditSave={handleEditSave}
+      onToggleShowPreparedOnly={handleToggleShowPreparedOnly}
+      onSelectAllPrepared={handleSelectAllPrepared}
       existingNames={spellbooks.map(sb => sb.name)}
     />
   );

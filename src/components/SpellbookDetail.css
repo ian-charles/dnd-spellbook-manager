@@ -101,6 +101,67 @@
   font-weight: var(--font-weight-semibold);
 }
 
+.spell-slots-display {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-primary);
+}
+
+.spell-slots-display > strong {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spell-slots-table {
+  border-collapse: collapse;
+  width: auto;
+  display: table;
+}
+
+.spell-slots-table thead {
+  display: table-header-group;
+}
+
+.spell-slots-table tbody {
+  display: table-row-group;
+}
+
+.spell-slots-table tr {
+  display: table-row;
+}
+
+.spell-slots-table th,
+.spell-slots-table td {
+  display: table-cell;
+  padding: var(--space-2) var(--space-3);
+  text-align: center;
+  border: 1px solid var(--color-border-primary);
+}
+
+.spell-slots-table th {
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.spell-slots-table td {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  min-width: 40px;
+}
+
 .spellbook-detail-empty {
   text-align: center;
   padding: var(--space-16) var(--space-8);
@@ -233,17 +294,17 @@
     width: 100%;
   }
 
-  /* Hide all columns except spell name, prepared, and action */
-  .spellbook-table td:not(.spell-name):not(.prepared-col):not(.action-col):not(.spell-expansion-cell) {
+  /* Hide all columns except spell name, level, school, prepared, and action */
+  .spellbook-table td:not(.spell-name):not(.level-col):not(.school-col):not(.prepared-col):not(.action-col):not(.spell-expansion-cell) {
     display: none;
   }
 
-  /* Prepared checkbox in top right */
+  /* Prepared checkbox in top left */
   .spellbook-table .prepared-col {
     position: absolute !important;
     display: block !important;
     top: var(--space-3);
-    right: 3.5rem;
+    left: var(--space-4);
     width: auto;
   }
 
@@ -271,5 +332,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* Keep spell slots table as a proper table even on mobile */
+  .spell-slots-table {
+    display: table;
+  }
+
+  .spell-slots-table thead {
+    display: table-header-group;
+  }
+
+  .spell-slots-table tbody {
+    display: table-row-group;
+  }
+
+  .spell-slots-table tr {
+    display: table-row;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: auto;
+    flex-wrap: nowrap;
+  }
+
+  .spell-slots-table th,
+  .spell-slots-table td {
+    display: table-cell;
+    padding: var(--space-2) var(--space-3);
   }
 }

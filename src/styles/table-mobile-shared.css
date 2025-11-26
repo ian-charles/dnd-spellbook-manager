@@ -75,28 +75,68 @@
     border: none;
   }
 
-  /* Spell name - full width with padding for controls */
+  /* Spell name - takes available space on left */
   .spell-name {
-    flex: 1 1 100%;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-    padding: var(--space-1) 5.5rem var(--space-2) 0;
+    flex: 1 1 auto;
+    padding: var(--space-2) var(--space-1) var(--space-2) 3rem;
     margin: 0;
     min-width: 0;
-    color: light-dark(#4c1d95, #a5b4fc);
-    line-height: var(--line-height-snug);
     order: 1;
   }
 
-  /* Spellbook has different right padding for prepared checkbox */
-  .spellbook-table .spell-name {
-    padding-right: 6rem;
+  /* Spell table (browse) - make room for checkbox on left, minimal right */
+  .spell-table .spell-name {
+    padding-right: var(--space-1);
   }
 
-  /* Badges */
+  /* Spellbook table - make room for both prep checkbox (left) and remove button (right) */
+  .spellbook-table .spell-name {
+    padding-left: 3rem;
+    padding-right: 12rem;
+  }
+
+  /* Spell name text itself */
+  .spell-name-header {
+    display: inline;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: light-dark(#4c1d95, #a5b4fc);
+    line-height: var(--line-height-snug);
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Show level and school as inline badges - right-aligned */
+  .level-col,
+  .school-col {
+    display: block !important;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-1) var(--space-2);
+    margin: var(--space-1) var(--space-1) var(--space-1) 0;
+    border-radius: var(--radius-md);
+    background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
+    color: light-dark(#6d28d9, #a78bfa);
+    border: 1px solid light-dark(rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.3));
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .level-col {
+    flex: 0 0 3rem;
+    order: 2;
+  }
+
+  .school-col {
+    flex: 0 0 auto;
+    order: 3;
+    margin-right: 2rem;
+  }
+
+  /* Badges (C, R from spell-name-header) */
   .badge {
     display: inline-block;
-    margin: var(--space-2) var(--space-1) 0 0;
+    margin: 0 0 0 var(--space-1);
     padding: var(--space-1) var(--space-2);
     font-size: var(--font-size-xs);
   }

@@ -44,7 +44,7 @@
 }
 
 /* Tablet responsive */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .spell-table {
     font-size: var(--font-size-sm);
   }
@@ -62,8 +62,8 @@
 
 /* Mobile responsive - component-specific overrides */
 @media (max-width: 768px) {
-  /* Hide all columns except checkbox, spell name, level, and expansion */
-  .spell-table td:not(.checkbox-col):not(.spell-name):not(.level-col):not(.spell-expansion-cell) {
+  /* Hide all columns except checkbox, spell name, level, school, and expansion */
+  .spell-table td:not(.checkbox-col):not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell) {
     display: none;
   }
 
@@ -76,38 +76,19 @@
     position: absolute !important;
     display: block !important;
     top: var(--space-3);
-    left: var(--space-2);
+    left: var(--space-4);
     width: auto;
-    z-index: var(--z-dropdown);
   }
 
   .spell-table .checkbox-col input[type="checkbox"] {
-    min-width: 44px;
-    min-height: 44px;
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
-  /* Level badge in the top right */
-  .spell-table .level-col {
-    position: absolute !important;
-    display: block !important;
-    top: var(--space-3);
-    right: var(--space-2);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    background: var(--color-level-bg);
-    color: var(--color-level-text);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-level-border);
-    width: auto;
-    text-align: center;
-    z-index: var(--z-dropdown);
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
   }
 
   /* Adjust spell name to make room for checkbox on left */
   .spell-table .spell-name {
-    padding-left: var(--space-16) !important;
+    padding-left: 3rem !important;
+    padding-right: 0.5rem !important;
   }
 }

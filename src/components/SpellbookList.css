@@ -97,20 +97,29 @@
   color: var(--color-text-heading);
 }
 
-.spellbooks-table th.sortable {
+.spellbooks-table th.sortable-header {
+  padding: 0;
+}
+
+.sort-button {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  padding: var(--space-4);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-md);
+  color: var(--color-text-heading);
   cursor: pointer;
-  user-select: none;
-  transition: background var(--transition-base);
-}
-
-.spellbooks-table th.sortable:hover {
-  background: var(--color-hover);
-}
-
-.spellbooks-table .th-content {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  transition: background var(--transition-base);
+}
+
+.sort-button:hover {
+  background: var(--color-hover);
 }
 
 .spellbooks-table tbody tr {
@@ -328,7 +337,8 @@
   }
 
   .spellbooks-table thead {
-    display: none; /* Hide header on mobile for card-style layout */
+    display: none;
+    /* Hide header on mobile for card-style layout */
   }
 
   .spellbooks-table tbody tr {

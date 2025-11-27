@@ -66,7 +66,14 @@ export async function scrollIntoViewport(
   });
 
   // Small delay to ensure scroll completes
-  await page.waitForFunction(() => true, { timeout: 100 });
+  await page.waitForFunction(
+    (el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.top >= 0 && rect.bottom <= window.innerHeight;
+    },
+    { timeout: TIMEOUTS.SHORT },
+    element
+  );
 }
 
 /**
@@ -233,28 +240,79 @@ export async function addSpellToSpellbook(
   page: Page,
   spellIndex: number = 0
 ): Promise<void> {
+  if (spellIndex < 0) {
+    throw new Error(`spellIndex must be non-negative, got ${spellIndex}`);
+  }
   // Wait for spells to load
   await waitForSpellsToLoad(page);
 
-  // Get all add buttons and click the specified one
-  await waitForElementVisible(page, TEST_IDS.BTN_ADD_SPELL);
-  const addButtons = await page.$$(TEST_IDS.BTN_ADD_SPELL);
+  // Get all checkboxes and click the specified one
+  await waitForElementVisible(page, '[data-testid="spell-checkbox"]');
+  const checkboxes = await page.$$('[data-testid="spell-checkbox"]');
 
-  if (addButtons.length <= spellIndex) {
-    throw new Error(`Spell index ${spellIndex} out of bounds (${addButtons.length} spells available)`);
+  if (checkboxes.length <= spellIndex) {
+    throw new Error(`Spell index ${spellIndex} out of bounds (${checkboxes.length} spells available)`);
   }
 
-  await addButtons[spellIndex]?.click();
+  // Ensure checkbox is not already checked (toggle if needed, or just check)
+  // For simplicity, we assume it's unchecked or clicking toggles it. 
+  // But if it's already checked, clicking unchecks it. 
+  // Let's assume clean state or check property.
+  const isChecked = await checkboxes[spellIndex].evaluate((el) => (el as HTMLInputElement).checked);
+  if (!isChecked) {
+    await checkboxes[spellIndex].click();
+  }
 
-  // Wait for spellbook selector to appear
-  await waitForElementVisible(page, SELECTORS.SPELLBOOK_SELECTOR_ITEM);
+  // Wait for dropdown
+  await waitForElementVisible(page, '[data-testid="spellbook-dropdown"]');
 
-  // Select first spellbook
-  const spellbookOption = await page.$(SELECTORS.SPELLBOOK_SELECTOR_ITEM);
-  await spellbookOption?.click();
+  // Wait for dropdown to populate with spellbooks (at least one spellbook + default + create new)
+  await page.waitForFunction(
+    () => {
+      const select = document.querySelector('[data-testid="spellbook-dropdown"]') as HTMLSelectElement;
+      return select && select.options.length >= 3;
+    },
+    { timeout: TIMEOUTS.MEDIUM }
+  );
+
+  // Select the first actual spellbook (index 2, after "Select..." and "Create New")
+  // We need to get the value of the option at index 2
+  const spellbookValue = await page.$eval(
+    '[data-testid="spellbook-dropdown"]',
+    (select: HTMLSelectElement) => {
+      return select.options[2].value;
+    }
+  );
+
+  if (!spellbookValue) {
+    throw new Error('No spellbooks available to add to');
+  }
+
+  await page.select('[data-testid="spellbook-dropdown"]', spellbookValue);
+
+  // Click Add button
+  await waitForElementVisible(page, '[data-testid="btn-add-selected"]');
+
+  // Wait for button to be enabled
+  await page.waitForFunction(
+    () => !(document.querySelector('[data-testid="btn-add-selected"]') as HTMLButtonElement).disabled,
+    { timeout: TIMEOUTS.SHORT }
+  );
+
+  const addButton = await page.$('[data-testid="btn-add-selected"]');
+  await addButton?.click();
 
   // Wait for success toast
   await waitForElementVisible(page, TEST_IDS.ADD_SPELL_SUCCESS);
+
+  // Clear selection to clean up for next test steps
+  const unselectButton = await page.$('[data-testid="btn-unselect-all"]');
+  if (unselectButton) {
+    const isDisabled = await unselectButton.evaluate((el) => (el as HTMLButtonElement).disabled);
+    if (!isDisabled) {
+      await unselectButton.click();
+    }
+  }
 }
 
 /**
@@ -268,6 +326,9 @@ export async function expandSpellRow(
   page: Page,
   spellIndex: number = 0
 ): Promise<void> {
+  if (spellIndex < 0) {
+    throw new Error(`spellIndex must be non-negative, got ${spellIndex}`);
+  }
   // Get all spell rows
   const spellRows = await page.$$(SELECTORS.SPELL_ROW);
 
@@ -316,6 +377,9 @@ export async function expandSpellRowInSpellbook(
   page: Page,
   spellIndex: number = 0
 ): Promise<void> {
+  if (spellIndex < 0) {
+    throw new Error(`spellIndex must be non-negative, got ${spellIndex}`);
+  }
   // Get all spell rows
   const spellRows = await page.$$(SELECTORS.SPELL_ROW);
 
@@ -352,6 +416,9 @@ export async function togglePreparedStatus(
   page: Page,
   spellIndex: number = 0
 ): Promise<void> {
+  if (spellIndex < 0) {
+    throw new Error(`spellIndex must be non-negative, got ${spellIndex}`);
+  }
   // Wait for checkbox to be visible
   const checkboxSelector = `${SELECTORS.PREPARED_COL} input[type="checkbox"]`;
   await waitForElementVisible(page, checkboxSelector);
@@ -419,14 +486,15 @@ export async function removeSpellFromSpellbook(
   page: Page,
   spellIndex: number = 0
 ): Promise<void> {
+  if (spellIndex < 0) {
+    throw new Error(`spellIndex must be non-negative, got ${spellIndex}`);
+  }
+
   // Get current spell count (counting actual spell rows, not expansion rows)
   const initialCount = await page.evaluate(() => {
     const rows = document.querySelectorAll('.spellbook-table tbody tr.spell-row');
     return rows.length;
   });
-
-  // Wait for remove button
-  await waitForElementVisible(page, SELECTORS.BTN_REMOVE_SMALL, TIMEOUTS.MEDIUM);
 
   // Get all remove buttons and click the specified one
   const removeButtons = await page.$$(SELECTORS.BTN_REMOVE_SMALL);
@@ -465,26 +533,26 @@ export async function removeSpellFromSpellbook(
 
 /**
  * Click on a spellbook card to navigate to its detail page.
- * Waits for navigation to complete.
+ * Clicks on a spellbook card by index.
  *
- * @param page Puppeteer page object
- * @param spellbookIndex Index of the spellbook to click (0-based, default: 0)
+ * @param page The Puppeteer page instance
+ * @param index The index of the spellbook card to click (0-based)
  */
-export async function clickSpellbookCard(
-  page: Page,
-  spellbookIndex: number = 0
-): Promise<void> {
+export const clickSpellbookCard = async (page: Page, index: number): Promise<void> => {
+  if (index < 0) {
+    throw new Error(`index must be non-negative, got ${index}`);
+  }
   // Wait for spellbook cards to be visible
   await waitForElementVisible(page, SELECTORS.SPELLBOOK_CARD_CONTENT);
 
   // Get all spellbook cards
   const cards = await page.$$(SELECTORS.SPELLBOOK_CARD_CONTENT);
 
-  if (cards.length <= spellbookIndex) {
-    throw new Error(`Spellbook index ${spellbookIndex} out of bounds (${cards.length} spellbooks available)`);
+  if (cards.length <= index) {
+    throw new Error(`Spellbook index ${index} out of bounds (${cards.length} spellbooks available)`);
   }
 
-  await cards[spellbookIndex]?.click();
+  await cards[index]?.click();
 
   // Wait for navigation to detail page
   await waitForElementVisible(page, SELECTORS.SPELLBOOK_DETAIL_HEADER);

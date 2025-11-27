@@ -94,12 +94,12 @@ export function SpellbookList({
           bVal = b.spellcastingAbility || '';
           break;
         case 'attack':
-          aVal = a.spellAttackModifier ?? -999;
-          bVal = b.spellAttackModifier ?? -999;
+          aVal = a.spellAttackModifier ?? (sortDirection === 'asc' ? Infinity : -Infinity);
+          bVal = b.spellAttackModifier ?? (sortDirection === 'asc' ? Infinity : -Infinity);
           break;
         case 'saveDC':
-          aVal = a.spellSaveDC ?? -999;
-          bVal = b.spellSaveDC ?? -999;
+          aVal = a.spellSaveDC ?? (sortDirection === 'asc' ? Infinity : -Infinity);
+          bVal = b.spellSaveDC ?? (sortDirection === 'asc' ? Infinity : -Infinity);
           break;
         case 'updated':
           aVal = new Date(a.updated).getTime();
@@ -134,38 +134,40 @@ export function SpellbookList({
       // If this is a copy operation, copy all spells from the source spellbook
       if (copyData?.sourceSpellbookId) {
         const sourceSpellbook = spellbooks.find(sb => sb.id === copyData.sourceSpellbookId);
-        if (sourceSpellbook) {
+        if (sourceSpellbook && sourceSpellbook.spells.length > 0) {
           // Copy all spells from the source spellbook to the new one
           const errors: string[] = [];
-          for (const spell of sourceSpellbook.spells) {
-            try {
-              await onAddSpellToSpellbook(newSpellbook.id, spell.spellId);
-            } catch (err) {
-              errors.push(`Failed to copy spell ${spell.spellId}`);
-              console.error(`Failed to copy spell ${spell.spellId}:`, err);
+          const spellsToCopy = sourceSpellbook.spells.map(spell => spell.spellId);
+          const results = await Promise.allSettled(spellsToCopy.map(spellId => onAddSpellToSpellbook(newSpellbook.id, spellId)));
+
+          results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+              errors.push(`Failed to copy spell ${spellsToCopy[index]}`);
             }
-          }
+          });
 
           if (errors.length > 0) {
+            const allFailed = errors.length === spellsToCopy.length;
             setAlertDialog({
               isOpen: true,
-              title: 'Partial Copy Warning',
-              message: `Spellbook created, but some spells failed to copy: ${errors.length} errors.`,
-              variant: 'warning'
+              title: allFailed ? 'Copy Failed' : 'Partial Copy Warning',
+              message: allFailed
+                ? 'Failed to copy any spells. The spellbook was created but is empty.'
+                : `Spellbook created, but some spells failed to copy: ${errors.length} errors.`,
+              variant: allFailed ? 'error' : 'warning'
             });
           }
         }
-        // Ensure spellbooks list is refreshed after copying all spells
-        await onRefreshSpellbooks();
-      } else {
-        // Ensure spellbooks list is refreshed for new spellbook
-        await onRefreshSpellbooks();
       }
 
       setCreateModalOpen(false);
       setCopyData(undefined);
     } catch (error) {
       throw error; // Let the modal handle the error
+    } finally {
+      // Ensure spellbooks list is refreshed after creation (and potential copying)
+      // This is in the finally block to guarantee execution regardless of success or failure
+      await onRefreshSpellbooks();
     }
   };
 
@@ -355,41 +357,41 @@ export function SpellbookList({
           <table className="spellbooks-table" data-testid="spellbooks-table">
             <thead>
               <tr>
-                <th onClick={() => handleSort('name')} className="sortable">
-                  <div className="th-content">
+                <th className="sortable-header">
+                  <button onClick={() => handleSort('name')} className="sort-button">
                     Spellbook Name
                     <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
+                  </button>
                 </th>
-                <th onClick={() => handleSort('spells')} className="sortable">
-                  <div className="th-content">
+                <th className="sortable-header">
+                  <button onClick={() => handleSort('spells')} className="sort-button">
                     Spells
                     <SortIcon column="spells" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
+                  </button>
                 </th>
-                <th onClick={() => handleSort('ability')} className="sortable">
-                  <div className="th-content">
+                <th className="sortable-header">
+                  <button onClick={() => handleSort('ability')} className="sort-button">
                     Ability
                     <SortIcon column="ability" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
+                  </button>
                 </th>
-                <th onClick={() => handleSort('attack')} className="sortable">
-                  <div className="th-content">
+                <th className="sortable-header">
+                  <button onClick={() => handleSort('attack')} className="sort-button">
                     Attack
                     <SortIcon column="attack" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
+                  </button>
                 </th>
-                <th onClick={() => handleSort('saveDC')} className="sortable">
-                  <div className="th-content">
+                <th className="sortable-header">
+                  <button onClick={() => handleSort('saveDC')} className="sort-button">
                     Save DC
                     <SortIcon column="saveDC" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
+                  </button>
                 </th>
-                <th onClick={() => handleSort('updated')} className="sortable">
-                  <div className="th-content">
+                <th className="sortable-header">
+                  <button onClick={() => handleSort('updated')} className="sort-button">
                     Last Updated
                     <SortIcon column="updated" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
+                  </button>
                 </th>
                 <th>Actions</th>
               </tr>
@@ -427,6 +429,8 @@ export function SpellbookList({
                       className="btn-secondary-small"
                       onClick={() => handleCopy(spellbook.id)}
                       data-testid={`btn-copy-spellbook-${spellbook.id}`}
+                      title="Copy Spellbook"
+                      aria-label={`Copy spellbook ${spellbook.name}`}
                     >
                       Copy
                     </button>
@@ -434,6 +438,8 @@ export function SpellbookList({
                       className="btn-danger-small"
                       onClick={() => handleDelete(spellbook.id, spellbook.name)}
                       data-testid={`btn-delete-spellbook-${spellbook.id}`}
+                      title="Delete Spellbook"
+                      aria-label={`Delete spellbook ${spellbook.name}`}
                     >
                       Delete
                     </button>
@@ -452,9 +458,10 @@ export function SpellbookList({
           setCreateModalOpen(false);
           setCopyData(undefined);
         }}
-        onCreate={handleCreateSpellbook}
+        onSubmit={handleCreateSpellbook}
         existingNames={spellbooks.map(sb => sb.name)}
         initialData={copyData}
+        title={copyData ? 'Copy Spellbook' : 'Create New Spellbook'}
       />
 
       {/* Confirm Delete Dialog */}

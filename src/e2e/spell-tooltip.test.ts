@@ -2,6 +2,21 @@
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
 import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
+import { TIMEOUTS, SELECTORS } from './config';
+
+// ... (rest of imports)
+
+// ...
+
+// Verify collapse (element should be removed or hidden)
+await page.waitForFunction(
+  (selector) => {
+    const el = document.querySelector(selector);
+    return !el || window.getComputedStyle(el).display === 'none';
+  },
+  { timeout: TIMEOUTS.LONG },
+  SELECTORS.SPELL_INLINE_EXPANSION
+);
 
 describe('Spell Description E2E', () => {
   let page: Page;
@@ -29,7 +44,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       firstSpell
     );
 
@@ -37,7 +52,7 @@ describe('Spell Description E2E', () => {
     await page.click('.spell-row');
 
     // Wait for expansion to appear
-    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: TIMEOUTS.SHORT });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
@@ -49,7 +64,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       expansion
     );
 
@@ -81,7 +96,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       firstSpell
     );
 
@@ -89,7 +104,7 @@ describe('Spell Description E2E', () => {
     await page.click('.spell-row');
 
     // Wait for expansion to appear
-    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: TIMEOUTS.SHORT });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
@@ -101,7 +116,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       expansion
     );
 
@@ -125,7 +140,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       firstSpell
     );
 
@@ -133,7 +148,7 @@ describe('Spell Description E2E', () => {
     await page.click('.spell-row');
 
     // Wait for expansion to appear
-    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: TIMEOUTS.SHORT });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
@@ -145,7 +160,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       expansion
     );
 
@@ -174,7 +189,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       firstSpell
     );
 
@@ -182,7 +197,7 @@ describe('Spell Description E2E', () => {
     await page.click('.spell-row');
 
     // Wait for expansion to appear
-    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: TIMEOUTS.SHORT });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
@@ -194,7 +209,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       expansion
     );
 
@@ -207,17 +222,20 @@ describe('Spell Description E2E', () => {
 
     // Wait for expansion to be removed/hidden
     await page.waitForFunction(
-      () => {
-        const row = document.querySelector('.spell-expansion-row');
-        return !row || row.textContent?.length === 0;
+      (selector) => {
+        const el = document.querySelector(selector);
+        if (!el) return false;
+        const style = window.getComputedStyle(el);
+        return style.opacity === '1';
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.LONG },
+      SELECTORS.SPELL_INLINE_EXPANSION
     );
 
     // Verify expanded row is removed
     expandedRow = await page.$('.spell-expansion-row');
     expect(expandedRow).toBeNull();
-  }, 30000);
+  }, TIMEOUTS.LONG);
 
   it('should show expanded description below the clicked row', async () => {
     await page.goto(TEST_URL);
@@ -233,7 +251,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       firstSpell
     );
 
@@ -241,7 +259,7 @@ describe('Spell Description E2E', () => {
     await page.click('.spell-row');
 
     // Wait for expansion to appear
-    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: TIMEOUTS.SHORT });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
@@ -253,7 +271,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       expansion
     );
 
@@ -284,7 +302,7 @@ describe('Spell Description E2E', () => {
         const newCount = document.querySelectorAll('.spell-row').length;
         return newCount !== oldCount && newCount > 0;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       initialCount
     );
 
@@ -302,7 +320,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       firstSpell
     );
 
@@ -310,7 +328,7 @@ describe('Spell Description E2E', () => {
     await page.click('.spell-row');
 
     // Wait for expansion to appear
-    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
+    await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: TIMEOUTS.SHORT });
 
     // Scroll the expansion into view
     const expansion = await page.$('.spell-expansion-row');
@@ -322,7 +340,7 @@ describe('Spell Description E2E', () => {
         const rect = el?.getBoundingClientRect();
         return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       expansion
     );
 

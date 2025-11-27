@@ -5,7 +5,7 @@ import './CreateSpellbookModal.css';
 interface CreateSpellbookModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (input: CreateSpellbookInput) => Promise<void>;
+  onSubmit: (input: CreateSpellbookInput) => Promise<void>;
   existingNames: string[];
   initialData?: {
     name?: string;
@@ -19,10 +19,10 @@ interface CreateSpellbookModalProps {
 export function CreateSpellbookModal({
   isOpen,
   onClose,
-  onCreate,
+  onSubmit,
   existingNames,
   initialData,
-  title = 'Create New Spellbook',
+  title,
 }: CreateSpellbookModalProps) {
   const [name, setName] = useState('');
   const [spellcastingAbility, setSpellcastingAbility] = useState<'INT' | 'WIS' | 'CHA' | ''>('');
@@ -73,7 +73,7 @@ export function CreateSpellbookModal({
 
     // Validate spell attack modifier
     if (spellAttackModifier && !isValidAttackModifier(spellAttackModifier)) {
-      setError('Spell Attack Modifier must be a signed integer between 0 and 18');
+      setError('Spell Attack Modifier must be an integer between 0 and 18');
       setLoading(false);
       return;
     }
@@ -93,7 +93,7 @@ export function CreateSpellbookModal({
     };
 
     try {
-      await onCreate(input);
+      await onSubmit(input);
       // Reset form
       setName('');
       setSpellcastingAbility('');
@@ -109,21 +109,21 @@ export function CreateSpellbookModal({
 
   const isValidAttackModifier = (value: string): boolean => {
     const num = parseInt(value);
-    return !isNaN(num) && num >= 0 && num <= 18;
+    return Number.isInteger(num) && num >= 0 && num <= 18;
   };
 
   const isValidSaveDC = (value: string): boolean => {
     const num = parseInt(value);
-    return !isNaN(num) && num >= 8 && num <= 26;
+    return Number.isInteger(num) && num >= 8 && num <= 26;
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog create-spellbook-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>{title}</h3>
-        <form onSubmit={handleSubmit}>
+    <div className="dialog-overlay">
+      <div className="dialog create-spellbook-modal" onClick={(e) => e.stopPropagation()} data-testid="create-spellbook-dialog">
+        <h3>{title || 'Create New Spellbook'}</h3>
+        <form onSubmit={handleSubmit} data-testid="create-spellbook-form">
           <div className="form-group">
             <label htmlFor="spellbook-name">
               Spellbook Name <span className="required">*</span>
@@ -131,11 +131,11 @@ export function CreateSpellbookModal({
             <input
               type="text"
               id="spellbook-name"
+              data-testid="spellbook-name-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="form-input"
               placeholder="My Spellbook"
-              data-testid="spellbook-name-input"
               autoFocus
             />
           </div>
@@ -227,8 +227,8 @@ export function CreateSpellbookModal({
               {loading ? 'Creating...' : 'Create Spellbook'}
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+        </form >
+      </div >
+    </div >
   );
 }

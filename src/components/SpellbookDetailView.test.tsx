@@ -3,6 +3,13 @@
  *
  * Tests for the presentational component that renders spellbook details.
  * Focuses on rendering logic and prop-based behavior without data fetching.
+ *
+ * Testing Strategy:
+ * - AAA Pattern (Arrange-Act-Assert) used for all tests
+ * - Uses @testing-library/react for rendering and user interactions
+ * - Mocks all callback props to verify interactions
+ * - Tests loading, empty, and populated states
+ * - Verifies accessibility attributes
  */
 
 import { describe, it, expect, vi } from 'vitest';
@@ -20,13 +27,15 @@ const mockSpell1: Spell = {
   school: 'Evocation',
   castingTime: '1 action',
   range: '150 feet',
-  components: { verbal: true, somatic: true, material: 'a tiny ball of bat guano and sulfur' },
+  components: { verbal: true, somatic: true, material: true },
+  materials: 'a tiny ball of bat guano and sulfur',
   duration: 'Instantaneous',
   description: 'A bright streak flashes from your pointing finger...',
   classes: ['Wizard', 'Sorcerer'],
   source: 'PHB',
   concentration: false,
   ritual: false,
+  higherLevels: 'Damage increases by 1d6 for each slot level above 3rd.',
 };
 
 const mockSpell2: Spell = {
@@ -37,12 +46,14 @@ const mockSpell2: Spell = {
   castingTime: '1 reaction',
   range: 'Self',
   components: { verbal: true, somatic: true, material: false },
+  materials: '',
   duration: '1 round',
   description: 'An invisible barrier of magical force appears...',
   classes: ['Wizard', 'Sorcerer'],
   source: 'PHB',
   concentration: false,
   ritual: false,
+  higherLevels: '',
 };
 
 const mockSpell3: Spell = {
@@ -53,12 +64,14 @@ const mockSpell3: Spell = {
   castingTime: '1 action',
   range: '30 feet',
   components: { verbal: true, somatic: true, material: false },
+  materials: '',
   duration: 'Concentration, up to 10 minutes',
   description: 'For the duration, you sense the presence of magic...',
   classes: ['Wizard', 'Cleric', 'Bard'],
   source: 'PHB',
   concentration: true,
   ritual: true,
+  higherLevels: '',
 };
 
 const mockEnrichedSpells: EnrichedSpell[] = [
@@ -159,7 +172,7 @@ describe('SpellbookDetailView', () => {
         />
       );
 
-      expect(screen.getByTestId('spellbook-detail-name')).toHaveTextContent('My Spellbook');
+      expect(screen.getByTestId('spellbook-detail-name').textContent).toContain('My Spellbook');
     });
   });
 
@@ -167,7 +180,7 @@ describe('SpellbookDetailView', () => {
     it('should render spellbook name', () => {
       render(<SpellbookDetailView {...defaultProps} />);
 
-      expect(screen.getByTestId('spellbook-detail-name')).toHaveTextContent('My Spellbook');
+      expect(screen.getByTestId('spellbook-detail-name').textContent).toContain('My Spellbook');
     });
 
     it('should render back button', () => {
@@ -552,7 +565,8 @@ describe('SpellbookDetailView', () => {
     it('should display spell save DC', () => {
       render(<SpellbookDetailView {...defaultProps} />);
 
-      expect(screen.getByText(/DC 15/)).toBeTruthy();
+      const label = screen.getByText('Save DC');
+      expect(label.nextElementSibling?.textContent).toBe('15');
     });
 
     it('should display last updated timestamp', () => {
@@ -565,21 +579,24 @@ describe('SpellbookDetailView', () => {
       const spellbookWithoutAbility = { ...mockSpellbook, spellcastingAbility: undefined };
       render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutAbility} />);
 
-      expect(screen.getByText(/Ability: N\/A/)).toBeTruthy();
+      const label = screen.getByText('Ability');
+      expect(label.parentElement?.textContent).toContain('N/A');
     });
 
     it('should display N/A when spell attack modifier is not set', () => {
       const spellbookWithoutModifier = { ...mockSpellbook, spellAttackModifier: undefined };
       render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutModifier} />);
 
-      expect(screen.getByText(/Attack: N\/A/)).toBeTruthy();
+      const label = screen.getByText('Attack');
+      expect(label.parentElement?.textContent).toContain('N/A');
     });
 
     it('should display N/A when spell save DC is not set', () => {
       const spellbookWithoutDC = { ...mockSpellbook, spellSaveDC: undefined };
       render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutDC} />);
 
-      expect(screen.getByText(/DC: N\/A/)).toBeTruthy();
+      const label = screen.getByText('Save DC');
+      expect(label.parentElement?.textContent).toContain('N/A');
     });
   });
 

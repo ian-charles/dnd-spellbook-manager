@@ -320,7 +320,7 @@ export function SpellbookDetailView({
       <CreateSpellbookModal
         isOpen={editModalOpen}
         onClose={onEditClose}
-        onCreate={onEditSave}
+        onSubmit={onEditSave}
         existingNames={existingNames.filter(name => name !== spellbook.name)}
         initialData={{
           name: spellbook.name,

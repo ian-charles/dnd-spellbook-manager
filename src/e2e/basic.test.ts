@@ -1,7 +1,9 @@
+```typescript
 // Basic E2E test to verify setup
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
 import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
+import { TIMEOUTS } from './config';
 
 describe('Basic E2E Test', () => {
   let page: Page;
@@ -22,7 +24,7 @@ describe('Basic E2E Test', () => {
     expect(title).toBeTruthy();
 
     // Wait for app to load
-    await page.waitForSelector('.app-header', { timeout: 10000 });
+    await page.waitForSelector('.app-header', { timeout: TIMEOUTS.MEDIUM });
 
     const headerText = await page.$eval('.app-header h1', el => el.textContent);
     expect(headerText).toContain('Spellbook');

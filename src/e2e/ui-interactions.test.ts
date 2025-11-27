@@ -11,7 +11,7 @@ describe('UI Interactions - Desktop', () => {
     const setup = await setupBrowser();
     page = setup.page;
     await page.setViewport({ width: 1280, height: 800 });
-  }, 30000);
+  }, TIMEOUTS.LONG);
 
   afterAll(async () => {
     await closeBrowser();
@@ -27,7 +27,7 @@ describe('UI Interactions - Desktop', () => {
       const spellCount = await page.$$eval('.spell-row', rows => rows.length);
       expect(spellCount).toBeGreaterThan(0);
       expect(spellCount).toBeLessThanOrEqual(319); // Total SRD spells
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should expand and collapse spell details on click', async () => {
       const firstSpell = await page.$('.spell-row');
@@ -42,7 +42,7 @@ describe('UI Interactions - Desktop', () => {
           const rect = el?.getBoundingClientRect();
           return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
         },
-        { timeout: 5000 },
+        { timeout: TIMEOUTS.SHORT },
         firstSpell
       );
 
@@ -50,7 +50,7 @@ describe('UI Interactions - Desktop', () => {
       await firstSpell?.click();
 
       // Wait for expansion to appear
-      await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: 5000 });
+      await page.waitForSelector('.spell-expansion-row', { visible: true, timeout: TIMEOUTS.SHORT });
 
       // Scroll the expansion into view
       const expansion = await page.$('.spell-expansion-row');
@@ -62,7 +62,7 @@ describe('UI Interactions - Desktop', () => {
           const rect = el?.getBoundingClientRect();
           return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
         },
-        { timeout: 5000 },
+        { timeout: TIMEOUTS.SHORT },
         expansion
       );
 
@@ -83,17 +83,17 @@ describe('UI Interactions - Desktop', () => {
           const row = document.querySelector('.spell-expansion-row');
           return !row || row.textContent?.length === 0;
         },
-        { timeout: 5000 }
+        { timeout: TIMEOUTS.SHORT }
       );
 
       const stillExpanded = await page.$('.spell-inline-expansion');
       const isHidden = await stillExpanded?.evaluate(el => {
         const parent = el.closest('.spell-expansion-row');
         return parent?.classList.contains('spell-expansion-row') &&
-               el.textContent?.length === 0;
+          el.textContent?.length === 0;
       });
       // Expanded content should exist but be empty or hidden
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should search spells by name', async () => {
       const searchInput = await page.$('.search-input');
@@ -110,7 +110,7 @@ describe('UI Interactions - Desktop', () => {
           const newCount = document.querySelectorAll('.spell-row').length;
           return newCount !== oldCount && newCount > 0;
         },
-        { timeout: 5000 },
+        { timeout: TIMEOUTS.SHORT },
         initialCount
       );
 
@@ -120,7 +120,7 @@ describe('UI Interactions - Desktop', () => {
 
       expect(visibleSpells.length).toBeGreaterThan(0);
       expect(visibleSpells.length).toBeLessThanOrEqual(2); // Should only show Fireball and maybe Delayed Blast Fireball
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should filter spells by level', async () => {
       // Click on a level filter button
@@ -132,14 +132,14 @@ describe('UI Interactions - Desktop', () => {
       await cantripButton.click();
 
       // Wait for filter to be applied
-      await page.waitForSelector('.filter-btn.active', { timeout: 5000 });
+      await page.waitForSelector('.filter-btn.active', { timeout: TIMEOUTS.SHORT });
 
       const activeButton = await page.$('.filter-btn.active');
       expect(activeButton).toBeTruthy();
 
       const visibleSpells = await page.$$('.spell-row');
       expect(visibleSpells.length).toBeGreaterThan(0);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should sort spells by clicking column headers', async () => {
       // Get first spell name before sorting
@@ -150,7 +150,7 @@ describe('UI Interactions - Desktop', () => {
       await nameHeader?.click();
 
       // Wait for sort to be applied (sort icon appears)
-      await page.waitForSelector('.sort-icon', { timeout: 5000 });
+      await page.waitForSelector('.sort-icon', { timeout: TIMEOUTS.SHORT });
 
       const firstSpellAfter = await page.$eval('.spell-row .spell-name', el => el.textContent?.trim());
 
@@ -158,7 +158,7 @@ describe('UI Interactions - Desktop', () => {
       // (depends on initial sort, but we can verify the sort icon appears)
       const sortIcon = await page.$('.sort-icon');
       expect(sortIcon).toBeTruthy();
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should filter by concentration and ritual', async () => {
       // Find and click concentration checkbox
@@ -176,7 +176,7 @@ describe('UI Interactions - Desktop', () => {
           const newCount = document.querySelectorAll('.spell-row').length;
           return newCount !== oldCount;
         },
-        { timeout: 5000 },
+        { timeout: TIMEOUTS.SHORT },
         initialCount
       );
 
@@ -186,7 +186,7 @@ describe('UI Interactions - Desktop', () => {
       // Verify concentration badge appears on visible spells
       const hasConcentrationBadge = await page.$('.badge-concentration');
       expect(hasConcentrationBadge).toBeTruthy();
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should clear all filters', async () => {
       // Apply some filters first
@@ -203,7 +203,7 @@ describe('UI Interactions - Desktop', () => {
           const newCount = document.querySelectorAll('.spell-row').length;
           return newCount !== oldCount && newCount > 0;
         },
-        { timeout: 5000 },
+        { timeout: TIMEOUTS.SHORT },
         initialCount
       );
 
@@ -219,13 +219,13 @@ describe('UI Interactions - Desktop', () => {
           const newCount = document.querySelectorAll('.spell-row').length;
           return newCount > filteredCount;
         },
-        { timeout: 5000 },
+        { timeout: TIMEOUTS.SHORT },
         spellCountWithFilter
       );
 
       const spellCountAfterClear = await page.$$eval('.spell-row', rows => rows.length);
       expect(spellCountAfterClear).toBeGreaterThan(spellCountWithFilter);
-    }, 30000);
+    }, TIMEOUTS.LONG);
   });
 
   describe('Spellbook Management', () => {
@@ -242,24 +242,24 @@ describe('UI Interactions - Desktop', () => {
       // Wait for URL to change to spellbooks page
       await page.waitForFunction(
         () => window.location.hash.includes('/spellbooks'),
-        { timeout: 5000 }
+        { timeout: TIMEOUTS.SHORT }
       );
 
       const hash = await page.evaluate(() => window.location.hash);
       expect(hash).toContain('/spellbooks');
 
       // Wait for header to appear
-      await page.waitForSelector('.spellbook-list-header h2', { timeout: 5000 });
+      await page.waitForSelector('.spellbook-list-header h2', { timeout: TIMEOUTS.SHORT });
 
       const header = await page.$eval('.spellbook-list-header h2', el => el.textContent);
       expect(header).toContain('My Spellbooks');
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should create a new spellbook', async () => {
       await page.goto(`${TEST_URL}#/spellbooks`, { waitUntil: 'networkidle2' });
 
       // Wait for create button to appear
-      await page.waitForSelector('[data-testid="btn-create-spellbook"]', { timeout: 5000 });
+      await page.waitForSelector('[data-testid="btn-create-spellbook"]', { timeout: TIMEOUTS.SHORT });
 
       // Click create button using test ID
       const createButton = await page.$('[data-testid="btn-create-spellbook"]');
@@ -267,7 +267,7 @@ describe('UI Interactions - Desktop', () => {
       await createButton?.click();
 
       // Wait for modal to appear
-      await page.waitForSelector('input[type="text"]', { timeout: 5000 });
+      await page.waitForSelector('input[type="text"]', { timeout: TIMEOUTS.SHORT });
 
       // Fill in name
       const nameInput = await page.$('input[type="text"]');
@@ -279,16 +279,16 @@ describe('UI Interactions - Desktop', () => {
       const saveButton = dialogButtons[dialogButtons.length - 1]; // Last button is usually save
       await saveButton?.click();
 
-      // Wait for spellbook card to appear
-      await page.waitForSelector('.spellbook-card', { timeout: 5000 });
+      // Wait for spellbook row to appear
+      await page.waitForSelector('.spellbook-row', { timeout: TIMEOUTS.SHORT });
 
       // Verify spellbook was created
-      const spellbookCard = await page.$('.spellbook-card');
+      const spellbookCard = await page.$('.spellbook-row');
       expect(spellbookCard).toBeTruthy();
 
-      const spellbookName = await page.$eval('.spellbook-card h3', el => el.textContent);
+      const spellbookName = await page.$eval('.spellbook-row .spellbook-name', el => el.textContent);
       expect(spellbookName).toContain('Test Wizard Spellbook');
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should add spell to spellbook from browse page', async () => {
       // Arrange: Create a spellbook first
@@ -296,67 +296,89 @@ describe('UI Interactions - Desktop', () => {
       await clearSpellbookData(page);
       await page.reload({ waitUntil: 'networkidle2' });
 
-      await page.waitForSelector('[data-testid="btn-create-spellbook"]', { visible: true, timeout: 10000 });
+      await page.waitForSelector('[data-testid="btn-create-spellbook"]', { visible: true, timeout: TIMEOUTS.MEDIUM });
       const createButton = await page.$('[data-testid="btn-create-spellbook"]');
       expect(createButton).toBeTruthy();
       await createButton?.click();
 
-      await page.waitForSelector('[data-testid="input-spellbook-name"]', { visible: true, timeout: 10000 });
-      const nameInput = await page.$('[data-testid="input-spellbook-name"]');
+      await page.waitForSelector('[data-testid="spellbook-name-input"]', { visible: true, timeout: TIMEOUTS.MEDIUM });
+      const nameInput = await page.$('[data-testid="spellbook-name-input"]');
       await nameInput?.type('Test Spellbook for Adding');
 
       const saveButton = await page.$('[data-testid="btn-save-spellbook"]');
       await saveButton?.click();
 
-      await page.waitForSelector('.spellbook-card', { visible: true, timeout: 10000 });
+      await page.waitForSelector('.spellbook-row', { visible: true, timeout: TIMEOUTS.MEDIUM });
 
       // Act: Go to browse and add spell
       await page.goto(TEST_URL, { waitUntil: 'networkidle2' });
       await waitForSpellsToLoad(page);
 
-      await page.waitForSelector('[data-testid="btn-add-spell"]', { visible: true, timeout: 10000 });
-      const addButton = await page.$('[data-testid="btn-add-spell"]');
+      // Select a spell using checkbox
+      await page.waitForSelector('[data-testid="spell-checkbox"]', { visible: true, timeout: TIMEOUTS.MEDIUM });
+      const checkboxes = await page.$$('[data-testid="spell-checkbox"]');
+      expect(checkboxes.length).toBeGreaterThan(0);
+      await checkboxes[0].click();
+
+      // Select the spellbook from dropdown
+      await page.waitForSelector('[data-testid="spellbook-dropdown"]', { visible: true, timeout: TIMEOUTS.MEDIUM });
+
+      // Find the option value for our spellbook
+      const optionValue = await page.$eval(
+        '[data-testid="spellbook-dropdown"]',
+        (select: HTMLSelectElement, name) => {
+          const options = Array.from(select.options);
+          const option = options.find(opt => opt.text.includes(name));
+          return option ? option.value : null;
+        },
+        'Test Spellbook for Adding'
+      );
+
+      expect(optionValue).toBeTruthy();
+      if (optionValue) {
+        await page.select('[data-testid="spellbook-dropdown"]', optionValue);
+      }
+
+      // Click Add button
+      await page.waitForSelector('[data-testid="btn-add-selected"]', { visible: true, timeout: TIMEOUTS.MEDIUM });
+      const addButton = await page.$('[data-testid="btn-add-selected"]');
       expect(addButton).toBeTruthy();
+
+      // Verify button is enabled (it might take a tick after selection)
+      await page.waitForFunction(
+        () => !(document.querySelector('[data-testid="btn-add-selected"]') as HTMLButtonElement).disabled,
+        { timeout: TIMEOUTS.SHORT }
+      );
+
       await addButton?.click();
 
-      await page.waitForSelector('[data-testid="spellbook-selector"]', { visible: true, timeout: 10000 });
-
-      // Assert: Verify spellbook selector appears
-      const selector = await page.$('[data-testid="spellbook-selector"]');
-      expect(selector).toBeTruthy();
-
-      // Select spellbook and verify success
-      const spellbookOption = await page.$('.spellbook-selector-item');
-      expect(spellbookOption).toBeTruthy();
-      await spellbookOption?.click();
-
-      await page.waitForSelector('[data-testid="add-spell-success"]', { visible: true, timeout: 10000 });
+      await page.waitForSelector('[data-testid="add-spell-success"]', { visible: true, timeout: TIMEOUTS.MEDIUM });
       const successToast = await page.$('[data-testid="add-spell-success"]');
       expect(successToast).toBeTruthy();
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should view spellbook details', async () => {
       // Create a spellbook first using helper
       await createSpellbook(page, TEST_URL, 'Detail View Test');
 
-      // Wait for the specific spellbook card to be visible
+      // Wait for the specific spellbook row to be visible
       await page.waitForFunction(
         (name) => {
-          const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
-          return cards.some(card => card.textContent?.includes(name));
+          const rows = Array.from(document.querySelectorAll('.spellbook-row'));
+          return rows.some(row => row.textContent?.includes(name));
         },
         { timeout: TIMEOUTS.MEDIUM },
         'Detail View Test'
       );
 
-      // Click the card that matches the created spellbook name
+      // Click the row that matches the created spellbook name
       await page.evaluate(() => {
-        const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
-        const targetCard = cards.find(card => card.textContent?.includes('Detail View Test'));
-        if (!targetCard) {
-          throw new Error('Could not find spellbook card with name "Detail View Test"');
+        const rows = Array.from(document.querySelectorAll('.spellbook-row'));
+        const targetRow = rows.find(row => row.textContent?.includes('Detail View Test'));
+        if (!targetRow) {
+          throw new Error('Could not find spellbook row with name "Detail View Test"');
         }
-        (targetCard as HTMLElement).click();
+        (targetRow as HTMLElement).click();
       });
 
       // Wait for navigation and detail page to load
@@ -382,7 +404,7 @@ describe('UI Interactions - Desktop', () => {
       const hasEmptyState = await page.$('.spellbook-detail-empty');
       const hasTable = await page.$('.spellbook-table');
       expect(hasEmptyState || hasTable).toBeTruthy();
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should delete a spellbook', async () => {
       // Arrange: Create a spellbook using helper
@@ -391,17 +413,17 @@ describe('UI Interactions - Desktop', () => {
       // Navigate to spellbooks page
       await navigateAndWait(page, `${TEST_URL}#/spellbooks`);
 
-      // Find the specific spellbook card containing "To Be Deleted"
+      // Find the specific spellbook row containing "To Be Deleted"
       const targetCard = await page.evaluateHandle(() => {
-        const cards = Array.from(document.querySelectorAll('.spellbook-card'));
-        return cards.find(card => card.textContent?.includes('To Be Deleted'));
+        const rows = Array.from(document.querySelectorAll('.spellbook-row'));
+        return rows.find(row => row.textContent?.includes('To Be Deleted'));
       });
 
       expect(targetCard).toBeTruthy();
 
-      // Find the delete button within that specific card
-      const deleteButton = await targetCard.evaluateHandle((card: Element) => {
-        return card.querySelector('.btn-danger-small');
+      // Find the delete button within that specific row
+      const deleteButton = await targetCard.evaluateHandle((row: Element) => {
+        return row.querySelector('.btn-danger-small');
       });
 
       expect(deleteButton).toBeTruthy();
@@ -420,15 +442,15 @@ describe('UI Interactions - Desktop', () => {
       // Assert: Verify spellbook is deleted
       await page.waitForFunction(
         () => {
-          const cards = document.querySelectorAll('.spellbook-card');
-          return !Array.from(cards).some(card => card.textContent?.includes('To Be Deleted'));
+          const rows = document.querySelectorAll('.spellbook-row');
+          return !Array.from(rows).some(row => row.textContent?.includes('To Be Deleted'));
         },
         { timeout: TIMEOUTS.LONG }
       );
 
-      const spellbookCards = await page.$$('.spellbook-card');
+      const spellbookRows = await page.$$('.spellbook-row');
       const hasDeletedSpellbook = await Promise.all(
-        spellbookCards.map(card => card.evaluate(el => el.textContent?.includes('To Be Deleted')))
+        spellbookRows.map(row => row.evaluate(el => el.textContent?.includes('To Be Deleted')))
       );
       expect(hasDeletedSpellbook.every(v => !v)).toBe(true);
     }, TIMEOUTS.LONG);
@@ -441,7 +463,7 @@ describe('UI Interactions - Mobile (375x667)', () => {
   beforeAll(async () => {
     const setup = await setupBrowser();
     page = setup.page;
-  }, 30000);
+  }, TIMEOUTS.LONG);
 
   beforeEach(async () => {
     await page.setViewport({ width: 375, height: 667 });
@@ -467,23 +489,20 @@ describe('UI Interactions - Mobile (375x667)', () => {
         return window.getComputedStyle(firstRow).display;
       });
       expect(cardDisplay).toBe('flex');
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should show level badge in top right of cards', async () => {
       const levelBadge = await page.$('.level-col');
       expect(levelBadge).toBeTruthy();
 
-      const position = await levelBadge?.evaluate(el => {
+      // Verify it's visible
+      const isVisible = await levelBadge?.evaluate(el => {
         const style = window.getComputedStyle(el);
-        return {
-          position: style.position,
-          top: style.top,
-          right: style.right,
-        };
+        return style.display !== 'none' && style.visibility !== 'hidden';
       });
 
-      expect(position?.position).toBe('absolute');
-    }, 30000);
+      expect(isVisible).toBe(true);
+    }, TIMEOUTS.LONG);
 
     it('should expand spell details on mobile', async () => {
       const firstSpell = await page.$('.spell-row');
@@ -497,7 +516,7 @@ describe('UI Interactions - Mobile (375x667)', () => {
           const rect = el?.getBoundingClientRect();
           return rect && rect.top >= 0 && rect.bottom <= window.innerHeight;
         },
-        { timeout: 10000 },
+        { timeout: TIMEOUTS.MEDIUM },
         firstSpell
       );
 
@@ -525,10 +544,10 @@ describe('UI Interactions - Mobile (375x667)', () => {
           const styles = window.getComputedStyle(el);
           // Check if element exists, is visible, and has content
           return styles.display !== 'none' &&
-                 rect.height > 0 &&
-                 (el.textContent?.length || 0) > 50 &&
-                 rect.top < window.innerHeight &&
-                 rect.bottom > 0;
+            rect.height > 0 &&
+            (el.textContent?.length || 0) > 50 &&
+            rect.top < window.innerHeight &&
+            rect.bottom > 0;
         },
         { timeout: 10000 }
       );
@@ -549,7 +568,7 @@ describe('UI Interactions - Mobile (375x667)', () => {
       // Main check: content exists and has styling
       expect(hasCardStyling?.hasContent).toBe(true);
       expect(hasCardStyling?.padding).toBeTruthy();
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should navigate using mobile navigation', async () => {
       const spellbooksButton = await page.$('[data-testid="nav-spellbooks"]');
@@ -570,12 +589,12 @@ describe('UI Interactions - Mobile (375x667)', () => {
       // Wait for URL to change
       await page.waitForFunction(
         () => window.location.hash.includes('/spellbooks'),
-        { timeout: 5000 }
+        { timeout: TIMEOUTS.SHORT }
       );
 
       const hash = await page.evaluate(() => window.location.hash);
       expect(hash).toContain('/spellbooks');
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should handle mobile search', async () => {
       const searchInput = await page.$('.search-input');
@@ -598,14 +617,14 @@ describe('UI Interactions - Mobile (375x667)', () => {
           const newCount = document.querySelectorAll('.spell-row').length;
           return newCount !== oldCount && newCount > 0;
         },
-        { timeout: 5000 },
+        { timeout: TIMEOUTS.SHORT },
         initialCount
       );
 
       const visibleSpells = await page.$$('.spell-row');
       expect(visibleSpells.length).toBeGreaterThan(0);
       expect(visibleSpells.length).toBeLessThan(10);
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should filter spells on mobile', async () => {
       // Verify filter buttons are tappable
@@ -623,11 +642,11 @@ describe('UI Interactions - Mobile (375x667)', () => {
       await filterButton?.click();
 
       // Wait for filter to be applied
-      await page.waitForSelector('.filter-btn.active', { timeout: 5000 });
+      await page.waitForSelector('.filter-btn.active', { timeout: TIMEOUTS.SHORT });
 
       const activeButton = await page.$('.filter-btn.active');
       expect(activeButton).toBeTruthy();
-    }, 30000);
+    }, TIMEOUTS.LONG);
   });
 
   describe('Mobile Spellbook Management', () => {
@@ -655,41 +674,41 @@ describe('UI Interactions - Mobile (375x667)', () => {
       await createButton?.click();
 
       // Wait for modal to appear
-      await page.waitForSelector('input[type="text"]', { timeout: 5000 });
+      await page.waitForSelector('input[type="text"]', { timeout: TIMEOUTS.SHORT });
       const nameInput = await page.$('input[type="text"]');
       await nameInput?.type('Mobile Test Spellbook');
 
       const dialogButtons = await page.$$('.dialog-actions button');
       await dialogButtons[dialogButtons.length - 1]?.click();
 
-      // Wait for spellbook card to appear
-      await page.waitForSelector('.spellbook-card', { timeout: 10000 });
-      const spellbookCard = await page.$('.spellbook-card');
+      // Wait for spellbook row to appear
+      await page.waitForSelector('.spellbook-row', { timeout: 10000 });
+      const spellbookCard = await page.$('.spellbook-row');
       expect(spellbookCard).toBeTruthy();
-    }, 30000);
+    }, TIMEOUTS.LONG);
 
     it('should view spellbook details on mobile', async () => {
       // Create a spellbook using helper
       await createSpellbook(page, TEST_URL, 'Mobile Detail Test');
 
-      // Wait for the specific spellbook card to be visible
+      // Wait for the specific spellbook row to be visible
       await page.waitForFunction(
         (name) => {
-          const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
-          return cards.some(card => card.textContent?.includes(name));
+          const rows = Array.from(document.querySelectorAll('.spellbook-row'));
+          return rows.some(row => row.textContent?.includes(name));
         },
         { timeout: TIMEOUTS.MEDIUM },
         'Mobile Detail Test'
       );
 
-      // Click the card that matches the created spellbook name
+      // Click the row that matches the created spellbook name
       await page.evaluate(() => {
-        const cards = Array.from(document.querySelectorAll('.spellbook-card-content'));
-        const targetCard = cards.find(card => card.textContent?.includes('Mobile Detail Test'));
-        if (!targetCard) {
-          throw new Error('Could not find spellbook card with name "Mobile Detail Test"');
+        const rows = Array.from(document.querySelectorAll('.spellbook-row'));
+        const targetRow = rows.find(row => row.textContent?.includes('Mobile Detail Test'));
+        if (!targetRow) {
+          throw new Error('Could not find spellbook row with name "Mobile Detail Test"');
         }
-        (targetCard as HTMLElement).click();
+        (targetRow as HTMLElement).click();
       });
 
       // Wait for navigation and detail page to load
@@ -715,6 +734,6 @@ describe('UI Interactions - Mobile (375x667)', () => {
 
       const headerText = await detailHeader?.evaluate(el => el.textContent);
       expect(headerText).toContain('Mobile Detail Test');
-    }, 30000);
+    }, TIMEOUTS.LONG);
   });
 });

@@ -2,6 +2,7 @@
 // Using vitest globals (describe, it, expect, beforeAll, afterAll are globally available)
 import { Page } from 'puppeteer';
 import { setupBrowser, closeBrowser, TEST_URL, waitForSpellsToLoad } from './setup';
+import { TIMEOUTS } from './config';
 
 describe('Spell Filtering E2E', () => {
   let page: Page;
@@ -47,7 +48,7 @@ describe('Spell Filtering E2E', () => {
         const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
         return levelBtn?.classList.contains('active');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Check that results are filtered
@@ -80,7 +81,7 @@ describe('Spell Filtering E2E', () => {
         const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
         return evocationBtn?.classList.contains('active');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify all visible spells are evocation
@@ -108,7 +109,7 @@ describe('Spell Filtering E2E', () => {
         const wizardBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'wizard');
         return wizardBtn?.classList.contains('active');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify all visible spells include wizard
@@ -143,7 +144,7 @@ describe('Spell Filtering E2E', () => {
         const newCount = document.querySelectorAll('.spell-row').length;
         return newCount !== oldCount && newCount > 0;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       initialCount
     );
 
@@ -179,7 +180,7 @@ describe('Spell Filtering E2E', () => {
         const newCount = document.querySelectorAll('.spell-row').length;
         return newCount !== oldCount && newCount > 0;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       initialCount
     );
 
@@ -215,7 +216,7 @@ describe('Spell Filtering E2E', () => {
         const newCount = document.querySelectorAll('.spell-row').length;
         return newCount !== oldCount && newCount > 0;
       },
-      { timeout: 5000 },
+      { timeout: TIMEOUTS.SHORT },
       initialCount
     );
 
@@ -244,7 +245,7 @@ describe('Spell Filtering E2E', () => {
         const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
         return levelBtn?.classList.contains('active');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Click evocation
@@ -261,7 +262,7 @@ describe('Spell Filtering E2E', () => {
         const evocationBtn = buttons.find(btn => btn.textContent?.toLowerCase() === 'evocation');
         return evocationBtn?.classList.contains('active');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify results match both filters
@@ -293,7 +294,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && !header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Click clear button
@@ -305,7 +306,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Check that all spells are shown again
@@ -330,7 +331,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && !header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify filter is applied
@@ -350,7 +351,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify all spells are shown again
@@ -375,7 +376,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && !header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify filter is applied
@@ -395,7 +396,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify all spells are shown again
@@ -420,7 +421,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && !header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify filter is applied
@@ -440,7 +441,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify all spells are shown again
@@ -470,7 +471,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && !header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify filter is applied
@@ -495,7 +496,7 @@ describe('Spell Filtering E2E', () => {
         const header = document.querySelector('.browse-header p');
         return header && header.textContent?.includes('319 results');
       },
-      { timeout: 5000 }
+      { timeout: TIMEOUTS.SHORT }
     );
 
     // Verify all spells are shown again

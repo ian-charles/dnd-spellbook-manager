@@ -95,49 +95,49 @@ export function SpellTable({
         <thead>
           <tr>
             <th className="checkbox-col"></th>
-            <th onClick={() => handleSort('name')} className="sortable">
-              <div className="th-content">
+            <th className="sortable-header">
+              <button onClick={() => handleSort('name')} className="sort-button">
                 Name
                 <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
+              </button>
             </th>
-            <th onClick={() => handleSort('level')} className="sortable level-col">
-              <div className="th-content">
+            <th className="sortable-header level-col">
+              <button onClick={() => handleSort('level')} className="sort-button">
                 Level
                 <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
+              </button>
             </th>
-            <th onClick={() => handleSort('school')} className="sortable school-col">
-              <div className="th-content">
+            <th className="sortable-header school-col">
+              <button onClick={() => handleSort('school')} className="sort-button">
                 School
                 <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
+              </button>
             </th>
-            <th onClick={() => handleSort('castingTime')} className="sortable time-col">
-              <div className="th-content">
+            <th className="sortable-header time-col">
+              <button onClick={() => handleSort('castingTime')} className="sort-button">
                 Time
                 <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
+              </button>
             </th>
-            <th onClick={() => handleSort('range')} className="sortable range-col">
-              <div className="th-content">
+            <th className="sortable-header range-col">
+              <button onClick={() => handleSort('range')} className="sort-button">
                 Range
                 <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
+              </button>
             </th>
             <th className="components-col">Comp.</th>
-            <th onClick={() => handleSort('duration')} className="sortable duration-col">
-              <div className="th-content">
+            <th className="sortable-header duration-col">
+              <button onClick={() => handleSort('duration')} className="sort-button">
                 Duration
                 <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
+              </button>
             </th>
             <th className="classes-col">Classes</th>
-            <th onClick={() => handleSort('source')} className="sortable source-col">
-              <div className="th-content">
+            <th className="sortable-header source-col">
+              <button onClick={() => handleSort('source')} className="sort-button">
                 Source
                 <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
+              </button>
             </th>
           </tr>
         </thead>

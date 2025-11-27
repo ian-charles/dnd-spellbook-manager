@@ -38,6 +38,11 @@ export const TIMEOUTS = {
 } as const;
 
 /**
+ * Delay to allow for scroll events to settle, e.g., after page.evaluate(() => window.scrollTo(...))
+ */
+
+
+/**
  * Viewport configurations for different device types
  */
 export const VIEWPORTS = {
@@ -62,7 +67,7 @@ export const TEST_IDS = {
 
   // Create spellbook dialog
   CREATE_SPELLBOOK_DIALOG: '[data-testid="create-spellbook-dialog"]',
-  INPUT_SPELLBOOK_NAME: '[data-testid="input-spellbook-name"]',
+  INPUT_SPELLBOOK_NAME: 'spellbook-name-input',
   BTN_SAVE_SPELLBOOK: '[data-testid="btn-save-spellbook"]',
 
   // Spellbook list
@@ -94,11 +99,12 @@ export const SELECTORS = {
   SPELL_ROW: '.spell-row',
   SPELL_EXPANSION_ROW: '.spell-expansion-row',
   SPELL_INLINE_EXPANSION: '.spell-inline-expansion',
+  SPELL_DESCRIPTION: '.spell-description',
   SPELL_EXPANDED_DESCRIPTION: '.spell-expanded-description',
 
   // Spellbook elements
-  SPELLBOOK_CARD: '.spellbook-card',
-  SPELLBOOK_CARD_CONTENT: '.spellbook-card-content',
+  SPELLBOOK_CARD: '.spellbook-row',
+  SPELLBOOK_CARD_CONTENT: '.spellbook-row',
   SPELLBOOK_COUNT: '.spellbook-count',
   SPELLBOOK_PREPARED: '.spellbook-prepared',
   SPELLBOOK_TABLE: '.spellbook-table',

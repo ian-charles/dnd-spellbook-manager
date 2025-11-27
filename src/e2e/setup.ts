@@ -14,6 +14,14 @@ export async function setupBrowser() {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   page = await browser.newPage();
+
+  // Capture console errors
+  page.on('console', msg => {
+    if (msg.type() === 'error') {
+      console.log(`[CONSOLE ERROR]:`, msg.text());
+    }
+  });
+
   await page.setViewport(VIEWPORTS.DESKTOP);
   return { browser, page };
 }

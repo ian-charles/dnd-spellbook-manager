@@ -200,12 +200,6 @@ export function SpellbookDetailView({
                       <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
                     </div>
                   </th>
-                  <th onClick={() => onSort('school')} className="sortable">
-                    <div className="th-content">
-                      School
-                      <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
-                    </div>
-                  </th>
                   <th onClick={() => onSort('castingTime')} className="sortable time-col">
                     <div className="th-content">
                       Time
@@ -218,14 +212,20 @@ export function SpellbookDetailView({
                       <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
                     </div>
                   </th>
-                  <th className="components-col">Comp.</th>
                   <th onClick={() => onSort('duration')} className="sortable duration-col">
                     <div className="th-content">
                       Duration
                       <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
                     </div>
                   </th>
-                  <th onClick={() => onSort('source')} className="sortable">
+                  <th className="components-col">Comp.</th>
+                  <th onClick={() => onSort('school')} className="sortable school-col">
+                    <div className="th-content">
+                      School
+                      <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th onClick={() => onSort('source')} className="sortable source-col">
                     <div className="th-content">
                       Source
                       <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
@@ -259,11 +259,11 @@ export function SpellbookDetailView({
                         </div>
                       </td>
                       <td className="level-col">{getLevelText(spell.level)}</td>
-                      <td className="school-col">{spell.school}</td>
                       <td className="time-col">{spell.castingTime}</td>
                       <td className="range-col">{spell.range}</td>
-                      <td className="components-col"><ComponentBadges spell={spell} /></td>
                       <td className="duration-col">{spell.duration}</td>
+                      <td className="components-col"><ComponentBadges spell={spell} /></td>
+                      <td className="school-col">{spell.school}</td>
                       <td className="source-col">{spell.source}</td>
                       <td className="action-col" onClick={(e) => e.stopPropagation()}>
                         <button

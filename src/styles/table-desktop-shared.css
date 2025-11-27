@@ -360,6 +360,53 @@
   text-align: center;
 }
 
+/* Progressive column hiding for responsive design
+   Priority (high to low): Name, Level, Time, Range, Duration, School, Comp., Classes, Source
+
+   Breakpoints:
+   - 1400px: Hide Source (lowest priority)
+   - 1200px: Hide Classes
+   - 1024px: Hide Components
+   - 900px: Hide School
+   - 800px: Hide Duration
+   - 769px: Switch to mobile card layout
+*/
+
+/* Hide Source column at 1400px */
+@media (max-width: 1400px) {
+  .spell-table .source-col {
+    display: none;
+  }
+}
+
+/* Hide Classes column at 1200px */
+@media (max-width: 1200px) {
+  .spell-table .classes-col {
+    display: none;
+  }
+}
+
+/* Hide Components column at 1024px */
+@media (max-width: 1024px) {
+  .spell-table .components-col {
+    display: none;
+  }
+}
+
+/* Hide School column at 900px */
+@media (max-width: 900px) {
+  .spell-table .school-col {
+    display: none;
+  }
+}
+
+/* Hide Duration column at 800px */
+@media (max-width: 800px) {
+  .spell-table .duration-col {
+    display: none;
+  }
+}
+
 /* Desktop inline expansion (for new sub-row pattern) */
 @media (min-width: 769px) {
   .spell-expansion-row {

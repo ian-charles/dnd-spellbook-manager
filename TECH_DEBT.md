@@ -18,7 +18,8 @@ This document tracks known technical debt, code quality issues, and refactoring 
 - [ ] **Missing explicit XSS escaping documentation** (Medium) - `src/components/SpellDescription.tsx`: JSX escaping prevents XSS but mechanism not clearly documented.
 - [ ] **Insufficient error handling for malformed tables** (Medium) - `src/components/SpellDescription.tsx`: Limited validation of markdown table structure (e.g., header-only).
 - [ ] **Weak XSS test in SpellDescription** (Medium) - `src/components/SpellDescription.test.tsx`: XSS test only checks innerHTML doesn't contain <script> but doesn't verify actual HTML escaping.
-- [ ] **Array mutation in parseRow helper** (Medium) - `src/components/SpellDescription.tsx`: Uses shift() and pop() which mutate the cells array.
+- [ ] **Missing unit tests for App.tsx** (High) - `src/App.tsx`: Main application component has complex state management but zero unit tests.
+
 
 ### Completed Refactoring
 - [x] **Missing Unicode test for dice notation** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.
@@ -55,6 +56,12 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Low (5 minutes)
 
 ### Missing JSDoc for SortIcon usage
+**Location**: src/components/SortIcon.tsx
+**Issue**: Component lacks JSDoc documentation
+**Priority**: Medium
+**Solution**: Add JSDoc comments
+**Effort**: Low (5 minutes)
+
 ### Missing test for displayTitle empty string edge case
 **Location**: src/components/CreateSpellbookModal.tsx:29
 **Issue**: Edge case not covered by tests
@@ -111,12 +118,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Solution**: Use regex or normalize whitespace before assertion
 **Effort**: Low (15 minutes)
 
-### Missing error messages in E2E test assertions
-**Location**: src/e2e/spell-filtering.test.ts, src/e2e/spell-search.test.ts, src/e2e/spell-tooltip.test.ts
-**Issue**: Assertions lack descriptive error messages
-**Priority**: Medium
-**Solution**: Add error message as second parameter to expect() calls
-**Effort**: Low (20 minutes)
 
 ### Missing cleanup between E2E test cases
 **Location**: src/e2e/spell-filtering.test.ts, src/e2e/spell-search.test.ts
@@ -138,15 +139,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Priority**: Medium
 **Solution**: Replace all hardcoded timeouts with TIMEOUTS.SHORT, TIMEOUTS.MEDIUM, or TIMEOUTS.LONG
 **Effort**: Low (20 minutes)
-
-### Missing JSDoc for clickSpellbookCard helper
-**Location**: src/e2e/helpers.ts:415-426
-**Issue**: Helper function lacks JSDoc explaining its purpose and parameters
-**Priority**: Medium
-**Solution**: Add JSDoc comment following the pattern used for other helper functions
-**Effort**: Low (3 minutes)
-
-**Effort**: Low (5 minutes)
 
 ### Inconsistent Checkbox State Management in SpellTable
 **Location**: src/components/SpellTable.tsx:89-94
@@ -431,9 +423,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 - **Total eliminated**: ~95 lines of unused code
 - **Benefit**: Cleaner codebase, reduced maintenance burden, clearer API
 
-### ✅ Missing JSDoc for clickSpellbookCard helper (Completed 2025-11-26)
-- **Fixed**: Added JSDoc comment to `src/e2e/helpers.ts`
-- **Result**: Better documentation for helper functions
 
 ### ✅ Magic numbers in E2E timeout usage (Completed 2025-11-26)
 - **Fixed**: Replaced hardcoded timeouts with `TIMEOUTS` constants in all E2E test files

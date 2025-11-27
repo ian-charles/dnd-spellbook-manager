@@ -1,4 +1,3 @@
-import React from 'react';
 import './SpellDescription.css';
 
 interface SpellDescriptionProps {
@@ -71,11 +70,15 @@ function MarkdownTable({ lines }: { lines: string[] }) {
     // React's JSX automatically escapes text content, preventing XSS attacks
     // See test at line 155 for XSS protection verification
     const parseRow = (line: string) => {
-        const cells = line.split('|');
+        let cells = line.split('|');
         // Remove first and last if empty (from leading/trailing pipes)
         // e.g. "| a | b |" -> ["", " a ", " b ", ""] -> [" a ", " b "]
-        if (cells.length > 0 && cells[0].trim() === '') cells.shift();
-        if (cells.length > 0 && cells[cells.length - 1].trim() === '') cells.pop();
+        if (cells.length > 0 && cells[0].trim() === '') {
+            cells = cells.slice(1);
+        }
+        if (cells.length > 0 && cells[cells.length - 1].trim() === '') {
+            cells = cells.slice(0, -1);
+        }
 
         return cells.map(cell => cell.trim());
     };

@@ -89,6 +89,9 @@ function App() {
     }
   }, [filters, spells, loading]);
 
+  // Loading state for batch operations
+  const [isAddingSpells, setIsAddingSpells] = useState(false);
+
   const handleAddToSpellbook = async () => {
     if (selectedSpellIds.size === 0) {
       setAlertDialog({
@@ -117,6 +120,7 @@ function App() {
       return;
     }
 
+    setIsAddingSpells(true);
     try {
       // Add all selected spells to the spellbook
       for (const spellId of selectedSpellIds) {
@@ -126,8 +130,8 @@ function App() {
       // Ensure spellbooks list is refreshed to show updated spell counts
       await refreshSpellbooks();
 
+      const count = selectedSpellIds.size; // Calculate count BEFORE clearing
       setSelectedSpellIds(new Set()); // Clear selection after adding
-      const count = selectedSpellIds.size;
       displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
     } catch (error) {
       setAlertDialog({
@@ -136,33 +140,52 @@ function App() {
         message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_ADD_SPELL_GENERIC,
         variant: 'error',
       });
+    } finally {
+      setIsAddingSpells(false);
     }
   };
 
   const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
     try {
       const newSpellbook = await createSpellbook(input);
+      const failedSpells: string[] = [];
 
       // If there are pending spells, add them to the new spellbook
       if (pendingSpellIds.size > 0) {
+        setIsAddingSpells(true);
         for (const spellId of pendingSpellIds) {
-          await addSpellToSpellbook(newSpellbook.id, spellId);
+          try {
+            await addSpellToSpellbook(newSpellbook.id, spellId);
+          } catch (error) {
+            failedSpells.push(spellId);
+          }
         }
-        const count = pendingSpellIds.size;
-        displayToast(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
+
+        if (failedSpells.length > 0) {
+          // If some failed, we still show success for the ones that worked, but warn about failures
+          const successCount = pendingSpellIds.size - failedSpells.length;
+          if (successCount > 0) {
+            displayToast(`Spellbook created with ${successCount} spells. Failed to add ${failedSpells.length} spells.`);
+          } else {
+            throw new Error(`Failed to add any spells to the new spellbook.`);
+          }
+        } else {
+          const count = pendingSpellIds.size;
+          displayToast(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
+        }
+
         setPendingSpellIds(new Set());
         setSelectedSpellIds(new Set());
-        // Ensure spellbooks list is refreshed after all spells added
-        await refreshSpellbooks();
       } else {
         displayToast('Spellbook created successfully');
-        // Refresh to show new spellbook
-        await refreshSpellbooks();
       }
-
-      setCreateModalOpen(false);
     } catch (error) {
       throw error; // Let the modal handle the error
+    } finally {
+      setIsAddingSpells(false);
+      // Always refresh and close modal, even on error
+      await refreshSpellbooks();
+      setCreateModalOpen(false);
     }
   };
 
@@ -175,8 +198,8 @@ function App() {
         await addSpellToSpellbook(spellbookId, spellId);
       }
       spellbookSelector.closeModal();
+      const count = selectedSpellIds.size; // Calculate count BEFORE clearing
       setSelectedSpellIds(new Set()); // Clear selection after adding
-      const count = selectedSpellIds.size;
       displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
     } catch (error) {
       spellbookSelector.closeModal();
@@ -336,7 +359,7 @@ function App() {
           setCreateModalOpen(false);
           setPendingSpellIds(new Set());
         }}
-        onCreate={handleCreateSpellbook}
+        onSubmit={handleCreateSpellbook}
         existingNames={spellbooks.map(sb => sb.name)}
       />
 

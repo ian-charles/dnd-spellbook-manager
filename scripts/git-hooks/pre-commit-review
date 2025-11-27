@@ -140,6 +140,8 @@ This allows you to spot issues that require broader context to identify.
 
 **This rule enforces accountability**: Every non-critical issue MUST be documented for future remediation.
 
+**EXCEPTION**: Do not require documentation for issues related to the TECH_DEBT.md file itself (e.g. formatting, structure, duplicates). Fix these issues directly in the file. Documenting issues with the documentation file leads to infinite loops.
+
 ## Response Format:
 
 If you find **ANY** CRITICAL or HIGH PRIORITY issues:

@@ -174,7 +174,6 @@ function App() {
   const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
     try {
       const newSpellbook = await createSpellbook(input);
-      const failedSpells: string[] = [];
 
       // If there are pending spells, add them to the new spellbook
       if (pendingSpellIds.size > 0) {
@@ -186,6 +185,9 @@ function App() {
         );
 
         const failed = results.filter(r => r.status === 'rejected');
+
+        // Ensure spellbooks list is refreshed to show updated spell counts
+        await refreshSpellbooks();
 
         if (failed.length > 0) {
           // If some failed, we still show success for the ones that worked, but warn about failures
@@ -204,13 +206,13 @@ function App() {
         setSelectedSpellIds(new Set());
       } else {
         displayToast('Spellbook created successfully');
+        // Always refresh and close modal
+        await refreshSpellbooks();
       }
     } catch (error) {
       throw error; // Let the modal handle the error
     } finally {
       setIsAddingSpells(false);
-      // Always refresh and close modal, even on error
-      await refreshSpellbooks();
       setCreateModalOpen(false);
     }
   };
@@ -219,14 +221,31 @@ function App() {
     if (selectedSpellIds.size === 0) return;
 
     try {
-      // Add all selected spells to the spellbook
-      for (const spellId of selectedSpellIds) {
-        await addSpellToSpellbook(spellbookId, spellId);
-      }
+      // Add all selected spells to the spellbook in parallel
+      const results = await Promise.allSettled(
+        Array.from(selectedSpellIds).map(spellId => addSpellToSpellbook(spellbookId, spellId))
+      );
+
+      const failed = results.filter(r => r.status === 'rejected');
+
       spellbookSelector.closeModal();
-      const count = selectedSpellIds.size; // Calculate count BEFORE clearing
+
+      // Ensure spellbooks list is refreshed to show updated spell counts
+      await refreshSpellbooks();
+
+      if (failed.length > 0) {
+        const successCount = selectedSpellIds.size - failed.length;
+        if (successCount > 0) {
+          displayToast(`Added ${successCount} spells. Failed to add ${failed.length} spells.`);
+        } else {
+          throw new Error(`Failed to add any spells to the spellbook.`);
+        }
+      } else {
+        const count = selectedSpellIds.size; // Calculate count BEFORE clearing
+        displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
+      }
+
       setSelectedSpellIds(new Set()); // Clear selection after adding
-      displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
     } catch (error) {
       spellbookSelector.closeModal();
       setAlertDialog({

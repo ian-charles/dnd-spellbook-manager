@@ -25,6 +25,9 @@ This document tracks known technical debt, code quality issues, and refactoring 
 - [ ] **Missing error message for failed spell additions in batch** (Medium) - `src/App.tsx`: When individual spells fail during batch add in `handleCreateSpellbook`, only partial success message shown.
 - [ ] **No cleanup for createModalOpen state** (Medium) - `src/App.tsx`: When modal closes via onClose, pendingSpellIds is cleared, but if user navigates away while modal is open, state persists.
 - [ ] **Duplicate toast display logic** (Medium) - `src/App.tsx`: Same pattern of calculating count, clearing selection, and showing toast repeated in 3 places.
+- [ ] **Complex handleAddToSpellbook function** (Medium) - `src/App.tsx`: Function is 50+ lines mixing UI logic, validation, and async operations.
+- [ ] **Complex handleCreateSpellbook function** (Medium) - `src/App.tsx`: Function is 33 lines mixing spellbook creation with spell addition logic.
+- [ ] **Finally block always runs even on error** (Medium) - `src/App.tsx`: `setCreateModalOpen(false)` runs even if error is thrown, which may not be desired UX.
 
 ### Completed Refactoring
 - [x] **Missing Unicode test for dice notation** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.

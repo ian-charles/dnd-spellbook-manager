@@ -33,7 +33,10 @@ export function Layout({
   return (
     <div className="app">
       <header className="app-header">
-        <h1>D&D Spellbook Manager</h1>
+        <div className="app-title">
+          <h1>The Spellbookery</h1>
+          <p className="app-subtitle">A D&D Magic Manager</p>
+        </div>
         <nav className="app-nav">
           <button
             className={`nav-link ${currentView === 'browse' ? 'active' : ''}`}

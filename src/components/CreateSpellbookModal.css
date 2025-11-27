@@ -140,18 +140,6 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .ability-buttons {
-    flex-direction: column;
-  }
-
-  .ability-btn {
-    width: 100%;
-  }
-
   .spell-slots-container {
     gap: var(--space-1);
   }

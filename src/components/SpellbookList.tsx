@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { exportImportService } from '../services/exportImport.service';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
@@ -46,6 +46,16 @@ export function SpellbookList({
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Context menu state for mobile long-press
+  const [contextMenu, setContextMenu] = useState<{
+    spellbookId: string;
+    spellbookName: string;
+    x: number;
+    y: number;
+  } | null>(null);
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const longPressStartPos = useRef<{ x: number; y: number } | null>(null);
+
   // Dialog states
   const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellbookId: string; spellbookName: string }>({
     isOpen: false,
@@ -63,6 +73,15 @@ export function SpellbookList({
     message: '',
     variant: 'info',
   });
+
+  // Close context menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setContextMenu(null);
+    if (contextMenu) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [contextMenu]);
 
   // Filter and sort spellbooks
   const filteredAndSortedSpellbooks = useMemo(() => {
@@ -273,6 +292,55 @@ export function SpellbookList({
     }
   };
 
+  // Long-press handlers for mobile context menu
+  const handleTouchStart = (e: React.TouchEvent, spellbook: Spellbook) => {
+    const touch = e.touches[0];
+    longPressStartPos.current = { x: touch.clientX, y: touch.clientY };
+
+    longPressTimer.current = setTimeout(() => {
+      setContextMenu({
+        spellbookId: spellbook.id,
+        spellbookName: spellbook.name,
+        x: touch.clientX,
+        y: touch.clientY,
+      });
+    }, 500); // 500ms long press
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!longPressStartPos.current) return;
+
+    const touch = e.touches[0];
+    const deltaX = Math.abs(touch.clientX - longPressStartPos.current.x);
+    const deltaY = Math.abs(touch.clientY - longPressStartPos.current.y);
+
+    // Cancel long press if user moves finger too much
+    if (deltaX > 10 || deltaY > 10) {
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+        longPressTimer.current = null;
+      }
+      longPressStartPos.current = null;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    longPressStartPos.current = null;
+  };
+
+  const handleContextMenuAction = (action: 'copy' | 'delete', spellbookId: string, spellbookName: string) => {
+    setContextMenu(null);
+    if (action === 'copy') {
+      handleCopy(spellbookId);
+    } else {
+      handleDelete(spellbookId, spellbookName);
+    }
+  };
+
   if (loading) {
     return (
       <div className="spellbook-list">
@@ -403,6 +471,9 @@ export function SpellbookList({
                   className="spellbook-row"
                   data-testid={`spellbook-row-${spellbook.id}`}
                   onClick={() => onSpellbookClick(spellbook.id)}
+                  onTouchStart={(e) => handleTouchStart(e, spellbook)}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                 >
                   <td className="spellbook-name" data-testid="spellbook-name" data-label="Name">
                     {spellbook.name}
@@ -484,6 +555,32 @@ export function SpellbookList({
         variant={alertDialog.variant}
         onClose={() => setAlertDialog({ ...alertDialog, isOpen: false })}
       />
+
+      {/* Context Menu for mobile long-press */}
+      {contextMenu && (
+        <div
+          className="context-menu"
+          style={{
+            position: 'fixed',
+            left: `${contextMenu.x}px`,
+            top: `${contextMenu.y}px`,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="context-menu-item"
+            onClick={() => handleContextMenuAction('copy', contextMenu.spellbookId, contextMenu.spellbookName)}
+          >
+            Copy Spellbook
+          </button>
+          <button
+            className="context-menu-item context-menu-item-danger"
+            onClick={() => handleContextMenuAction('delete', contextMenu.spellbookId, contextMenu.spellbookName)}
+          >
+            Delete Spellbook
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -296,6 +296,48 @@
   margin-top: var(--space-6);
 }
 
+/* Context Menu */
+.context-menu {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-modal);
+  min-width: 180px;
+  overflow: hidden;
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+}
+
+.context-menu-item {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background var(--transition-base);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.context-menu-item:last-child {
+  border-bottom: none;
+}
+
+.context-menu-item:hover {
+  background: var(--color-hover);
+}
+
+.context-menu-item-danger {
+  color: var(--color-error);
+}
+
+.context-menu-item-danger:hover {
+  background: var(--color-error-bg);
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .spellbook-list {
@@ -323,52 +365,81 @@
     width: 100%;
   }
 
-  /* Make table scrollable on mobile */
+  /* Card-based layout for mobile */
   .spellbooks-table {
     display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .spellbooks-table thead,
-  .spellbooks-table tbody,
-  .spellbooks-table tr {
-    display: block;
+    background: var(--color-bg-primary);
   }
 
   .spellbooks-table thead {
     display: none;
-    /* Hide header on mobile for card-style layout */
+  }
+
+  .spellbooks-table tbody {
+    display: block;
   }
 
   .spellbooks-table tbody tr {
+    display: block;
     margin-bottom: var(--space-4);
     border: 1px solid var(--color-border-primary);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     padding: var(--space-4);
     background: var(--color-bg-secondary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .spellbooks-table td {
-    display: flex;
-    justify-content: space-between;
-    padding: var(--space-2) 0;
-    border-bottom: 1px solid var(--color-border-secondary);
-  }
-
-  .spellbooks-table td:last-child {
+    padding: 0;
     border-bottom: none;
   }
 
-  /* Add labels for mobile */
-  .spellbooks-table td::before {
-    content: attr(data-label);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-heading);
+  /* Hide all columns except name, spell count, and updated */
+  .spellbook-ability,
+  .spellbook-attack,
+  .spellbook-save-dc,
+  .spellbook-actions {
+    display: none !important;
   }
 
+  /* Prominent spellbook name */
   .spellbook-name {
-    font-size: var(--font-size-lg);
+    display: block;
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-heading);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border-secondary);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .spellbook-name::before {
+    display: none;
+  }
+
+  /* Spell count and updated date in a row */
+  .spellbook-spell-count,
+  .spellbook-updated {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-right: var(--space-4);
+    margin-bottom: 0;
+  }
+
+  .spellbook-spell-count::before {
+    content: '📚 ';
+  }
+
+  .spellbook-updated {
+    margin-right: 0;
+  }
+
+  .spellbook-updated::before {
+    content: '📅 ';
   }
 
   .dialog {

@@ -224,7 +224,7 @@ export function CreateSpellbookModal({
               data-testid="create-button"
               disabled={loading}
             >
-              {loading ? 'Creating...' : 'Create Spellbook'}
+              {loading ? 'Saving...' : 'Save Spellbook'}
             </button>
           </div>
         </form >

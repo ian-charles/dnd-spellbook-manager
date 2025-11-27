@@ -62,8 +62,9 @@
 
 /* Mobile responsive - component-specific overrides */
 @media (max-width: 768px) {
+
   /* Hide all columns except checkbox, spell name, level, school, and expansion */
-  .spell-table td:not(.checkbox-col):not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell) {
+  .spell-table>tbody>tr>td:not(.checkbox-col):not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell) {
     display: none;
   }
 
@@ -72,7 +73,7 @@
   }
 
   /* Checkbox column on mobile - left side */
-  .spell-table .checkbox-col {
+  .spell-table>tbody>tr>.checkbox-col {
     position: absolute !important;
     display: block !important;
     top: var(--space-3);
@@ -80,14 +81,14 @@
     width: auto;
   }
 
-  .spell-table .checkbox-col input[type="checkbox"] {
+  .spell-table>tbody>tr>.checkbox-col input[type="checkbox"] {
     width: 24px;
     height: 24px;
     cursor: pointer;
   }
 
   /* Adjust spell name to make room for checkbox on left */
-  .spell-table .spell-name {
+  .spell-table>tbody>tr>.spell-name {
     padding-left: 3rem !important;
     padding-right: 0.5rem !important;
   }

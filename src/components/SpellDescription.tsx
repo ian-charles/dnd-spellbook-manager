@@ -96,7 +96,7 @@ function MarkdownTable({ lines }: { lines: string[] }) {
                     {bodyLines.map((line, i) => (
                         <tr key={`row-${i}`}>
                             {parseRow(line).map((cell, j) => (
-                                <td key={`cell-${i}-${j}`}><HighlightDice text={cell} /></td>
+                                <td key={`cell-${i}-${j}`}><MarkdownText text={cell} /></td>
                             ))}
                         </tr>
                     ))}
@@ -107,12 +107,54 @@ function MarkdownTable({ lines }: { lines: string[] }) {
 }
 
 /**
+ * Helper to parse markdown text (bold, italic) and highlight dice.
+ * Order of operations: Bold -> Italic -> Dice
+ */
+function MarkdownText({ text }: { text: string }) {
+    if (!text) return null;
+    // 1. Split by Bold: **text**
+    const boldParts = text.split(/(\*\*[^*]+\*\*)/g);
+
+    return (
+        <>
+            {boldParts.map((boldPart, i) => {
+                if (boldPart.startsWith('**') && boldPart.endsWith('**')) {
+                    const content = boldPart.slice(2, -2);
+                    return <strong key={`bold-${i}`}><MarkdownItalic text={content} /></strong>;
+                }
+                return <MarkdownItalic key={`text-${i}`} text={boldPart} />;
+            })}
+        </>
+    );
+}
+
+function MarkdownItalic({ text }: { text: string }) {
+    // 2. Split by Italic: *text*
+    // Note: This regex is simple and might need refinement for complex cases, 
+    // but suffices for standard spell descriptions.
+    const italicParts = text.split(/(\*[^*]+\*)/g);
+
+    return (
+        <>
+            {italicParts.map((part, i) => {
+                if (part.startsWith('*') && part.endsWith('*')) {
+                    const content = part.slice(1, -1);
+                    return <em key={`italic-${i}`}><HighlightDice text={content} /></em>;
+                }
+                return <HighlightDice key={`text-${i}`} text={part} />;
+            })}
+        </>
+    );
+}
+
+/**
  * SpellDescription Component
  * 
  * Parses D&D 5e spell description text and applies special formatting:
  * 1. Highlights dice notations (e.g., 1d4, 2d6, 3d8, d10, d12, d20, d100)
  * 2. Renders markdown tables with proper styling
- * 3. Preserves line breaks and paragraph structure
+ * 3. Renders bold (**text**) and italic (*text*) markdown
+ * 4. Preserves line breaks and paragraph structure
  * 
  * Supported dice types: d4, d6, d8, d10, d12, d20, d100
  * 
@@ -121,15 +163,7 @@ function MarkdownTable({ lines }: { lines: string[] }) {
  * @param {string} [props.className] - Optional CSS class name for the wrapper div
  * 
  * @example
- * <SpellDescription text="Deals 1d6 fire damage" />
- * 
- * @example
- * // With markdown table
- * <SpellDescription text={`
- * | Level | Damage |
- * |-------|--------|
- * | 1     | 1d6    |
- * `} />
+ * <SpellDescription text="Deals **1d6** fire damage" />
  */
 export function SpellDescription({ text, className = '' }: SpellDescriptionProps) {
     if (!text || typeof text !== 'string') return null;
@@ -178,17 +212,27 @@ export function SpellDescription({ text, className = '' }: SpellDescriptionProps
                 if (block.type === 'table') {
                     return <MarkdownTable key={index} lines={block.content} />;
                 } else {
-                    // Join text lines with newlines (or render paragraphs)
-                    // For simple text, we can join and render.
-                    // Note: Original implementation split by dice regex on the whole text.
-                    // Here we process per block.
                     return (
                         <div key={index} className="spell-text-block">
-                            {block.content.map((line, i) => (
-                                <div key={i} className={line.trim() === '' ? 'spell-text-line-empty' : 'spell-text-line'}>
-                                    <HighlightDice text={line} />
-                                </div>
-                            ))}
+                            {block.content.map((line, i) => {
+                                const trimmed = line.trim();
+                                // Handle Headers
+                                if (trimmed.startsWith('### ')) {
+                                    return <h3 key={i} className="spell-text-h3">{trimmed.slice(4)}</h3>;
+                                }
+                                if (trimmed.startsWith('## ')) {
+                                    return <h2 key={i} className="spell-text-h2">{trimmed.slice(3)}</h2>;
+                                }
+                                if (trimmed.startsWith('# ')) {
+                                    return <h1 key={i} className="spell-text-h1">{trimmed.slice(2)}</h1>;
+                                }
+
+                                return (
+                                    <div key={i} className={trimmed === '' ? 'spell-text-line-empty' : 'spell-text-line'}>
+                                        <MarkdownText text={line} />
+                                    </div>
+                                );
+                            })}
                         </div>
                     );
                 }

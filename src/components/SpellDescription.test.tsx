@@ -191,4 +191,31 @@ Text in between.
         expect(dice.textContent, 'Should highlight dice with Unicode neighbor').toBe('1d6');
         expect(screen.getByText(/🔥/), 'Unicode character should be rendered').toBeTruthy();
     });
+
+    it('should render Animate Objects table correctly', () => {
+        const text = `
+### Animated Object Statistics
+| Size | HP | AC | Attack | Str | Dex |
+|---|---|---|---|---|---|
+| Tiny | 20 | 18 | +8 to hit, 1d4 + 4 damage | 4 | 18 |
+`;
+        render(<SpellDescription text={text} />);
+
+        // Check for table existence
+        const table = screen.getByRole('table');
+        expect(table, 'Table should exist').toBeTruthy();
+
+        // Check for specific cell content
+        expect(screen.getByText('Tiny'), 'Cell "Tiny" should exist').toBeTruthy();
+        expect(screen.getByText('20'), 'Cell "20" should exist').toBeTruthy();
+        // Use regex or textContent for split text
+        const cell = screen.getByText((content, element) => {
+            return element?.textContent === '+8 to hit, 1d4 + 4 damage';
+        });
+        expect(cell, 'Complex cell content should exist').toBeTruthy();
+
+        // Check for dice highlighting within table
+        const dice = screen.getByTestId('dice-notation');
+        expect(dice.textContent, 'Dice in table should be highlighted').toBe('1d4');
+    });
 });

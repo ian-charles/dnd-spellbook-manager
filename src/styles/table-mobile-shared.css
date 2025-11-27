@@ -28,16 +28,16 @@
 
   /* Convert table to block layout */
   .spell-table,
-  .spell-table tbody,
+  .spell-table>tbody,
   .spellbook-table,
-  .spellbook-table tbody {
+  .spellbook-table>tbody {
     display: block;
     width: 100%;
   }
 
   /* Card-style rows */
-  .spell-table tbody tr,
-  .spellbook-table tbody tr {
+  .spell-table>tbody>tr,
+  .spellbook-table>tbody>tr {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: var(--space-4);
@@ -52,8 +52,8 @@
     box-shadow: light-dark(0 1px 3px rgba(0, 0, 0, 0.05), none);
   }
 
-  .spell-table tbody tr:hover,
-  .spellbook-table tbody tr:hover {
+  .spell-table>tbody>tr:hover,
+  .spellbook-table>tbody>tr:hover {
     background: light-dark(rgba(248, 250, 252, 0.95), rgba(30, 41, 59, 0.8));
   }
 
@@ -69,8 +69,8 @@
   }
 
   /* Style the expansion row to look attached to the main row */
-  .spell-table tbody tr.spell-expansion-row,
-  .spellbook-table tbody tr.spell-expansion-row {
+  .spell-table>tbody>tr.spell-expansion-row,
+  .spellbook-table>tbody>tr.spell-expansion-row {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-top: none;
@@ -90,8 +90,8 @@
   }
 
   /* Remove default cell padding and borders */
-  .spell-table td,
-  .spellbook-table td {
+  .spell-table>tbody>tr>td,
+  .spellbook-table>tbody>tr>td {
     padding: 0;
     border: none;
   }

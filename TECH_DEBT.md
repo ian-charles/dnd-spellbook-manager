@@ -17,6 +17,8 @@ This document tracks known technical debt, code quality issues, and refactoring 
 - [ ] **Hardcoded dice types in regex could be more maintainable** (Medium) - `src/components/SpellDescription.tsx`: Dice types hardcoded in regex string instead of derived from array.
 - [ ] **Missing explicit XSS escaping documentation** (Medium) - `src/components/SpellDescription.tsx`: JSX escaping prevents XSS but mechanism not clearly documented.
 - [ ] **Insufficient error handling for malformed tables** (Medium) - `src/components/SpellDescription.tsx`: Limited validation of markdown table structure (e.g., header-only).
+- [ ] **Weak XSS test in SpellDescription** (Medium) - `src/components/SpellDescription.test.tsx`: XSS test only checks innerHTML doesn't contain <script> but doesn't verify actual HTML escaping.
+- [ ] **Array mutation in parseRow helper** (Medium) - `src/components/SpellDescription.tsx`: Uses shift() and pop() which mutate the cells array.
 
 ### Completed Refactoring
 - [x] **Missing Unicode test for dice notation** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.

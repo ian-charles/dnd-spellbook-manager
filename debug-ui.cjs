@@ -32,7 +32,7 @@ async function setupBrowser() {
   });
 
   const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 800 });
+  await page.setViewport({ width: 1920, height: 1080 });
 
   // Enable console logging from the page
   page.on('console', (msg) => {
@@ -280,7 +280,7 @@ async function main() {
     } else {
       console.log('\n💡 Browser will stay open. Close it manually when done.');
       // Wait indefinitely
-      await new Promise(() => {});
+      await new Promise(() => { });
     }
   } catch (error) {
     console.error('❌ Fatal error:', error);

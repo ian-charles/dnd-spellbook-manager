@@ -4,7 +4,89 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
-*No active technical debt items at this time.*
+
+
+### Hardcoded Claude CLI Path
+**Location**: scripts/git-hooks/pre-commit-review:206
+**Issue**: Path `/Users/sjaconette/.local/bin/claude` hardcoded, won't work for other developers
+**Impact**: Git hook fails for team members with Claude installed elsewhere
+**Solution**: Use environment variable `CLAUDE_CODE_BIN` with fallback to hardcoded path
+**Effort**: Low (10 minutes)
+**Priority**: Medium
+
+### Silent Ed Command Failures
+**Location**: scripts/git-hooks/pre-commit-review:177-183
+**Issue**: Ed command failures redirected to /dev/null, no logging of why fallback triggered
+**Impact**: Difficult to debug why text processing sometimes uses fallback method
+**Solution**: Log ed errors to review log directory for debugging
+**Effort**: Low (10 minutes)
+**Priority**: Medium
+
+### Mobile Breakpoint Documentation
+**Location**: src/styles/table-mobile-shared.css:10
+**Issue**: Breakpoint changed from 400px to 768px without explanation in code
+**Impact**: Future developers may not understand why 768px was chosen
+**Solution**: Add comment explaining breakpoint targets iPad portrait mode
+**Effort**: Low (2 minutes)
+**Priority**: Medium
+
+### Cross-Platform Temp File Path
+**Location**: scripts/git-hooks/pre-commit:43
+**Issue**: Hardcoded /tmp path won't work on all Windows systems
+**Impact**: Pre-commit hook may fail on Windows Git Bash
+**Solution**: Use ${TMPDIR:-/tmp} for cross-platform compatibility
+**Effort**: Low (5 minutes)
+**Priority**: Medium
+
+### Process Cleanup Race Condition
+**Location**: scripts/git-hooks/pre-commit:75-81
+**Issue**: No wait between kill and pkill, potential race condition
+**Impact**: Dev server processes may not clean up properly
+**Solution**: Add `wait $DEV_SERVER_PID 2>/dev/null` between kill commands
+**Effort**: Low (2 minutes)
+**Priority**: Medium
+
+### Git Hooks Missing Inline Documentation
+**Location**: scripts/setup-git-hooks.js:37-54
+**Issue**: Complex error handling lacks inline comments
+**Impact**: Maintenance difficulty for future developers
+**Solution**: Add inline comments explaining chmod logic and cross-platform considerations
+**Effort**: Low (5 minutes)
+**Priority**: Medium
+
+### Post-Commit Hook Missing Remote Check
+**Location**: scripts/git-hooks/post-commit:9
+**Issue**: No check if git remote exists before attempting push
+**Impact**: Confusing error message when working with local-only repos
+**Solution**: Check `git remote` before attempting push
+**Effort**: Low (3 minutes)
+**Priority**: Medium
+
+### Git Hooks Setup No Verification of Executable Permissions
+**Location**: scripts/setup-git-hooks.js:52-60
+**Issue**: No verification that chmod actually made files executable
+**Impact**: Hooks may be copied but not executable, causing silent failures
+**Solution**: Use stat() to verify file permissions after chmod on Unix systems
+**Effort**: Low (10 minutes)
+**Priority**: Medium
+
+---
+
+### Missing JSDoc for SortIcon Component
+**Location**: src/components/SortIcon.tsx:3-9
+**Issue**: Props interface lacks JSDoc explaining prop interactions
+**Impact**: Developers may not understand how currentColumn/currentDirection work together
+**Solution**: Add JSDoc comment explaining that component shows ⇅ for inactive columns and ↑/↓ based on direction
+**Effort**: Low (5 minutes)
+**Priority**: Medium
+
+### Test File Missing Strategy Documentation
+**Location**: src/components/SpellbookList.test.tsx:1-20
+**Issue**: File-level JSDoc doesn't explain testing strategy or patterns used
+**Impact**: New developers won't understand why certain testing approaches were chosen
+**Solution**: Add comment explaining AAA pattern, mock strategy, and why mocks are preferred over real implementations
+**Effort**: Low (10 minutes)
+**Priority**: Medium
 
 ---
 

@@ -15,11 +15,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { SpellbookList } from './SpellbookList';
-import * as useSpellbooksModule from '../hooks/useSpellbooks';
 import { exportImportService } from '../services/exportImport.service';
-
-// Mock the useSpellbooks hook
-vi.mock('../hooks/useSpellbooks');
 
 // Mock the exportImportService
 vi.mock('../services/exportImport.service', () => ({
@@ -35,6 +31,16 @@ describe('SpellbookList', () => {
   const mockDeleteSpellbook = vi.fn();
   const mockRefreshSpellbooks = vi.fn();
   const mockAddSpellToSpellbook = vi.fn();
+
+  const defaultProps = {
+    spellbooks: [],
+    loading: false,
+    onSpellbookClick: mockOnSpellbookClick,
+    onCreateSpellbook: mockCreateSpellbook,
+    onDeleteSpellbook: mockDeleteSpellbook,
+    onRefreshSpellbooks: mockRefreshSpellbooks,
+    onAddSpellToSpellbook: mockAddSpellToSpellbook,
+  };
 
   const mockSpellbooks = [
     {
@@ -74,16 +80,7 @@ describe('SpellbookList', () => {
 
   describe('Loading State', () => {
     it('should render loading spinner when loading is true', () => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: [],
-        loading: true,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} loading={true} />);
 
       expect(screen.getByTestId('spellbooks-header')).toHaveTextContent('My Spellbooks');
       expect(screen.getByText('Loading spellbooks...')).toBeTruthy();
@@ -91,19 +88,8 @@ describe('SpellbookList', () => {
   });
 
   describe('Empty State', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: [],
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should render empty state when no spellbooks exist', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       expect(screen.getByTestId('spellbooks-empty')).toBeTruthy();
       expect(screen.getByText("You don't have any spellbooks yet.")).toBeTruthy();
@@ -111,7 +97,7 @@ describe('SpellbookList', () => {
     });
 
     it('should disable export button when no spellbooks exist', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const exportButton = screen.getByTestId('btn-export-spellbooks');
       expect(exportButton).toBeDisabled();
@@ -119,48 +105,29 @@ describe('SpellbookList', () => {
   });
 
   describe('Spellbook List Rendering', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: mockSpellbooks,
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should render list of spellbooks with correct data', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       expect(screen.getByText('My First Spellbook')).toBeTruthy();
       expect(screen.getByText('Adventure Spells')).toBeTruthy();
-      expect(screen.getByText('2 spells')).toBeTruthy();
-      expect(screen.getByText('1 spell')).toBeTruthy();
+      expect(screen.getAllByText('2')).toHaveLength(1); // 2 spells
+      expect(screen.getAllByText('1')).toHaveLength(1); // 1 spell
     });
 
-    it('should render prepared count for each spellbook', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
 
-      const preparedTexts = screen.getAllByText(/prepared/);
-      expect(preparedTexts).toHaveLength(2);
-      expect(preparedTexts[0]).toHaveTextContent('1 prepared');
-      expect(preparedTexts[1]).toHaveTextContent('1 prepared');
-    });
 
-    it('should call onSpellbookClick when spellbook card is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+    it('should call onSpellbookClick when spellbook row is clicked', () => {
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
-      const spellbookCard = screen.getByTestId('spellbook-item-spellbook-1');
-      const cardContent = spellbookCard.querySelector('.spellbook-card-content');
-      fireEvent.click(cardContent!);
+      const spellbookRow = screen.getByTestId('spellbook-row-spellbook-1');
+      fireEvent.click(spellbookRow);
 
       expect(mockOnSpellbookClick).toHaveBeenCalledWith('spellbook-1');
       expect(mockOnSpellbookClick).toHaveBeenCalledTimes(1);
     });
 
     it('should enable export button when spellbooks exist', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const exportButton = screen.getByTestId('btn-export-spellbooks');
       expect(exportButton).not.toBeDisabled();
@@ -168,19 +135,8 @@ describe('SpellbookList', () => {
   });
 
   describe('Create Spellbook Flow', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: [],
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should open create dialog when New Spellbook button is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const createButton = screen.getByTestId('btn-create-spellbook');
       fireEvent.click(createButton);
@@ -190,7 +146,7 @@ describe('SpellbookList', () => {
     });
 
     it('should close dialog when Cancel button is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       // Open dialog
       const createButton = screen.getByTestId('btn-create-spellbook');
@@ -210,7 +166,7 @@ describe('SpellbookList', () => {
     it('should create spellbook with valid name', async () => {
       mockCreateSpellbook.mockResolvedValue(undefined);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       // Open dialog
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
@@ -236,7 +192,7 @@ describe('SpellbookList', () => {
     it('should trim whitespace from spellbook name', async () => {
       mockCreateSpellbook.mockResolvedValue(undefined);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       // Open dialog
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
@@ -254,7 +210,7 @@ describe('SpellbookList', () => {
     });
 
     it('should show validation error when name is empty', async () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       // Open dialog
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
@@ -269,7 +225,7 @@ describe('SpellbookList', () => {
     });
 
     it('should show validation error when name is only whitespace', async () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       // Open dialog
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
@@ -290,7 +246,7 @@ describe('SpellbookList', () => {
     it('should show error alert when creation fails', async () => {
       mockCreateSpellbook.mockRejectedValue(new Error('Database error'));
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       // Open dialog and create spellbook
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
@@ -312,7 +268,7 @@ describe('SpellbookList', () => {
       });
       mockCreateSpellbook.mockReturnValue(createPromise);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       // Open dialog and submit
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
@@ -335,19 +291,8 @@ describe('SpellbookList', () => {
   });
 
   describe('Delete Spellbook Flow', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: mockSpellbooks,
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should show confirm dialog when delete button is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const deleteButton = screen.getByTestId('btn-delete-spellbook-spellbook-1');
       fireEvent.click(deleteButton);
@@ -356,8 +301,8 @@ describe('SpellbookList', () => {
       expect(screen.getByText('Delete spellbook "My First Spellbook"?')).toBeTruthy();
     });
 
-    it('should not propagate click to spellbook card when delete is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+    it('should not propagate click to spellbook row when delete is clicked', () => {
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const deleteButton = screen.getByTestId('btn-delete-spellbook-spellbook-1');
       fireEvent.click(deleteButton);
@@ -368,7 +313,7 @@ describe('SpellbookList', () => {
     it('should delete spellbook when confirmed', async () => {
       mockDeleteSpellbook.mockResolvedValue(undefined);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       // Open confirm dialog
       fireEvent.click(screen.getByTestId('btn-delete-spellbook-spellbook-1'));
@@ -383,7 +328,7 @@ describe('SpellbookList', () => {
     });
 
     it('should close confirm dialog when cancelled', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       // Open confirm dialog
       fireEvent.click(screen.getByTestId('btn-delete-spellbook-spellbook-1'));
@@ -398,21 +343,10 @@ describe('SpellbookList', () => {
   });
 
   describe('Export Functionality', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: mockSpellbooks,
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should call exportImportService.downloadSpellbooks when export is clicked', async () => {
       vi.mocked(exportImportService.downloadSpellbooks).mockResolvedValue(undefined);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const exportButton = screen.getByTestId('btn-export-spellbooks');
       fireEvent.click(exportButton);
@@ -425,7 +359,7 @@ describe('SpellbookList', () => {
     it('should show error alert when export fails', async () => {
       vi.mocked(exportImportService.downloadSpellbooks).mockRejectedValue(new Error('Export error'));
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const exportButton = screen.getByTestId('btn-export-spellbooks');
       fireEvent.click(exportButton);
@@ -438,19 +372,8 @@ describe('SpellbookList', () => {
   });
 
   describe('Import Functionality', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: [],
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should trigger file input when import button is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const fileInput = screen.getByTestId('file-input-import') as HTMLInputElement;
       const clickSpy = vi.spyOn(fileInput, 'click');
@@ -475,7 +398,7 @@ describe('SpellbookList', () => {
         errors: [],
       });
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const fileInput = screen.getByTestId('file-input-import') as HTMLInputElement;
       fireEvent.change(fileInput, { target: { files: [mockFile] } });
@@ -503,7 +426,7 @@ describe('SpellbookList', () => {
 
       vi.mocked(exportImportService.importSpellbooks).mockRejectedValue(new Error('Invalid JSON'));
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const fileInput = screen.getByTestId('file-input-import') as HTMLInputElement;
       fireEvent.change(fileInput, { target: { files: [mockFile] } });
@@ -528,7 +451,7 @@ describe('SpellbookList', () => {
         errors: [],
       });
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const fileInput = screen.getByTestId('file-input-import') as HTMLInputElement;
       fireEvent.change(fileInput, { target: { files: [mockFile] } });
@@ -553,7 +476,7 @@ describe('SpellbookList', () => {
       });
       vi.mocked(exportImportService.importSpellbooks).mockReturnValue(importPromise);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const fileInput = screen.getByTestId('file-input-import') as HTMLInputElement;
       fireEvent.change(fileInput, { target: { files: [mockFile] } });
@@ -572,7 +495,7 @@ describe('SpellbookList', () => {
     });
 
     it('should do nothing when no file is selected', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} />);
 
       const fileInput = screen.getByTestId('file-input-import') as HTMLInputElement;
       fireEvent.change(fileInput, { target: { files: [] } });
@@ -582,19 +505,8 @@ describe('SpellbookList', () => {
   });
 
   describe('Dialog State Management', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: mockSpellbooks,
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should clear input when create dialog is cancelled', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       // Open dialog and enter text
       fireEvent.click(screen.getByTestId('btn-create-spellbook'));
@@ -612,19 +524,8 @@ describe('SpellbookList', () => {
   });
 
   describe('Table Layout', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: mockSpellbooks,
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should render spellbooks as a table', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const table = screen.getByTestId('spellbooks-table');
       expect(table).toBeTruthy();
@@ -632,9 +533,9 @@ describe('SpellbookList', () => {
     });
 
     it('should display table headers', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
-      expect(screen.getByText('Name')).toBeTruthy();
+      expect(screen.getByText('Spellbook Name')).toBeTruthy();
       expect(screen.getByText('Spells')).toBeTruthy();
       expect(screen.getByText('Ability')).toBeTruthy();
       expect(screen.getByText('Attack')).toBeTruthy();
@@ -644,7 +545,7 @@ describe('SpellbookList', () => {
     });
 
     it('should display spellbook data in table rows', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       // Check first spellbook
       expect(screen.getByText('My First Spellbook')).toBeTruthy();
@@ -662,7 +563,7 @@ describe('SpellbookList', () => {
     });
 
     it('should display formatted timestamp for last updated', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       // The exact format depends on implementation, but should contain date info
       const table = screen.getByTestId('spellbooks-table');
@@ -680,23 +581,14 @@ describe('SpellbookList', () => {
         },
       ];
 
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: spellbooksWithMissingStats,
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={spellbooksWithMissingStats} />);
 
       const naElements = screen.getAllByText('N/A');
       expect(naElements.length).toBeGreaterThanOrEqual(3); // Ability, Attack, Save DC
     });
 
     it('should call onSpellbookClick when table row is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const firstRow = screen.getByTestId('spellbook-row-spellbook-1');
       fireEvent.click(firstRow);
@@ -705,7 +597,7 @@ describe('SpellbookList', () => {
     });
 
     it('should render delete button in actions column', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const deleteButtons = screen.getAllByText('Delete');
       expect(deleteButtons.length).toBe(2);
@@ -713,29 +605,18 @@ describe('SpellbookList', () => {
   });
 
   describe('Copy Spellbook', () => {
-    beforeEach(() => {
-      vi.spyOn(useSpellbooksModule, 'useSpellbooks').mockReturnValue({
-        spellbooks: mockSpellbooks,
-        loading: false,
-        createSpellbook: mockCreateSpellbook,
-        deleteSpellbook: mockDeleteSpellbook,
-        refreshSpellbooks: mockRefreshSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
-      });
-    });
-
     it('should render copy button in actions column', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const copyButtons = screen.getAllByText('Copy');
       expect(copyButtons.length).toBe(2);
     });
 
     it('should open create modal with pre-filled data when copy is clicked', async () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
-      const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
-      fireEvent.click(copyButtons[0]);
+      const copyButton = screen.getByTestId('btn-copy-spellbook-spellbook-1');
+      fireEvent.click(copyButton);
 
       // Modal should open with pre-filled data from first spellbook
       await waitFor(() => {
@@ -755,7 +636,7 @@ describe('SpellbookList', () => {
     });
 
     it('should not trigger row click when copy button is clicked', () => {
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
       const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
       fireEvent.click(copyButtons[0]);
@@ -766,10 +647,10 @@ describe('SpellbookList', () => {
     it('should allow creating a new spellbook with copied data and unique name', async () => {
       mockCreateSpellbook.mockResolvedValue(undefined);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
-      const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
-      fireEvent.click(copyButtons[0]);
+      const copyButton = screen.getByTestId('btn-copy-spellbook-spellbook-1');
+      fireEvent.click(copyButton);
 
       // Change the name to be unique
       await waitFor(() => {
@@ -795,10 +676,10 @@ describe('SpellbookList', () => {
       mockCreateSpellbook.mockResolvedValue({ id: newSpellbookId });
       mockAddSpellToSpellbook.mockResolvedValue(undefined);
 
-      render(<SpellbookList onSpellbookClick={mockOnSpellbookClick} />);
+      render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
-      const copyButtons = screen.getAllByTestId(/btn-copy-spellbook-/);
-      fireEvent.click(copyButtons[0]); // Copy first spellbook with 2 spells
+      const copyButton = screen.getByTestId('btn-copy-spellbook-spellbook-1');
+      fireEvent.click(copyButton); // Copy first spellbook with 2 spells
 
       // Change the name to be unique
       await waitFor(() => {

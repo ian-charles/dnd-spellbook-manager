@@ -10,6 +10,7 @@
  */
 
 @media (max-width: 768px) {
+
   /* Container - remove desktop table styling */
   .spell-table-container,
   .spellbook-table-container {
@@ -39,7 +40,8 @@
   .spellbook-table tbody tr {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-4);
+    gap: var(--space-2);
     background: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 41, 59, 0.6));
     border: 1px solid light-dark(rgba(226, 232, 240, 0.8), rgba(100, 116, 139, 0.3));
     border-radius: var(--radius-xl);
@@ -57,6 +59,25 @@
 
   .spell-row.expanded {
     background: light-dark(rgba(237, 233, 254, 0.3), rgba(79, 70, 229, 0.15));
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: none;
+    margin-bottom: 0;
+    z-index: 1;
+    /* Clip the bottom shadow so it doesn't overlap the expansion row */
+    clip-path: inset(-20px -20px 0 -20px);
+  }
+
+  /* Style the expansion row to look attached to the main row */
+  .spell-table tbody tr.spell-expansion-row,
+  .spellbook-table tbody tr.spell-expansion-row {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+    margin-top: 0;
+    background: light-dark(rgba(237, 233, 254, 0.3), rgba(79, 70, 229, 0.15));
+    padding-top: 0;
+    /* Remove top padding to bring content closer */
   }
 
   /* Prepared row styling (spellbook only) */
@@ -148,11 +169,10 @@
     display: block !important;
   }
 
-  /* Inline expansion within card */
   .spell-inline-expansion,
   .spellbook-table .spell-inline-expansion {
-    margin-top: var(--space-4);
-    padding-top: var(--space-4);
+    margin-top: 0;
+    padding-top: var(--space-2);
     border-top: 1px solid light-dark(rgba(203, 213, 225, 0.6), rgba(100, 116, 139, 0.3));
     animation: slideDown var(--transition-base) forwards;
     opacity: 1;
@@ -222,6 +242,35 @@
     padding-top: var(--space-4);
     border-top: 1px solid light-dark(rgba(203, 213, 225, 0.4), rgba(100, 116, 139, 0.2));
     font-size: var(--font-size-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .spell-expanded-classes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .spell-expanded-classes strong {
+    margin-bottom: 0 !important;
+    margin-right: var(--space-2);
+  }
+
+  .expanded-badges-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+  }
+
+  .materials-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-style: italic;
   }
 
   .spell-inline-expansion .spell-source,

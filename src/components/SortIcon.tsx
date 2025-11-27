@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
+import { SortDirection } from '../hooks/useSpellSorting';
 import './SortIcon.css';
 
 interface SortIconProps {
-  column: SortColumn;
-  currentColumn: SortColumn;
+  column: string;
+  currentColumn: string;
   currentDirection: SortDirection;
 }
 

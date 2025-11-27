@@ -2,7 +2,7 @@ import { useState, Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
+import { getLevelText, filterClasses } from '../utils/spellFormatters';
 import './SpellTable.css';
 
 function ComponentBadges({ spell }: { spell: Spell }) {
@@ -35,18 +35,39 @@ interface SpellTableProps {
   onAddToSpellbook?: (spellId: string) => void;
 }
 
-export function SpellTable({ spells, selectedSpellIds = new Set(), onSelectionChange, onAddToSpellbook }: SpellTableProps) {
+/**
+ * SpellTable Component
+ * 
+ * Displays a list of spells in a responsive table format.
+ * Supports sorting, filtering (via parent), and expansion of spell details.
+ * 
+ * Features:
+ * - Responsive design: Table layout on desktop, card layout on mobile
+ * - Sorting: Clickable headers for Name, Level, Time, School, Range, Duration
+ * - Expansion: Click row to expand/collapse spell details
+ * - Mobile optimization: Custom card layout with badges for classes/components
+ * 
+ * @param {Object} props - Component props
+ * @param {Spell[]} props.spells - Array of spell objects to display
+ * @param {Set<string>} [props.selectedSpellIds] - Set of selected spell IDs
+ * @param {Function} [props.onSelectionChange] - Callback when selection changes
+ * @param {Function} [props.onAddToSpellbook] - Callback to add a spell to a spellbook
+ */
+export function SpellTable({
+  spells,
+  selectedSpellIds = new Set(),
+  onSelectionChange,
+  onAddToSpellbook
+}: SpellTableProps) {
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
   const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(spells);
 
   const handleRowClick = (spellId: string) => {
     // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell
-    if (expandedSpellId === spellId) {
-      setExpandedSpellId(null);
-    } else {
-      setExpandedSpellId(spellId);
-    }
+    setExpandedSpellId(expandedSpellId === spellId ? null : spellId);
   };
+
+
 
   const handleCheckboxToggle = (spellId: string) => {
     if (!onSelectionChange) return;
@@ -73,38 +94,6 @@ export function SpellTable({ spells, selectedSpellIds = new Set(), onSelectionCh
       <table className="spell-table">
         <thead>
           <tr>
-            {onAddToSpellbook && <th className="checkbox-col"></th>}
-            <th onClick={() => handleSort('name')} className="sortable">
-              <div className="th-content">
-                Spell Name
-                <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
-            </th>
-            <th onClick={() => handleSort('level')} className="sortable level-col">
-              <div className="th-content">
-                Level
-                <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
-            </th>
-            <th onClick={() => handleSort('school')} className="sortable">
-              <div className="th-content">
-                School
-                <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
-            </th>
-            <th onClick={() => handleSort('castingTime')} className="sortable">
-              <div className="th-content">
-                Time
-                <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
-            </th>
-            <th onClick={() => handleSort('range')} className="sortable">
-              <div className="th-content">
-                Range
-                <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </div>
-            </th>
-            <th className="components-col">Comp.</th>
             <th onClick={() => handleSort('duration')} className="sortable">
               <div className="th-content">
                 Duration
@@ -166,8 +155,12 @@ export function SpellTable({ spells, selectedSpellIds = new Set(), onSelectionCh
                         <div><strong>Casting Time:</strong> {spell.castingTime}</div>
                         <div><strong>Range:</strong> {spell.range}</div>
                         <div><strong>Duration:</strong> {spell.duration}</div>
-                        <div>
-                          <strong>Components:</strong> {getComponentsWithMaterials(spell)}
+                        <div className="spell-expanded-components">
+                          <strong>Components:</strong>
+                          <div className="expanded-badges-container">
+                            <ComponentBadges spell={spell} />
+                            {spell.materials && <span className="materials-text">({spell.materials})</span>}
+                          </div>
                         </div>
                       </div>
                       <div className="spell-expanded-description">
@@ -179,7 +172,10 @@ export function SpellTable({ spells, selectedSpellIds = new Set(), onSelectionCh
                         </div>
                       )}
                       <div className="spell-expanded-footer">
-                        <div><strong>Classes:</strong> {filterClasses(spell.classes).join(', ')}</div>
+                        <div className="spell-expanded-classes">
+                          <strong>Classes:</strong>
+                          <ClassBadges classes={spell.classes} />
+                        </div>
                         <div className="spell-source">{spell.source}</div>
                       </div>
                     </div>

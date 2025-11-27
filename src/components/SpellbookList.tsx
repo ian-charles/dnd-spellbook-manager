@@ -67,7 +67,7 @@ export function SpellbookList({
   // Filter and sort spellbooks
   const filteredAndSortedSpellbooks = useMemo(() => {
     // Filter by search query
-    let filtered = spellbooks;
+    let filtered = spellbooks ?? [];
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = spellbooks.filter(sb =>
@@ -136,8 +136,23 @@ export function SpellbookList({
         const sourceSpellbook = spellbooks.find(sb => sb.id === copyData.sourceSpellbookId);
         if (sourceSpellbook) {
           // Copy all spells from the source spellbook to the new one
+          const errors: string[] = [];
           for (const spell of sourceSpellbook.spells) {
-            await onAddSpellToSpellbook(newSpellbook.id, spell.spellId);
+            try {
+              await onAddSpellToSpellbook(newSpellbook.id, spell.spellId);
+            } catch (err) {
+              errors.push(`Failed to copy spell ${spell.spellId}`);
+              console.error(`Failed to copy spell ${spell.spellId}:`, err);
+            }
+          }
+
+          if (errors.length > 0) {
+            setAlertDialog({
+              isOpen: true,
+              title: 'Partial Copy Warning',
+              message: `Spellbook created, but some spells failed to copy: ${errors.length} errors.`,
+              variant: 'warning'
+            });
           }
         }
         // Ensure spellbooks list is refreshed after copying all spells
@@ -381,49 +396,49 @@ export function SpellbookList({
             </thead>
             <tbody>
               {filteredAndSortedSpellbooks.map((spellbook) => (
-              <tr
-                key={spellbook.id}
-                className="spellbook-row"
-                data-testid={`spellbook-row-${spellbook.id}`}
-                onClick={() => onSpellbookClick(spellbook.id)}
-              >
-                <td className="spellbook-name" data-testid="spellbook-name" data-label="Name">
-                  {spellbook.name}
-                </td>
-                <td className="spellbook-spell-count" data-label="Spells">
-                  {spellbook.spells.length}
-                </td>
-                <td className="spellbook-ability" data-label="Ability">
-                  {spellbook.spellcastingAbility || 'N/A'}
-                </td>
-                <td className="spellbook-attack" data-label="Attack">
-                  {spellbook.spellAttackModifier !== undefined
-                    ? `+${spellbook.spellAttackModifier}`
-                    : 'N/A'}
-                </td>
-                <td className="spellbook-save-dc" data-label="Save DC">
-                  {spellbook.spellSaveDC ?? 'N/A'}
-                </td>
-                <td className="spellbook-updated" data-label="Last Updated">
-                  {new Date(spellbook.updated).toLocaleDateString()}
-                </td>
-                <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    className="btn-secondary-small"
-                    onClick={() => handleCopy(spellbook.id)}
-                    data-testid={`btn-copy-spellbook-${spellbook.id}`}
-                  >
-                    Copy
-                  </button>
-                  <button
-                    className="btn-danger-small"
-                    onClick={() => handleDelete(spellbook.id, spellbook.name)}
-                    data-testid={`btn-delete-spellbook-${spellbook.id}`}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
+                <tr
+                  key={spellbook.id}
+                  className="spellbook-row"
+                  data-testid={`spellbook-row-${spellbook.id}`}
+                  onClick={() => onSpellbookClick(spellbook.id)}
+                >
+                  <td className="spellbook-name" data-testid="spellbook-name" data-label="Name">
+                    {spellbook.name}
+                  </td>
+                  <td className="spellbook-spell-count" data-label="Spells">
+                    {spellbook.spells.length}
+                  </td>
+                  <td className="spellbook-ability" data-label="Ability">
+                    {spellbook.spellcastingAbility || 'N/A'}
+                  </td>
+                  <td className="spellbook-attack" data-label="Attack">
+                    {spellbook.spellAttackModifier !== undefined
+                      ? `+${spellbook.spellAttackModifier}`
+                      : 'N/A'}
+                  </td>
+                  <td className="spellbook-save-dc" data-label="Save DC">
+                    {spellbook.spellSaveDC ?? 'N/A'}
+                  </td>
+                  <td className="spellbook-updated" data-label="Last Updated">
+                    {new Date(spellbook.updated).toLocaleDateString()}
+                  </td>
+                  <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className="btn-secondary-small"
+                      onClick={() => handleCopy(spellbook.id)}
+                      data-testid={`btn-copy-spellbook-${spellbook.id}`}
+                    >
+                      Copy
+                    </button>
+                    <button
+                      className="btn-danger-small"
+                      onClick={() => handleDelete(spellbook.id, spellbook.name)}
+                      data-testid={`btn-delete-spellbook-${spellbook.id}`}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>

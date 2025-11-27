@@ -20,8 +20,9 @@ A Progressive Web App for managing D&D 5e spellbooks. Built with React, TypeScri
 ## Quick Start
 
 ```bash
-# Install dependencies
+# Install dependencies (will automatically setup git hooks)
 npm install
+
 
 # Fetch spell data from Open5e API
 npm run build:spells

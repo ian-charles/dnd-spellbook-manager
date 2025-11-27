@@ -7,12 +7,27 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:spells": "node scripts/build-spells.js",
+    "setup:hooks": "node scripts/setup-git-hooks.js",
+    "prepare": "npm run setup:hooks",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:e2e": "cross-env TEST_ENV=e2e vitest --run src/e2e",
     "test:unit": "vitest --run src/services"
+  },
+  "scripts-info": {
+    "dev": "Start the development server",
+    "build": "Build the project for production",
+    "build:spells": "Generate spell data from source files",
+    "setup:hooks": "Install git hooks for code quality checks",
+    "prepare": "Run setup:hooks automatically after install",
+    "preview": "Preview the production build locally",
+    "test": "Run all tests",
+    "test:ui": "Run tests with UI interface",
+    "test:coverage": "Run tests and generate coverage report",
+    "test:e2e": "Run end-to-end tests",
+    "test:unit": "Run unit tests only"
   },
   "dependencies": {
     "dexie": "^3.2.4",

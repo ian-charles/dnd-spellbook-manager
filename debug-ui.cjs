@@ -32,7 +32,7 @@ async function setupBrowser() {
   });
 
   const page = await browser.newPage();
-  await page.setViewport({ width: 1920, height: 1080 });
+  await page.setViewport({ width: 375, height: 667, isMobile: true });
 
   // Enable console logging from the page
   page.on('console', (msg) => {

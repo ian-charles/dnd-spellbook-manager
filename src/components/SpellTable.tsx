@@ -94,6 +94,38 @@ export function SpellTable({
       <table className="spell-table">
         <thead>
           <tr>
+            <th className="checkbox-col"></th>
+            <th onClick={() => handleSort('name')} className="sortable">
+              <div className="th-content">
+                Name
+                <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
+              </div>
+            </th>
+            <th onClick={() => handleSort('level')} className="sortable level-col">
+              <div className="th-content">
+                Level
+                <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
+              </div>
+            </th>
+            <th onClick={() => handleSort('school')} className="sortable school-col">
+              <div className="th-content">
+                School
+                <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
+              </div>
+            </th>
+            <th onClick={() => handleSort('castingTime')} className="sortable time-col">
+              <div className="th-content">
+                Time
+                <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
+              </div>
+            </th>
+            <th onClick={() => handleSort('range')} className="sortable range-col">
+              <div className="th-content">
+                Range
+                <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
+              </div>
+            </th>
+            <th className="components-col">Comp.</th>
             <th onClick={() => handleSort('duration')} className="sortable duration-col">
               <div className="th-content">
                 Duration
@@ -135,8 +167,8 @@ export function SpellTable({
                 </td>
                 <td className="level-col">{getLevelText(spell.level)}</td>
                 <td className="school-col">{spell.school}</td>
-                <td>{spell.castingTime}</td>
-                <td>{spell.range}</td>
+                <td className="time-col">{spell.castingTime}</td>
+                <td className="range-col">{spell.range}</td>
                 <td className="components-col"><ComponentBadges spell={spell} /></td>
                 <td className="duration-col">{spell.duration}</td>
                 <td className="classes-col"><ClassBadges classes={spell.classes} /></td>

@@ -205,13 +205,13 @@ export function SpellbookDetailView({
                       <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
                     </div>
                   </th>
-                  <th onClick={() => onSort('castingTime')} className="sortable">
+                  <th onClick={() => onSort('castingTime')} className="sortable time-col">
                     <div className="th-content">
                       Time
                       <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
                     </div>
                   </th>
-                  <th onClick={() => onSort('range')} className="sortable">
+                  <th onClick={() => onSort('range')} className="sortable range-col">
                     <div className="th-content">
                       Range
                       <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
@@ -259,8 +259,8 @@ export function SpellbookDetailView({
                       </td>
                       <td className="level-col">{getLevelText(spell.level)}</td>
                       <td className="school-col">{spell.school}</td>
-                      <td>{spell.castingTime}</td>
-                      <td>{spell.range}</td>
+                      <td className="time-col">{spell.castingTime}</td>
+                      <td className="range-col">{spell.range}</td>
                       <td className="components-col"><ComponentBadges spell={spell} /></td>
                       <td className="duration-col">{spell.duration}</td>
                       <td className="source-col">{spell.source}</td>

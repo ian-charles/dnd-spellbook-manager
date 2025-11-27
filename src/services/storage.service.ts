@@ -72,27 +72,31 @@ export class StorageService {
 
   /**
    * Add a spell to a spellbook
+   * Uses atomic update to avoid race conditions when adding multiple spells in parallel
    */
   async addSpellToSpellbook(spellbookId: string, spellId: string): Promise<void> {
-    const spellbook = await this.getSpellbook(spellbookId);
-    if (!spellbook) {
+    // Use Dexie's update method for atomic read-modify-write
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook) => {
+      // Check if spell already exists
+      if (spellbook.spells.some((s) => s.spellId === spellId)) {
+        return; // Already exists, no-op (return undefined means no update)
+      }
+
+      const newSpell: SpellbookSpell = {
+        spellId,
+        prepared: false,
+        notes: '',
+      };
+
+      // Atomic update: modify the spells array in place
+      spellbook.spells = [...spellbook.spells, newSpell];
+      spellbook.updated = new Date().toISOString();
+    });
+
+    // If update() returns 0, the spellbook wasn't found
+    if (updateCount === 0) {
       throw new Error(`Spellbook ${spellbookId} not found`);
     }
-
-    // Check if spell already exists
-    if (spellbook.spells.some((s) => s.spellId === spellId)) {
-      return; // Already exists, no-op
-    }
-
-    const newSpell: SpellbookSpell = {
-      spellId,
-      prepared: false,
-      notes: '',
-    };
-
-    await this.updateSpellbook(spellbookId, {
-      spells: [...spellbook.spells, newSpell],
-    });
   }
 
   /**

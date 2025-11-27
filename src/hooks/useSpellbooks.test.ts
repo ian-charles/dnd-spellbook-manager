@@ -190,9 +190,11 @@ describe('useSpellbooks', () => {
 
       await act(async () => {
         await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+        // Caller must refresh after batch operations
+        await result.current.refreshSpellbooks();
       });
 
-      // Should reload spellbooks after adding
+      // Should show updated spellbooks after refresh
       await waitFor(() => {
         const updated = result.current.spellbooks.find(sb => sb.id === spellbook.id);
         expect(updated?.spells).toHaveLength(1);
@@ -200,7 +202,7 @@ describe('useSpellbooks', () => {
       });
     });
 
-    it('should reload spellbooks after adding spell', async () => {
+    it('should update spellbooks after manual refresh', async () => {
       const spellbook = await storageService.createSpellbook({ name: 'Test' });
 
       const { result } = renderHook(() => useSpellbooks());
@@ -214,6 +216,8 @@ describe('useSpellbooks', () => {
 
       await act(async () => {
         await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+        // Caller must refresh after batch operations
+        await result.current.refreshSpellbooks();
       });
 
       await waitFor(() => {

@@ -73,21 +73,25 @@ export function useSpellbooks() {
 
   const addSpellToSpellbook = async (spellbookId: string, spellId: string) => {
     await storageService.addSpellToSpellbook(spellbookId, spellId);
-    await loadSpellbooks();
+    // Note: Don't reload here - caller should refresh after batch operations
+    // to avoid race conditions when adding multiple spells in parallel
   };
 
   const removeSpellFromSpellbook = async (spellbookId: string, spellId: string) => {
     await storageService.removeSpellFromSpellbook(spellbookId, spellId);
+    // Reload since this is typically a single operation
     await loadSpellbooks();
   };
 
   const togglePrepared = async (spellbookId: string, spellId: string) => {
     await storageService.toggleSpellPrepared(spellbookId, spellId);
+    // Reload since this is typically a single operation
     await loadSpellbooks();
   };
 
   const updateSpellNotes = async (spellbookId: string, spellId: string, notes: string) => {
     await storageService.updateSpellNotes(spellbookId, spellId, notes);
+    // Reload since this is typically a single operation
     await loadSpellbooks();
   };
 

@@ -7,6 +7,7 @@
  * This component has no data fetching or business logic - it only renders UI.
  */
 
+import { Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { SortIcon } from './SortIcon';
@@ -14,7 +15,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 import LoadingSpinner from './LoadingSpinner';
 import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
-import { getLevelText, getComponentsWithMaterials, filterClasses } from '../utils/spellFormatters';
+import { getLevelText, filterClasses } from '../utils/spellFormatters';
 import { MESSAGES } from '../constants/messages';
 import './SpellbookDetail.css';
 
@@ -182,125 +183,124 @@ export function SpellbookDetailView({
           </div>
 
           <div className="spellbook-table-container" data-testid="spellbook-spell-list">
-          <table className="spell-table spellbook-table">
-            <thead>
-              <tr>
-                <th className="prepared-col">Prep</th>
-                <th onClick={() => onSort('name')} className="sortable">
-                  <div className="th-content">
-                    Spell Name
-                    <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
-                </th>
-                <th onClick={() => onSort('level')} className="sortable level-col">
-                  <div className="th-content">
-                    Level
-                    <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
-                </th>
-                <th onClick={() => onSort('school')} className="sortable">
-                  <div className="th-content">
-                    School
-                    <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
-                </th>
-                <th onClick={() => onSort('castingTime')} className="sortable">
-                  <div className="th-content">
-                    Time
-                    <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
-                </th>
-                <th onClick={() => onSort('range')} className="sortable">
-                  <div className="th-content">
-                    Range
-                    <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
-                </th>
-                <th className="components-col">Comp.</th>
-                <th onClick={() => onSort('duration')} className="sortable">
-                  <div className="th-content">
-                    Duration
-                    <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
-                </th>
-                <th onClick={() => onSort('source')} className="sortable">
-                  <div className="th-content">
-                    Source
-                    <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </div>
-                </th>
-                <th className="action-col">Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedSpells.map(({ spell, prepared }) => (
-                <>
-                  <tr
-                    key={spell.id}
-                    className={`spell-row ${prepared ? 'prepared-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
-                    data-testid={`spellbook-spell-${spell.id}`}
-                    onClick={() => onRowClick(spell.id)}
-                  >
-                    <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        checked={prepared}
-                        onChange={() => onTogglePrepared(spell.id)}
-                        data-testid="toggle-prepared"
-                        aria-label={`Toggle ${spell.name} prepared status`}
-                      />
-                    </td>
-                    <td className="spell-name">
-                      <div className="spell-name-header">
-                        {spell.name}
-                        {spell.concentration && <span className="badge badge-concentration">C</span>}
-                        {spell.ritual && <span className="badge badge-ritual">R</span>}
-                      </div>
-                    </td>
-                    <td className="level-col">{getLevelText(spell.level)}</td>
-                    <td className="school-col">{spell.school}</td>
-                    <td>{spell.castingTime}</td>
-                    <td>{spell.range}</td>
-                    <td className="components-col"><ComponentBadges spell={spell} /></td>
-                    <td>{spell.duration}</td>
-                    <td className="source-col">{spell.source}</td>
-                    <td className="action-col" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        className="btn-remove-small"
-                        onClick={() => onRemoveSpell(spell.id, spell.name)}
-                        data-testid={`btn-remove-spell-${spell.id}`}
-                        aria-label={`Remove ${spell.name}`}
-                      >
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                  {expandedSpellId === spell.id && (
-                    <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
-                      <td colSpan={10} className="spell-expansion-cell">
-                        <div className="spell-inline-expansion">
-                          <div className="spell-expanded-description">
-                            {spell.description}
-                          </div>
-                          {spell.higherLevels && (
-                            <div className="spell-expanded-higher-levels">
-                              <strong>At Higher Levels:</strong> {spell.higherLevels}
-                            </div>
-                          )}
-                          <div className="spell-expanded-footer">
-                            <div>
-                              <strong>Classes:</strong> <ClassBadges classes={spell.classes} />
-                            </div>
-                          </div>
+            <table className="spell-table spellbook-table">
+              <thead>
+                <tr>
+                  <th className="prepared-col">Prep</th>
+                  <th onClick={() => onSort('name')} className="sortable">
+                    <div className="th-content">
+                      Spell Name
+                      <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th onClick={() => onSort('level')} className="sortable level-col">
+                    <div className="th-content">
+                      Level
+                      <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th onClick={() => onSort('school')} className="sortable">
+                    <div className="th-content">
+                      School
+                      <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th onClick={() => onSort('castingTime')} className="sortable">
+                    <div className="th-content">
+                      Time
+                      <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th onClick={() => onSort('range')} className="sortable">
+                    <div className="th-content">
+                      Range
+                      <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th className="components-col">Comp.</th>
+                  <th onClick={() => onSort('duration')} className="sortable duration-col">
+                    <div className="th-content">
+                      Duration
+                      <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th onClick={() => onSort('source')} className="sortable">
+                    <div className="th-content">
+                      Source
+                      <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
+                    </div>
+                  </th>
+                  <th className="action-col">Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedSpells.map(({ spell, prepared }) => (
+                  <Fragment key={spell.id}>
+                    <tr
+                      className={`spell-row ${prepared ? 'prepared-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                      data-testid={`spellbook-spell-${spell.id}`}
+                      onClick={() => onRowClick(spell.id)}
+                    >
+                      <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={prepared}
+                          onChange={() => onTogglePrepared(spell.id)}
+                          data-testid="toggle-prepared"
+                          aria-label={`Toggle ${spell.name} prepared status`}
+                        />
+                      </td>
+                      <td className="spell-name">
+                        <div className="spell-name-header">
+                          {spell.name}
+                          {spell.concentration && <span className="badge badge-concentration">C</span>}
+                          {spell.ritual && <span className="badge badge-ritual">R</span>}
                         </div>
                       </td>
+                      <td className="level-col">{getLevelText(spell.level)}</td>
+                      <td className="school-col">{spell.school}</td>
+                      <td>{spell.castingTime}</td>
+                      <td>{spell.range}</td>
+                      <td className="components-col"><ComponentBadges spell={spell} /></td>
+                      <td className="duration-col">{spell.duration}</td>
+                      <td className="source-col">{spell.source}</td>
+                      <td className="action-col" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          className="btn-remove-small"
+                          onClick={() => onRemoveSpell(spell.id, spell.name)}
+                          data-testid={`btn-remove-spell-${spell.id}`}
+                          aria-label={`Remove ${spell.name}`}
+                        >
+                          ✕
+                        </button>
+                      </td>
                     </tr>
-                  )}
-                </>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    {expandedSpellId === spell.id && (
+                      <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
+                        <td colSpan={10} className="spell-expansion-cell">
+                          <div className="spell-inline-expansion">
+                            <div className="spell-expanded-description">
+                              {spell.description}
+                            </div>
+                            {spell.higherLevels && (
+                              <div className="spell-expanded-higher-levels">
+                                <strong>At Higher Levels:</strong> {spell.higherLevels}
+                              </div>
+                            )}
+                            <div className="spell-expanded-footer">
+                              <div>
+                                <strong>Classes:</strong> <ClassBadges classes={spell.classes} />
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
 

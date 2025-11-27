@@ -86,6 +86,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -321,16 +322,20 @@
   color: var(--color-text-secondary);
 }
 
+.duration-col {
+  width: 120px;
+}
+
 .classes-col {
   text-transform: capitalize;
   color: var(--color-text-secondary);
-  min-width: 150px;
+  width: 200px;
 }
 
 .source-col {
   color: var(--color-text-tertiary);
   font-size: var(--font-size-sm);
-  min-width: 150px;
+  width: 150px;
 }
 
 .action-col {

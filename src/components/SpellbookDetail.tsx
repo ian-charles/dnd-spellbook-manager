@@ -135,10 +135,10 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
     for (const spell of enrichedSpells) {
       if (allPrepared && spell.prepared) {
         // If all are prepared, deselect all
-        await togglePrepared(spell.spell.id);
+        await togglePrepared(spellbookId, spell.spell.id);
       } else if (!allPrepared && !spell.prepared) {
         // If not all are prepared, select all unprepared
-        await togglePrepared(spell.spell.id);
+        await togglePrepared(spellbookId, spell.spell.id);
       }
     }
 

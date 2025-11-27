@@ -28,8 +28,8 @@ async function setupHooks() {
 
   // Check if .git directory exists
   if (!existsSync(join(PROJECT_ROOT, '.git'))) {
-    console.error('❌ Error: .git directory not found. Are you in a git repository?');
-    process.exit(1);
+    console.warn('⚠️ Warning: .git directory not found. Skipping hooks setup (this is normal for production builds).');
+    process.exit(0);
   }
 
   // Check if hooks source directory exists

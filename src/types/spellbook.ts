@@ -25,4 +25,7 @@ export interface CreateSpellbookInput {
 export interface UpdateSpellbookInput {
   name?: string;
   spells?: SpellbookSpell[];
+  spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
+  spellAttackModifier?: number;
+  spellSaveDC?: number;
 }

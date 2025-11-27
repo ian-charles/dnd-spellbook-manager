@@ -11,6 +11,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
+# Copy scripts for prepare hook
+COPY scripts ./scripts
+
 # Install dependencies
 RUN npm ci
 

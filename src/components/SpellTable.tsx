@@ -94,14 +94,14 @@ export function SpellTable({
       <table className="spell-table">
         <thead>
           <tr>
-            <th onClick={() => handleSort('duration')} className="sortable">
+            <th onClick={() => handleSort('duration')} className="sortable duration-col">
               <div className="th-content">
                 Duration
                 <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
               </div>
             </th>
-            <th>Classes</th>
-            <th onClick={() => handleSort('source')} className="sortable">
+            <th className="classes-col">Classes</th>
+            <th onClick={() => handleSort('source')} className="sortable source-col">
               <div className="th-content">
                 Source
                 <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
@@ -138,7 +138,7 @@ export function SpellTable({
                 <td>{spell.castingTime}</td>
                 <td>{spell.range}</td>
                 <td className="components-col"><ComponentBadges spell={spell} /></td>
-                <td>{spell.duration}</td>
+                <td className="duration-col">{spell.duration}</td>
                 <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
                 <td className="source-col">{spell.source}</td>
               </tr>

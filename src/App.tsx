@@ -7,6 +7,7 @@ import { SpellbookDetail } from './components/SpellbookDetail';
 import { AlertDialog } from './components/AlertDialog';
 import { CreateSpellbookModal } from './components/CreateSpellbookModal';
 import LoadingSpinner from './components/LoadingSpinner';
+import { LoadingButton } from './components/LoadingButton';
 import { useSpells } from './hooks/useSpells';
 import { useSpellbooks } from './hooks/useSpellbooks';
 import { useHashRouter } from './hooks/useHashRouter';
@@ -120,19 +121,44 @@ function App() {
       return;
     }
 
+    // Validate spellbook exists
+    const targetExists = spellbooks.some(sb => sb.id === targetSpellbookId);
+    if (!targetExists) {
+      setAlertDialog({
+        isOpen: true,
+        title: 'Spellbook Not Found',
+        message: 'The selected spellbook no longer exists. Please select another spellbook.',
+        variant: 'error',
+      });
+      return;
+    }
+
     setIsAddingSpells(true);
     try {
-      // Add all selected spells to the spellbook
-      for (const spellId of selectedSpellIds) {
-        await addSpellToSpellbook(targetSpellbookId, spellId);
-      }
+      // Add all selected spells to the spellbook in parallel
+      const results = await Promise.allSettled(
+        Array.from(selectedSpellIds).map(spellId => addSpellToSpellbook(targetSpellbookId, spellId))
+      );
+
+      // Check for failures
+      const failed = results.filter(r => r.status === 'rejected');
 
       // Ensure spellbooks list is refreshed to show updated spell counts
       await refreshSpellbooks();
 
-      const count = selectedSpellIds.size; // Calculate count BEFORE clearing
+      if (failed.length > 0) {
+        const successCount = selectedSpellIds.size - failed.length;
+        if (successCount > 0) {
+          displayToast(`Added ${successCount} spells. Failed to add ${failed.length} spells.`);
+        } else {
+          throw new Error(`Failed to add any spells to the spellbook.`);
+        }
+      } else {
+        const count = selectedSpellIds.size; // Calculate count BEFORE clearing
+        displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
+      }
+
       setSelectedSpellIds(new Set()); // Clear selection after adding
-      displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
     } catch (error) {
       setAlertDialog({
         isOpen: true,
@@ -153,19 +179,19 @@ function App() {
       // If there are pending spells, add them to the new spellbook
       if (pendingSpellIds.size > 0) {
         setIsAddingSpells(true);
-        for (const spellId of pendingSpellIds) {
-          try {
-            await addSpellToSpellbook(newSpellbook.id, spellId);
-          } catch (error) {
-            failedSpells.push(spellId);
-          }
-        }
 
-        if (failedSpells.length > 0) {
+        // Add spells in parallel
+        const results = await Promise.allSettled(
+          Array.from(pendingSpellIds).map(spellId => addSpellToSpellbook(newSpellbook.id, spellId))
+        );
+
+        const failed = results.filter(r => r.status === 'rejected');
+
+        if (failed.length > 0) {
           // If some failed, we still show success for the ones that worked, but warn about failures
-          const successCount = pendingSpellIds.size - failedSpells.length;
+          const successCount = pendingSpellIds.size - failed.length;
           if (successCount > 0) {
-            displayToast(`Spellbook created with ${successCount} spells. Failed to add ${failedSpells.length} spells.`);
+            displayToast(`Spellbook created with ${successCount} spells. Failed to add ${failed.length} spells.`);
           } else {
             throw new Error(`Failed to add any spells to the new spellbook.`);
           }
@@ -278,14 +304,16 @@ function App() {
                 </option>
               ))}
             </select>
-            <button
+            <LoadingButton
               className="btn-primary"
               onClick={handleAddToSpellbook}
               data-testid="btn-add-selected"
               disabled={selectedSpellIds.size === 0 || !targetSpellbookId}
+              loading={isAddingSpells}
+              loadingText="Adding..."
             >
               Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
-            </button>
+            </LoadingButton>
           </div>
           <SpellTable
             spells={filteredSpells}

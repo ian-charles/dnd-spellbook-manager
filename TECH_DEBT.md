@@ -20,6 +20,11 @@ This document tracks known technical debt, code quality issues, and refactoring 
 - [ ] **Weak XSS test in SpellDescription** (Medium) - `src/components/SpellDescription.test.tsx`: XSS test only checks innerHTML doesn't contain <script> but doesn't verify actual HTML escaping.
 - [ ] **Missing unit tests for App.tsx** (High) - `src/App.tsx`: Main application component has complex state management but zero unit tests.
 
+- [ ] **Missing JSDoc for App.tsx** (Medium) - `src/App.tsx`: Component lacks JSDoc documentation explaining component architecture, data flow, and key responsibilities.
+- [ ] **Complex state management without reducer pattern** (Medium) - `src/App.tsx`: Component manages 14+ state variables with useState, making state transitions hard to track.
+- [ ] **Missing error message for failed spell additions in batch** (Medium) - `src/App.tsx`: When individual spells fail during batch add in `handleCreateSpellbook`, only partial success message shown.
+- [ ] **No cleanup for createModalOpen state** (Medium) - `src/App.tsx`: When modal closes via onClose, pendingSpellIds is cleared, but if user navigates away while modal is open, state persists.
+- [ ] **Duplicate toast display logic** (Medium) - `src/App.tsx`: Same pattern of calculating count, clearing selection, and showing toast repeated in 3 places.
 
 ### Completed Refactoring
 - [x] **Missing Unicode test for dice notation** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.

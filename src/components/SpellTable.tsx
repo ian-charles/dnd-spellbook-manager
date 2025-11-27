@@ -1,8 +1,10 @@
+
 import { useState, Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
 import { getLevelText, filterClasses } from '../utils/spellFormatters';
+import { SpellDescription } from './SpellDescription';
 import './SpellTable.css';
 
 function ComponentBadges({ spell }: { spell: Spell }) {
@@ -196,11 +198,13 @@ export function SpellTable({
                         </div>
                       </div>
                       <div className="spell-expanded-description">
-                        {spell.description}
+                        {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
+                        <SpellDescription text={spell.description} />
                       </div>
                       {spell.higherLevels && (
                         <div className="spell-expanded-higher-levels">
-                          <strong>At Higher Levels:</strong> {spell.higherLevels}
+                          {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
+                          <strong>At Higher Levels:</strong> <SpellDescription text={spell.higherLevels} />
                         </div>
                       )}
                       <div className="spell-expanded-footer">

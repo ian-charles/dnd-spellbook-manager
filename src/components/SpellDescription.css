@@ -1,0 +1,8 @@
+.dice-notation {
+    font-weight: 700;
+    color: var(--color-accent);
+    background-color: rgba(var(--color-accent-rgb), 0.1);
+    padding: 0 2px;
+    border-radius: 4px;
+    display: inline-block;
+}

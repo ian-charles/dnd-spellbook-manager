@@ -11,6 +11,7 @@ import { Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { SortIcon } from './SortIcon';
+import { SpellDescription } from './SpellDescription';
 import { ConfirmDialog } from './ConfirmDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 import LoadingSpinner from './LoadingSpinner';
@@ -280,11 +281,13 @@ export function SpellbookDetailView({
                         <td colSpan={10} className="spell-expansion-cell">
                           <div className="spell-inline-expansion">
                             <div className="spell-expanded-description">
-                              {spell.description}
+                              {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
+                              <SpellDescription text={spell.description} />
                             </div>
                             {spell.higherLevels && (
                               <div className="spell-expanded-higher-levels">
-                                <strong>At Higher Levels:</strong> {spell.higherLevels}
+                                {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
+                                <strong>At Higher Levels:</strong> <SpellDescription text={spell.higherLevels} />
                               </div>
                             )}
                             <div className="spell-expanded-footer">

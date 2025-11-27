@@ -14,7 +14,7 @@
  * tests wait for actual conditions rather than guessing timing.
  */
 
-export const TEST_URL = 'http://localhost:5173';
+export const TEST_URL = process.env.TEST_URL || 'http://localhost:5173';
 
 /**
  * Timeout constants for different operation types.
@@ -37,9 +37,7 @@ export const TIMEOUTS = {
   PAGE_LOAD: 30000,
 } as const;
 
-/**
- * Delay to allow for scroll events to settle, e.g., after page.evaluate(() => window.scrollTo(...))
- */
+
 
 
 /**

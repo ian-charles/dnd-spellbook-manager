@@ -12,6 +12,14 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Solution**: Add loading state and show progress indicator during copy operation
 **Effort**: Medium (1 hour)
 
+###- [ ] **Missing JSDoc for SpellDescription usage** (Medium) - `src/components/SpellTable.tsx`, `src/components/SpellbookDetailView.tsx`: No inline comments explaining why SpellDescription component is used.
+- [ ] **Missing error messages in SpellDescription test assertions** (Medium) - `src/components/SpellDescription.test.tsx`: 12+ test assertions lack descriptive error messages.
+- [ ] **Tests testing implementation details (CSS classes) in SpellDescription** (Medium) - `src/components/SpellDescription.test.tsx`: Tests directly query for `.dice-notation` CSS class.
+- [ ] **Missing JSDoc for SpellDescription component** (Medium) - `src/components/SpellDescription.tsx`: Component lacks JSDoc explaining supported dice notations and usage.
+- [ ] **Regex compiled on every render in SpellDescription** (Medium) - `src/components/SpellDescription.tsx`: Two regex constants recreated on every component render.
+- [ ] **Potential React key uniqueness issue in SpellDescription** (Medium) - `src/components/SpellDescription.tsx`: Keys using `${index}-${part}` pattern could collide in edge cases.
+- [ ] **Missing comprehensive edge case tests for SpellDescription** (Medium) - `src/components/SpellDescription.test.tsx`: Tests don't cover long descriptions, special characters near dice, consecutive dice, Unicode.
+
 ### Missing input validation in E2E helpers
 **Location**: src/e2e/helpers.ts
 **Issue**: Several helper functions don't validate inputs before using them

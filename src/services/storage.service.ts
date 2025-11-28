@@ -76,9 +76,9 @@ export class StorageService {
    */
   async addSpellToSpellbook(spellbookId: string, spellId: string): Promise<void> {
     // Use Dexie's update method for atomic read-modify-write
-    const updateCount = await db.spellbooks.update(spellbookId, (spellbook) => {
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
       // Check if spell already exists
-      if (spellbook.spells.some((s) => s.spellId === spellId)) {
+      if (spellbook.spells.some((s: SpellbookSpell) => s.spellId === spellId)) {
         return; // Already exists, no-op (return undefined means no update)
       }
 

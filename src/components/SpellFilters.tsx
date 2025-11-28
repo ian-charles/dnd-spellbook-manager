@@ -70,10 +70,6 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
     clearFiltersAction();
   };
 
-  const getLevelLabel = (level: number) => {
-    return level === 0 ? 'Cantrip' : level.toString();
-  };
-
   // Check if any filters are active
   const hasActiveFilters =
     state.searchText.length > 0 ||

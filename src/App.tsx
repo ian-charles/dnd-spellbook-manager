@@ -13,6 +13,7 @@ import { useSpellbooks } from './hooks/useSpellbooks';
 import { useHashRouter } from './hooks/useHashRouter';
 import { useToast } from './hooks/useToast';
 import { useSpellbookMutations } from './hooks/useSpellbookMutations';
+import { useFilterReducer } from './hooks/useFilterReducer';
 import { spellService } from './services/spell.service';
 import { SpellFilters as Filters, Spell } from './types/spell';
 import { MESSAGES } from './constants/messages';
@@ -74,7 +75,8 @@ function App() {
   });
 
   // Spell filtering state
-  const [filters, setFilters] = useState<Filters>({});
+  const filterReducer = useFilterReducer();
+  const { state: filterState } = filterReducer;
   const [filteredSpells, setFilteredSpells] = useState<Spell[]>([]);
   const [schools, setSchools] = useState<string[]>([]);
   const [classes, setClasses] = useState<string[]>([]);
@@ -99,10 +101,21 @@ function App() {
   // Filter spells when filters change
   useEffect(() => {
     if (!loading && spells.length > 0) {
+      const filters: Filters = {
+        searchText: filterState.searchText,
+        levelRange: filterState.levelRange,
+        schools: filterState.selectedSchools.length > 0 ? filterState.selectedSchools : undefined,
+        classes: filterState.selectedClasses.length > 0 ? filterState.selectedClasses : undefined,
+        concentration: filterState.concentrationOnly || undefined,
+        ritual: filterState.ritualOnly || undefined,
+        componentVerbal: filterState.verbalOnly || undefined,
+        componentSomatic: filterState.somaticOnly || undefined,
+        componentMaterial: filterState.materialOnly || undefined,
+      };
       const results = spellService.searchSpells(filters);
       setFilteredSpells(results);
     }
-  }, [filters, spells, loading]);
+  }, [filterState, spells, loading]);
 
   // Mutation hook
   const {
@@ -164,7 +177,7 @@ function App() {
             </p>
           </div>
           <SpellFilters
-            onFiltersChange={setFilters}
+            {...filterReducer}
             schools={schools}
             classes={classes}
           />

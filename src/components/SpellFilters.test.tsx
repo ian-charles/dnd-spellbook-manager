@@ -1,20 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SpellFilters } from './SpellFilters';
-import * as useFilterReducerModule from '../hooks/useFilterReducer';
-import { SpellFilters as FilterState } from '../types/spell';
-
-// Mock the useFilterReducer hook
-const mockSetSearchText = vi.fn();
-const mockSetLevelRange = vi.fn();
-const mockToggleSchool = vi.fn();
-const mockToggleClass = vi.fn();
-const mockToggleConcentration = vi.fn();
-const mockToggleRitual = vi.fn();
-const mockToggleVerbal = vi.fn();
-const mockToggleSomatic = vi.fn();
-const mockToggleMaterial = vi.fn();
-const mockClearFilters = vi.fn();
+import { FilterState } from '../hooks/useFilterReducer';
 
 const defaultState: FilterState = {
     searchText: '',
@@ -28,40 +15,43 @@ const defaultState: FilterState = {
     materialOnly: false,
 };
 
-vi.mock('../hooks/useFilterReducer', () => ({
-    useFilterReducer: vi.fn(),
-}));
-
 describe('SpellFilters', () => {
-    const mockOnFiltersChange = vi.fn();
+    const mockSetSearchText = vi.fn();
+    const mockSetLevelRange = vi.fn();
+    const mockToggleSchool = vi.fn();
+    const mockToggleClass = vi.fn();
+    const mockToggleConcentration = vi.fn();
+    const mockToggleRitual = vi.fn();
+    const mockToggleVerbal = vi.fn();
+    const mockToggleSomatic = vi.fn();
+    const mockToggleMaterial = vi.fn();
+    const mockClearFilters = vi.fn();
+
     const schools = ['Evocation', 'Necromancy', 'Divination'];
     const classes = ['Wizard', 'Sorcerer', 'Cleric'];
 
+    const defaultProps = {
+        state: defaultState,
+        setSearchText: mockSetSearchText,
+        setLevelRange: mockSetLevelRange,
+        toggleSchool: mockToggleSchool,
+        toggleClass: mockToggleClass,
+        toggleConcentration: mockToggleConcentration,
+        toggleRitual: mockToggleRitual,
+        toggleVerbal: mockToggleVerbal,
+        toggleSomatic: mockToggleSomatic,
+        toggleMaterial: mockToggleMaterial,
+        clearFilters: mockClearFilters,
+        schools,
+        classes,
+    };
+
     beforeEach(() => {
         vi.clearAllMocks();
-        (useFilterReducerModule.useFilterReducer as any).mockReturnValue({
-            state: defaultState,
-            setSearchText: mockSetSearchText,
-            setLevelRange: mockSetLevelRange,
-            toggleSchool: mockToggleSchool,
-            toggleClass: mockToggleClass,
-            toggleConcentration: mockToggleConcentration,
-            toggleRitual: mockToggleRitual,
-            toggleVerbal: mockToggleVerbal,
-            toggleSomatic: mockToggleSomatic,
-            toggleMaterial: mockToggleMaterial,
-            clearFilters: mockClearFilters,
-        });
     });
 
     it('renders all filter sections', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         expect(screen.getByText('Class')).toBeInTheDocument();
         expect(screen.getByText('Spell Level')).toBeInTheDocument();
@@ -72,13 +62,7 @@ describe('SpellFilters', () => {
     });
 
     it('renders class buttons correctly', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         classes.forEach((className) => {
             expect(screen.getByRole('button', { name: `Filter by class ${className}` })).toBeInTheDocument();
@@ -86,13 +70,7 @@ describe('SpellFilters', () => {
     });
 
     it('renders school buttons correctly', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         schools.forEach((school) => {
             expect(screen.getByRole('button', { name: `Filter by school ${school}` })).toBeInTheDocument();
@@ -100,13 +78,7 @@ describe('SpellFilters', () => {
     });
 
     it('updates search text on input change', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         const searchInput = screen.getByPlaceholderText('Search spells...');
         fireEvent.change(searchInput, { target: { value: 'fireball' } });
@@ -115,13 +87,7 @@ describe('SpellFilters', () => {
     });
 
     it('toggles class filters on click', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         const wizardButton = screen.getByRole('button', { name: 'Filter by class Wizard' });
         fireEvent.click(wizardButton);
@@ -130,13 +96,7 @@ describe('SpellFilters', () => {
     });
 
     it('toggles school filters on click', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         const evocationButton = screen.getByRole('button', { name: 'Filter by school Evocation' });
         fireEvent.click(evocationButton);
@@ -145,13 +105,7 @@ describe('SpellFilters', () => {
     });
 
     it('updates level range on selection change', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         const minSelect = screen.getByLabelText('Minimum spell level');
         fireEvent.change(minSelect, { target: { value: '2' } });
@@ -165,13 +119,7 @@ describe('SpellFilters', () => {
     });
 
     it('toggles component checkboxes', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         const verbalCheckbox = screen.getByLabelText('Filter by Verbal component');
         fireEvent.click(verbalCheckbox);
@@ -187,13 +135,7 @@ describe('SpellFilters', () => {
     });
 
     it('toggles property checkboxes', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        render(<SpellFilters {...defaultProps} />);
 
         const concentrationCheckbox = screen.getByLabelText('Filter by Concentration');
         fireEvent.click(concentrationCheckbox);
@@ -205,80 +147,19 @@ describe('SpellFilters', () => {
     });
 
     it('shows "Clear All Filters" button when filters are active', () => {
-        (useFilterReducerModule.useFilterReducer as any).mockReturnValue({
-            state: { ...defaultState, searchText: 'fire' },
-            setSearchText: mockSetSearchText,
-            setLevelRange: mockSetLevelRange,
-            toggleSchool: mockToggleSchool,
-            toggleClass: mockToggleClass,
-            toggleConcentration: mockToggleConcentration,
-            toggleRitual: mockToggleRitual,
-            toggleVerbal: mockToggleVerbal,
-            toggleSomatic: mockToggleSomatic,
-            toggleMaterial: mockToggleMaterial,
-            clearFilters: mockClearFilters,
-        });
-
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        const activeState = { ...defaultState, searchText: 'fire' };
+        render(<SpellFilters {...defaultProps} state={activeState} />);
 
         expect(screen.getByRole('button', { name: 'Clear all active filters' })).toBeInTheDocument();
     });
 
     it('clears all filters when "Clear All Filters" is clicked', () => {
-        (useFilterReducerModule.useFilterReducer as any).mockReturnValue({
-            state: { ...defaultState, searchText: 'fire' },
-            setSearchText: mockSetSearchText,
-            setLevelRange: mockSetLevelRange,
-            toggleSchool: mockToggleSchool,
-            toggleClass: mockToggleClass,
-            toggleConcentration: mockToggleConcentration,
-            toggleRitual: mockToggleRitual,
-            toggleVerbal: mockToggleVerbal,
-            toggleSomatic: mockToggleSomatic,
-            toggleMaterial: mockToggleMaterial,
-            clearFilters: mockClearFilters,
-        });
-
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
+        const activeState = { ...defaultState, searchText: 'fire' };
+        render(<SpellFilters {...defaultProps} state={activeState} />);
 
         const clearButton = screen.getByRole('button', { name: 'Clear all active filters' });
         fireEvent.click(clearButton);
 
         expect(mockClearFilters).toHaveBeenCalled();
-    });
-
-    it('calls onFiltersChange when state changes', () => {
-        render(
-            <SpellFilters
-                onFiltersChange={mockOnFiltersChange}
-                schools={schools}
-                classes={classes}
-            />
-        );
-
-        // Initial call
-        expect(mockOnFiltersChange).toHaveBeenCalledWith({
-            searchText: '',
-            levelRange: { min: 0, max: 9 },
-            schools: undefined,
-            classes: undefined,
-            concentration: undefined,
-            ritual: undefined,
-            componentVerbal: undefined,
-            componentSomatic: undefined,
-            componentMaterial: undefined,
-        });
     });
 });

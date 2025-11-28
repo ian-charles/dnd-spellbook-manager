@@ -125,27 +125,15 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 
-#### Prop Drilling in SpellFilters
-**Location**: src/components/SpellFilters.tsx
-**Issue**: `onFiltersChange` prop is passed but filters are managed via context/reducer.
-**Impact**: Confusing data flow and unnecessary re-renders.
-**Solution**: Remove `onFiltersChange` if unused, or clarify its purpose.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
 
-#### Potential useEffect Dependency Issue in SpellFilters
-**Location**: src/components/SpellFilters.tsx
-**Issue**: Complex dependency array in `useEffect`.
-**Impact**: Risk of infinite loops or stale closures.
-**Solution**: Review and simplify dependencies, or use a custom hook.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
 
 
 
 
 
 ### Completed Refactoring
+- [x] **Prop Drilling in SpellFilters** (Medium) - Refactored to controlled component using `useFilterReducer` in `App.tsx`.
+- [x] **Potential useEffect Dependency Issue in SpellFilters** (Medium) - Removed internal `useEffect` by lifting state.
 - [x] **Missing Unit Tests for SpellFilters** (High) - Created `src/components/SpellFilters.test.tsx` with comprehensive tests.
 - [x] **Missing JSDoc for SpellFilters** (Medium) - Added comprehensive JSDoc.
 - [x] **Magic Numbers in SpellFilters** (Medium) - Extracted `MIN_SPELL_LEVEL` and `MAX_SPELL_LEVEL` constants.

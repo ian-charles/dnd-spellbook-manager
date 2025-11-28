@@ -8,23 +8,15 @@
  * This provides cleaner, more predictable state management.
  */
 
-import { useEffect } from 'react';
-import { SpellFilters as Filters } from '../types/spell';
-import { useFilterReducer } from '../hooks/useFilterReducer';
 import { MIN_SPELL_LEVEL, MAX_SPELL_LEVEL } from '../constants/gameRules';
+import { UseFilterReducerReturn } from '../hooks/useFilterReducer';
 import './SpellFilters.css';
 
 /**
  * Props for the SpellFilters component.
+ * Extends the return type of useFilterReducer to include schools and classes.
  */
-interface SpellFiltersProps {
-  /**
-   * Callback fired when filters change.
-   * Note: This is currently unused as filters are managed via context/reducer,
-   * but kept for potential future use or prop-based control.
-   */
-  onFiltersChange: (filters: Filters) => void;
-
+interface SpellFiltersProps extends UseFilterReducerReturn {
   /**
    * List of available spell schools to filter by.
    */
@@ -47,57 +39,29 @@ interface SpellFiltersProps {
  * - Properties (Concentration, Ritual)
  * - Text Search
  * 
- * Uses `useFilterReducer` to manage the filter state.
+ * Controlled component that receives state and handlers from parent.
  */
-export function SpellFilters({ onFiltersChange, schools, classes }: SpellFiltersProps) {
-  const {
-    state,
-    setSearchText: setSearchTextAction,
-    setLevelRange,
-    toggleSchool,
-    toggleClass,
-    toggleConcentration,
-    toggleRitual,
-    toggleVerbal,
-    toggleSomatic,
-    toggleMaterial,
-    clearFilters: clearFiltersAction,
-  } = useFilterReducer();
-
-  // Update parent component whenever filter state changes
-  useEffect(() => {
-    const filters: Filters = {
-      searchText: state.searchText,
-      levelRange: state.levelRange,
-      schools: state.selectedSchools.length > 0 ? state.selectedSchools : undefined,
-      classes: state.selectedClasses.length > 0 ? state.selectedClasses : undefined,
-      concentration: state.concentrationOnly || undefined,
-      ritual: state.ritualOnly || undefined,
-      componentVerbal: state.verbalOnly || undefined,
-      componentSomatic: state.somaticOnly || undefined,
-      componentMaterial: state.materialOnly || undefined,
-    };
-    onFiltersChange(filters);
-  }, [
-    state.searchText,
-    state.levelRange.min,
-    state.levelRange.max,
-    state.selectedSchools,
-    state.selectedClasses,
-    state.concentrationOnly,
-    state.ritualOnly,
-    state.verbalOnly,
-    state.somaticOnly,
-    state.materialOnly,
-    onFiltersChange,
-  ]);
-
+export function SpellFilters({
+  state,
+  setSearchText,
+  setLevelRange,
+  toggleSchool,
+  toggleClass,
+  toggleConcentration,
+  toggleRitual,
+  toggleVerbal,
+  toggleSomatic,
+  toggleMaterial,
+  clearFilters,
+  schools,
+  classes
+}: SpellFiltersProps) {
   const handleSearchChange = (value: string) => {
-    setSearchTextAction(value);
+    setSearchText(value);
   };
 
   const handleClearFilters = () => {
-    clearFiltersAction();
+    clearFilters();
   };
 
   // Check if any filters are active

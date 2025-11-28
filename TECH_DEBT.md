@@ -63,6 +63,94 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Low (30 minutes)
 **Priority**: Medium
 
+#### Prop Drilling in SpellbookDetailView
+**Location**: src/components/SpellbookDetailView.tsx
+**Issue**: Component receives 27 props, indicating it may be doing too much or parent is managing too much state.
+**Impact**: Hard to maintain, test, and refactor.
+**Solution**: Use Context API or Composition to reduce prop passing.
+**Effort**: Medium (2 hours)
+**Priority**: Medium
+
+#### Complex Logic in SpellbookDetail Container
+**Location**: src/components/SpellbookDetail.tsx
+**Issue**: Container manages fetching, filtering, sorting, dialogs, and editing state.
+**Impact**: Component is large and hard to test.
+**Solution**: Extract logic into `useSpellbookDetailState` custom hook.
+**Effort**: Medium (2 hours)
+**Priority**: Medium
+
+#### Inefficient Loop in handleSelectAllPrepared
+**Location**: src/components/SpellbookDetail.tsx:132-148
+**Issue**: Uses `await` inside a `for` loop, causing sequential requests.
+**Impact**: Slow performance when selecting/deselecting many spells.
+**Solution**: Use `Promise.all` to run requests in parallel.
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Inconsistent Context Menu Logic
+**Location**: src/components/spellbook-detail/SpellbookSpellsTable.tsx vs src/components/SpellbookList.tsx
+**Issue**: `SpellbookList` lifts context menu state up, while `SpellbookSpellsTable` manages it internally.
+**Impact**: Inconsistent behavior and code duplication.
+**Solution**: Lift context menu state up from `SpellbookSpellsTable` to `SpellbookDetail` or use a shared hook.
+**Effort**: Medium (1 hour)
+**Priority**: Medium
+
+#### Complex State Management in App.tsx
+**Location**: src/App.tsx
+**Issue**: Main component manages filters, selection, modals, routing, and data fetching.
+**Impact**: Hard to test and maintain.
+**Solution**: Extract state into `useAppState` or split into smaller context providers.
+**Effort**: High (4 hours)
+**Priority**: Medium
+
+#### Lack of Virtualization in SpellTable
+**Location**: src/components/SpellTable.tsx
+**Issue**: Renders all spells at once.
+**Impact**: Performance degradation with large spell lists (500+ spells).
+**Solution**: Implement virtualization (e.g., react-window).
+**Effort**: Medium (3 hours)
+**Priority**: Low
+
+#### Duplicate Expansion Logic
+**Location**: src/components/SpellTable.tsx vs src/components/spellbook-detail/SpellbookSpellsTable.tsx
+**Issue**: Expansion row rendering logic is duplicated.
+**Impact**: Maintenance burden, risk of inconsistent UI.
+**Solution**: Extract expansion row into a shared `SpellExpansionRow` component.
+**Effort**: Low (1 hour)
+**Priority**: Low
+
+#### Race Conditions in Storage Service
+**Location**: src/services/storage.service.ts
+**Issue**: `removeSpellFromSpellbook`, `toggleSpellPrepared`, and `updateSpellNotes` use read-modify-write pattern without atomic updates.
+**Impact**: Potential data loss if multiple operations happen simultaneously.
+**Solution**: Use Dexie's atomic `update` with a callback, similar to `addSpellToSpellbook`.
+**Effort**: Low (1 hour)
+**Priority**: High
+
+#### Accessibility Issues in CreateSpellbookModal
+**Location**: src/components/CreateSpellbookModal.tsx
+**Issue**: Missing focus trap.
+**Impact**: Keyboard users can tab out of the modal.
+**Solution**: Implement a focus trap (e.g., using `react-focus-lock` or manual event handling).
+**Effort**: Low (1 hour)
+**Priority**: Medium
+
+#### Inefficient Data Reloading in useSpellbooks
+**Location**: src/hooks/useSpellbooks.ts
+**Issue**: Reloads entire spellbook list after every operation.
+**Impact**: Unnecessary network/DB overhead.
+**Solution**: Optimistically update local state and only reload if necessary, or use a more granular update strategy.
+**Effort**: Medium (2 hours)
+**Priority**: Low
+
+#### Missing Accessibility Labels in SpellFilters
+**Location**: src/components/SpellFilters.tsx
+**Issue**: Inputs lack `aria-label` or associated labels for screen readers.
+**Impact**: Poor accessibility for visually impaired users.
+**Solution**: Add `aria-label` to inputs and buttons.
+**Effort**: Low (1 hour)
+**Priority**: Medium
+
 ### Completed Refactoring
 - [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.
 - [x] **Missing JSDoc for App.tsx** (Medium) - Added JSDoc to `src/App.tsx`.

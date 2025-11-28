@@ -1,0 +1,53 @@
+import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { useDialogs } from './useDialogs';
+
+describe('useDialogs', () => {
+    it('should initialize with default state', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        expect(result.current.confirmDialog.isOpen).toBe(false);
+        expect(result.current.alertDialog.isOpen).toBe(false);
+    });
+
+    it('should open and close confirm dialog', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        act(() => {
+            result.current.showConfirm('123', 'Test Spellbook');
+        });
+
+        expect(result.current.confirmDialog).toEqual({
+            isOpen: true,
+            spellbookId: '123',
+            spellbookName: 'Test Spellbook',
+        });
+
+        act(() => {
+            result.current.closeConfirm();
+        });
+
+        expect(result.current.confirmDialog.isOpen).toBe(false);
+    });
+
+    it('should open and close alert dialog', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        act(() => {
+            result.current.showAlert('Title', 'Message', 'error');
+        });
+
+        expect(result.current.alertDialog).toEqual({
+            isOpen: true,
+            title: 'Title',
+            message: 'Message',
+            variant: 'error',
+        });
+
+        act(() => {
+            result.current.closeAlert();
+        });
+
+        expect(result.current.alertDialog.isOpen).toBe(false);
+    });
+});

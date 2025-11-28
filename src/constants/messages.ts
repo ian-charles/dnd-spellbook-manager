@@ -10,6 +10,7 @@ export const MESSAGES = {
     SPELLS: 'Loading spells from the archive...',
     SPELLBOOKS: 'Loading spellbooks...',
     SPELLBOOK: 'Loading spellbook...',
+    COPYING_SPELLS: 'Copying {current}/{total} spells...',
   },
   SUCCESS: {
     SPELL_ADDED: '✓ Spell added to spellbook!',

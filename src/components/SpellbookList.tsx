@@ -1,14 +1,17 @@
-import { useState, useRef, useMemo, useEffect } from 'react';
-import { exportImportService } from '../services/exportImport.service';
+import { useState, useRef, useEffect } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 
 import LoadingSpinner from './LoadingSpinner';
 import { SpellbookListHeader } from './spellbook-list/SpellbookListHeader';
-import { SpellbookListTable, SortColumn } from './spellbook-list/SpellbookListTable';
+import { SpellbookListTable } from './spellbook-list/SpellbookListTable';
 import { CreateSpellbookInput, Spellbook } from '../types/spellbook';
 import { MESSAGES } from '../constants/messages';
+import { useLongPress } from '../hooks/useLongPress';
+import { useDialogs } from '../hooks/useDialogs';
+import { useSpellbookListState } from '../hooks/useSpellbookListState';
+import { useSpellbookOperations } from '../hooks/useSpellbookOperations';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -21,8 +24,6 @@ interface SpellbookListProps {
   onAddSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
 }
 
-type SortDirection = 'asc' | 'desc';
-
 export function SpellbookList({
   spellbooks,
   loading,
@@ -32,48 +33,56 @@ export function SpellbookList({
   onRefreshSpellbooks,
   onAddSpellToSpellbook,
 }: SpellbookListProps) {
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [copyData, setCopyData] = useState<{
-    name: string;
-    spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
-    spellAttackModifier?: number;
-    spellSaveDC?: number;
-    sourceSpellbookId?: string;
-  } | undefined>(undefined);
-  const [copyProgress, setCopyProgress] = useState<string>('');
-  const [importing, setImporting] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortColumn, setSortColumn] = useState<SortColumn>('name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Custom hooks
+  const {
+    confirmDialog,
+    alertDialog,
+    showConfirm,
+    closeConfirm,
+    setAlertDialog,
+    closeAlert,
+  } = useDialogs();
 
-  // Context menu state for mobile long-press
+  const {
+    searchQuery,
+    setSearchQuery,
+    sortColumn,
+    sortDirection,
+    handleSort,
+    filteredAndSortedSpellbooks,
+  } = useSpellbookListState(spellbooks);
+
+  const {
+    createModalOpen,
+    setCreateModalOpen,
+    copyData,
+    setCopyData,
+    copyProgress,
+    importing,
+    fileInputRef,
+    handleCreateSpellbook,
+    handleCopy,
+    handleConfirmDelete,
+    handleExport,
+    handleImportClick,
+    handleImport,
+  } = useSpellbookOperations({
+    spellbooks,
+    onCreateSpellbook,
+    onDeleteSpellbook,
+    onRefreshSpellbooks,
+    onAddSpellToSpellbook,
+    setAlertDialog,
+    closeConfirm,
+  });
+
+  // Context menu state for mobile long-press interactions.
   const [contextMenu, setContextMenu] = useState<{
     spellbookId: string;
     spellbookName: string;
     x: number;
     y: number;
   } | null>(null);
-  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
-  const longPressStartPos = useRef<{ x: number; y: number } | null>(null);
-
-  // Dialog states
-  const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellbookId: string; spellbookName: string }>({
-    isOpen: false,
-    spellbookId: '',
-    spellbookName: '',
-  });
-  const [alertDialog, setAlertDialog] = useState<{
-    isOpen: boolean;
-    title: string;
-    message: string;
-    variant: 'error' | 'success' | 'warning' | 'info';
-  }>({
-    isOpen: false,
-    title: '',
-    message: '',
-    variant: 'info',
-  });
 
   // Close context menu when clicking outside
   useEffect(() => {
@@ -95,265 +104,30 @@ export function SpellbookList({
     }
   }, [spellbooks]);
 
-  // Filter and sort spellbooks
-  const filteredAndSortedSpellbooks = useMemo(() => {
-    // Filter by search query
-    let filtered = spellbooks ?? [];
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = spellbooks.filter(sb =>
-        sb.name.toLowerCase().includes(query)
-      );
-    }
-
-    // Sort
-    const sorted = [...filtered].sort((a, b) => {
-      let aVal: string | number;
-      let bVal: string | number;
-
-      switch (sortColumn) {
-        case 'name':
-          aVal = a.name.toLowerCase();
-          bVal = b.name.toLowerCase();
-          break;
-        case 'spells':
-          aVal = a.spells.length;
-          bVal = b.spells.length;
-          break;
-        case 'ability':
-          aVal = a.spellcastingAbility || '';
-          bVal = b.spellcastingAbility || '';
-          break;
-        case 'attack':
-          aVal = a.spellAttackModifier ?? (sortDirection === 'asc' ? Infinity : -Infinity);
-          bVal = b.spellAttackModifier ?? (sortDirection === 'asc' ? Infinity : -Infinity);
-          break;
-        case 'saveDC':
-          aVal = a.spellSaveDC ?? (sortDirection === 'asc' ? Infinity : -Infinity);
-          bVal = b.spellSaveDC ?? (sortDirection === 'asc' ? Infinity : -Infinity);
-          break;
-        case 'updated':
-          aVal = new Date(a.updated).getTime();
-          bVal = new Date(b.updated).getTime();
-          break;
-        default:
-          aVal = a.name.toLowerCase();
-          bVal = b.name.toLowerCase();
-      }
-
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    return sorted;
-  }, [spellbooks, searchQuery, sortColumn, sortDirection]);
-
-  const handleSort = (column: SortColumn) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
-  const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
-    try {
-      const newSpellbook = await onCreateSpellbook(input);
-
-      // If this is a copy operation, copy all spells from the source spellbook
-      if (copyData?.sourceSpellbookId) {
-        const sourceSpellbook = spellbooks.find(sb => sb.id === copyData.sourceSpellbookId);
-        if (sourceSpellbook && sourceSpellbook.spells.length > 0) {
-          // Copy all spells from the source spellbook to the new one
-          const errors: string[] = [];
-          const spellsToCopy = sourceSpellbook.spells.map(spell => spell.spellId);
-          const totalSpells = spellsToCopy.length;
-          let completedSpells = 0;
-          setCopyProgress(`Copying 0/${totalSpells} spells...`);
-
-          const results = await Promise.allSettled(spellsToCopy.map(async (spellId) => {
-            try {
-              await onAddSpellToSpellbook(newSpellbook.id, spellId);
-            } finally {
-              completedSpells++;
-              setCopyProgress(`Copying ${completedSpells}/${totalSpells} spells...`);
-            }
-          }));
-
-          results.forEach((result, index) => {
-            if (result.status === 'rejected') {
-              errors.push(`Failed to copy spell ${spellsToCopy[index]}`);
-            }
-          });
-
-          if (errors.length > 0) {
-            const allFailed = errors.length === spellsToCopy.length;
-            setAlertDialog({
-              isOpen: true,
-              title: allFailed ? 'Copy Failed' : 'Partial Copy Warning',
-              message: allFailed
-                ? 'Failed to copy any spells. The spellbook was created but is empty.'
-                : `Spellbook created, but some spells failed to copy: ${errors.length} errors.`,
-              variant: allFailed ? 'error' : 'warning'
-            });
-          }
-        }
-      }
-
-      setCreateModalOpen(false);
-      setCopyData(undefined);
-      setCopyProgress('');
-    } catch (error) {
-      throw error; // Let the modal handle the error
-    } finally {
-      // Ensure spellbooks list is refreshed after creation (and potential copying)
-      // This is in the finally block to guarantee execution regardless of success or failure
-      await onRefreshSpellbooks();
-    }
-  };
-
-  const handleCopy = (id: string) => {
-    const spellbook = spellbooks.find(sb => sb.id === id);
-    if (!spellbook) return;
-
-    setCopyData({
-      name: `${spellbook.name} (Copy)`,
-      spellcastingAbility: spellbook.spellcastingAbility,
-      spellAttackModifier: spellbook.spellAttackModifier,
-      spellSaveDC: spellbook.spellSaveDC,
-      sourceSpellbookId: id,
-    });
-    setCreateModalOpen(true);
-  };
-
-  const handleDelete = (id: string, name: string) => {
-    setConfirmDialog({ isOpen: true, spellbookId: id, spellbookName: name });
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      await onDeleteSpellbook(confirmDialog.spellbookId);
-      setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
-    } catch (error) {
-      setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
-      setAlertDialog({
-        isOpen: true,
-        title: MESSAGES.ERROR.DELETE_FAILED,
-        message: MESSAGES.ERROR.FAILED_TO_DELETE_SPELLBOOK,
-        variant: 'error',
-      });
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setConfirmDialog({ isOpen: false, spellbookId: '', spellbookName: '' });
-  };
-
-  const handleExport = async () => {
-    try {
-      await exportImportService.downloadSpellbooks();
-    } catch (error) {
-      setAlertDialog({
-        isOpen: true,
-        title: MESSAGES.ERROR.EXPORT_FAILED,
-        message: MESSAGES.ERROR.FAILED_TO_EXPORT_SPELLBOOKS,
-        variant: 'error',
-      });
-    }
-  };
-
-  const handleImportClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setImporting(true);
-    try {
-      const text = await file.text();
-      const result = await exportImportService.importSpellbooks(text);
-
-      // Show result
-      if (result.errors.length > 0) {
-        setAlertDialog({
-          isOpen: true,
-          title: MESSAGES.ERROR.IMPORT_WITH_ERRORS,
-          message:
-            `${MESSAGES.IMPORT.IMPORTED_LABEL} ${result.imported}\n` +
-            `${MESSAGES.IMPORT.SKIPPED_LABEL} ${result.skipped}\n` +
-            `${MESSAGES.IMPORT.ERRORS_LABEL} ${result.errors.length}\n\n` +
-            result.errors.join('\n'),
-          variant: 'warning',
-        });
-      } else {
-        setAlertDialog({
-          isOpen: true,
-          title: MESSAGES.SUCCESS.IMPORT_SUCCESS,
-          message: `${MESSAGES.IMPORT.IMPORTED_LABEL} ${result.imported}\n${MESSAGES.IMPORT.SKIPPED_LABEL} ${result.skipped}`,
-          variant: 'success',
-        });
-      }
-
-      // Refresh the spellbooks list
-      onRefreshSpellbooks();
-    } catch (error) {
-      setAlertDialog({
-        isOpen: true,
-        title: MESSAGES.ERROR.IMPORT_FAILED,
-        message: `${MESSAGES.ERROR.FAILED_TO_IMPORT_SPELLBOOKS} ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: 'error',
-      });
-    } finally {
-      setImporting(false);
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  };
-
   // Long-press handlers for mobile context menu
-  const handleTouchStart = (e: React.TouchEvent, spellbook: Spellbook) => {
-    const touch = e.touches[0];
-    longPressStartPos.current = { x: touch.clientX, y: touch.clientY };
+  const pendingSpellbook = useRef<Spellbook | null>(null);
 
-    longPressTimer.current = setTimeout(() => {
-      setContextMenu({
-        spellbookId: spellbook.id,
-        spellbookName: spellbook.name,
-        x: touch.clientX,
-        y: touch.clientY,
-      });
-    }, 500); // 500ms long press
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!longPressStartPos.current) return;
-
-    const touch = e.touches[0];
-    const deltaX = Math.abs(touch.clientX - longPressStartPos.current.x);
-    const deltaY = Math.abs(touch.clientY - longPressStartPos.current.y);
-
-    // Cancel long press if user moves finger too much
-    if (deltaX > 10 || deltaY > 10) {
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current);
-        longPressTimer.current = null;
+  const {
+    onTouchStart: onTouchStartHook,
+    onTouchMove,
+    onTouchEnd
+  } = useLongPress({
+    onLongPress: (e: React.TouchEvent) => {
+      if (pendingSpellbook.current) {
+        const touch = e.touches[0];
+        setContextMenu({
+          spellbookId: pendingSpellbook.current.id,
+          spellbookName: pendingSpellbook.current.name,
+          x: touch.clientX,
+          y: touch.clientY,
+        });
       }
-      longPressStartPos.current = null;
     }
-  };
+  });
 
-  const handleTouchEnd = () => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-    longPressStartPos.current = null;
+  const handleTouchStart = (e: React.TouchEvent, spellbook: Spellbook) => {
+    pendingSpellbook.current = spellbook;
+    onTouchStartHook(e);
   };
 
   const handleContextMenuAction = (action: 'copy' | 'delete', spellbookId: string, spellbookName: string) => {
@@ -361,8 +135,12 @@ export function SpellbookList({
     if (action === 'copy') {
       handleCopy(spellbookId);
     } else {
-      handleDelete(spellbookId, spellbookName);
+      showConfirm(spellbookId, spellbookName);
     }
+  };
+
+  const handleDelete = (id: string, name: string) => {
+    showConfirm(id, name);
   };
 
   if (loading) {
@@ -432,8 +210,8 @@ export function SpellbookList({
             onCopy={handleCopy}
             onDelete={handleDelete}
             onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
           />
         </>
       )}
@@ -460,8 +238,8 @@ export function SpellbookList({
         confirmLabel="Delete"
         cancelLabel="Cancel"
         variant="danger"
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        onConfirm={() => handleConfirmDelete(confirmDialog.spellbookId)}
+        onCancel={closeConfirm}
       />
 
       {/* Alert Dialog */}
@@ -470,7 +248,7 @@ export function SpellbookList({
         title={alertDialog.title}
         message={alertDialog.message}
         variant={alertDialog.variant}
-        onClose={() => setAlertDialog({ ...alertDialog, isOpen: false })}
+        onClose={closeAlert}
       />
 
       {/* Context Menu for mobile long-press */}

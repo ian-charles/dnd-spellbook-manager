@@ -5,6 +5,7 @@ import { SortIcon } from '../SortIcon';
 import { SpellDescription } from '../SpellDescription';
 import { ComponentBadges, ClassBadges } from '../SpellBadges';
 import { getLevelText } from '../../utils/spellFormatters';
+import { useLongPress } from '../../hooks/useLongPress';
 
 interface SpellbookSpellsTableProps {
     sortedSpells: EnrichedSpell[];
@@ -35,8 +36,7 @@ export function SpellbookSpellsTable({
         x: number;
         y: number;
     } | null>(null);
-    const longPressTimer = useRef<NodeJS.Timeout | null>(null);
-    const longPressStartPos = useRef<{ x: number; y: number } | null>(null);
+
 
     // Close context menu when clicking outside
     useEffect(() => {
@@ -48,44 +48,30 @@ export function SpellbookSpellsTable({
     }, [contextMenu]);
 
     // Long-press handlers for mobile context menu
-    const handleTouchStart = (e: React.TouchEvent, spell: EnrichedSpell) => {
-        const touch = e.touches[0];
-        longPressStartPos.current = { x: touch.clientX, y: touch.clientY };
+    const pendingSpell = useRef<EnrichedSpell | null>(null);
 
-        longPressTimer.current = setTimeout(() => {
-            setContextMenu({
-                spellId: spell.spell.id,
-                spellName: spell.spell.name,
-                prepared: spell.prepared,
-                x: touch.clientX,
-                y: touch.clientY,
-            });
-        }, 500); // 500ms long press
-    };
-
-    const handleTouchMove = (e: React.TouchEvent) => {
-        if (!longPressStartPos.current) return;
-
-        const touch = e.touches[0];
-        const deltaX = Math.abs(touch.clientX - longPressStartPos.current.x);
-        const deltaY = Math.abs(touch.clientY - longPressStartPos.current.y);
-
-        // Cancel long press if user moves finger too much
-        if (deltaX > 10 || deltaY > 10) {
-            if (longPressTimer.current) {
-                clearTimeout(longPressTimer.current);
-                longPressTimer.current = null;
+    const {
+        onTouchStart: onTouchStartHook,
+        onTouchMove,
+        onTouchEnd
+    } = useLongPress({
+        onLongPress: (e: React.TouchEvent) => {
+            if (pendingSpell.current) {
+                const touch = e.touches[0];
+                setContextMenu({
+                    spellId: pendingSpell.current.spell.id,
+                    spellName: pendingSpell.current.spell.name,
+                    prepared: pendingSpell.current.prepared,
+                    x: touch.clientX,
+                    y: touch.clientY,
+                });
             }
-            longPressStartPos.current = null;
         }
-    };
+    });
 
-    const handleTouchEnd = () => {
-        if (longPressTimer.current) {
-            clearTimeout(longPressTimer.current);
-            longPressTimer.current = null;
-        }
-        longPressStartPos.current = null;
+    const handleTouchStart = (e: React.TouchEvent, spell: EnrichedSpell) => {
+        pendingSpell.current = spell;
+        onTouchStartHook(e);
     };
 
     const handleContextMenuAction = (action: 'prep' | 'remove', spellId: string, spellName: string) => {
@@ -160,8 +146,8 @@ export function SpellbookSpellsTable({
                                         data-testid={`spellbook-spell-${spell.id}`}
                                         onClick={() => onRowClick(spell.id)}
                                         onTouchStart={(e) => handleTouchStart(e, enrichedSpell)}
-                                        onTouchMove={handleTouchMove}
-                                        onTouchEnd={handleTouchEnd}
+                                        onTouchMove={onTouchMove}
+                                        onTouchEnd={onTouchEnd}
                                     >
                                         <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
                                             <input

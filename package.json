@@ -10,7 +10,7 @@
     "setup:hooks": "node scripts/setup-git-hooks.js",
     "prepare": "npm run setup:hooks",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:unit": "vitest --run src/services"

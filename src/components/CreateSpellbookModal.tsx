@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CreateSpellbookInput } from '../types/spellbook';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import './CreateSpellbookModal.css';
 
 interface CreateSpellbookModalProps {
@@ -32,6 +33,9 @@ export function CreateSpellbookModal({
   const [spellSaveDC, setSpellSaveDC] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Focus trap
+  const modalRef = useFocusTrap(isOpen);
 
   // Initialize or reset form when modal opens/closes
   useEffect(() => {
@@ -123,7 +127,12 @@ export function CreateSpellbookModal({
 
   return (
     <div className="dialog-overlay">
-      <div className="dialog create-spellbook-modal" onClick={(e) => e.stopPropagation()} data-testid="create-spellbook-dialog">
+      <div
+        className="dialog create-spellbook-modal"
+        onClick={(e) => e.stopPropagation()}
+        data-testid="create-spellbook-dialog"
+        ref={modalRef}
+      >
         <h3>{title || 'Create New Spellbook'}</h3>
         <form onSubmit={handleSubmit} data-testid="create-spellbook-form">
           <div className="form-group">

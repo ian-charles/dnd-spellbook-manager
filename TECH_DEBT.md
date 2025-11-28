@@ -119,13 +119,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Low (1 hour)
 **Priority**: Low
 
-#### Accessibility Issues in CreateSpellbookModal
-**Location**: src/components/CreateSpellbookModal.tsx
-**Issue**: Missing focus trap.
-**Impact**: Keyboard users can tab out of the modal.
-**Solution**: Implement a focus trap (e.g., using `react-focus-lock` or manual event handling).
-**Effort**: Low (1 hour)
-**Priority**: Medium
+
 
 #### Inefficient Data Reloading in useSpellbooks
 **Location**: src/hooks/useSpellbooks.ts
@@ -144,6 +138,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Priority**: Medium
 
 ### Completed Refactoring
+- [x] **Accessibility Issues in CreateSpellbookModal** (Medium) - Implemented focus trap using `useFocusTrap` hook.
 - [x] **Race Conditions in Storage Service** (High) - Refactored `storage.service.ts` to use atomic updates.
 - [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.
 - [x] **Missing JSDoc for App.tsx** (Medium) - Added JSDoc to `src/App.tsx`.

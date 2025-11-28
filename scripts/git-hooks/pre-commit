@@ -62,16 +62,36 @@ else
   fi
 fi
 
-# Step 3: Run tests
+# Step 3: Run TypeScript type checking
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Step 3: Running Tests"
+echo "Step 3: TypeScript Type Checking"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+npx tsc --noEmit
+TSC_EXIT_CODE=$?
+
+if [ $TSC_EXIT_CODE -ne 0 ]; then
+  echo "❌ TypeScript compilation failed! Commit aborted."
+  echo "Fix the type errors before committing."
+  # Clean up dev server if we started it
+  if [ -n "$DEV_SERVER_PID" ]; then
+    echo "🧹 Stopping dev server..."
+    kill $DEV_SERVER_PID 2>/dev/null
+    pkill -P $DEV_SERVER_PID 2>/dev/null
+  fi
+  exit 1
+fi
+
+# Step 4: Run tests
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Step 4: Running Tests"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 # Run unit tests only (exclude e2e tests which require Puppeteer)
-npx vitest --run
+npx vitest --run --exclude "src/e2e/**"
 TEST_EXIT_CODE=$?
 
-# Step 4: Clean up dev server if we started it
+# Step 5: Clean up dev server if we started it
 if [ -n "$DEV_SERVER_PID" ]; then
   echo ""
   echo "🧹 Stopping dev server..."

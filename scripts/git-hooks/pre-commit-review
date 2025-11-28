@@ -69,6 +69,12 @@ This allows you to spot issues that require broader context to identify.
 - Slow tests that could be optimized
 - Tests that don't verify actual behavior
 
+**EXEMPTION**: Tests are NOT required for commits that ONLY fix:
+- TypeScript type errors (adding type annotations, fixing type mismatches)
+- Build errors (compilation failures, missing imports)
+- Test failures at HEAD (fixing broken tests after a merge/pull)
+These are remediation commits and don't introduce new behavior.
+
 ### 3. **Logic Errors** 🐛 CRITICAL
 - Off-by-one errors in loops/arrays
 - Null/undefined handling missing

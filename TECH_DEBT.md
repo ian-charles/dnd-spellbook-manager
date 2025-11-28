@@ -121,13 +121,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Medium (2 hours)
 **Priority**: Low
 
-#### Magic Numbers in SpellFilters
-**Location**: src/components/SpellFilters.tsx
-**Issue**: Hardcoded spell levels (0, 9) and other constants.
-**Impact**: Maintenance burden if rules change.
-**Solution**: Extract `MIN_SPELL_LEVEL` and `MAX_SPELL_LEVEL` constants.
-**Effort**: Low (10 minutes)
-**Priority**: Medium
+
 
 #### Missing Unit Tests for SpellFilters
 **Location**: src/components/SpellFilters.tsx
@@ -148,6 +142,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 ### Completed Refactoring
+- [x] **Magic Numbers in SpellFilters** (Medium) - Extracted `MIN_SPELL_LEVEL` and `MAX_SPELL_LEVEL` constants.
 - [x] **Duplicate Expansion Logic** (Low) - Extracted `SpellExpansionRow` component.
 - [x] **Missing Accessibility Labels in SpellFilters** (Medium) - Added `aria-label` and `aria-pressed` attributes.
 - [x] **Accessibility Issues in CreateSpellbookModal** (Medium) - Implemented focus trap using `useFocusTrap` hook.

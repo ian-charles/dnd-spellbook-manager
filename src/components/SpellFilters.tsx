@@ -11,6 +11,7 @@
 import { useEffect } from 'react';
 import { SpellFilters as Filters } from '../types/spell';
 import { useFilterReducer } from '../hooks/useFilterReducer';
+import { MIN_SPELL_LEVEL, MAX_SPELL_LEVEL } from '../constants/gameRules';
 import './SpellFilters.css';
 
 interface SpellFiltersProps {
@@ -120,7 +121,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               data-testid="level-range-min"
               aria-label="Minimum spell level"
             >
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+              {Array.from({ length: MAX_SPELL_LEVEL - MIN_SPELL_LEVEL + 1 }, (_, i) => i + MIN_SPELL_LEVEL).map((level) => (
                 <option key={level} value={level}>
                   {level === 0 ? 'Cantrip' : level}
                 </option>
@@ -142,7 +143,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               data-testid="level-range-max"
               aria-label="Maximum spell level"
             >
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+              {Array.from({ length: MAX_SPELL_LEVEL - MIN_SPELL_LEVEL + 1 }, (_, i) => i + MIN_SPELL_LEVEL).map((level) => (
                 <option key={level} value={level}>
                   {level === 0 ? 'Cantrip' : level}
                 </option>

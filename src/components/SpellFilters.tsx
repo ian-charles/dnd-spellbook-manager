@@ -106,14 +106,10 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
 
       <div className="filter-section">
         <h3>Spell Level</h3>
-        <div className="level-range-container">
-          <div className="range-slider-container">
-            <div className="range-track"></div>
-            <input
-              type="range"
-              min="0"
-              max="9"
-              step="1"
+        <div className="level-dropdown-container">
+          <label>
+            <span>Min</span>
+            <select
               value={state.levelRange.min}
               onChange={(e) => {
                 const newMin = parseInt(e.target.value);
@@ -122,14 +118,19 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
                   max: Math.max(newMin, state.levelRange.max)
                 });
               }}
-              className="range-slider range-slider-min"
+              className={`level-select level-select-${state.levelRange.min}`}
               data-testid="level-range-min"
-            />
-            <input
-              type="range"
-              min="0"
-              max="9"
-              step="1"
+            >
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+                <option key={level} value={level}>
+                  {level === 0 ? 'Cantrip' : level}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Max</span>
+            <select
               value={state.levelRange.max}
               onChange={(e) => {
                 const newMax = parseInt(e.target.value);
@@ -138,17 +139,16 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
                   max: newMax
                 });
               }}
-              className="range-slider range-slider-max"
+              className={`level-select level-select-${state.levelRange.max}`}
               data-testid="level-range-max"
-            />
-          </div>
-          <div className="range-ticks">
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
-              <span key={level} className={`range-tick range-tick-${level}`}>
-                {level === 0 ? 'C' : level}
-              </span>
-            ))}
-          </div>
+            >
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+                <option key={level} value={level}>
+                  {level === 0 ? 'Cantrip' : level}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </div>
 

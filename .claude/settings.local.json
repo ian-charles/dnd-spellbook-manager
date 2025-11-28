@@ -22,7 +22,12 @@
       "Bash(npx cross-env:*)",
       "Bash(npm run test:unit:*)",
       "Bash(git pull:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(timeout 30 tail:*)",
+      "Bash(timeout 120 bash:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []

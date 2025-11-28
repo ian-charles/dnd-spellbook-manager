@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Spellbook Refresh</title>
+</head>
+<body>
+    <h1>Manual Test: Spellbook Refresh</h1>
+    <p>Open browser console and navigate to http://localhost:5173</p>
+    <ol>
+        <li>Go to Browse Spells</li>
+        <li>Select 2-3 spells (click checkboxes)</li>
+        <li>Click "Add to Spellbook"</li>
+        <li>Click "Create New Spellbook"</li>
+        <li>Enter a name like "Test Book"</li>
+        <li>Click "Create"</li>
+        <li>Check if "My Spellbooks (X)" counter updates immediately</li>
+        <li>Check if the spellbook appears in the dropdown without refresh</li>
+    </ol>
+
+    <h2>Expected Behavior:</h2>
+    <ul>
+        <li>Counter should update from (0) to (1) immediately</li>
+        <li>Dropdown should show the new spellbook</li>
+        <li>No page refresh needed</li>
+    </ul>
+
+    <h2>If it doesn't work:</h2>
+    <p>Check browser console for errors. Look for:</p>
+    <ul>
+        <li>React state update errors</li>
+        <li>IndexedDB errors</li>
+        <li>Promise rejection errors</li>
+    </ul>
+</body>
+</html>

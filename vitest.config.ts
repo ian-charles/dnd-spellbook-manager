@@ -5,10 +5,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environmentMatchGlobs: [
-      ['src/**/*.test.tsx', 'jsdom'],
-      ['src/**/*.test.ts', 'jsdom'],
-    ],
+    environment: 'jsdom',
     testTimeout: 60000,
     hookTimeout: 60000,
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],

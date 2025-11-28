@@ -13,7 +13,6 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "test:coverage": "vitest --coverage",
     "test:unit": "vitest --run src/services"
   },
   "scripts-info": {
@@ -26,7 +25,6 @@
     "test": "Run all tests",
     "test:ui": "Run tests with UI interface",
     "test:coverage": "Run tests and generate coverage report",
-    "test:e2e": "Run end-to-end tests",
     "test:unit": "Run unit tests only"
   },
   "dependencies": {

@@ -16,7 +16,8 @@ import { useSpellbooks } from '../hooks/useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { SpellbookDetailView, EnrichedSpell } from './SpellbookDetailView';
+import { SpellbookDetailView } from './SpellbookDetailView';
+import { EnrichedSpell } from '../types/spellbook';
 
 interface SpellbookDetailProps {
   spellbookId: string;

@@ -3,8 +3,11 @@ import { SortDirection } from '../hooks/useSpellSorting';
 import './SortIcon.css';
 
 interface SortIconProps {
+  /** The column identifier for this icon */
   column: string;
+  /** The currently sorted column identifier */
   currentColumn: string;
+  /** The current sort direction ('asc' or 'desc') */
   currentDirection: SortDirection;
 }
 

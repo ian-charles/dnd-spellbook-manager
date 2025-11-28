@@ -6,6 +6,12 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Pushing changes to remote..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+# Check if remote exists
+if ! git remote | grep -q .; then
+  echo "ℹ️  No remote repository configured. Skipping push."
+  exit 0
+fi
+
 git push
 
 if [ $? -eq 0 ]; then

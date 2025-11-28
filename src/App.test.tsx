@@ -268,4 +268,5 @@ describe('App Component', () => {
             // If we had multiple spells, it would show partial success
         });
     });
+
 });

@@ -206,7 +206,6 @@ function App() {
             spells={filteredSpells}
             selectedSpellIds={selectedSpellIds}
             onSelectionChange={setSelectedSpellIds}
-            onAddToSpellbook={handleAddToSpellbook}
           />
         </>
       )}

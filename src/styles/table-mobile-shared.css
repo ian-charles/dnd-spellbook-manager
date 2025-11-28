@@ -9,6 +9,7 @@
  * This file eliminates ~200 lines of duplicated CSS between the two components.
  */
 
+/* Mobile breakpoint matches standard tablet width (768px) */
 @media (max-width: 768px) {
 
   /* Container - remove desktop table styling */

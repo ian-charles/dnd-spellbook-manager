@@ -1,0 +1,257 @@
+import { Fragment, useState, useRef, useEffect } from 'react';
+import { EnrichedSpell } from '../../types/spellbook';
+import { SortColumn, SortDirection } from '../../hooks/useSpellSorting';
+import { SortIcon } from '../SortIcon';
+import { SpellDescription } from '../SpellDescription';
+import { ComponentBadges, ClassBadges } from '../SpellBadges';
+import { getLevelText } from '../../utils/spellFormatters';
+
+interface SpellbookSpellsTableProps {
+    sortedSpells: EnrichedSpell[];
+    expandedSpellId: string | null;
+    sortColumn: SortColumn;
+    sortDirection: SortDirection;
+    onSort: (column: SortColumn) => void;
+    onRowClick: (spellId: string) => void;
+    onTogglePrepared: (spellId: string) => void;
+    onRemoveSpell: (spellId: string, spellName: string) => void;
+}
+
+export function SpellbookSpellsTable({
+    sortedSpells,
+    expandedSpellId,
+    sortColumn,
+    sortDirection,
+    onSort,
+    onRowClick,
+    onTogglePrepared,
+    onRemoveSpell,
+}: SpellbookSpellsTableProps) {
+    // Context menu state for mobile
+    const [contextMenu, setContextMenu] = useState<{
+        spellId: string;
+        spellName: string;
+        prepared: boolean;
+        x: number;
+        y: number;
+    } | null>(null);
+    const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+    const longPressStartPos = useRef<{ x: number; y: number } | null>(null);
+
+    // Close context menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = () => setContextMenu(null);
+        if (contextMenu) {
+            document.addEventListener('click', handleClickOutside);
+            return () => document.removeEventListener('click', handleClickOutside);
+        }
+    }, [contextMenu]);
+
+    // Long-press handlers for mobile context menu
+    const handleTouchStart = (e: React.TouchEvent, spell: EnrichedSpell) => {
+        const touch = e.touches[0];
+        longPressStartPos.current = { x: touch.clientX, y: touch.clientY };
+
+        longPressTimer.current = setTimeout(() => {
+            setContextMenu({
+                spellId: spell.spell.id,
+                spellName: spell.spell.name,
+                prepared: spell.prepared,
+                x: touch.clientX,
+                y: touch.clientY,
+            });
+        }, 500); // 500ms long press
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!longPressStartPos.current) return;
+
+        const touch = e.touches[0];
+        const deltaX = Math.abs(touch.clientX - longPressStartPos.current.x);
+        const deltaY = Math.abs(touch.clientY - longPressStartPos.current.y);
+
+        // Cancel long press if user moves finger too much
+        if (deltaX > 10 || deltaY > 10) {
+            if (longPressTimer.current) {
+                clearTimeout(longPressTimer.current);
+                longPressTimer.current = null;
+            }
+            longPressStartPos.current = null;
+        }
+    };
+
+    const handleTouchEnd = () => {
+        if (longPressTimer.current) {
+            clearTimeout(longPressTimer.current);
+            longPressTimer.current = null;
+        }
+        longPressStartPos.current = null;
+    };
+
+    const handleContextMenuAction = (action: 'prep' | 'remove', spellId: string, spellName: string) => {
+        setContextMenu(null);
+        if (action === 'prep') {
+            onTogglePrepared(spellId);
+        } else {
+            onRemoveSpell(spellId, spellName);
+        }
+    };
+
+    return (
+        <>
+            <div className="spellbook-table-container" data-testid="spellbook-spell-list">
+                <table className="spell-table spellbook-table">
+                    <thead>
+                        <tr>
+                            <th className="prepared-col">Prep</th>
+                            <th onClick={() => onSort('name')} className="sortable">
+                                <div className="th-content">
+                                    Spell Name
+                                    <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
+                                </div>
+                            </th>
+                            <th onClick={() => onSort('level')} className="sortable level-col">
+                                <div className="th-content">
+                                    Level
+                                    <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
+                                </div>
+                            </th>
+                            <th onClick={() => onSort('castingTime')} className="sortable time-col">
+                                <div className="th-content">
+                                    Time
+                                    <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
+                                </div>
+                            </th>
+                            <th onClick={() => onSort('range')} className="sortable range-col">
+                                <div className="th-content">
+                                    Range
+                                    <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
+                                </div>
+                            </th>
+                            <th onClick={() => onSort('duration')} className="sortable duration-col">
+                                <div className="th-content">
+                                    Duration
+                                    <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
+                                </div>
+                            </th>
+                            <th className="components-col">Comp.</th>
+                            <th onClick={() => onSort('school')} className="sortable school-col">
+                                <div className="th-content">
+                                    School
+                                    <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
+                                </div>
+                            </th>
+                            <th onClick={() => onSort('source')} className="sortable source-col">
+                                <div className="th-content">
+                                    Source
+                                    <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
+                                </div>
+                            </th>
+                            <th className="action-col">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedSpells.map((enrichedSpell) => {
+                            const { spell, prepared } = enrichedSpell;
+                            return (
+                                <Fragment key={spell.id}>
+                                    <tr
+                                        className={`spell-row ${prepared ? 'prepared-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                                        data-testid={`spellbook-spell-${spell.id}`}
+                                        onClick={() => onRowClick(spell.id)}
+                                        onTouchStart={(e) => handleTouchStart(e, enrichedSpell)}
+                                        onTouchMove={handleTouchMove}
+                                        onTouchEnd={handleTouchEnd}
+                                    >
+                                        <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
+                                            <input
+                                                type="checkbox"
+                                                checked={prepared}
+                                                onChange={() => onTogglePrepared(spell.id)}
+                                                data-testid="toggle-prepared"
+                                                aria-label={`Toggle ${spell.name} prepared status`}
+                                            />
+                                        </td>
+                                        <td className="spell-name">
+                                            <div className="spell-name-header">
+                                                {spell.name}
+                                                {spell.concentration && <span className="badge badge-concentration">C</span>}
+                                                {spell.ritual && <span className="badge badge-ritual">R</span>}
+                                            </div>
+                                        </td>
+                                        <td className="level-col">{getLevelText(spell.level)}</td>
+                                        <td className="time-col">{spell.castingTime}</td>
+                                        <td className="range-col">{spell.range}</td>
+                                        <td className="duration-col">{spell.duration}</td>
+                                        <td className="components-col"><ComponentBadges spell={spell} /></td>
+                                        <td className="school-col">{spell.school}</td>
+                                        <td className="source-col">{spell.source}</td>
+                                        <td className="action-col" onClick={(e) => e.stopPropagation()}>
+                                            <button
+                                                className="btn-remove-small"
+                                                onClick={() => onRemoveSpell(spell.id, spell.name)}
+                                                data-testid={`btn-remove-spell-${spell.id}`}
+                                                aria-label={`Remove ${spell.name}`}
+                                            >
+                                                ✕
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {expandedSpellId === spell.id && (
+                                        <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
+                                            <td colSpan={10} className="spell-expansion-cell">
+                                                <div className="spell-inline-expansion">
+                                                    <div className="spell-expanded-description">
+                                                        {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
+                                                        <SpellDescription text={spell.description} />
+                                                    </div>
+                                                    {spell.higherLevels && (
+                                                        <div className="spell-expanded-higher-levels">
+                                                            {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
+                                                            <strong>At Higher Levels:</strong> <SpellDescription text={spell.higherLevels} />
+                                                        </div>
+                                                    )}
+                                                    <div className="spell-expanded-footer">
+                                                        <div>
+                                                            <strong>Classes:</strong> <ClassBadges classes={spell.classes} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </Fragment>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Context Menu for Mobile */}
+            {contextMenu && (
+                <div
+                    className="context-menu"
+                    style={{
+                        position: 'fixed',
+                        left: `${contextMenu.x}px`,
+                        top: `${contextMenu.y}px`,
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button
+                        className="context-menu-item"
+                        onClick={() => handleContextMenuAction('prep', contextMenu.spellId, contextMenu.spellName)}
+                    >
+                        {contextMenu.prepared ? 'Unprep' : 'Prep'}
+                    </button>
+                    <button
+                        className="context-menu-item context-menu-item-danger"
+                        onClick={() => handleContextMenuAction('remove', contextMenu.spellId, contextMenu.spellName)}
+                    >
+                        Remove
+                    </button>
+                </div>
+            )}
+        </>
+    );
+}

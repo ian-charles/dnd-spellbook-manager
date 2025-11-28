@@ -3,9 +3,10 @@ import { exportImportService } from '../services/exportImport.service';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
-import { SortIcon } from './SortIcon';
+
 import LoadingSpinner from './LoadingSpinner';
-import { LoadingButton } from './LoadingButton';
+import { SpellbookListHeader } from './spellbook-list/SpellbookListHeader';
+import { SpellbookListTable, SortColumn } from './spellbook-list/SpellbookListTable';
 import { CreateSpellbookInput, Spellbook } from '../types/spellbook';
 import { MESSAGES } from '../constants/messages';
 import './SpellbookList.css';
@@ -20,7 +21,6 @@ interface SpellbookListProps {
   onAddSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
 }
 
-type SortColumn = 'name' | 'spells' | 'ability' | 'attack' | 'saveDC' | 'updated';
 type SortDirection = 'asc' | 'desc';
 
 export function SpellbookList({
@@ -40,6 +40,7 @@ export function SpellbookList({
     spellSaveDC?: number;
     sourceSpellbookId?: string;
   } | undefined>(undefined);
+  const [copyProgress, setCopyProgress] = useState<string>('');
   const [importing, setImporting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortColumn, setSortColumn] = useState<SortColumn>('name');
@@ -168,7 +169,18 @@ export function SpellbookList({
           // Copy all spells from the source spellbook to the new one
           const errors: string[] = [];
           const spellsToCopy = sourceSpellbook.spells.map(spell => spell.spellId);
-          const results = await Promise.allSettled(spellsToCopy.map(spellId => onAddSpellToSpellbook(newSpellbook.id, spellId)));
+          const totalSpells = spellsToCopy.length;
+          let completedSpells = 0;
+          setCopyProgress(`Copying 0/${totalSpells} spells...`);
+
+          const results = await Promise.allSettled(spellsToCopy.map(async (spellId) => {
+            try {
+              await onAddSpellToSpellbook(newSpellbook.id, spellId);
+            } finally {
+              completedSpells++;
+              setCopyProgress(`Copying ${completedSpells}/${totalSpells} spells...`);
+            }
+          }));
 
           results.forEach((result, index) => {
             if (result.status === 'rejected') {
@@ -192,6 +204,7 @@ export function SpellbookList({
 
       setCreateModalOpen(false);
       setCopyData(undefined);
+      setCopyProgress('');
     } catch (error) {
       throw error; // Let the modal handle the error
     } finally {
@@ -363,36 +376,13 @@ export function SpellbookList({
 
   return (
     <div className="spellbook-list">
-      <div className="spellbook-list-header">
-        <h2 data-testid="spellbooks-header">My Spellbooks</h2>
-        <div className="header-actions">
-          <button
-            className="btn-secondary"
-            data-testid="btn-export-spellbooks"
-            onClick={handleExport}
-            disabled={spellbooks.length === 0}
-            title={spellbooks.length === 0 ? MESSAGES.TOOLTIPS.NO_SPELLBOOKS_TO_EXPORT : MESSAGES.TOOLTIPS.EXPORT_ALL_SPELLBOOKS}
-          >
-            {MESSAGES.BUTTONS.EXPORT}
-          </button>
-          <LoadingButton
-            className="btn-secondary"
-            data-testid="btn-import-spellbooks"
-            onClick={handleImportClick}
-            loading={importing}
-            loadingText="Importing..."
-          >
-            {MESSAGES.BUTTONS.IMPORT}
-          </LoadingButton>
-          <button
-            className="btn-primary"
-            data-testid="btn-create-spellbook"
-            onClick={() => setCreateModalOpen(true)}
-          >
-            + New Spellbook
-          </button>
-        </div>
-      </div>
+      <SpellbookListHeader
+        spellbookCount={spellbooks.length}
+        importing={importing}
+        onExport={handleExport}
+        onImportClick={handleImportClick}
+        onCreateClick={() => setCreateModalOpen(true)}
+      />
 
       {/* Hidden file input for import */}
       <input
@@ -433,103 +423,18 @@ export function SpellbookList({
             )}
           </div>
 
-          <table className="spellbooks-table" data-testid="spellbooks-table">
-            <thead>
-              <tr>
-                <th className="sortable-header">
-                  <button onClick={() => handleSort('name')} className="sort-button">
-                    Spellbook Name
-                    <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </button>
-                </th>
-                <th className="sortable-header">
-                  <button onClick={() => handleSort('spells')} className="sort-button">
-                    Spells
-                    <SortIcon column="spells" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </button>
-                </th>
-                <th className="sortable-header">
-                  <button onClick={() => handleSort('ability')} className="sort-button">
-                    Ability
-                    <SortIcon column="ability" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </button>
-                </th>
-                <th className="sortable-header">
-                  <button onClick={() => handleSort('attack')} className="sort-button">
-                    Attack
-                    <SortIcon column="attack" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </button>
-                </th>
-                <th className="sortable-header">
-                  <button onClick={() => handleSort('saveDC')} className="sort-button">
-                    Save DC
-                    <SortIcon column="saveDC" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </button>
-                </th>
-                <th className="sortable-header">
-                  <button onClick={() => handleSort('updated')} className="sort-button">
-                    Last Updated
-                    <SortIcon column="updated" currentColumn={sortColumn} currentDirection={sortDirection} />
-                  </button>
-                </th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredAndSortedSpellbooks.map((spellbook) => (
-                <tr
-                  key={spellbook.id}
-                  className="spellbook-row"
-                  data-testid={`spellbook-row-${spellbook.id}`}
-                  onClick={() => onSpellbookClick(spellbook.id)}
-                  onTouchStart={(e) => handleTouchStart(e, spellbook)}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
-                >
-                  <td className="spellbook-name" data-testid="spellbook-name" data-label="Name">
-                    {spellbook.name}
-                  </td>
-                  <td className="spellbook-spell-count" data-label="Spells">
-                    {spellbook.spells.length}
-                  </td>
-                  <td className="spellbook-ability" data-label="Ability">
-                    {spellbook.spellcastingAbility || 'N/A'}
-                  </td>
-                  <td className="spellbook-attack" data-label="Attack">
-                    {spellbook.spellAttackModifier !== undefined
-                      ? `+${spellbook.spellAttackModifier}`
-                      : 'N/A'}
-                  </td>
-                  <td className="spellbook-save-dc" data-label="Save DC">
-                    {spellbook.spellSaveDC ?? 'N/A'}
-                  </td>
-                  <td className="spellbook-updated" data-label="Last Updated">
-                    {new Date(spellbook.updated).toLocaleDateString()}
-                  </td>
-                  <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      className="btn-secondary-small"
-                      onClick={() => handleCopy(spellbook.id)}
-                      data-testid={`btn-copy-spellbook-${spellbook.id}`}
-                      title="Copy Spellbook"
-                      aria-label={`Copy spellbook ${spellbook.name}`}
-                    >
-                      Copy
-                    </button>
-                    <button
-                      className="btn-danger-small"
-                      onClick={() => handleDelete(spellbook.id, spellbook.name)}
-                      data-testid={`btn-delete-spellbook-${spellbook.id}`}
-                      title="Delete Spellbook"
-                      aria-label={`Delete spellbook ${spellbook.name}`}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <SpellbookListTable
+            spellbooks={filteredAndSortedSpellbooks}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+            onSpellbookClick={onSpellbookClick}
+            onCopy={handleCopy}
+            onDelete={handleDelete}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          />
         </>
       )}
 
@@ -544,6 +449,7 @@ export function SpellbookList({
         existingNames={spellbooks.map(sb => sb.name)}
         initialData={copyData}
         title={copyData ? 'Copy Spellbook' : 'Create New Spellbook'}
+        loadingText={copyProgress}
       />
 
       {/* Confirm Delete Dialog */}

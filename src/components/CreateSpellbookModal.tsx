@@ -14,6 +14,7 @@ interface CreateSpellbookModalProps {
     spellSaveDC?: number;
   };
   title?: string;
+  loadingText?: string;
 }
 
 export function CreateSpellbookModal({
@@ -23,6 +24,7 @@ export function CreateSpellbookModal({
   existingNames,
   initialData,
   title,
+  loadingText,
 }: CreateSpellbookModalProps) {
   const [name, setName] = useState('');
   const [spellcastingAbility, setSpellcastingAbility] = useState<'INT' | 'WIS' | 'CHA' | ''>('');
@@ -224,7 +226,7 @@ export function CreateSpellbookModal({
               data-testid="create-button"
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Save Spellbook'}
+              {loading ? (loadingText || 'Saving...') : 'Save Spellbook'}
             </button>
           </div>
         </form >

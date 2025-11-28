@@ -171,8 +171,9 @@ describe('SpellbookList', () => {
     render(<SpellbookList {...defaultProps} spellbooks={spellbooksWithMissingStats} />);
 
     // Verify N/A values for spells without those stats
+    // We expect 3 N/A values: one for Ability, one for Attack, one for Save DC
     const naElements = screen.getAllByText('N/A');
-    expect(naElements.length).toBe(3); // Should have N/A for Ability, Attack, and Save DC
+    expect(naElements.length).toBe(3);
 
     // Verify we have the specific columns with N/A
     const rows = screen.getAllByRole('row');

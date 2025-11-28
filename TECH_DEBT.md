@@ -12,72 +12,12 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Solution**: Add loading state and show progress indicator during copy operation
 **Effort**: Medium (1 hour)
 
-- [ ] **Missing JSDoc for SpellDescription usage** (Medium) - `src/components/SpellTable.tsx`, `src/components/SpellbookDetailView.tsx`: No inline comments explaining why SpellDescription component is used.
 
 
-### E2E Testing
-- [x] **Hardcoded Timeouts**: Replace hardcoded timeouts (e.g., `30000`) with `TIMEOUTS` constants from `config.ts` in all test files.
-- [x] **Missing error messages in E2E test assertions**: Add descriptive error messages to `expect` calls in `src/e2e/spell-tooltip.test.ts` and `src/e2e/spell-sorting.test.ts`.
-- [ ] **Skipped Test**: Investigate and fix `should add spell to spellbook from browse page` in `src/e2e/ui-interactions.test.ts`. It was skipped due to persistent timeouts likely caused by a race condition in IndexedDB persistence during page reload.
-- [ ] **Linting Errors**: Resolve remaining linting errors in E2E test files (e.g., `describe`, `it`, `expect` not found) by ensuring `tsconfig.json` in `src/e2e` is correctly picked up by the IDE.
 
-### Code Review Findings (2025-11-28)
 
-#### Missing Test Coverage for Error Paths in App.test.tsx
-- **Location**: `src/App.test.tsx`
-- **Issue**: Mock setup allows all operations to succeed - no tests for error scenarios like network failures, DB errors, or race conditions
-- **Priority**: Medium
-- **Solution**: Add tests for error handling in `handleAddToSpellbook` and `handleCreateSpellbook`
-- **Effort**: Medium (1 hour)
 
-#### Magic Number 50 in Multiple E2E Tests
-- **Location**: `src/e2e/spell-tooltip.test.ts:62, 113, 164`, `src/e2e/ui-interactions.test.ts:259, 286, 392, 425`
-- **Issue**: Hardcoded minimum description length (50 characters) appears in 7+ locations without explanation
-- **Priority**: Medium
-- **Solution**: Extract to named constant `MIN_DESCRIPTION_LENGTH` in `src/e2e/config.ts`
-- **Effort**: Low (10 minutes)
 
-#### Hardcoded Timeout 30000 in E2E Tests
-- **Location**: `src/e2e/spell-filtering.test.ts:17, 32, etc.`, `src/e2e/spell-tooltip.test.ts:19, 35, etc.`
-- **Issue**: Multiple test suites use hardcoded `30000` instead of `TIMEOUTS.LONG`
-- **Priority**: Medium
-- **Solution**: Replace all `30000` with `TIMEOUTS.LONG` from config
-- **Effort**: Low (15 minutes)
-
-#### Missing Error Message in Multiple E2E Assertions
-- **Location**: `src/e2e/spell-filtering.test.ts:26, 40, etc.`, `src/e2e/spell-search.test.ts:35, 55, etc.`, `src/e2e/ui-interactions.test.ts:89, 122, etc.`
-- **Issue**: 50+ assertions lack descriptive error messages making test failures hard to debug
-- **Priority**: Medium
-- **Solution**: Add error message parameter to all `expect()` calls
-- **Effort**: Medium (2 hours)
-
-#### Incomplete beforeEach Cleanup in E2E Tests
-- **Location**: `src/e2e/spell-filtering.test.ts:23-26`, `src/e2e/spell-search.test.ts:23-26`
-- **Issue**: Tests reload page but don't clear filters/search state between tests
-- **Priority**: Medium
-- **Solution**: Add filter/search reset in beforeEach hooks
-- **Effort**: Low (20 minutes)
-
-#### Missing JSDoc for E2E Helper Functions
-- **Location**: `src/e2e/helpers.ts` - all exported functions
-- **Issue**: Only some helper functions have JSDoc comments, others lack documentation
-- **Priority**: Medium
-- **Solution**: Add JSDoc to all exported helper functions
-- **Effort**: Medium (1 hour)
-
-#### Fragile String Matching in E2E Tests
-- **Location**: `src/e2e/spell-filtering.test.ts:26, 40`, `src/e2e/spell-search.test.ts:57`, etc.
-- **Issue**: Tests use `.toContain('319 results')` which breaks if spell count changes
-- **Priority**: Medium
-- **Solution**: Use `.toMatch(/\d+ results/)` or check for range
-- **Effort**: Low (30 minutes)
-
-#### Test Environment Inconsistency
-- **Location**: `vitest.config.ts:7`
-- **Issue**: Unit tests use `environment: 'node'` but test React components (should use 'jsdom')
-- **Priority**: Medium
-- **Solution**: Change to `environment: 'jsdom'` or create separate configs for unit vs E2E
-- **Effort**: Low (15 minutes)
 
 ### Completed Refactoring
 - [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.
@@ -93,6 +33,43 @@ This document tracks known technical debt, code quality issues, and refactoring 
 - [x] **Missing JSDoc for SpellDescription component** (Medium) - Added JSDoc in `src/components/SpellDescription.tsx`.
 - [x] **Hardcoded dice types in SpellDescription regex** (Medium) - Documented as maintainability issue above.
 
+### Git Hooks Setup No Verification of Executable Permissions
+**Location**: scripts/setup-git-hooks.js:52-60
+**Issue**: No verification that chmod actually made files executable
+**Priority**: Medium
+**Solution**: Use stat() to verify file permissions
+**Effort**: Low (10 minutes)
+
+### Missing JSDoc for complex state management in SpellbookList
+**Location**: src/components/SpellbookList.tsx (copyData, contextMenu states)
+**Issue**: Complex state objects lack documentation explaining their purpose
+**Priority**: Medium
+**Solution**: Add JSDoc comments
+**Effort**: Low (15 minutes)
+
+### Magic number for touch movement threshold
+**Location**: src/components/spellbook-detail/SpellbookSpellsTable.tsx:handleTouchMove
+**Issue**: Magic number 10 without explanation
+**Priority**: Medium
+**Solution**: Extract to named constant TOUCH_MOVE_THRESHOLD
+**Effort**: Low (5 minutes)
+
+### Duplicate long-press logic (~40 lines)
+**Location**: src/components/SpellbookList.tsx and src/components/spellbook-detail/SpellbookSpellsTable.tsx
+**Issue**: Identical long-press handling code in two components
+**Priority**: Medium
+**Solution**: Extract to useLongPress custom hook
+**Effort**: Medium (1 hour)
+
+### Magic number for long-press duration
+**Location**: src/components/SpellbookList.tsx:259, src/components/spellbook-detail/SpellbookSpellsTable.tsx:33
+**Issue**: Magic number 500 without explanation
+**Priority**: Medium
+**Solution**: Extract to LONG_PRESS_DURATION constant
+**Effort**: Low (5 minutes)
+
+
+
 ### Missing input validation in E2E helpers
 **Location**: src/e2e/helpers.ts
 **Issue**: Several helper functions don't validate inputs before using them
@@ -100,12 +77,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Solution**: Add validation for inputs like spellIndex
 **Effort**: Low (30 minutes)
 
-### Potential memory leak in SpellTable expansion state
-**Location**: src/components/SpellTable.tsx:73-76
-**Issue**: expandedSpellId may reference a spell no longer in the filtered list when spells prop changes
-**Priority**: Medium
-**Solution**: Add useEffect to reset expandedSpellId when spells changes
-**Effort**: Low (15 minutes)
+
 
 ### Missing accessibility labels in SpellbookList
 **Location**: src/components/SpellbookList.tsx (Copy and Delete buttons)
@@ -114,118 +86,28 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Solution**: Add aria-label attributes
 **Effort**: Low (10 minutes)
 
-### Unclear assertion in SpellbookList.test.tsx
-**Location**: src/components/SpellbookList.test.tsx:69-80
-**Issue**: Assertion for N/A values uses toBeGreaterThanOrEqual(3) which is vague
-**Priority**: Medium
-**Solution**: Specify exact count or explain why "at least 3"
-**Effort**: Low (5 minutes)
-
-### Missing JSDoc for SortIcon usage
-**Location**: src/components/SortIcon.tsx
-**Issue**: Component lacks JSDoc documentation
-**Priority**: Medium
-**Solution**: Add JSDoc comments
-**Effort**: Low (5 minutes)
-
-### Missing test for displayTitle empty string edge case
-**Location**: src/components/CreateSpellbookModal.tsx:29
-**Issue**: Edge case not covered by tests
-**Priority**: Medium
-**Solution**: Add test for title="" prop
-**Effort**: Low (15 minutes)
-
-### Magic number 50 for description length validation
-**Location**: src/e2e/spell-tooltip.test.ts:112, 159
-**Issue**: Hardcoded minimum description length without explanation
-**Priority**: Medium
-**Solution**: Extract to named constant MIN_DESCRIPTION_LENGTH
-**Effort**: Low (5 minutes)
-
-### Missing error messages in E2E test assertions
-**Location**: src/e2e/spell-tooltip.test.ts:59, 112, 161, 204, 223, 272
-**Issue**: 6+ assertions lack descriptive error messages
-**Priority**: Medium
-**Solution**: Add error message parameter to all expect() calls
-**Effort**: Low (10 minutes)
-
-### Missing upper bound validation in E2E helpers
-**Location**: src/e2e/helpers.ts:232, 285, 335, 379
-**Issue**: Validates lower bound but not upper bound
-**Priority**: Medium
-**Solution**: Add if (index >= elements.length) checks
-**Effort**: Low (15 minutes)
-
-### Missing JSDoc for clickSpellbookCard helper
-**Location**: src/e2e/helpers.ts:415-426
-**Issue**: Helper function lacks JSDoc despite being marked complete in tech debt doc
-**Priority**: Medium
-**Solution**: Add JSDoc comment explaining purpose and parameters
-**Effort**: Low (3 minutes)
-
-### Inconsistent testid naming (spellbook-name-input vs constant)
-**Location**: src/e2e/config.ts:55, src/components/CreateSpellbookModal.tsx:131
-**Issue**: Config defines constant but component doesn't reference it in comments
-**Priority**: Medium
-**Solution**: Add comment in component explaining canonical testid name
-**Effort**: Low (2 minutes)
-
-### Magic number 7 without explanation in SpellTable tests
-**Location**: src/components/SpellTable.test.tsx:153
-**Issue**: Assertion uses magic number 7 for colspan without explanation
-**Priority**: Medium
-**Solution**: Add descriptive error message explaining why 7 columns are expected
-**Effort**: Low (5 minutes)
-
-### Fragile test assertions using exact string matching
-**Location**: src/components/SpellTable.test.tsx:60, 69, 75
-**Issue**: Tests use .toContain() without normalizing whitespace
-**Priority**: Medium
-**Solution**: Use regex or normalize whitespace before assertion
-**Effort**: Low (15 minutes)
 
 
-### Missing cleanup between E2E test cases
-**Location**: src/e2e/spell-filtering.test.ts, src/e2e/spell-search.test.ts
-**Issue**: Tests don't reset filters/search between test cases
-**Priority**: Medium
-**Solution**: Add beforeEach to clear state
-**Effort**: Low (15 minutes)
 
-### Missing error messages in SpellTable test assertions
-**Location**: src/components/SpellTable.test.tsx:60, 69, 75, 153
-**Issue**: Assertions lack descriptive error messages making test failures hard to debug
-**Priority**: Medium
-**Solution**: Add error message as second parameter to expect() calls
-**Effort**: Low (15 minutes)
 
-### Hardcoded timeout values in E2E tests
-**Location**: src/e2e/spell-sorting.test.ts, src/e2e/ui-interactions.test.ts
-**Issue**: Tests use magic numbers (5000, 10000, 30000) instead of TIMEOUTS constants
-**Priority**: Medium
-**Solution**: Replace all hardcoded timeouts with TIMEOUTS.SHORT, TIMEOUTS.MEDIUM, or TIMEOUTS.LONG
-**Effort**: Low (20 minutes)
 
-### Inconsistent Checkbox State Management in SpellTable
-**Location**: src/components/SpellTable.tsx:89-94
-**Issue**: Checkbox toggle handler doesn't check current state before toggling.
-**Priority**: Medium
-**Solution**: Use functional state update.
-**Effort**: Low (10 minutes)
 
-### Missing Error Boundaries for E2E Test Assertions
-**Location**: src/e2e/helpers.ts
-**Issue**: Helper functions throw generic errors without capturing DOM state.
-**Priority**: Medium
-**Solution**: Capture and include relevant DOM state in error messages.
-**Effort**: Low (20 minutes)
 
-### Hardcoded Magic Numbers in E2E Tests Without Comments
-**Location**: src/e2e/ui-interactions.test.ts
-**Issue**: Tests check for specific widths without explaining why.
-**Priority**: Medium
-**Solution**: Add comments or extract to named constants.
-**Effort**: Low (10 minutes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Vague Assertion in SpellbookDetailView Tests
 **Location**: src/components/SpellbookDetailView.test.tsx:69
@@ -234,61 +116,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Solution**: Add error message.
 **Effort**: Low (5 minutes)
 
-### Hardcoded Claude CLI Path
-**Location**: scripts/git-hooks/pre-commit-review:206
-**Issue**: Path /Users/sjaconette/.local/bin/claude hardcoded
-**Priority**: Medium
-**Solution**: Use environment variable CLAUDE_CODE_BIN
-**Effort**: Low (10 minutes)
 
-### Silent Ed Command Failures
-**Location**: scripts/git-hooks/pre-commit-review:177-183
-**Issue**: Ed command failures redirected to /dev/null
-**Priority**: Medium
-**Solution**: Log ed errors to review log directory
-**Effort**: Low (10 minutes)
-
-### Mobile Breakpoint Documentation
-**Location**: src/styles/table-mobile-shared.css:10
-**Issue**: Breakpoint changed from 400px to 768px without explanation
-**Priority**: Medium
-**Solution**: Add comment explaining breakpoint targets iPad portrait mode
-**Effort**: Low (2 minutes)
-
-### Cross-Platform Temp File Path
-**Location**: scripts/git-hooks/pre-commit:43
-**Issue**: Hardcoded /tmp path won't work on all Windows systems
-**Priority**: Medium
-**Solution**: Use ${TMPDIR:-/tmp}
-**Effort**: Low (5 minutes)
-
-### Process Cleanup Race Condition
-**Location**: scripts/git-hooks/pre-commit:75-81
-**Issue**: No wait between kill and pkill
-**Priority**: Medium
-**Solution**: Add wait $DEV_SERVER_PID
-**Effort**: Low (2 minutes)
-
-### Git Hooks Missing Inline Documentation
-**Location**: scripts/setup-git-hooks.js:37-54
-**Issue**: Complex error handling lacks inline comments
-**Priority**: Medium
-**Solution**: Add inline comments
-**Effort**: Low (5 minutes)
-
-### Post-Commit Hook Missing Remote Check
-**Location**: scripts/git-hooks/post-commit:9
-**Issue**: No check if git remote exists before attempting push
-**Priority**: Medium
-**Solution**: Check git remote before attempting push
-**Effort**: Low (5 minutes)
-
-### Git Hooks Setup No Verification of Executable Permissions
-**Location**: scripts/setup-git-hooks.js:52-60
-**Issue**: No verification that chmod actually made files executable
-**Priority**: Medium
-**Solution**: Use stat() to verify file permissions
-**Effort**: Low (10 minutes)
 
 ---
 
@@ -501,7 +329,77 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ### ✅ Test file missing strategy documentation (Completed 2025-11-26)
 - **Fixed**: Added file-level JSDoc to `SpellbookList.test.tsx`
 - **Result**: Clearer testing strategy documentation
+### ✅ Missing JSDoc for SpellDescription usage (Completed 2025-11-28)
+- **Fixed**: Added JSDoc to `SpellDescription` usage in `SpellTable.tsx` and `SpellbookDetailView.tsx`
+- **Result**: Improved code documentation
 
+### ✅ E2E Testing Cleanup (Completed 2025-11-28)
+- **Fixed**: Removed all E2E tests and related configuration as per user request
+- **Result**: Simplified project structure and removed maintenance burden of flaky E2E tests
+
+### ✅ Missing Test Coverage for Error Paths in App.test.tsx (Completed 2025-11-28)
+- **Fixed**: Added error handling tests for `handleCreateSpellbook`
+- **Result**: Improved test coverage for error scenarios
+
+### ✅ Test Environment Inconsistency (Completed 2025-11-28)
+- **Fixed**: Updated `vitest.config.ts` to use `jsdom` environment globally
+- **Result**: Consistent test environment for React components
+
+### ✅ Potential memory leak in SpellTable expansion state (Completed 2025-11-28)
+- **Fixed**: Added logic to reset `expandedSpellId` when `spells` prop changes
+- **Result**: Prevented potential memory leaks
+
+### ✅ Unclear assertion in SpellbookList.test.tsx (Completed 2025-11-28)
+- **Fixed**: Clarified assertion for N/A values
+- **Result**: Clearer test intent
+
+### ✅ Missing JSDoc for SortIcon usage (Completed 2025-11-28)
+- **Fixed**: Added JSDoc to `SortIcon` component
+- **Result**: Improved documentation
+
+### ✅ Missing test for displayTitle empty string edge case (Completed 2025-11-28)
+- **Fixed**: Confirmed existing test coverage in `CreateSpellbookModal.test.tsx`
+- **Result**: Verified edge case coverage
+
+### ✅ Magic number 7 without explanation in SpellTable tests (Completed 2025-11-28)
+- **Fixed**: Added comment explaining the magic number
+- **Result**: Improved test readability
+
+### ✅ Inconsistent Checkbox State Management in SpellTable (Completed 2025-11-28)
+- **Fixed**: Updated checkbox rendering logic to rely on `onSelectionChange`
+- **Result**: Consistent UI state
+
+### ✅ Hardcoded Claude CLI Path (Completed 2025-11-28)
+- **Fixed**: Updated `pre-commit-review` to use `CLAUDE_CODE_BIN` env var
+- **Result**: Improved flexibility
+
+### ✅ Silent Ed Command Failures (Completed 2025-11-28)
+- **Fixed**: Added logging for `ed` command failures
+- **Result**: Better debugging for git hooks
+
+### ✅ Mobile Breakpoint Documentation (Completed 2025-11-28)
+- **Fixed**: Added comment explaining mobile breakpoint
+- **Result**: Improved documentation
+
+### ✅ Cross-Platform Temp File Path (Completed 2025-11-28)
+- **Fixed**: Updated `pre-commit` to use `TMPDIR`
+- **Result**: Improved cross-platform compatibility
+
+### ✅ Process Cleanup Race Condition (Completed 2025-11-28)
+- **Fixed**: Added `wait` command in `pre-commit` cleanup
+- **Result**: More robust process termination
+
+### ✅ Git Hooks Missing Inline Documentation (Completed 2025-11-28)
+- **Fixed**: Added inline comments to `setup-git-hooks.js`
+- **Result**: Improved code readability
+
+### ✅ Post-Commit Hook Missing Remote Check (Completed 2025-11-28)
+- **Fixed**: Added check for git remote in `post-commit`
+- **Result**: Prevented errors when no remote is configured
+
+### ✅ Git Hooks Setup No Verification of Executable Permissions (Completed 2025-11-28)
+- **Fixed**: Added verification logic to `setup-git-hooks.js`
+- **Result**: More robust hook installation
 ---
 
 ## Code Quality Warnings

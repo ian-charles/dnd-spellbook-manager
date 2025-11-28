@@ -40,7 +40,9 @@ if check_port; then
   SERVER_RUNNING=true
 else
   echo "🚀 Starting dev server for E2E tests..."
-  npm run dev > /tmp/vite-dev-server.log 2>&1 &
+  # Use TMPDIR if available, otherwise /tmp
+  LOG_FILE="${TMPDIR:-/tmp}/vite-dev-server.log"
+  npm run dev > "$LOG_FILE" 2>&1 &
   DEV_SERVER_PID=$!
 
   # Wait for server to be ready (max 30 seconds)
@@ -98,6 +100,7 @@ if [ -n "$DEV_SERVER_PID" ]; then
   kill $DEV_SERVER_PID 2>/dev/null
   # Also kill any child processes
   pkill -P $DEV_SERVER_PID 2>/dev/null
+  wait $DEV_SERVER_PID 2>/dev/null
 fi
 
 # Check test results

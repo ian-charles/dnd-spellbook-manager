@@ -3,38 +3,16 @@ import { useState, Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText, filterClasses } from '../utils/spellFormatters';
+import { getLevelText } from '../utils/spellFormatters';
 import { SpellDescription } from './SpellDescription';
 import './SpellTable.css';
 
-function ComponentBadges({ spell }: { spell: Spell }) {
-  return (
-    <div className="component-badges">
-      {spell.components.verbal && <span className="component-badge badge-verbal">V</span>}
-      {spell.components.somatic && <span className="component-badge badge-somatic">S</span>}
-      {spell.components.material && <span className="component-badge badge-material">M</span>}
-    </div>
-  );
-}
-
-function ClassBadges({ classes }: { classes: string[] }) {
-  const filteredClasses = filterClasses(classes);
-  return (
-    <div className="class-badges">
-      {filteredClasses.map((className) => (
-        <span key={className} className={`class-badge class-badge-${className.toLowerCase()}`}>
-          {className.substring(0, 3).toUpperCase()}
-        </span>
-      ))}
-    </div>
-  );
-}
+import { ComponentBadges, ClassBadges } from './SpellBadges';
 
 interface SpellTableProps {
   spells: Spell[];
   selectedSpellIds?: Set<string>;
   onSelectionChange?: (selectedIds: Set<string>) => void;
-  onAddToSpellbook?: (spellId: string) => void;
 }
 
 /**
@@ -53,13 +31,11 @@ interface SpellTableProps {
  * @param {Spell[]} props.spells - Array of spell objects to display
  * @param {Set<string>} [props.selectedSpellIds] - Set of selected spell IDs
  * @param {Function} [props.onSelectionChange] - Callback when selection changes
- * @param {Function} [props.onAddToSpellbook] - Callback to add a spell to a spellbook
  */
 export function SpellTable({
   spells,
   selectedSpellIds = new Set(),
-  onSelectionChange,
-  onAddToSpellbook
+  onSelectionChange
 }: SpellTableProps) {
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
   const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(spells);
@@ -68,6 +44,12 @@ export function SpellTable({
     // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell
     setExpandedSpellId(expandedSpellId === spellId ? null : spellId);
   };
+
+  // Reset expanded state when spells list changes to prevent memory leaks/stale state
+  // This happens when filtering or searching changes the list
+  if (expandedSpellId && !spells.find(s => s.id === expandedSpellId)) {
+    setExpandedSpellId(null);
+  }
 
 
 
@@ -150,7 +132,7 @@ export function SpellTable({
                 onClick={() => handleRowClick(spell.id)}
                 className={`spell-row ${expandedSpellId === spell.id ? 'expanded' : ''}`}
               >
-                {onAddToSpellbook && (
+                {onSelectionChange && (
                   <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="checkbox"
@@ -178,7 +160,7 @@ export function SpellTable({
               </tr>
               {expandedSpellId === spell.id && (
                 <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
-                  <td colSpan={onAddToSpellbook ? 10 : 9} className="spell-expansion-cell">
+                  <td colSpan={onSelectionChange ? 10 : 9} className="spell-expansion-cell">
                     <div className="spell-inline-expansion">
                       <div className="spell-meta">
                         {getLevelText(spell.level)} {spell.school}

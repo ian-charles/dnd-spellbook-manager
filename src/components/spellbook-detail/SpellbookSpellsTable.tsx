@@ -2,10 +2,10 @@ import { Fragment, useState, useRef, useEffect } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
 import { SortColumn, SortDirection } from '../../hooks/useSpellSorting';
 import { SortIcon } from '../SortIcon';
-import { SpellDescription } from '../SpellDescription';
-import { ComponentBadges, ClassBadges } from '../SpellBadges';
+import { ComponentBadges } from '../SpellBadges';
 import { getLevelText } from '../../utils/spellFormatters';
 import { useLongPress } from '../../hooks/useLongPress';
+import { SpellExpansionRow } from '../SpellExpansionRow';
 
 interface SpellbookSpellsTableProps {
     sortedSpells: EnrichedSpell[];
@@ -188,27 +188,11 @@ export function SpellbookSpellsTable({
                                         </td>
                                     </tr>
                                     {expandedSpellId === spell.id && (
-                                        <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
-                                            <td colSpan={10} className="spell-expansion-cell">
-                                                <div className="spell-inline-expansion">
-                                                    <div className="spell-expanded-description">
-                                                        {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
-                                                        <SpellDescription text={spell.description} />
-                                                    </div>
-                                                    {spell.higherLevels && (
-                                                        <div className="spell-expanded-higher-levels">
-                                                            {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
-                                                            <strong>At Higher Levels:</strong> <SpellDescription text={spell.higherLevels} />
-                                                        </div>
-                                                    )}
-                                                    <div className="spell-expanded-footer">
-                                                        <div>
-                                                            <strong>Classes:</strong> <ClassBadges classes={spell.classes} />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        <SpellExpansionRow
+                                            spell={spell}
+                                            colSpan={10}
+                                            variant="compact"
+                                        />
                                     )}
                                 </Fragment>
                             );

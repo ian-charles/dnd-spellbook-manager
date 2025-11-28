@@ -4,7 +4,7 @@ import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
 import { getLevelText } from '../utils/spellFormatters';
-import { SpellDescription } from './SpellDescription';
+import { SpellExpansionRow } from './SpellExpansionRow';
 import './SpellTable.css';
 
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -159,46 +159,11 @@ export function SpellTable({
                 <td className="source-col">{spell.source}</td>
               </tr>
               {expandedSpellId === spell.id && (
-                <tr key={`${spell.id}-expansion`} className="spell-expansion-row">
-                  <td colSpan={onSelectionChange ? 10 : 9} className="spell-expansion-cell">
-                    <div className="spell-inline-expansion">
-                      <div className="spell-meta">
-                        {getLevelText(spell.level)} {spell.school}
-                        {spell.concentration && <span className="badge badge-concentration">Concentration</span>}
-                        {spell.ritual && <span className="badge badge-ritual">Ritual</span>}
-                      </div>
-                      <div className="spell-expanded-details">
-                        <div><strong>Casting Time:</strong> {spell.castingTime}</div>
-                        <div><strong>Range:</strong> {spell.range}</div>
-                        <div><strong>Duration:</strong> {spell.duration}</div>
-                        <div className="spell-expanded-components">
-                          <strong>Components:</strong>
-                          <div className="expanded-badges-container">
-                            <ComponentBadges spell={spell} />
-                            {spell.materials && <span className="materials-text">({spell.materials})</span>}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="spell-expanded-description">
-                        {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
-                        <SpellDescription text={spell.description} />
-                      </div>
-                      {spell.higherLevels && (
-                        <div className="spell-expanded-higher-levels">
-                          {/* SpellDescription highlights dice notation (e.g., 1d6, 2d8) in spell text */}
-                          <strong>At Higher Levels:</strong> <SpellDescription text={spell.higherLevels} />
-                        </div>
-                      )}
-                      <div className="spell-expanded-footer">
-                        <div className="spell-expanded-classes">
-                          <strong>Classes:</strong>
-                          <ClassBadges classes={spell.classes} />
-                        </div>
-                        <div className="spell-source">{spell.source}</div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+                <SpellExpansionRow
+                  spell={spell}
+                  colSpan={onSelectionChange ? 10 : 9}
+                  variant="full"
+                />
               )}
             </Fragment>
           ))}

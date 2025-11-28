@@ -111,14 +111,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Medium (3 hours)
 **Priority**: Low
 
-#### Duplicate Expansion Logic
-**Location**: src/components/SpellTable.tsx vs src/components/spellbook-detail/SpellbookSpellsTable.tsx
-**Issue**: Expansion row rendering logic is duplicated.
-**Impact**: Maintenance burden, risk of inconsistent UI.
-**Solution**: Extract expansion row into a shared `SpellExpansionRow` component.
-**Effort**: Low (1 hour)
-**Priority**: Low
-
 
 
 #### Inefficient Data Reloading in useSpellbooks
@@ -156,6 +148,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 ### Completed Refactoring
+- [x] **Duplicate Expansion Logic** (Low) - Extracted `SpellExpansionRow` component.
 - [x] **Missing Accessibility Labels in SpellFilters** (Medium) - Added `aria-label` and `aria-pressed` attributes.
 - [x] **Accessibility Issues in CreateSpellbookModal** (Medium) - Implemented focus trap using `useFocusTrap` hook.
 - [x] **Race Conditions in Storage Service** (High) - Refactored `storage.service.ts` to use atomic updates.

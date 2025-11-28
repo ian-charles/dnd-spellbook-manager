@@ -40,6 +40,7 @@
 
 .filter-section {
   margin-bottom: var(--space-6);
+  text-align: center;
 }
 
 .filter-section h3 {
@@ -49,12 +50,14 @@
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-wide);
   margin-bottom: var(--space-3);
+  text-align: center;
 }
 
 .filter-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+  justify-content: center;
 }
 
 .filter-btn {
@@ -184,10 +187,11 @@
 
 .filter-checkboxes-inline>div {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  align-items: flex-start;
+  justify-content: center;
   gap: var(--space-4);
   padding: var(--space-3);
+  flex-wrap: wrap;
 }
 
 .filter-checkboxes-inline>div:not(:first-child) {
@@ -196,6 +200,16 @@
 
 .filter-checkboxes-inline h3 {
   margin-bottom: 0;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.filter-checkboxes-inline .checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: center;
 }
 
 .checkbox-label {
@@ -216,6 +230,90 @@
 
 .checkbox-label span {
   user-select: none;
+}
+
+/* Checkbox badges */
+.checkbox-badge {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-base);
+}
+
+/* Verbal - Violet */
+.checkbox-badge-verbal {
+  background: rgba(196, 181, 253, 0.2);
+  border: 1px solid #a78bfa;
+  color: #6d28d9;
+}
+
+@media (prefers-color-scheme: dark) {
+  .checkbox-badge-verbal {
+    background: rgba(196, 181, 253, 0.15);
+    border-color: #7c3aed;
+    color: #c4b5fd;
+  }
+}
+
+/* Somatic - Yellow */
+.checkbox-badge-somatic {
+  background: rgba(253, 224, 71, 0.2);
+  border: 1px solid #fbbf24;
+  color: #b45309;
+}
+
+@media (prefers-color-scheme: dark) {
+  .checkbox-badge-somatic {
+    background: rgba(253, 224, 71, 0.15);
+    border-color: #eab308;
+    color: #fde047;
+  }
+}
+
+/* Material - Magenta */
+.checkbox-badge-material {
+  background: rgba(236, 72, 153, 0.2);
+  border: 1px solid #ec4899;
+  color: #be185d;
+}
+
+@media (prefers-color-scheme: dark) {
+  .checkbox-badge-material {
+    background: rgba(236, 72, 153, 0.15);
+    border-color: #db2777;
+    color: #f9a8d4;
+  }
+}
+
+/* Concentration - Cyan */
+.checkbox-badge-concentration {
+  background: rgba(103, 232, 249, 0.2);
+  border: 1px solid #06b6d4;
+  color: #0e7490;
+}
+
+@media (prefers-color-scheme: dark) {
+  .checkbox-badge-concentration {
+    background: rgba(103, 232, 249, 0.15);
+    border-color: #0891b2;
+    color: #67e8f9;
+  }
+}
+
+/* Ritual - Red */
+.checkbox-badge-ritual {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  .checkbox-badge-ritual {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #dc2626;
+    color: #fca5a5;
+  }
 }
 
 .btn-clear-filters {
@@ -283,6 +381,18 @@
     grid-template-columns: 1fr;
   }
 
+  /* Wrap level dropdowns on small screens */
+  .level-dropdown-container {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+
+  .level-dropdown-container label {
+    flex: 0 1 auto;
+    min-width: fit-content;
+  }
+
   /* Shrink tick badges on mobile */
   .range-ticks {
     padding: 0 5px;
@@ -318,6 +428,7 @@
 .level-dropdown-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-4);
 }
 

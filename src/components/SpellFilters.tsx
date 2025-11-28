@@ -171,49 +171,53 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
         <div className="filter-checkboxes-inline">
           <div>
             <h3>Components</h3>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={state.verbalOnly}
-                onChange={toggleVerbal}
-              />
-              <span>Verbal (V)</span>
-            </label>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={state.somaticOnly}
-                onChange={toggleSomatic}
-              />
-              <span>Somatic (S)</span>
-            </label>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={state.materialOnly}
-                onChange={toggleMaterial}
-              />
-              <span>Material (M)</span>
-            </label>
+            <div className="checkbox-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={state.verbalOnly}
+                  onChange={toggleVerbal}
+                />
+                <span className="checkbox-badge checkbox-badge-verbal">Verbal</span>
+              </label>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={state.somaticOnly}
+                  onChange={toggleSomatic}
+                />
+                <span className="checkbox-badge checkbox-badge-somatic">Somatic</span>
+              </label>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={state.materialOnly}
+                  onChange={toggleMaterial}
+                />
+                <span className="checkbox-badge checkbox-badge-material">Material</span>
+              </label>
+            </div>
           </div>
           <div>
             <h3>Properties</h3>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={state.concentrationOnly}
-                onChange={toggleConcentration}
-              />
-              <span>Concentration</span>
-            </label>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={state.ritualOnly}
-                onChange={toggleRitual}
-              />
-              <span>Ritual</span>
-            </label>
+            <div className="checkbox-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={state.concentrationOnly}
+                  onChange={toggleConcentration}
+                />
+                <span className="checkbox-badge checkbox-badge-concentration">Concentration</span>
+              </label>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={state.ritualOnly}
+                  onChange={toggleRitual}
+                />
+                <span className="checkbox-badge checkbox-badge-ritual">Ritual</span>
+              </label>
+            </div>
           </div>
         </div>
       </div>

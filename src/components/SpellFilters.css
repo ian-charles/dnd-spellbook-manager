@@ -283,3 +283,211 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Level Range Slider Styles */
+.level-range-container {
+  width: min(400px, 100%);
+  min-width: 300px;
+  margin: 0 auto;
+}
+
+/* Desktop: align left */
+@media (min-width: 769px) {
+  .level-range-container {
+    margin: 0;
+  }
+}
+
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-heading);
+}
+
+.range-slider-container {
+  position: relative;
+  height: 40px;
+  margin-bottom: var(--space-2);
+}
+
+/* Visible track element */
+.range-track {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #94a3b8;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.range-slider {
+  position: absolute;
+  top: 16px;
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  outline: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.range-slider::-webkit-slider-track {
+  width: 100%;
+  height: 8px;
+  background: #94a3b8;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+}
+
+.range-slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background: #94a3b8;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg-primary);
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  position: relative;
+  z-index: 3;
+}
+
+.range-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg-primary);
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  position: relative;
+  z-index: 3;
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  background: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.range-slider::-moz-range-thumb:hover {
+  background: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.range-slider-min {
+  z-index: 3;
+}
+
+.range-slider-max {
+  z-index: 4;
+}
+
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  gap: var(--space-1);
+}
+
+.range-tick {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  min-width: 20px;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+  flex: 0 0 auto;
+}
+
+/* Cantrip - grey/white */
+.range-tick-0 {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border: 1px solid light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
+}
+
+/* Level 1 - red */
+.range-tick-1 {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border: 1px solid light-dark(#ef4444, #dc2626);
+  color: light-dark(#dc2626, #fca5a5);
+}
+
+/* Level 2 - orange */
+.range-tick-2 {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border: 1px solid light-dark(#fb923c, #f97316);
+  color: light-dark(#ea580c, #fdba74);
+}
+
+/* Level 3 - yellow */
+.range-tick-3 {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border: 1px solid light-dark(#fbbf24, #eab308);
+  color: light-dark(#b45309, #fde047);
+}
+
+/* Level 4 - green */
+.range-tick-4 {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+  border: 1px solid light-dark(#4ade80, #22c55e);
+  color: light-dark(#16a34a, #86efac);
+}
+
+/* Level 5 - aqua/cyan */
+.range-tick-5 {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border: 1px solid light-dark(#06b6d4, #0891b2);
+  color: light-dark(#0e7490, #67e8f9);
+}
+
+/* Level 6 - light blue */
+.range-tick-6 {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border: 1px solid light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e40af, #93c5fd);
+}
+
+/* Level 7 - dark blue */
+.range-tick-7 {
+  background: light-dark(rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.2));
+  border: 1px solid light-dark(#2563eb, #1d4ed8);
+  color: light-dark(#1e3a8a, #60a5fa);
+}
+
+/* Level 8 - indigo */
+.range-tick-8 {
+  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
+  border: 1px solid light-dark(#6366f1, #4f46e5);
+  color: light-dark(#3730a3, #a5b4fc);
+}
+
+/* Level 9 - violet */
+.range-tick-9 {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border: 1px solid light-dark(#a78bfa, #7c3aed);
+  color: light-dark(#6d28d9, #c4b5fd);
+}

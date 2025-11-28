@@ -148,21 +148,21 @@ describe('SpellService', () => {
 
     describe('level filtering', () => {
       it('should filter by single level', () => {
-        const results = service.searchSpells({ levels: [1] });
+        const results = service.searchSpells({ levelRange: { min: 1, max: 1 } });
 
         expect(results).toHaveLength(4); // shield, detect-magic, healing-word, arcane-weapon
         expect(results.every(s => s.level === 1)).toBe(true);
       });
 
       it('should filter by multiple levels', () => {
-        const results = service.searchSpells({ levels: [0, 1] });
+        const results = service.searchSpells({ levelRange: { min: 0, max: 1 } });
 
         expect(results).toHaveLength(5); // All level 0 and 1 spells
         expect(results.every(s => s.level === 0 || s.level === 1)).toBe(true);
       });
 
       it('should filter cantrips (level 0)', () => {
-        const results = service.searchSpells({ levels: [0] });
+        const results = service.searchSpells({ levelRange: { min: 0, max: 0 } });
 
         expect(results).toHaveLength(1);
         expect(results[0].name).toBe('Eldritch Blast');
@@ -297,7 +297,7 @@ describe('SpellService', () => {
       it('should combine text search and level filter', () => {
         const results = service.searchSpells({
           searchText: 'wizard',
-          levels: [1],
+          levelRange: { min: 1, max: 1 },
         });
 
         expect(results).toHaveLength(2); // Shield, Detect Magic
@@ -305,7 +305,7 @@ describe('SpellService', () => {
 
       it('should combine multiple filters', () => {
         const results = service.searchSpells({
-          levels: [1],
+          levelRange: { min: 1, max: 1 },
           schools: ['divination'],
           ritual: true,
         });
@@ -316,7 +316,7 @@ describe('SpellService', () => {
 
       it('should return empty array when no spells match all filters', () => {
         const results = service.searchSpells({
-          levels: [0],
+          levelRange: { min: 0, max: 0 },
           concentration: true,
         });
 

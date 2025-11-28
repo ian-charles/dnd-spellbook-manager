@@ -23,7 +23,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
   const {
     state,
     setSearchText: setSearchTextAction,
-    toggleLevel,
+    setLevelRange,
     toggleSchool,
     toggleClass,
     toggleConcentration,
@@ -34,13 +34,11 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
     clearFilters: clearFiltersAction,
   } = useFilterReducer();
 
-  const levels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
   // Update parent component whenever filter state changes
   useEffect(() => {
     const filters: Filters = {
       searchText: state.searchText,
-      levels: state.selectedLevels.length > 0 ? state.selectedLevels : undefined,
+      levelRange: state.levelRange,
       schools: state.selectedSchools.length > 0 ? state.selectedSchools : undefined,
       classes: state.selectedClasses.length > 0 ? state.selectedClasses : undefined,
       concentration: state.concentrationOnly || undefined,
@@ -50,7 +48,19 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
       componentMaterial: state.materialOnly || undefined,
     };
     onFiltersChange(filters);
-  }, [state, onFiltersChange]);
+  }, [
+    state.searchText,
+    state.levelRange.min,
+    state.levelRange.max,
+    state.selectedSchools,
+    state.selectedClasses,
+    state.concentrationOnly,
+    state.ritualOnly,
+    state.verbalOnly,
+    state.somaticOnly,
+    state.materialOnly,
+    onFiltersChange,
+  ]);
 
   const handleSearchChange = (value: string) => {
     setSearchTextAction(value);
@@ -60,10 +70,14 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
     clearFiltersAction();
   };
 
+  const getLevelLabel = (level: number) => {
+    return level === 0 ? 'Cantrip' : level.toString();
+  };
+
   // Check if any filters are active
   const hasActiveFilters =
     state.searchText.length > 0 ||
-    state.selectedLevels.length > 0 ||
+    (state.levelRange.min !== 0 || state.levelRange.max !== 9) ||
     state.selectedSchools.length > 0 ||
     state.selectedClasses.length > 0 ||
     state.concentrationOnly ||
@@ -92,16 +106,49 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
 
       <div className="filter-section">
         <h3>Spell Level</h3>
-        <div className="filter-buttons">
-          {levels.map((level) => (
-            <button
-              key={level}
-              className={`filter-btn ${state.selectedLevels.includes(level) ? 'active' : ''}`}
-              onClick={() => toggleLevel(level)}
-            >
-              {level === 0 ? 'Cantrip' : level}
-            </button>
-          ))}
+        <div className="level-range-container">
+          <div className="range-slider-container">
+            <div className="range-track"></div>
+            <input
+              type="range"
+              min="0"
+              max="9"
+              step="1"
+              value={state.levelRange.min}
+              onChange={(e) => {
+                const newMin = parseInt(e.target.value);
+                setLevelRange({
+                  min: newMin,
+                  max: Math.max(newMin, state.levelRange.max)
+                });
+              }}
+              className="range-slider range-slider-min"
+              data-testid="level-range-min"
+            />
+            <input
+              type="range"
+              min="0"
+              max="9"
+              step="1"
+              value={state.levelRange.max}
+              onChange={(e) => {
+                const newMax = parseInt(e.target.value);
+                setLevelRange({
+                  min: Math.min(state.levelRange.min, newMax),
+                  max: newMax
+                });
+              }}
+              className="range-slider range-slider-max"
+              data-testid="level-range-max"
+            />
+          </div>
+          <div className="range-ticks">
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+              <span key={level} className={`range-tick range-tick-${level}`}>
+                {level === 0 ? 'C' : level}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 

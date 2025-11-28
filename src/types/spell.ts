@@ -29,7 +29,7 @@ export interface SpellData {
 
 export interface SpellFilters {
   searchText?: string;
-  levels?: number[];
+  levelRange?: { min: number; max: number };
   schools?: string[];
   classes?: string[];
   concentration?: boolean;

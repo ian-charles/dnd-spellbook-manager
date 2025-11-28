@@ -66,9 +66,13 @@ export class SpellService {
       );
     }
 
-    // Filter by spell levels
-    if (filters.levels && filters.levels.length > 0) {
-      results = results.filter((spell) => filters.levels!.includes(spell.level));
+    // Filter by spell level range
+    if (filters.levelRange) {
+      results = results.filter(
+        (spell) =>
+          spell.level >= filters.levelRange!.min &&
+          spell.level <= filters.levelRange!.max
+      );
     }
 
     // Filter by schools

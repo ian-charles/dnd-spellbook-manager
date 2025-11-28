@@ -15,7 +15,7 @@ import { useReducer } from 'react';
 
 export interface FilterState {
   searchText: string;
-  selectedLevels: number[];
+  levelRange: { min: number; max: number };
   selectedSchools: string[];
   selectedClasses: string[];
   concentrationOnly: boolean;
@@ -27,7 +27,7 @@ export interface FilterState {
 
 type FilterAction =
   | { type: 'SET_SEARCH_TEXT'; payload: string }
-  | { type: 'TOGGLE_LEVEL'; payload: number }
+  | { type: 'SET_LEVEL_RANGE'; payload: { min: number; max: number } }
   | { type: 'TOGGLE_SCHOOL'; payload: string }
   | { type: 'TOGGLE_CLASS'; payload: string }
   | { type: 'TOGGLE_CONCENTRATION' }
@@ -39,7 +39,7 @@ type FilterAction =
 
 const initialState: FilterState = {
   searchText: '',
-  selectedLevels: [],
+  levelRange: { min: 0, max: 9 },
   selectedSchools: [],
   selectedClasses: [],
   concentrationOnly: false,
@@ -57,12 +57,10 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
         searchText: action.payload,
       };
 
-    case 'TOGGLE_LEVEL':
+    case 'SET_LEVEL_RANGE':
       return {
         ...state,
-        selectedLevels: state.selectedLevels.includes(action.payload)
-          ? state.selectedLevels.filter((l) => l !== action.payload)
-          : [...state.selectedLevels, action.payload],
+        levelRange: action.payload,
       };
 
     case 'TOGGLE_SCHOOL':
@@ -122,7 +120,7 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
 export interface UseFilterReducerReturn {
   state: FilterState;
   setSearchText: (text: string) => void;
-  toggleLevel: (level: number) => void;
+  setLevelRange: (range: { min: number; max: number }) => void;
   toggleSchool: (school: string) => void;
   toggleClass: (className: string) => void;
   toggleConcentration: () => void;
@@ -139,7 +137,7 @@ export function useFilterReducer(): UseFilterReducerReturn {
   return {
     state,
     setSearchText: (text: string) => dispatch({ type: 'SET_SEARCH_TEXT', payload: text }),
-    toggleLevel: (level: number) => dispatch({ type: 'TOGGLE_LEVEL', payload: level }),
+    setLevelRange: (range: { min: number; max: number }) => dispatch({ type: 'SET_LEVEL_RANGE', payload: range }),
     toggleSchool: (school: string) => dispatch({ type: 'TOGGLE_SCHOOL', payload: school }),
     toggleClass: (className: string) => dispatch({ type: 'TOGGLE_CLASS', payload: className }),
     toggleConcentration: () => dispatch({ type: 'TOGGLE_CONCENTRATION' }),

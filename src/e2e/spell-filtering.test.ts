@@ -34,19 +34,23 @@ describe('Spell Filtering E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
-    // Click level 1 filter
+    // Set level range sliders to filter only level 1
     await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
-      const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
-      if (levelBtn) (levelBtn as HTMLElement).click();
+      const minSlider = document.querySelector('[data-testid="level-range-min"]') as HTMLInputElement;
+      const maxSlider = document.querySelector('[data-testid="level-range-max"]') as HTMLInputElement;
+      if (minSlider && maxSlider) {
+        minSlider.value = '1';
+        minSlider.dispatchEvent(new Event('change', { bubbles: true }));
+        maxSlider.value = '1';
+        maxSlider.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     });
 
-    // Wait for filter to be applied - button becomes active
+    // Wait for filter to be applied
     await page.waitForFunction(
       () => {
-        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
-        const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
-        return levelBtn?.classList.contains('active');
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
       },
       { timeout: TIMEOUTS.SHORT }
     );
@@ -231,19 +235,23 @@ describe('Spell Filtering E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
-    // Click level 1
+    // Set level range to 1
     await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
-      const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
-      if (levelBtn) (levelBtn as HTMLElement).click();
+      const minSlider = document.querySelector('[data-testid="level-range-min"]') as HTMLInputElement;
+      const maxSlider = document.querySelector('[data-testid="level-range-max"]') as HTMLInputElement;
+      if (minSlider && maxSlider) {
+        minSlider.value = '1';
+        minSlider.dispatchEvent(new Event('change', { bubbles: true }));
+        maxSlider.value = '1';
+        maxSlider.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     });
 
     // Wait for first filter to be applied
     await page.waitForFunction(
       () => {
-        const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
-        const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
-        return levelBtn?.classList.contains('active');
+        const header = document.querySelector('.browse-header p');
+        return header && !header.textContent?.includes('319 results');
       },
       { timeout: TIMEOUTS.SHORT }
     );
@@ -281,11 +289,16 @@ describe('Spell Filtering E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
-    // Apply some filters
+    // Apply some filters - set level range
     await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
-      const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
-      if (levelBtn) (levelBtn as HTMLElement).click();
+      const minSlider = document.querySelector('[data-testid="level-range-min"]') as HTMLInputElement;
+      const maxSlider = document.querySelector('[data-testid="level-range-max"]') as HTMLInputElement;
+      if (minSlider && maxSlider) {
+        minSlider.value = '1';
+        minSlider.dispatchEvent(new Event('change', { bubbles: true }));
+        maxSlider.value = '1';
+        maxSlider.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     });
 
     // Wait for filter to be applied
@@ -318,11 +331,16 @@ describe('Spell Filtering E2E', () => {
     await page.goto(TEST_URL);
     await waitForSpellsToLoad(page);
 
-    // Click level 1 filter to turn it on
+    // Set level range to 1-1
     await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
-      const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
-      if (levelBtn) (levelBtn as HTMLElement).click();
+      const minSlider = document.querySelector('[data-testid="level-range-min"]') as HTMLInputElement;
+      const maxSlider = document.querySelector('[data-testid="level-range-max"]') as HTMLInputElement;
+      if (minSlider && maxSlider) {
+        minSlider.value = '1';
+        minSlider.dispatchEvent(new Event('change', { bubbles: true }));
+        maxSlider.value = '1';
+        maxSlider.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     });
 
     // Wait for filter to be applied
@@ -338,11 +356,16 @@ describe('Spell Filtering E2E', () => {
     let headerText = await page.$eval('.browse-header p', el => el.textContent);
     expect(headerText).not.toContain('319 results');
 
-    // Click the same filter again to toggle it off
+    // Reset sliders to 0-9 (equivalent to toggling off)
     await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button.filter-btn'));
-      const levelBtn = buttons.find(btn => btn.textContent?.trim() === '1');
-      if (levelBtn) (levelBtn as HTMLElement).click();
+      const minSlider = document.querySelector('[data-testid="level-range-min"]') as HTMLInputElement;
+      const maxSlider = document.querySelector('[data-testid="level-range-max"]') as HTMLInputElement;
+      if (minSlider && maxSlider) {
+        minSlider.value = '0';
+        minSlider.dispatchEvent(new Event('change', { bubbles: true }));
+        maxSlider.value = '9';
+        maxSlider.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     });
 
     // Wait for all spells to be shown again

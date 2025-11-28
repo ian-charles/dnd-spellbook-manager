@@ -5,7 +5,7 @@
  * Tests all reducer actions and state transitions.
  */
 
-import { describe, it, expect } from 'vitest';
+// Using vitest globals (describe, it, expect are globally available)
 import { renderHook, act } from '@testing-library/react';
 import { useFilterReducer } from './useFilterReducer';
 
@@ -15,7 +15,7 @@ describe('useFilterReducer', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       expect(result.current.state.searchText).toBe('');
-      expect(result.current.state.selectedLevels).toEqual([]);
+      expect(result.current.state.levelRange).toEqual({ min: 0, max: 9 });
       expect(result.current.state.selectedSchools).toEqual([]);
       expect(result.current.state.selectedClasses).toEqual([]);
       expect(result.current.state.concentrationOnly).toBe(false);
@@ -55,59 +55,53 @@ describe('useFilterReducer', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       act(() => {
-        result.current.toggleLevel(1);
+        result.current.setLevelRange({ min: 1, max: 1 });
         result.current.setSearchText('test');
       });
 
-      expect(result.current.state.selectedLevels).toEqual([1]);
+      expect(result.current.state.levelRange).toEqual({ min: 1, max: 1 });
     });
   });
 
-  describe('TOGGLE_LEVEL Action', () => {
-    it('should add level when not selected', () => {
+  describe('SET_LEVEL_RANGE Action', () => {
+    it('should set level range', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       act(() => {
-        result.current.toggleLevel(3);
+        result.current.setLevelRange({ min: 3, max: 5 });
       });
 
-      expect(result.current.state.selectedLevels).toEqual([3]);
+      expect(result.current.state.levelRange).toEqual({ min: 3, max: 5 });
     });
 
-    it('should remove level when already selected', () => {
+    it('should handle single level range', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       act(() => {
-        result.current.toggleLevel(3);
+        result.current.setLevelRange({ min: 3, max: 3 });
       });
 
-      act(() => {
-        result.current.toggleLevel(3);
-      });
-
-      expect(result.current.state.selectedLevels).toEqual([]);
+      expect(result.current.state.levelRange).toEqual({ min: 3, max: 3 });
     });
 
-    it('should handle multiple levels', () => {
+    it('should handle full range', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       act(() => {
-        result.current.toggleLevel(1);
-        result.current.toggleLevel(3);
-        result.current.toggleLevel(5);
+        result.current.setLevelRange({ min: 1, max: 9 });
       });
 
-      expect(result.current.state.selectedLevels).toEqual([1, 3, 5]);
+      expect(result.current.state.levelRange).toEqual({ min: 1, max: 9 });
     });
 
-    it('should handle cantrip (level 0)', () => {
+    it('should handle cantrip to high level range', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       act(() => {
-        result.current.toggleLevel(0);
+        result.current.setLevelRange({ min: 0, max: 9 });
       });
 
-      expect(result.current.state.selectedLevels).toEqual([0]);
+      expect(result.current.state.levelRange).toEqual({ min: 0, max: 9 });
     });
   });
 
@@ -324,7 +318,7 @@ describe('useFilterReducer', () => {
       // Set various filters
       act(() => {
         result.current.setSearchText('fireball');
-        result.current.toggleLevel(3);
+        result.current.setLevelRange({ min: 3, max: 5 });
         result.current.toggleSchool('Evocation');
         result.current.toggleClass('Wizard');
         result.current.toggleConcentration();
@@ -341,7 +335,7 @@ describe('useFilterReducer', () => {
 
       // Verify all filters are cleared
       expect(result.current.state.searchText).toBe('');
-      expect(result.current.state.selectedLevels).toEqual([]);
+      expect(result.current.state.levelRange).toEqual({ min: 0, max: 9 });
       expect(result.current.state.selectedSchools).toEqual([]);
       expect(result.current.state.selectedClasses).toEqual([]);
       expect(result.current.state.concentrationOnly).toBe(false);
@@ -358,8 +352,7 @@ describe('useFilterReducer', () => {
 
       act(() => {
         result.current.setSearchText('magic');
-        result.current.toggleLevel(1);
-        result.current.toggleLevel(2);
+        result.current.setLevelRange({ min: 1, max: 2 });
         result.current.toggleSchool('Divination');
         result.current.toggleClass('Wizard');
         result.current.toggleClass('Cleric');
@@ -368,30 +361,30 @@ describe('useFilterReducer', () => {
       });
 
       expect(result.current.state.searchText).toBe('magic');
-      expect(result.current.state.selectedLevels).toEqual([1, 2]);
+      expect(result.current.state.levelRange).toEqual({ min: 1, max: 2 });
       expect(result.current.state.selectedSchools).toEqual(['Divination']);
       expect(result.current.state.selectedClasses).toEqual(['Wizard', 'Cleric']);
       expect(result.current.state.concentrationOnly).toBe(true);
       expect(result.current.state.ritualOnly).toBe(true);
     });
 
-    it('should handle adding and removing same value multiple times', () => {
+    it('should handle changing level range multiple times', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       act(() => {
-        result.current.toggleLevel(5);
-        result.current.toggleLevel(5);
-        result.current.toggleLevel(5);
+        result.current.setLevelRange({ min: 5, max: 7 });
+        result.current.setLevelRange({ min: 2, max: 4 });
+        result.current.setLevelRange({ min: 5, max: 5 });
       });
 
-      expect(result.current.state.selectedLevels).toEqual([5]);
+      expect(result.current.state.levelRange).toEqual({ min: 5, max: 5 });
     });
 
     it('should maintain independence between different filter types', () => {
       const { result } = renderHook(() => useFilterReducer());
 
       act(() => {
-        result.current.toggleLevel(3);
+        result.current.setLevelRange({ min: 3, max: 3 });
         result.current.toggleSchool('Evocation');
         result.current.toggleClass('Wizard');
       });
@@ -401,8 +394,8 @@ describe('useFilterReducer', () => {
         result.current.toggleSchool('Evocation');
       });
 
-      // Level and class should remain
-      expect(result.current.state.selectedLevels).toEqual([3]);
+      // Level range and class should remain
+      expect(result.current.state.levelRange).toEqual({ min: 3, max: 3 });
       expect(result.current.state.selectedSchools).toEqual([]);
       expect(result.current.state.selectedClasses).toEqual(['Wizard']);
     });

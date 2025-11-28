@@ -129,15 +129,34 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Medium (2 hours)
 **Priority**: Low
 
-#### Missing Accessibility Labels in SpellFilters
+#### Magic Numbers in SpellFilters
 **Location**: src/components/SpellFilters.tsx
-**Issue**: Inputs lack `aria-label` or associated labels for screen readers.
-**Impact**: Poor accessibility for visually impaired users.
-**Solution**: Add `aria-label` to inputs and buttons.
-**Effort**: Low (1 hour)
+**Issue**: Hardcoded spell levels (0, 9) and other constants.
+**Impact**: Maintenance burden if rules change.
+**Solution**: Extract `MIN_SPELL_LEVEL` and `MAX_SPELL_LEVEL` constants.
+**Effort**: Low (10 minutes)
 **Priority**: Medium
 
+#### Missing Unit Tests for SpellFilters
+**Location**: src/components/SpellFilters.tsx
+**Issue**: No unit tests found for this component.
+**Impact**: Risk of regression when modifying filters.
+**Solution**: Create `src/components/SpellFilters.test.tsx`.
+**Effort**: Medium (2 hours)
+**Priority**: Medium
+
+#### Missing JSDoc for SpellFilters
+**Location**: src/components/SpellFilters.tsx
+**Issue**: Incomplete JSDoc for props and component behavior.
+**Impact**: Harder for new developers to understand.
+**Solution**: Add comprehensive JSDoc.
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+
+
 ### Completed Refactoring
+- [x] **Missing Accessibility Labels in SpellFilters** (Medium) - Added `aria-label` and `aria-pressed` attributes.
 - [x] **Accessibility Issues in CreateSpellbookModal** (Medium) - Implemented focus trap using `useFocusTrap` hook.
 - [x] **Race Conditions in Storage Service** (High) - Refactored `storage.service.ts` to use atomic updates.
 - [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.

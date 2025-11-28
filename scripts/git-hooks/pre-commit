@@ -68,7 +68,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Step 3: Running Tests"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 # Run unit tests only (exclude e2e tests which require Puppeteer)
-npx vitest --run --exclude "src/e2e/**"
+npx vitest --run
 TEST_EXIT_CODE=$?
 
 # Step 4: Clean up dev server if we started it

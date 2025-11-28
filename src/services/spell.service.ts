@@ -78,7 +78,7 @@ export class SpellService {
     // Filter by schools
     if (filters.schools && filters.schools.length > 0) {
       results = results.filter((spell) =>
-        filters.schools!.includes(spell.school.toLowerCase())
+        filters.schools!.some(s => s.toLowerCase() === spell.school.toLowerCase())
       );
     }
 
@@ -86,7 +86,7 @@ export class SpellService {
     if (filters.classes && filters.classes.length > 0) {
       results = results.filter((spell) =>
         filters.classes!.some((filterClass) =>
-          spell.classes.includes(filterClass.toLowerCase())
+          spell.classes.some(c => c.toLowerCase() === filterClass.toLowerCase())
         )
       );
     }

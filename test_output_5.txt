@@ -1,38 +1,19 @@
 
  RUN  v1.6.0 /Users/sjaconette/dnd/dnd-spellbook-manager
 
+ ✓ src/hooks/useSpellSorting.test.ts  (23 tests) 229ms
 stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should load the page successfully
 ✓ Page title: D&D Spellbook Manager
 
 stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should display spell table
 ✓ Spell table found
 
- ✓ src/hooks/useSpellSorting.test.ts  (23 tests) 346ms
 stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should load spells
 ✓ Found 319 spell rows
 
 stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should expand spell inline on desktop
 ✓ Desktop spell expansion works
 
-stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should load on mobile
-✓ Mobile page loaded
-
-stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should have no horizontal scroll
-✓ No horizontal scroll
-
-stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should display spell cards with mobile styling
-✓ Found 319 mobile spell cards
-
-stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should display spell cards with mobile styling
-✓ Mobile card styling: { display: 'flex', borderRadius: '12px' }
-
-stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should expand spell inline on mobile
-✓ Mobile spell expansion works
-
-stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should have touch-friendly buttons if present
-ℹ No add buttons (expected - appear after creating spellbook)
-
- ✓ src/e2e/production-test.test.ts  (9 tests) 15754ms
 stdout | src/services/spell.service.test.ts > SpellService > loadSpells > should load spells from the API
 ✅ Loaded 6 spells
 
@@ -197,8 +178,28 @@ stdout | src/services/spell.service.test.ts > SpellService > getSpellCountByLeve
 stdout | src/services/spell.service.test.ts > SpellService > getSpellCountByLevel > should not include levels with zero spells
 ✅ Loaded 6 spells
 
- ✓ src/services/spell.service.test.ts  (49 tests) 196ms
- ✓ src/components/SpellbookDetailView.test.tsx  (53 tests) 12088ms
+ ✓ src/services/spell.service.test.ts  (49 tests) 114ms
+ ✓ src/components/SpellbookDetailView.test.tsx  (53 tests) 2442ms
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should load on mobile
+✓ Mobile page loaded
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should have no horizontal scroll
+✓ No horizontal scroll
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should display spell cards with mobile styling
+✓ Found 319 mobile spell cards
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should display spell cards with mobile styling
+✓ Mobile card styling: { display: 'flex', borderRadius: '12px' }
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should expand spell inline on mobile
+✓ Mobile spell expansion works
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should have touch-friendly buttons if present
+ℹ No add buttons (expected - appear after creating spellbook)
+
+ ✓ src/e2e/spell-tooltip.test.ts  (6 tests) 6716ms
+ ✓ src/e2e/production-test.test.ts  (9 tests) 6847ms
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > initial state > should start with loading=true and empty spellbooks
 [useSpellbooks] Loaded spellbooks: 0
 
@@ -223,11 +224,7 @@ stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > sho
 
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should update spellbooks list after creation
 [useSpellbooks] Creating spellbook: First
-
-stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should update spellbooks list after creation
 [useSpellbooks] Created spellbook: test-uuid-1
-
-stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should update spellbooks list after creation
 [useSpellbooks] Loaded spellbooks: 1
 [useSpellbooks] Reloaded after create
 
@@ -242,6 +239,7 @@ stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > sho
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > deleteSpellbook > should delete a spellbook
 [useSpellbooks] Loaded spellbooks: 1
 
+ ✓ src/services/storage.service.test.ts  (29 tests) 457ms
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > deleteSpellbook > should delete a spellbook
 [useSpellbooks] Loaded spellbooks: 0
 
@@ -254,7 +252,6 @@ stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > deleteSpellbook > sho
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > getSpellbook > should return a spellbook by ID
 [useSpellbooks] Loaded spellbooks: 1
 
- ✓ src/services/storage.service.test.ts  (29 tests) 2080ms
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > getSpellbook > should return undefined for non-existent spellbook
 [useSpellbooks] Loaded spellbooks: 0
 
@@ -285,12 +282,14 @@ stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > togglePrepared > shou
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > togglePrepared > should toggle back to false
 [useSpellbooks] Loaded spellbooks: 1
 
+ ✓ src/hooks/useFilterReducer.test.ts  (28 tests) 36ms
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > togglePrepared > should toggle back to false
 [useSpellbooks] Loaded spellbooks: 1
 
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > updateSpellNotes > should update spell notes
 [useSpellbooks] Loaded spellbooks: 1
 
+ ✓ src/components/SpellTooltip.test.tsx  (27 tests) 88ms
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > updateSpellNotes > should update spell notes
 [useSpellbooks] Loaded spellbooks: 1
 
@@ -303,7 +302,6 @@ stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > updateSpellNotes > sh
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > refreshSpellbooks > should reload spellbooks from storage
 [useSpellbooks] Loaded spellbooks: 0
 
- ✓ src/hooks/useFilterReducer.test.ts  (28 tests) 391ms
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > refreshSpellbooks > should reload spellbooks from storage
 [useSpellbooks] Loaded spellbooks: 1
 
@@ -316,101 +314,50 @@ stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > error handling > shou
 stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > error handling > should set error on deletion failure
 [useSpellbooks] Loaded spellbooks: 0
 
- ✓ src/hooks/useSpellbooks.test.ts  (18 tests) 2480ms
- ✓ src/e2e/spell-selection.test.ts  (13 tests) 25019ms
- ✓ src/components/SpellTooltip.test.tsx  (27 tests) 192ms
- ✓ src/App.test.tsx  (10 tests) 85ms
- ✓ src/components/SpellDescription.test.tsx  (21 tests) 114ms
- ✓ src/components/SpellbookList.test.tsx  (9 tests) 156ms
- ✓ src/utils/spellSortValues.test.ts  (32 tests) 4ms
- ✓ src/components/ConfirmDialog.test.tsx  (14 tests) 44ms
- ✓ src/components/AlertDialog.test.tsx  (16 tests) 64ms
- ✓ src/components/SpellTable.test.tsx  (7 tests) 141ms
+ ✓ src/hooks/useSpellbooks.test.ts  (18 tests) 1369ms
+ ✓ src/App.test.tsx  (10 tests) 107ms
+ ✓ src/components/SpellDescription.test.tsx  (21 tests) 145ms
+ ✓ src/components/SpellbookList.test.tsx  (9 tests) 233ms
+ ✓ src/utils/spellSortValues.test.ts  (32 tests) 10ms
+ ✓ src/components/SpellTable.test.tsx  (7 tests) 134ms
+ ✓ src/components/ConfirmDialog.test.tsx  (14 tests) 99ms
+ ✓ src/components/AlertDialog.test.tsx  (16 tests) 123ms
  ✓ src/services/exportImport.service.test.ts  (8 tests) 31ms
- ✓ src/components/ErrorBoundary.test.tsx  (10 tests) 178ms
- ✓ src/components/LoadingButton.test.tsx  (15 tests) 178ms
- ✓ src/components/SortIcon.test.tsx  (10 tests) 49ms
- ❯ src/e2e/spell-sorting.test.ts  (7 tests | 1 failed) 28294ms
+ ✓ src/components/LoadingButton.test.tsx  (15 tests) 116ms
+ ✓ src/components/SortIcon.test.tsx  (10 tests) 37ms
+ ✓ src/components/ErrorBoundary.test.tsx  (10 tests) 104ms
+ ✓ src/components/CreateSpellbookModal.test.tsx  (9 tests) 334ms
+ ✓ src/hooks/useToast.test.ts  (10 tests) 22ms
+ ✓ src/hooks/useHashRouter.test.ts  (10 tests) 32ms
+ ✓ src/hooks/useModal.test.ts  (9 tests) 34ms
+ ✓ src/components/LoadingSkeleton.test.tsx  (12 tests) 20ms
+ ✓ src/components/LoadingSpinner.test.tsx  (10 tests) 40ms
+ ✓ src/e2e/spell-selection.test.ts  (13 tests) 15987ms
+ ✓ src/e2e/ui-interactions.test.ts  (19 tests) 33070ms
+ ❯ src/e2e/spell-sorting.test.ts  (7 tests | 1 failed) 37795ms
    ❯ src/e2e/spell-sorting.test.ts > Spell Table Sorting E2E > should maintain sort when filtering
-     → Waiting failed: 5000ms exceeded
- ✓ src/components/CreateSpellbookModal.test.tsx  (9 tests) 1084ms
- ❯ src/e2e/spell-search.test.ts  (7 tests | 1 failed) 29220ms
-   ❯ src/e2e/spell-search.test.ts > Spell Search E2E > should combine search with filters
-     → Waiting failed: 5000ms exceeded
- ✓ src/hooks/useModal.test.ts  (9 tests) 62ms
- ✓ src/hooks/useToast.test.ts  (10 tests) 97ms
- ✓ src/hooks/useHashRouter.test.ts  (10 tests) 132ms
- ✓ src/components/LoadingSkeleton.test.tsx  (12 tests) 47ms
- ✓ src/components/LoadingSpinner.test.tsx  (10 tests) 122ms
- ❯ src/e2e/spell-filtering.test.ts  (13 tests | 1 failed) 30930ms
-   ❯ src/e2e/spell-filtering.test.ts > Spell Filtering E2E > should filter spells by verbal component
-     → Waiting failed: 5000ms exceeded
- ❯ src/e2e/spell-tooltip.test.ts  (6 tests | 1 failed) 36876ms
-   ❯ src/e2e/spell-tooltip.test.ts > Spell Description E2E > should collapse description when clicking the same spell row again
      → Test timed out in 30000ms.
 If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
- ✓ src/e2e/ui-interactions.test.ts  (19 tests) 45381ms
+ ❯ src/e2e/spell-search.test.ts  (7 tests | 1 failed) 38260ms
+   ❯ src/e2e/spell-search.test.ts > Spell Search E2E > should combine search with filters
+     → Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/e2e/spell-filtering.test.ts  (13 tests | 1 failed) 39024ms
+   ❯ src/e2e/spell-filtering.test.ts > Spell Filtering E2E > should filter spells by verbal component
+     → Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
 
-⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
 
  FAIL  src/e2e/spell-filtering.test.ts > Spell Filtering E2E > should filter spells by verbal component
-TimeoutError: Waiting failed: 5000ms exceeded
- ❯ new WaitTask node_modules/puppeteer-core/src/common/WaitTask.ts:77:28
- ❯ IsolatedWorld.waitForFunction node_modules/puppeteer-core/src/api/Realm.ts:74:22
- ❯ CdpFrame.waitForFunction node_modules/puppeteer-core/src/api/Frame.ts:791:36
- ❯ CdpFrame.<anonymous> node_modules/puppeteer-core/src/util/decorators.ts:63:21
- ❯ CdpPage.waitForFunction node_modules/puppeteer-core/src/api/Page.ts:3120:29
- ❯ src/e2e/spell-filtering.test.ts:220:16
-    218| 
-    219|     // Wait for filter to be applied - spell count should change
-    220|     await page.waitForFunction(
-       |                ^
-    221|       (oldCount) => {
-    222|         const newCount = document.querySelectorAll('.spell-row').lengt…
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
-
  FAIL  src/e2e/spell-search.test.ts > Spell Search E2E > should combine search with filters
-TimeoutError: Waiting failed: 5000ms exceeded
- ❯ new WaitTask node_modules/puppeteer-core/src/common/WaitTask.ts:77:28
- ❯ IsolatedWorld.waitForFunction node_modules/puppeteer-core/src/api/Realm.ts:74:22
- ❯ CdpFrame.waitForFunction node_modules/puppeteer-core/src/api/Frame.ts:791:36
- ❯ CdpFrame.<anonymous> node_modules/puppeteer-core/src/util/decorators.ts:63:21
- ❯ CdpPage.waitForFunction node_modules/puppeteer-core/src/api/Page.ts:3120:29
- ❯ src/e2e/spell-search.test.ts:208:16
-    206| 
-    207|     // Wait for filter to be applied
-    208|     await page.waitForFunction(
-       |                ^
-    209|       () => {
-    210|         const buttons = Array.from(document.querySelectorAll('button.f…
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
-
  FAIL  src/e2e/spell-sorting.test.ts > Spell Table Sorting E2E > should maintain sort when filtering
-TimeoutError: Waiting failed: 5000ms exceeded
- ❯ new WaitTask node_modules/puppeteer-core/src/common/WaitTask.ts:77:28
- ❯ IsolatedWorld.waitForFunction node_modules/puppeteer-core/src/api/Realm.ts:74:22
- ❯ CdpFrame.waitForFunction node_modules/puppeteer-core/src/api/Frame.ts:791:36
- ❯ CdpFrame.<anonymous> node_modules/puppeteer-core/src/util/decorators.ts:63:21
- ❯ CdpPage.waitForFunction node_modules/puppeteer-core/src/api/Page.ts:3120:29
- ❯ src/e2e/spell-sorting.test.ts:196:16
-    194| 
-    195|     // Wait for filter to be applied - check that button is active
-    196|     await page.waitForFunction(
-       |                ^
-    197|       () => {
-    198|         const buttons = Array.from(document.querySelectorAll('button.f…
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
-
- FAIL  src/e2e/spell-tooltip.test.ts > Spell Description E2E > should collapse description when clicking the same spell row again
 Error: Test timed out in 30000ms.
 If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
 
- Test Files  4 failed | 27 passed (31)
-      Tests  4 failed | 509 passed (513)
-   Start at  11:08:36
-   Duration  46.86s (transform 2.49s, setup 8.91s, collect 14.23s, tests 231.84s, environment 30.96s, prepare 7.58s)
+ Test Files  3 failed | 28 passed (31)
+      Tests  3 failed | 510 passed (513)
+   Start at  11:13:30
+   Duration  39.59s (transform 1.45s, setup 2.79s, collect 8.57s, tests 184.06s, environment 10.70s, prepare 3.31s)
 

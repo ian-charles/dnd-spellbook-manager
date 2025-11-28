@@ -22,7 +22,7 @@
 
   /* Hide table headers on mobile */
   .spell-table thead,
-  .spellbook-table thead {
+  .spellbook-table>thead {
     display: none;
   }
 

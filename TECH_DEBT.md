@@ -13,23 +13,81 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Medium (1 hour)
 
 - [ ] **Missing JSDoc for SpellDescription usage** (Medium) - `src/components/SpellTable.tsx`, `src/components/SpellbookDetailView.tsx`: No inline comments explaining why SpellDescription component is used.
-- [ ] **Missing error messages in SpellDescription test assertions** (Medium) - `src/components/SpellDescription.test.tsx`: Some test assertions lack descriptive error messages.
-- [ ] **Hardcoded dice types in regex could be more maintainable** (Medium) - `src/components/SpellDescription.tsx`: Dice types hardcoded in regex string instead of derived from array.
-- [ ] **Missing explicit XSS escaping documentation** (Medium) - `src/components/SpellDescription.tsx`: JSX escaping prevents XSS but mechanism not clearly documented.
-- [ ] **Insufficient error handling for malformed tables** (Medium) - `src/components/SpellDescription.tsx`: Limited validation of markdown table structure (e.g., header-only).
-- [ ] **Weak XSS test in SpellDescription** (Medium) - `src/components/SpellDescription.test.tsx`: XSS test only checks innerHTML doesn't contain <script> but doesn't verify actual HTML escaping.
-- [ ] **Missing unit tests for App.tsx** (High) - `src/App.tsx`: Main application component has complex state management but zero unit tests.
 
-- [ ] **Missing JSDoc for App.tsx** (Medium) - `src/App.tsx`: Component lacks JSDoc documentation explaining component architecture, data flow, and key responsibilities.
-- [ ] **Complex state management without reducer pattern** (Medium) - `src/App.tsx`: Component manages 14+ state variables with useState, making state transitions hard to track.
-- [ ] **Missing error message for failed spell additions in batch** (Medium) - `src/App.tsx`: When individual spells fail during batch add in `handleCreateSpellbook`, only partial success message shown.
-- [ ] **No cleanup for createModalOpen state** (Medium) - `src/App.tsx`: When modal closes via onClose, pendingSpellIds is cleared, but if user navigates away while modal is open, state persists.
-- [ ] **Duplicate toast display logic** (Medium) - `src/App.tsx`: Same pattern of calculating count, clearing selection, and showing toast repeated in 3 places.
-- [ ] **Complex handleAddToSpellbook function** (Medium) - `src/App.tsx`: Function is 50+ lines mixing UI logic, validation, and async operations.
-- [ ] **Complex handleCreateSpellbook function** (Medium) - `src/App.tsx`: Function is 33 lines mixing spellbook creation with spell addition logic.
-- [ ] **Finally block always runs even on error** (Medium) - `src/App.tsx`: `setCreateModalOpen(false)` runs even if error is thrown, which may not be desired UX.
+
+### E2E Testing
+- [x] **Hardcoded Timeouts**: Replace hardcoded timeouts (e.g., `30000`) with `TIMEOUTS` constants from `config.ts` in all test files.
+- [x] **Missing error messages in E2E test assertions**: Add descriptive error messages to `expect` calls in `src/e2e/spell-tooltip.test.ts` and `src/e2e/spell-sorting.test.ts`.
+- [ ] **Skipped Test**: Investigate and fix `should add spell to spellbook from browse page` in `src/e2e/ui-interactions.test.ts`. It was skipped due to persistent timeouts likely caused by a race condition in IndexedDB persistence during page reload.
+- [ ] **Linting Errors**: Resolve remaining linting errors in E2E test files (e.g., `describe`, `it`, `expect` not found) by ensuring `tsconfig.json` in `src/e2e` is correctly picked up by the IDE.
+
+### Code Review Findings (2025-11-28)
+
+#### Missing Test Coverage for Error Paths in App.test.tsx
+- **Location**: `src/App.test.tsx`
+- **Issue**: Mock setup allows all operations to succeed - no tests for error scenarios like network failures, DB errors, or race conditions
+- **Priority**: Medium
+- **Solution**: Add tests for error handling in `handleAddToSpellbook` and `handleCreateSpellbook`
+- **Effort**: Medium (1 hour)
+
+#### Magic Number 50 in Multiple E2E Tests
+- **Location**: `src/e2e/spell-tooltip.test.ts:62, 113, 164`, `src/e2e/ui-interactions.test.ts:259, 286, 392, 425`
+- **Issue**: Hardcoded minimum description length (50 characters) appears in 7+ locations without explanation
+- **Priority**: Medium
+- **Solution**: Extract to named constant `MIN_DESCRIPTION_LENGTH` in `src/e2e/config.ts`
+- **Effort**: Low (10 minutes)
+
+#### Hardcoded Timeout 30000 in E2E Tests
+- **Location**: `src/e2e/spell-filtering.test.ts:17, 32, etc.`, `src/e2e/spell-tooltip.test.ts:19, 35, etc.`
+- **Issue**: Multiple test suites use hardcoded `30000` instead of `TIMEOUTS.LONG`
+- **Priority**: Medium
+- **Solution**: Replace all `30000` with `TIMEOUTS.LONG` from config
+- **Effort**: Low (15 minutes)
+
+#### Missing Error Message in Multiple E2E Assertions
+- **Location**: `src/e2e/spell-filtering.test.ts:26, 40, etc.`, `src/e2e/spell-search.test.ts:35, 55, etc.`, `src/e2e/ui-interactions.test.ts:89, 122, etc.`
+- **Issue**: 50+ assertions lack descriptive error messages making test failures hard to debug
+- **Priority**: Medium
+- **Solution**: Add error message parameter to all `expect()` calls
+- **Effort**: Medium (2 hours)
+
+#### Incomplete beforeEach Cleanup in E2E Tests
+- **Location**: `src/e2e/spell-filtering.test.ts:23-26`, `src/e2e/spell-search.test.ts:23-26`
+- **Issue**: Tests reload page but don't clear filters/search state between tests
+- **Priority**: Medium
+- **Solution**: Add filter/search reset in beforeEach hooks
+- **Effort**: Low (20 minutes)
+
+#### Missing JSDoc for E2E Helper Functions
+- **Location**: `src/e2e/helpers.ts` - all exported functions
+- **Issue**: Only some helper functions have JSDoc comments, others lack documentation
+- **Priority**: Medium
+- **Solution**: Add JSDoc to all exported helper functions
+- **Effort**: Medium (1 hour)
+
+#### Fragile String Matching in E2E Tests
+- **Location**: `src/e2e/spell-filtering.test.ts:26, 40`, `src/e2e/spell-search.test.ts:57`, etc.
+- **Issue**: Tests use `.toContain('319 results')` which breaks if spell count changes
+- **Priority**: Medium
+- **Solution**: Use `.toMatch(/\d+ results/)` or check for range
+- **Effort**: Low (30 minutes)
+
+#### Test Environment Inconsistency
+- **Location**: `vitest.config.ts:7`
+- **Issue**: Unit tests use `environment: 'node'` but test React components (should use 'jsdom')
+- **Priority**: Medium
+- **Solution**: Change to `environment: 'jsdom'` or create separate configs for unit vs E2E
+- **Effort**: Low (15 minutes)
 
 ### Completed Refactoring
+- [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.
+- [x] **Missing JSDoc for App.tsx** (Medium) - Added JSDoc to `src/App.tsx`.
+- [x] **Complex state management** (Medium) - Refactored mutation logic to `useSpellbookMutations` hook.
+- [x] **Missing error message for failed spell additions** (Medium) - Fixed in `useSpellbookMutations`.
+- [x] **No cleanup for createModalOpen state** (Medium) - Fixed in `useSpellbookMutations`.
+- [x] **Duplicate toast display logic** (Medium) - Centralized in `useSpellbookMutations`.
+- [x] **Complex handlers** (Medium) - Extracted to `useSpellbookMutations`.
+- [x] **Finally block logic** (Medium) - Fixed in `useSpellbookMutations`.
 - [x] **Missing Unicode test for dice notation** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.
 - [x] **Missing multiple tables test** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.
 - [x] **Missing JSDoc for SpellDescription component** (Medium) - Added JSDoc in `src/components/SpellDescription.tsx`.

@@ -14,12 +14,41 @@ import { useFilterReducer } from '../hooks/useFilterReducer';
 import { MIN_SPELL_LEVEL, MAX_SPELL_LEVEL } from '../constants/gameRules';
 import './SpellFilters.css';
 
+/**
+ * Props for the SpellFilters component.
+ */
 interface SpellFiltersProps {
+  /**
+   * Callback fired when filters change.
+   * Note: This is currently unused as filters are managed via context/reducer,
+   * but kept for potential future use or prop-based control.
+   */
   onFiltersChange: (filters: Filters) => void;
+
+  /**
+   * List of available spell schools to filter by.
+   */
   schools: string[];
+
+  /**
+   * List of available spell classes to filter by.
+   */
   classes: string[];
 }
 
+/**
+ * SpellFilters Component
+ * 
+ * Provides a UI for filtering spells by various criteria:
+ * - Class (e.g., Wizard, Sorcerer)
+ * - Spell Level (Range: Min to Max)
+ * - School (e.g., Evocation, Necromancy)
+ * - Components (Verbal, Somatic, Material)
+ * - Properties (Concentration, Ritual)
+ * - Text Search
+ * 
+ * Uses `useFilterReducer` to manage the filter state.
+ */
 export function SpellFilters({ onFiltersChange, schools, classes }: SpellFiltersProps) {
   const {
     state,

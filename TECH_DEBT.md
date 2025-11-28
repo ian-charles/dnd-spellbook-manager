@@ -126,22 +126,33 @@ This document tracks known technical debt, code quality issues, and refactoring 
 #### Missing Unit Tests for SpellFilters
 **Location**: src/components/SpellFilters.tsx
 **Issue**: No unit tests found for this component.
-**Impact**: Risk of regression when modifying filters.
-**Solution**: Create `src/components/SpellFilters.test.tsx`.
+**Impact**: Risk of regression when modifying filters UI or interaction logic.
+**Solution**: Create `src/components/SpellFilters.test.tsx` with tests for rendering, user interactions, accessibility, and integration with `useFilterReducer`.
 **Effort**: Medium (2 hours)
+**Priority**: High
+
+#### Prop Drilling in SpellFilters
+**Location**: src/components/SpellFilters.tsx
+**Issue**: `onFiltersChange` prop is passed but filters are managed via context/reducer.
+**Impact**: Confusing data flow and unnecessary re-renders.
+**Solution**: Remove `onFiltersChange` if unused, or clarify its purpose.
+**Effort**: Low (30 minutes)
 **Priority**: Medium
 
-#### Missing JSDoc for SpellFilters
+#### Potential useEffect Dependency Issue in SpellFilters
 **Location**: src/components/SpellFilters.tsx
-**Issue**: Incomplete JSDoc for props and component behavior.
-**Impact**: Harder for new developers to understand.
-**Solution**: Add comprehensive JSDoc.
+**Issue**: Complex dependency array in `useEffect`.
+**Impact**: Risk of infinite loops or stale closures.
+**Solution**: Review and simplify dependencies, or use a custom hook.
 **Effort**: Low (30 minutes)
 **Priority**: Medium
 
 
 
+
+
 ### Completed Refactoring
+- [x] **Missing JSDoc for SpellFilters** (Medium) - Added comprehensive JSDoc.
 - [x] **Magic Numbers in SpellFilters** (Medium) - Extracted `MIN_SPELL_LEVEL` and `MAX_SPELL_LEVEL` constants.
 - [x] **Duplicate Expansion Logic** (Low) - Extracted `SpellExpansionRow` component.
 - [x] **Missing Accessibility Labels in SpellFilters** (Medium) - Added `aria-label` and `aria-pressed` attributes.

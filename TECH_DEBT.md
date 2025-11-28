@@ -119,14 +119,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Low (1 hour)
 **Priority**: Low
 
-#### Race Conditions in Storage Service
-**Location**: src/services/storage.service.ts
-**Issue**: `removeSpellFromSpellbook`, `toggleSpellPrepared`, and `updateSpellNotes` use read-modify-write pattern without atomic updates.
-**Impact**: Potential data loss if multiple operations happen simultaneously.
-**Solution**: Use Dexie's atomic `update` with a callback, similar to `addSpellToSpellbook`.
-**Effort**: Low (1 hour)
-**Priority**: High
-
 #### Accessibility Issues in CreateSpellbookModal
 **Location**: src/components/CreateSpellbookModal.tsx
 **Issue**: Missing focus trap.
@@ -152,6 +144,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Priority**: Medium
 
 ### Completed Refactoring
+- [x] **Race Conditions in Storage Service** (High) - Refactored `storage.service.ts` to use atomic updates.
 - [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.
 - [x] **Missing JSDoc for App.tsx** (Medium) - Added JSDoc to `src/App.tsx`.
 - [x] **Complex state management** (Medium) - Refactored mutation logic to `useSpellbookMutations` hook.

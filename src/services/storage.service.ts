@@ -106,32 +106,32 @@ export class StorageService {
     spellbookId: string,
     spellId: string
   ): Promise<void> {
-    const spellbook = await this.getSpellbook(spellbookId);
-    if (!spellbook) {
+    // Use Dexie's atomic update
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
+      spellbook.spells = spellbook.spells.filter((s) => s.spellId !== spellId);
+      spellbook.updated = new Date().toISOString();
+    });
+
+    if (updateCount === 0) {
       throw new Error(`Spellbook ${spellbookId} not found`);
     }
-
-    await this.updateSpellbook(spellbookId, {
-      spells: spellbook.spells.filter((s) => s.spellId !== spellId),
-    });
   }
 
   /**
    * Toggle prepared status of a spell
    */
   async toggleSpellPrepared(spellbookId: string, spellId: string): Promise<void> {
-    const spellbook = await this.getSpellbook(spellbookId);
-    if (!spellbook) {
+    // Use Dexie's atomic update
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
+      spellbook.spells = spellbook.spells.map((s) =>
+        s.spellId === spellId ? { ...s, prepared: !s.prepared } : s
+      );
+      spellbook.updated = new Date().toISOString();
+    });
+
+    if (updateCount === 0) {
       throw new Error(`Spellbook ${spellbookId} not found`);
     }
-
-    const updatedSpells = spellbook.spells.map((s) =>
-      s.spellId === spellId ? { ...s, prepared: !s.prepared } : s
-    );
-
-    await this.updateSpellbook(spellbookId, {
-      spells: updatedSpells,
-    });
   }
 
   /**
@@ -142,18 +142,17 @@ export class StorageService {
     spellId: string,
     notes: string
   ): Promise<void> {
-    const spellbook = await this.getSpellbook(spellbookId);
-    if (!spellbook) {
+    // Use Dexie's atomic update
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
+      spellbook.spells = spellbook.spells.map((s) =>
+        s.spellId === spellId ? { ...s, notes } : s
+      );
+      spellbook.updated = new Date().toISOString();
+    });
+
+    if (updateCount === 0) {
       throw new Error(`Spellbook ${spellbookId} not found`);
     }
-
-    const updatedSpells = spellbook.spells.map((s) =>
-      s.spellId === spellId ? { ...s, notes } : s
-    );
-
-    await this.updateSpellbook(spellbookId, {
-      spells: updatedSpells,
-    });
   }
 
   /**

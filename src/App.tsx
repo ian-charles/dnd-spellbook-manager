@@ -361,6 +361,9 @@ function App() {
         <SpellbookDetail
           spellbookId={selectedSpellbookId}
           onBack={navigateToSpellbooks}
+          onCopySpellbook={() => {
+            window.location.hash = `#spellbooks?copy=${selectedSpellbookId}`;
+          }}
         />
       )}
 

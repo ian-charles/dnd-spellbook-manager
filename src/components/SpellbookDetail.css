@@ -49,6 +49,11 @@
   margin: 0;
 }
 
+.spellbook-header-top .header-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
 .spellbook-header-top .btn-secondary {
   padding: var(--space-2) var(--space-4);
   background: var(--color-bg-secondary);
@@ -254,6 +259,48 @@
   background: var(--color-error-hover);
 }
 
+/* Context Menu */
+.context-menu {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-modal);
+  min-width: 180px;
+  overflow: hidden;
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+}
+
+.context-menu-item {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background var(--transition-base);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.context-menu-item:last-child {
+  border-bottom: none;
+}
+
+.context-menu-item:hover {
+  background: var(--color-hover);
+}
+
+.context-menu-item-danger {
+  color: var(--color-error);
+}
+
+.context-menu-item-danger:hover {
+  background: var(--color-error-bg);
+}
+
 /* Mobile responsive - spellbook-specific */
 @media (max-width: 768px) {
   .spellbook-detail {
@@ -270,18 +317,26 @@
     font-size: var(--font-size-2xl);
   }
 
+  .spellbook-header-top .header-actions {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-2);
+  }
+
   .spellbook-header-top .btn-secondary {
-    width: 100%;
+    flex: 1;
   }
 
   .spellbook-attributes {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: row;
     gap: var(--space-4);
+    justify-content: space-between;
   }
 
-  .spellbook-attributes span:last-child {
-    grid-column: 1 / -1;
+  .spellbook-attributes span {
+    flex: 1;
+    min-width: 0;
   }
 
   .spellbook-controls {
@@ -294,44 +349,21 @@
     width: 100%;
   }
 
-  /* Hide all columns except spell name, level, school, prepared, and action */
-  .spellbook-table td:not(.spell-name):not(.level-col):not(.school-col):not(.prepared-col):not(.action-col):not(.spell-expansion-cell) {
+  /* Hide all columns except spell name, level, school, and expansion */
+  .spellbook-table td:not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell) {
     display: none;
   }
 
-  /* Prepared checkbox in top left */
-  .spellbook-table .prepared-col {
-    position: absolute !important;
-    display: block !important;
-    top: var(--space-3);
-    left: var(--space-4);
-    width: auto;
-  }
-
-  .spellbook-table .prepared-col input[type="checkbox"] {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-  }
-
-  /* Remove button in top right corner */
+  /* Hide prepared checkbox and remove button on mobile */
+  .spellbook-table .prepared-col,
   .spellbook-table .action-col {
-    position: absolute !important;
-    display: block !important;
-    top: var(--space-3);
-    right: var(--space-4);
-    width: auto;
+    display: none !important;
   }
 
-  .btn-remove-small {
-    width: 36px;
-    height: 36px;
-    font-size: var(--font-size-md);
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Prepared spell styling on mobile - different background and bolder border */
+  .spellbook-table .prepared-row {
+    background: light-dark(rgba(79, 70, 229, 0.08), rgba(79, 70, 229, 0.12));
+    border: 2px solid light-dark(rgba(79, 70, 229, 0.3), rgba(79, 70, 229, 0.5));
   }
 
   /* Keep spell slots table as a proper table even on mobile */

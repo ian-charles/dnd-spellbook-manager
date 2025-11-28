@@ -7,7 +7,7 @@
  * This component has no data fetching or business logic - it only renders UI.
  */
 
-import { Fragment } from 'react';
+import { Fragment, useState, useRef, useEffect } from 'react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { SortIcon } from './SortIcon';
@@ -75,6 +75,7 @@ export interface SpellbookDetailViewProps {
   onEditSave: (input: CreateSpellbookInput) => Promise<void>;
   onToggleShowPreparedOnly: () => void;
   onSelectAllPrepared: () => void;
+  onCopy: () => void;
   existingNames: string[];
 }
 
@@ -100,8 +101,79 @@ export function SpellbookDetailView({
   onEditSave,
   onToggleShowPreparedOnly,
   onSelectAllPrepared,
+  onCopy,
   existingNames,
 }: SpellbookDetailViewProps) {
+  // Context menu state for mobile
+  const [contextMenu, setContextMenu] = useState<{
+    spellId: string;
+    spellName: string;
+    prepared: boolean;
+    x: number;
+    y: number;
+  } | null>(null);
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const longPressStartPos = useRef<{ x: number; y: number } | null>(null);
+
+  // Close context menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setContextMenu(null);
+    if (contextMenu) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [contextMenu]);
+
+  // Long-press handlers for mobile context menu
+  const handleTouchStart = (e: React.TouchEvent, spell: EnrichedSpell) => {
+    const touch = e.touches[0];
+    longPressStartPos.current = { x: touch.clientX, y: touch.clientY };
+
+    longPressTimer.current = setTimeout(() => {
+      setContextMenu({
+        spellId: spell.spell.id,
+        spellName: spell.spell.name,
+        prepared: spell.prepared,
+        x: touch.clientX,
+        y: touch.clientY,
+      });
+    }, 500); // 500ms long press
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!longPressStartPos.current) return;
+
+    const touch = e.touches[0];
+    const deltaX = Math.abs(touch.clientX - longPressStartPos.current.x);
+    const deltaY = Math.abs(touch.clientY - longPressStartPos.current.y);
+
+    // Cancel long press if user moves finger too much
+    if (deltaX > 10 || deltaY > 10) {
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+        longPressTimer.current = null;
+      }
+      longPressStartPos.current = null;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    longPressStartPos.current = null;
+  };
+
+  const handleContextMenuAction = (action: 'prep' | 'remove', spellId: string, spellName: string) => {
+    setContextMenu(null);
+    if (action === 'prep') {
+      onTogglePrepared(spellId);
+    } else {
+      onRemoveSpell(spellId, spellName);
+    }
+  };
+
   // Loading state
   if (!spellbook) {
     return (
@@ -123,16 +195,25 @@ export function SpellbookDetailView({
         <div className="spellbook-header-content">
           <div className="spellbook-header-top">
             <h2 data-testid="spellbook-detail-name">{spellbook.name}</h2>
-            <button
-              className="btn-secondary"
-              onClick={onEdit}
-              data-testid="btn-edit-spellbook"
-            >
-              Edit
-            </button>
+            <div className="header-actions">
+              <button
+                className="btn-secondary"
+                onClick={onCopy}
+                data-testid="btn-copy-spellbook"
+              >
+                Copy
+              </button>
+              <button
+                className="btn-secondary"
+                onClick={onEdit}
+                data-testid="btn-edit-spellbook"
+              >
+                Edit
+              </button>
+            </div>
           </div>
           <p className="spellbook-stats">
-            {enrichedSpells.length} spell{enrichedSpells.length !== 1 ? 's' : ''} · {preparedCount} prepared
+            {enrichedSpells.length} spell{enrichedSpells.length !== 1 ? 's' : ''} · {preparedCount} prepared · {new Date(spellbook.updated).toLocaleDateString()}
           </p>
           <div className="spellbook-attributes">
             <span>
@@ -146,10 +227,6 @@ export function SpellbookDetailView({
             <span>
               <strong>Save DC</strong>
               <span>{spellbook.spellSaveDC !== undefined ? spellbook.spellSaveDC : 'N/A'}</span>
-            </span>
-            <span>
-              <strong>Last Updated</strong>
-              <span>{new Date(spellbook.updated).toLocaleDateString()}</span>
             </span>
           </div>
         </div>
@@ -235,12 +312,16 @@ export function SpellbookDetailView({
                 </tr>
               </thead>
               <tbody>
-                {sortedSpells.map(({ spell, prepared }) => (
-                  <Fragment key={spell.id}>
+                {sortedSpells.map((enrichedSpell) => {
+                  const { spell, prepared } = enrichedSpell;
+                  return (<Fragment key={spell.id}>
                     <tr
                       className={`spell-row ${prepared ? 'prepared-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
                       data-testid={`spellbook-spell-${spell.id}`}
                       onClick={() => onRowClick(spell.id)}
+                      onTouchStart={(e) => handleTouchStart(e, enrichedSpell)}
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
                     >
                       <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
                         <input
@@ -300,11 +381,38 @@ export function SpellbookDetailView({
                       </tr>
                     )}
                   </Fragment>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
         </>
+      )}
+
+      {/* Context Menu for Mobile */}
+      {contextMenu && (
+        <div
+          className="context-menu"
+          style={{
+            position: 'fixed',
+            left: `${contextMenu.x}px`,
+            top: `${contextMenu.y}px`,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="context-menu-item"
+            onClick={() => handleContextMenuAction('prep', contextMenu.spellId, contextMenu.spellName)}
+          >
+            {contextMenu.prepared ? 'Unprep' : 'Prep'}
+          </button>
+          <button
+            className="context-menu-item context-menu-item-danger"
+            onClick={() => handleContextMenuAction('remove', contextMenu.spellId, contextMenu.spellName)}
+          >
+            Remove
+          </button>
+        </div>
       )}
 
       {/* Confirm Remove Dialog */}

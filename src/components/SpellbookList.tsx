@@ -83,6 +83,17 @@ export function SpellbookList({
     }
   }, [contextMenu]);
 
+  // Handle copy from URL parameter
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.split('?')[1]);
+    const copyId = params.get('copy');
+    if (copyId && spellbooks.length > 0) {
+      handleCopy(copyId);
+      // Clear the parameter from URL
+      window.location.hash = '#spellbooks';
+    }
+  }, [spellbooks]);
+
   // Filter and sort spellbooks
   const filteredAndSortedSpellbooks = useMemo(() => {
     // Filter by search query

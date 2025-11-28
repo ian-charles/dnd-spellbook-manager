@@ -21,9 +21,10 @@ import { SpellbookDetailView, EnrichedSpell } from './SpellbookDetailView';
 interface SpellbookDetailProps {
   spellbookId: string;
   onBack: () => void;
+  onCopySpellbook?: (id: string) => void;
 }
 
-export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
+export function SpellbookDetail({ spellbookId, onBack, onCopySpellbook }: SpellbookDetailProps) {
   const { spellbooks, getSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
   const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
   const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
@@ -145,6 +146,12 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
     await loadSpellbook();
   };
 
+  const handleCopy = () => {
+    if (onCopySpellbook) {
+      onCopySpellbook(spellbookId);
+    }
+  };
+
   // Delegate rendering to presentational component
   return (
     <SpellbookDetailView
@@ -169,6 +176,7 @@ export function SpellbookDetail({ spellbookId, onBack }: SpellbookDetailProps) {
       onEditSave={handleEditSave}
       onToggleShowPreparedOnly={handleToggleShowPreparedOnly}
       onSelectAllPrepared={handleSelectAllPrepared}
+      onCopy={handleCopy}
       existingNames={spellbooks.map(sb => sb.name)}
     />
   );

@@ -183,7 +183,7 @@ function MarkdownItalic({ text }: { text: string }) {
  * <SpellDescription text="Deals **1d6** fire damage" />
  */
 export function SpellDescription({ text, className = '' }: SpellDescriptionProps) {
-    if (!text || typeof text !== 'string') return null;
+    if (!text) return null;
 
     // Split by newlines to process blocks
     const lines = text.split('\n');

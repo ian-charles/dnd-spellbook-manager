@@ -10,7 +10,13 @@ type SortDirection = 'asc' | 'desc';
  * Handles client-side filtering and sorting of spellbooks.
  * 
  * @param spellbooks - The list of spellbooks to filter and sort
- * @returns Object containing state and handlers for filtering and sorting
+ * @returns Object containing state and handlers for filtering and sorting:
+ * - searchQuery: Current search query string
+ * - setSearchQuery: Function to update search query
+ * - sortColumn: Current column being sorted
+ * - sortDirection: Current sort direction ('asc' or 'desc')
+ * - handleSort: Function to handle column header clicks
+ * - filteredAndSortedSpellbooks: Resulting list of spellbooks after filtering and sorting
  */
 export function useSpellbookListState(spellbooks: Spellbook[]) {
     const [searchQuery, setSearchQuery] = useState('');

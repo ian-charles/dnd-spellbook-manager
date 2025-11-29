@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
@@ -12,6 +12,7 @@ import { useLongPress } from '../hooks/useLongPress';
 import { useDialogs } from '../hooks/useDialogs';
 import { useSpellbookListState } from '../hooks/useSpellbookListState';
 import { useSpellbookOperations } from '../hooks/useSpellbookOperations';
+import { useContextMenu } from '../hooks/useContextMenu';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -77,21 +78,10 @@ export function SpellbookList({
   });
 
   // Context menu state for mobile long-press interactions.
-  const [contextMenu, setContextMenu] = useState<{
+  const { contextMenu, openContextMenu, closeContextMenu } = useContextMenu<{
     spellbookId: string;
     spellbookName: string;
-    x: number;
-    y: number;
-  } | null>(null);
-
-  // Close context menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => setContextMenu(null);
-    if (contextMenu) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [contextMenu]);
+  }>();
 
   // Handle copy from URL parameter
   useEffect(() => {
@@ -114,12 +104,9 @@ export function SpellbookList({
   } = useLongPress({
     onLongPress: (e: React.TouchEvent) => {
       if (pendingSpellbook.current) {
-        const touch = e.touches[0];
-        setContextMenu({
+        openContextMenu(e, {
           spellbookId: pendingSpellbook.current.id,
           spellbookName: pendingSpellbook.current.name,
-          x: touch.clientX,
-          y: touch.clientY,
         });
       }
     }
@@ -131,7 +118,7 @@ export function SpellbookList({
   };
 
   const handleContextMenuAction = (action: 'copy' | 'delete', spellbookId: string, spellbookName: string) => {
-    setContextMenu(null);
+    closeContextMenu();
     if (action === 'copy') {
       handleCopy(spellbookId);
     } else {
@@ -264,13 +251,13 @@ export function SpellbookList({
         >
           <button
             className="context-menu-item"
-            onClick={() => handleContextMenuAction('copy', contextMenu.spellbookId, contextMenu.spellbookName)}
+            onClick={() => handleContextMenuAction('copy', contextMenu.data.spellbookId, contextMenu.data.spellbookName)}
           >
             Copy Spellbook
           </button>
           <button
             className="context-menu-item context-menu-item-danger"
-            onClick={() => handleContextMenuAction('delete', contextMenu.spellbookId, contextMenu.spellbookName)}
+            onClick={() => handleContextMenuAction('delete', contextMenu.data.spellbookId, contextMenu.data.spellbookName)}
           >
             Delete Spellbook
           </button>

@@ -1,51 +1,32 @@
-import { Fragment, useState, useRef, useEffect } from 'react';
+import { Fragment, useRef } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
-import { SortColumn, SortDirection } from '../../hooks/useSpellSorting';
 import { SortIcon } from '../SortIcon';
 import { ComponentBadges } from '../SpellBadges';
 import { getLevelText } from '../../utils/spellFormatters';
 import { useLongPress } from '../../hooks/useLongPress';
 import { SpellExpansionRow } from '../SpellExpansionRow';
+import { useContextMenu } from '../../hooks/useContextMenu';
 
-interface SpellbookSpellsTableProps {
-    sortedSpells: EnrichedSpell[];
-    expandedSpellId: string | null;
-    sortColumn: SortColumn;
-    sortDirection: SortDirection;
-    onSort: (column: SortColumn) => void;
-    onRowClick: (spellId: string) => void;
-    onTogglePrepared: (spellId: string) => void;
-    onRemoveSpell: (spellId: string, spellName: string) => void;
-}
+import { useSpellbookDetail } from '../../contexts/SpellbookDetailContext';
 
-export function SpellbookSpellsTable({
-    sortedSpells,
-    expandedSpellId,
-    sortColumn,
-    sortDirection,
-    onSort,
-    onRowClick,
-    onTogglePrepared,
-    onRemoveSpell,
-}: SpellbookSpellsTableProps) {
+export function SpellbookSpellsTable() {
+    const {
+        sortedSpells,
+        expandedSpellId,
+        sortColumn,
+        sortDirection,
+        onSort,
+        onRowClick,
+        onTogglePrepared,
+        onRemoveSpell,
+    } = useSpellbookDetail();
+    // ... inside component
     // Context menu state for mobile
-    const [contextMenu, setContextMenu] = useState<{
+    const { contextMenu, openContextMenu, closeContextMenu } = useContextMenu<{
         spellId: string;
         spellName: string;
         prepared: boolean;
-        x: number;
-        y: number;
-    } | null>(null);
-
-
-    // Close context menu when clicking outside
-    useEffect(() => {
-        const handleClickOutside = () => setContextMenu(null);
-        if (contextMenu) {
-            document.addEventListener('click', handleClickOutside);
-            return () => document.removeEventListener('click', handleClickOutside);
-        }
-    }, [contextMenu]);
+    }>();
 
     // Long-press handlers for mobile context menu
     const pendingSpell = useRef<EnrichedSpell | null>(null);
@@ -57,13 +38,10 @@ export function SpellbookSpellsTable({
     } = useLongPress({
         onLongPress: (e: React.TouchEvent) => {
             if (pendingSpell.current) {
-                const touch = e.touches[0];
-                setContextMenu({
+                openContextMenu(e, {
                     spellId: pendingSpell.current.spell.id,
                     spellName: pendingSpell.current.spell.name,
                     prepared: pendingSpell.current.prepared,
-                    x: touch.clientX,
-                    y: touch.clientY,
                 });
             }
         }
@@ -75,7 +53,7 @@ export function SpellbookSpellsTable({
     };
 
     const handleContextMenuAction = (action: 'prep' | 'remove', spellId: string, spellName: string) => {
-        setContextMenu(null);
+        closeContextMenu();
         if (action === 'prep') {
             onTogglePrepared(spellId);
         } else {
@@ -201,7 +179,6 @@ export function SpellbookSpellsTable({
                 </table>
             </div>
 
-            {/* Context Menu for Mobile */}
             {contextMenu && (
                 <div
                     className="context-menu"
@@ -214,13 +191,13 @@ export function SpellbookSpellsTable({
                 >
                     <button
                         className="context-menu-item"
-                        onClick={() => handleContextMenuAction('prep', contextMenu.spellId, contextMenu.spellName)}
+                        onClick={() => handleContextMenuAction('prep', contextMenu.data.spellId, contextMenu.data.spellName)}
                     >
-                        {contextMenu.prepared ? 'Unprep' : 'Prep'}
+                        {contextMenu.data.prepared ? 'Unprep' : 'Prep'}
                     </button>
                     <button
                         className="context-menu-item context-menu-item-danger"
-                        onClick={() => handleContextMenuAction('remove', contextMenu.spellId, contextMenu.spellName)}
+                        onClick={() => handleContextMenuAction('remove', contextMenu.data.spellId, contextMenu.data.spellName)}
                     >
                         Remove
                     </button>

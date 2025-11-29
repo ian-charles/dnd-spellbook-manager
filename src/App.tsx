@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Layout } from './components/Layout';
 import { SpellTable } from './components/SpellTable';
 import { SpellFilters } from './components/SpellFilters';
@@ -13,9 +13,8 @@ import { useSpellbooks } from './hooks/useSpellbooks';
 import { useHashRouter } from './hooks/useHashRouter';
 import { useToast } from './hooks/useToast';
 import { useSpellbookMutations } from './hooks/useSpellbookMutations';
-import { useFilterReducer } from './hooks/useFilterReducer';
-import { spellService } from './services/spell.service';
-import { SpellFilters as Filters, Spell } from './types/spell';
+import { useSpellFiltering } from './hooks/useSpellFiltering';
+import { useSpellSelection } from './hooks/useSpellSelection';
 import { MESSAGES } from './constants/messages';
 import './App.css';
 
@@ -74,48 +73,27 @@ function App() {
     variant: 'info',
   });
 
+  // ... inside App component
   // Spell filtering state
-  const filterReducer = useFilterReducer();
-  const { state: filterState } = filterReducer;
-  const [filteredSpells, setFilteredSpells] = useState<Spell[]>([]);
-  const [schools, setSchools] = useState<string[]>([]);
-  const [classes, setClasses] = useState<string[]>([]);
+  const {
+    filterReducer,
+    filteredSpells,
+    schools,
+    classes,
+  } = useSpellFiltering(spells, loading);
 
-  // Selected spells state (persists across filter changes)
-  const [selectedSpellIds, setSelectedSpellIds] = useState<Set<string>>(new Set());
-  const [targetSpellbookId, setTargetSpellbookId] = useState<string>('');
+
+  // Selected spells state
+  const {
+    selectedSpellIds,
+    setSelectedSpellIds,
+    targetSpellbookId,
+    setTargetSpellbookId,
+  } = useSpellSelection();
 
   // Create spellbook modal state
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [pendingSpellIds, setPendingSpellIds] = useState<Set<string>>(new Set());
-
-  // Initialize schools and classes when spells load
-  useEffect(() => {
-    if (!loading && spells.length > 0) {
-      setSchools(spellService.getSchools());
-      setClasses(spellService.getClasses());
-      setFilteredSpells(spells);
-    }
-  }, [spells, loading]);
-
-  // Filter spells when filters change
-  useEffect(() => {
-    if (!loading && spells.length > 0) {
-      const filters: Filters = {
-        searchText: filterState.searchText,
-        levelRange: filterState.levelRange,
-        schools: filterState.selectedSchools.length > 0 ? filterState.selectedSchools : undefined,
-        classes: filterState.selectedClasses.length > 0 ? filterState.selectedClasses : undefined,
-        concentration: filterState.concentrationOnly || undefined,
-        ritual: filterState.ritualOnly || undefined,
-        componentVerbal: filterState.verbalOnly || undefined,
-        componentSomatic: filterState.somaticOnly || undefined,
-        componentMaterial: filterState.materialOnly || undefined,
-      };
-      const results = spellService.searchSpells(filters);
-      setFilteredSpells(results);
-    }
-  }, [filterState, spells, loading]);
 
   // Mutation hook
   const {

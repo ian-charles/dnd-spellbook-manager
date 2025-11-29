@@ -50,4 +50,33 @@ describe('useDialogs', () => {
 
         expect(result.current.alertDialog.isOpen).toBe(false);
     });
+    it('should use default variant "info" if not provided', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        act(() => {
+            result.current.showAlert('Title', 'Message');
+        });
+
+        expect(result.current.alertDialog.variant).toBe('info');
+    });
+
+    it('should allow direct setting of alert dialog state', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        act(() => {
+            result.current.setAlertDialog({
+                isOpen: true,
+                title: 'Direct',
+                message: 'Message',
+                variant: 'warning',
+            });
+        });
+
+        expect(result.current.alertDialog).toEqual({
+            isOpen: true,
+            title: 'Direct',
+            message: 'Message',
+            variant: 'warning',
+        });
+    });
 });

@@ -18,7 +18,14 @@ export interface AlertDialogState {
  * 
  * Provides methods to show and close dialogs, abstracting the state management.
  * 
- * @returns Object containing dialog states and handler functions
+ * @returns Object containing dialog states and handler functions:
+ * - confirmDialog: State of the confirmation dialog
+ * - alertDialog: State of the alert dialog
+ * - showConfirm: Function to open the confirmation dialog
+ * - closeConfirm: Function to close the confirmation dialog
+ * - showAlert: Function to open the alert dialog
+ * - closeAlert: Function to close the alert dialog
+ * - setAlertDialog: Function to directly set alert dialog state
  */
 export function useDialogs() {
     const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>({

@@ -15,8 +15,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SpellbookDetailView, EnrichedSpell } from './SpellbookDetailView';
-import { Spellbook } from '../types/spellbook';
+import { SpellbookDetailContext } from '../contexts/SpellbookDetailContext';
+import { SpellbookDetailContextType } from '../types/spellbookDetail';
+
+import { SpellbookDetailView } from './SpellbookDetailView';
+import { Spellbook, EnrichedSpell } from '../types/spellbook';
 import { Spell } from '../types/spell';
 
 // Mock spell data
@@ -95,8 +98,10 @@ const mockSpellbook: Spellbook = {
   spellSaveDC: 15,
 };
 
+
+
 // Default props for testing
-const defaultProps = {
+const defaultProps: SpellbookDetailContextType = {
   spellbook: mockSpellbook,
   enrichedSpells: mockEnrichedSpells,
   sortedSpells: mockEnrichedSpells,
@@ -118,19 +123,29 @@ const defaultProps = {
   onEditSave: vi.fn(),
   onToggleShowPreparedOnly: vi.fn(),
   onSelectAllPrepared: vi.fn(),
+  onCopy: vi.fn(),
   existingNames: [],
+};
+
+const renderWithContext = (props: Partial<SpellbookDetailContextType> = {}) => {
+  const mergedProps = { ...defaultProps, ...props };
+  return render(
+    <SpellbookDetailContext.Provider value={mergedProps}>
+      <SpellbookDetailView />
+    </SpellbookDetailContext.Provider>
+  );
 };
 
 describe('SpellbookDetailView', () => {
   describe('Loading State', () => {
     it('should render loading state when spellbook is null', () => {
-      render(<SpellbookDetailView {...defaultProps} spellbook={null} />);
+      renderWithContext({ spellbook: null });
 
       expect(screen.getByText('Loading spellbook...')).toBeTruthy();
     });
 
     it('should not render spellbook content when loading', () => {
-      render(<SpellbookDetailView {...defaultProps} spellbook={null} />);
+      renderWithContext({ spellbook: null });
 
       expect(screen.queryByTestId('spellbook-detail-name')).toBeNull();
       expect(screen.queryByTestId('spellbook-spell-list')).toBeNull();
@@ -139,38 +154,29 @@ describe('SpellbookDetailView', () => {
 
   describe('Empty State', () => {
     it('should render empty state when spellbook has no spells', () => {
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          enrichedSpells={[]}
-          sortedSpells={[]}
-        />
-      );
+      renderWithContext({
+        enrichedSpells: [],
+        sortedSpells: [],
+      });
 
       expect(screen.getByText('This spellbook is empty.')).toBeTruthy();
       expect(screen.getByText('Go to the Browse tab to add spells!')).toBeTruthy();
     });
 
     it('should not render spell table when empty', () => {
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          enrichedSpells={[]}
-          sortedSpells={[]}
-        />
-      );
+      renderWithContext({
+        enrichedSpells: [],
+        sortedSpells: [],
+      });
 
       expect(screen.queryByTestId('spellbook-spell-list')).toBeNull();
     });
 
     it('should show spellbook name in empty state', () => {
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          enrichedSpells={[]}
-          sortedSpells={[]}
-        />
-      );
+      renderWithContext({
+        enrichedSpells: [],
+        sortedSpells: [],
+      });
 
       expect(screen.getByTestId('spellbook-detail-name').textContent).toContain('My Spellbook');
     });
@@ -178,13 +184,13 @@ describe('SpellbookDetailView', () => {
 
   describe('Header Rendering', () => {
     it('should render spellbook name', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByTestId('spellbook-detail-name').textContent).toContain('My Spellbook');
     });
 
     it('should render back button', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText('← Back to Spellbooks')).toBeTruthy();
     });
@@ -193,7 +199,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onBack = vi.fn();
 
-      render(<SpellbookDetailView {...defaultProps} onBack={onBack} />);
+      renderWithContext({ onBack });
 
       const backButton = screen.getByText('← Back to Spellbooks');
       await user.click(backButton);
@@ -202,25 +208,22 @@ describe('SpellbookDetailView', () => {
     });
 
     it('should display spell count (plural)', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText(/3 spells/)).toBeTruthy();
     });
 
     it('should display spell count (singular)', () => {
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          enrichedSpells={[mockEnrichedSpells[0]]}
-          sortedSpells={[mockEnrichedSpells[0]]}
-        />
-      );
+      renderWithContext({
+        enrichedSpells: [mockEnrichedSpells[0]],
+        sortedSpells: [mockEnrichedSpells[0]],
+      });
 
       expect(screen.getByText(/1 spell(?!s)/)).toBeTruthy();
     });
 
     it('should display prepared count', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText(/2 prepared/)).toBeTruthy();
     });
@@ -228,13 +231,13 @@ describe('SpellbookDetailView', () => {
 
   describe('Spell Table Rendering', () => {
     it('should render spell table when spells exist', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByTestId('spellbook-spell-list')).toBeTruthy();
     });
 
     it('should render all spells in sorted order', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByTestId('spellbook-spell-spell-1')).toBeTruthy();
       expect(screen.getByTestId('spellbook-spell-spell-2')).toBeTruthy();
@@ -242,7 +245,7 @@ describe('SpellbookDetailView', () => {
     });
 
     it('should render spell names', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText('Fireball')).toBeTruthy();
       expect(screen.getByText('Shield')).toBeTruthy();
@@ -250,14 +253,14 @@ describe('SpellbookDetailView', () => {
     });
 
     it('should render spell levels', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText('3')).toBeTruthy(); // Fireball
       expect(screen.getAllByText('1').length).toBe(2); // Shield and Detect Magic
     });
 
     it('should render spell schools', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText('Evocation')).toBeTruthy();
       expect(screen.getByText('Abjuration')).toBeTruthy();
@@ -265,7 +268,7 @@ describe('SpellbookDetailView', () => {
     });
 
     it('should render concentration badge when applicable', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       // Detect Magic has concentration
       const detectMagicRow = screen.getByTestId('spellbook-spell-spell-3');
@@ -273,7 +276,7 @@ describe('SpellbookDetailView', () => {
     });
 
     it('should render ritual badge when applicable', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       // Detect Magic is a ritual
       const detectMagicRow = screen.getByTestId('spellbook-spell-spell-3');
@@ -283,14 +286,14 @@ describe('SpellbookDetailView', () => {
 
   describe('Prepared Checkbox', () => {
     it('should render checkboxes for all spells', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       const checkboxes = screen.getAllByTestId('toggle-prepared');
       expect(checkboxes.length).toBe(3);
     });
 
     it('should check prepared spells', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       const checkboxes = screen.getAllByTestId('toggle-prepared') as HTMLInputElement[];
       expect(checkboxes[0].checked).toBe(true); // Fireball prepared
@@ -302,12 +305,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onTogglePrepared = vi.fn();
 
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          onTogglePrepared={onTogglePrepared}
-        />
-      );
+      renderWithContext({ onTogglePrepared });
 
       const checkboxes = screen.getAllByTestId('toggle-prepared');
       await user.click(checkboxes[0]);
@@ -318,30 +316,20 @@ describe('SpellbookDetailView', () => {
 
   describe('Row Expansion', () => {
     it('should not show expanded details by default', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.queryByText(/A bright streak flashes/)).toBeNull();
     });
 
     it('should apply expanded class when spell is expanded', () => {
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          expandedSpellId="spell-1"
-        />
-      );
+      renderWithContext({ expandedSpellId: 'spell-1' });
 
       const row = screen.getByTestId('spellbook-spell-spell-1');
       expect(row.className).toContain('expanded');
     });
 
     it('should show spell description when expanded', () => {
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          expandedSpellId="spell-1"
-        />
-      );
+      renderWithContext({ expandedSpellId: 'spell-1' });
 
       expect(screen.getByText(/A bright streak flashes/)).toBeTruthy();
     });
@@ -350,12 +338,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onRowClick = vi.fn();
 
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          onRowClick={onRowClick}
-        />
-      );
+      renderWithContext({ onRowClick });
 
       const row = screen.getByTestId('spellbook-spell-spell-1');
       await user.click(row);
@@ -369,14 +352,11 @@ describe('SpellbookDetailView', () => {
         higherLevels: 'When you cast this spell using a spell slot of 4th level or higher...',
       };
 
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          enrichedSpells={[{ spell: spellWithHigherLevels, prepared: true, notes: '' }]}
-          sortedSpells={[{ spell: spellWithHigherLevels, prepared: true, notes: '' }]}
-          expandedSpellId="spell-1"
-        />
-      );
+      renderWithContext({
+        enrichedSpells: [{ spell: spellWithHigherLevels, prepared: true, notes: '' }],
+        sortedSpells: [{ spell: spellWithHigherLevels, prepared: true, notes: '' }],
+        expandedSpellId: 'spell-1',
+      });
 
       expect(screen.getByText('At Higher Levels:')).toBeTruthy();
       expect(screen.getByText(/When you cast this spell/)).toBeTruthy();
@@ -385,7 +365,7 @@ describe('SpellbookDetailView', () => {
 
   describe('Remove Button', () => {
     it('should render remove button for each spell', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByTestId('btn-remove-spell-spell-1')).toBeTruthy();
       expect(screen.getByTestId('btn-remove-spell-spell-2')).toBeTruthy();
@@ -396,12 +376,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onRemoveSpell = vi.fn();
 
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          onRemoveSpell={onRemoveSpell}
-        />
-      );
+      renderWithContext({ onRemoveSpell });
 
       const removeButton = screen.getByTestId('btn-remove-spell-spell-1');
       await user.click(removeButton);
@@ -415,7 +390,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onSort = vi.fn();
 
-      render(<SpellbookDetailView {...defaultProps} onSort={onSort} />);
+      renderWithContext({ onSort });
 
       const nameHeader = screen.getByText('Spell Name');
       await user.click(nameHeader);
@@ -427,7 +402,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onSort = vi.fn();
 
-      render(<SpellbookDetailView {...defaultProps} onSort={onSort} />);
+      renderWithContext({ onSort });
 
       const levelHeader = screen.getByText('Level');
       await user.click(levelHeader);
@@ -439,7 +414,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onSort = vi.fn();
 
-      render(<SpellbookDetailView {...defaultProps} onSort={onSort} />);
+      renderWithContext({ onSort });
 
       const schoolHeader = screen.getByText('School');
       await user.click(schoolHeader);
@@ -448,7 +423,7 @@ describe('SpellbookDetailView', () => {
     });
 
     it('should render sort icons', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       // SortIcon components are rendered for sortable columns
       expect(screen.getByText('Spell Name').parentElement?.querySelector('.th-content')).toBeTruthy();
@@ -457,18 +432,15 @@ describe('SpellbookDetailView', () => {
 
   describe('ConfirmDialog', () => {
     it('should not render dialog when not open', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.queryByText('Remove Spell')).toBeNull();
     });
 
     it('should render dialog when open', () => {
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          confirmDialog={{ isOpen: true, spellId: 'spell-1', spellName: 'Fireball' }}
-        />
-      );
+      renderWithContext({
+        confirmDialog: { isOpen: true, spellId: 'spell-1', spellName: 'Fireball' },
+      });
 
       expect(screen.getByText('Remove Spell')).toBeTruthy();
       expect(screen.getByText('Remove "Fireball" from this spellbook?')).toBeTruthy();
@@ -478,13 +450,10 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onConfirmRemove = vi.fn();
 
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          confirmDialog={{ isOpen: true, spellId: 'spell-1', spellName: 'Fireball' }}
-          onConfirmRemove={onConfirmRemove}
-        />
-      );
+      renderWithContext({
+        confirmDialog: { isOpen: true, spellId: 'spell-1', spellName: 'Fireball' },
+        onConfirmRemove,
+      });
 
       const confirmButton = screen.getByTestId('confirm-dialog-confirm');
       await user.click(confirmButton);
@@ -496,13 +465,10 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onCancelRemove = vi.fn();
 
-      render(
-        <SpellbookDetailView
-          {...defaultProps}
-          confirmDialog={{ isOpen: true, spellId: 'spell-1', spellName: 'Fireball' }}
-          onCancelRemove={onCancelRemove}
-        />
-      );
+      renderWithContext({
+        confirmDialog: { isOpen: true, spellId: 'spell-1', spellName: 'Fireball' },
+        onCancelRemove,
+      });
 
       const cancelButton = screen.getByTestId('confirm-dialog-cancel');
       await user.click(cancelButton);
@@ -513,14 +479,14 @@ describe('SpellbookDetailView', () => {
 
   describe('CSS Classes', () => {
     it('should apply prepared-row class to prepared spells', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       const fireballRow = screen.getByTestId('spellbook-spell-spell-1');
       expect(fireballRow.className).toContain('prepared-row');
     });
 
     it('should not apply prepared-row class to unprepared spells', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       const shieldRow = screen.getByTestId('spellbook-spell-spell-2');
       expect(shieldRow.className).not.toContain('prepared-row');
@@ -529,20 +495,20 @@ describe('SpellbookDetailView', () => {
 
   describe('Accessibility', () => {
     it('should have testid on main container', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByTestId('spellbook-detail')).toBeTruthy();
     });
 
     it('should have aria-label on prepared checkboxes', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       const checkbox = screen.getAllByTestId('toggle-prepared')[0];
       expect(checkbox.getAttribute('aria-label')).toBe('Toggle Fireball prepared status');
     });
 
     it('should have aria-label on remove buttons', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       const removeButton = screen.getByTestId('btn-remove-spell-spell-1');
       expect(removeButton.getAttribute('aria-label')).toBe('Remove Fireball');
@@ -551,33 +517,33 @@ describe('SpellbookDetailView', () => {
 
   describe('Spellbook Attributes', () => {
     it('should display spellcasting ability', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText(/INT/)).toBeTruthy();
     });
 
     it('should display spell attack modifier', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText(/\+7/)).toBeTruthy();
     });
 
     it('should display spell save DC', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       const label = screen.getByText('Save DC');
       expect(label.nextElementSibling?.textContent).toBe('15');
     });
 
     it('should display last updated timestamp', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByText(/1\/15\/2025/)).toBeTruthy();
     });
 
     it('should display N/A when spellcasting ability is not set', () => {
       const spellbookWithoutAbility = { ...mockSpellbook, spellcastingAbility: undefined };
-      render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutAbility} />);
+      renderWithContext({ spellbook: spellbookWithoutAbility });
 
       const label = screen.getByText('Ability');
       expect(label.parentElement?.textContent).toContain('N/A');
@@ -585,7 +551,7 @@ describe('SpellbookDetailView', () => {
 
     it('should display N/A when spell attack modifier is not set', () => {
       const spellbookWithoutModifier = { ...mockSpellbook, spellAttackModifier: undefined };
-      render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutModifier} />);
+      renderWithContext({ spellbook: spellbookWithoutModifier });
 
       const label = screen.getByText('Attack');
       expect(label.parentElement?.textContent).toContain('N/A');
@@ -593,7 +559,7 @@ describe('SpellbookDetailView', () => {
 
     it('should display N/A when spell save DC is not set', () => {
       const spellbookWithoutDC = { ...mockSpellbook, spellSaveDC: undefined };
-      render(<SpellbookDetailView {...defaultProps} spellbook={spellbookWithoutDC} />);
+      renderWithContext({ spellbook: spellbookWithoutDC });
 
       const label = screen.getByText('Save DC');
       expect(label.parentElement?.textContent).toContain('N/A');
@@ -602,7 +568,7 @@ describe('SpellbookDetailView', () => {
 
   describe('Edit Button', () => {
     it('should render edit button', () => {
-      render(<SpellbookDetailView {...defaultProps} />);
+      renderWithContext();
 
       expect(screen.getByTestId('btn-edit-spellbook')).toBeTruthy();
     });
@@ -611,7 +577,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onEdit = vi.fn();
 
-      render(<SpellbookDetailView {...defaultProps} onEdit={onEdit} />);
+      renderWithContext({ onEdit });
 
       const editButton = screen.getByTestId('btn-edit-spellbook');
       await user.click(editButton);
@@ -620,7 +586,7 @@ describe('SpellbookDetailView', () => {
     });
 
     it('should render edit modal when editModalOpen is true', () => {
-      render(<SpellbookDetailView {...defaultProps} editModalOpen={true} />);
+      renderWithContext({ editModalOpen: true });
 
       expect(screen.getByText('Edit Spellbook')).toBeTruthy();
     });
@@ -629,7 +595,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onEditClose = vi.fn();
 
-      render(<SpellbookDetailView {...defaultProps} editModalOpen={true} onEditClose={onEditClose} />);
+      renderWithContext({ editModalOpen: true, onEditClose });
 
       const cancelButton = screen.getByTestId('cancel-button');
       await user.click(cancelButton);
@@ -641,7 +607,7 @@ describe('SpellbookDetailView', () => {
       const user = userEvent.setup();
       const onEditSave = vi.fn();
 
-      render(<SpellbookDetailView {...defaultProps} editModalOpen={true} onEditSave={onEditSave} />);
+      renderWithContext({ editModalOpen: true, onEditSave });
 
       const nameInput = screen.getByTestId('spellbook-name-input') as HTMLInputElement;
       await user.clear(nameInput);

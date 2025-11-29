@@ -71,6 +71,13 @@ export function useSpellbooks() {
     return await storageService.getSpellbook(id);
   };
 
+  const reloadSpellbook = async (id: string) => {
+    const updatedBook = await storageService.getSpellbook(id);
+    if (updatedBook) {
+      setSpellbooks(prev => prev.map(sb => sb.id === id ? updatedBook : sb));
+    }
+  };
+
   const addSpellToSpellbook = async (spellbookId: string, spellId: string) => {
     await storageService.addSpellToSpellbook(spellbookId, spellId);
     // Note: Don't reload here - caller should refresh after batch operations
@@ -79,20 +86,17 @@ export function useSpellbooks() {
 
   const removeSpellFromSpellbook = async (spellbookId: string, spellId: string) => {
     await storageService.removeSpellFromSpellbook(spellbookId, spellId);
-    // Reload since this is typically a single operation
-    await loadSpellbooks();
+    await reloadSpellbook(spellbookId);
   };
 
   const togglePrepared = async (spellbookId: string, spellId: string) => {
     await storageService.toggleSpellPrepared(spellbookId, spellId);
-    // Reload since this is typically a single operation
-    await loadSpellbooks();
+    await reloadSpellbook(spellbookId);
   };
 
   const updateSpellNotes = async (spellbookId: string, spellId: string, notes: string) => {
     await storageService.updateSpellNotes(spellbookId, spellId, notes);
-    // Reload since this is typically a single operation
-    await loadSpellbooks();
+    await reloadSpellbook(spellbookId);
   };
 
   return {

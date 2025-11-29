@@ -28,7 +28,20 @@ interface UseSpellbookOperationsProps {
  * @param props.onAddSpellToSpellbook - Callback to add a spell to a spellbook
  * @param props.setAlertDialog - Callback to show an alert dialog
  * @param props.closeConfirm - Callback to close the confirmation dialog
- * @returns Object containing state and handlers for spellbook operations
+ * @returns Object containing state and handlers for spellbook operations:
+ * - createModalOpen: Boolean indicating if the create modal is open
+ * - setCreateModalOpen: Function to set create modal state
+ * - copyData: Data for the spellbook being copied (if any)
+ * - setCopyData: Function to set copy data
+ * - copyProgress: String description of current copy progress
+ * - importing: Boolean indicating if an import is in progress
+ * - fileInputRef: Ref for the hidden file input element
+ * - handleCreateSpellbook: Function to handle spellbook creation
+ * - handleCopy: Function to initiate spellbook copy
+ * - handleConfirmDelete: Function to confirm spellbook deletion
+ * - handleExport: Function to handle spellbook export
+ * - handleImportClick: Function to trigger file input click
+ * - handleImport: Function to handle file selection and import
  */
 export function useSpellbookOperations({
     spellbooks,
@@ -117,7 +130,7 @@ export function useSpellbookOperations({
         if (!spellbook) return;
 
         setCopyData({
-            name: `${spellbook.name} (Copy)`,
+            name: `${spellbook.name}${MESSAGES.GENERATED.COPY_SUFFIX}`,
             spellcastingAbility: spellbook.spellcastingAbility,
             spellAttackModifier: spellbook.spellAttackModifier,
             spellSaveDC: spellbook.spellSaveDC,

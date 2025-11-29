@@ -7,75 +7,36 @@
  * This component has no data fetching or business logic - it only renders UI.
  */
 
-import { Spellbook, CreateSpellbookInput, EnrichedSpell } from '../types/spellbook';
+
 
 import { ConfirmDialog } from './ConfirmDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 import LoadingSpinner from './LoadingSpinner';
-import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
 import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
 import './SpellbookDetail.css';
 
 
+import { useSpellbookDetail } from '../contexts/SpellbookDetailContext';
 
-
-
-export interface SpellbookDetailViewProps {
-  spellbook: Spellbook | null;
-  enrichedSpells: EnrichedSpell[];
-  sortedSpells: EnrichedSpell[];
-  expandedSpellId: string | null;
-  sortColumn: SortColumn;
-  sortDirection: SortDirection;
-  confirmDialog: {
-    isOpen: boolean;
-    spellId: string;
-    spellName: string;
-  };
-  editModalOpen: boolean;
-  showPreparedOnly: boolean;
-  onBack: () => void;
-  onSort: (column: SortColumn) => void;
-  onTogglePrepared: (spellId: string) => void;
-  onRemoveSpell: (spellId: string, spellName: string) => void;
-  onConfirmRemove: () => void;
-  onCancelRemove: () => void;
-  onRowClick: (spellId: string) => void;
-  onEdit: () => void;
-  onEditClose: () => void;
-  onEditSave: (input: CreateSpellbookInput) => Promise<void>;
-  onToggleShowPreparedOnly: () => void;
-  onSelectAllPrepared: () => void;
-  onCopy: () => void;
-  existingNames: string[];
-}
-
-export function SpellbookDetailView({
-  spellbook,
-  enrichedSpells,
-  sortedSpells,
-  expandedSpellId,
-  sortColumn,
-  sortDirection,
-  confirmDialog,
-  editModalOpen,
-  showPreparedOnly,
-  onBack,
-  onSort,
-  onTogglePrepared,
-  onRemoveSpell,
-  onConfirmRemove,
-  onCancelRemove,
-  onRowClick,
-  onEdit,
-  onEditClose,
-  onEditSave,
-  onToggleShowPreparedOnly,
-  onSelectAllPrepared,
-  onCopy,
-  existingNames,
-}: SpellbookDetailViewProps) {
+export function SpellbookDetailView() {
+  const {
+    spellbook,
+    enrichedSpells,
+    confirmDialog,
+    editModalOpen,
+    showPreparedOnly,
+    onBack,
+    onConfirmRemove,
+    onCancelRemove,
+    onEdit,
+    onEditClose,
+    onEditSave,
+    onToggleShowPreparedOnly,
+    onSelectAllPrepared,
+    onCopy,
+    existingNames,
+  } = useSpellbookDetail();
 
 
   // Loading state
@@ -164,16 +125,7 @@ export function SpellbookDetailView({
             </button>
           </div>
 
-          <SpellbookSpellsTable
-            sortedSpells={sortedSpells}
-            expandedSpellId={expandedSpellId}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
-            onSort={onSort}
-            onRowClick={onRowClick}
-            onTogglePrepared={onTogglePrepared}
-            onRemoveSpell={onRemoveSpell}
-          />
+          <SpellbookSpellsTable />
 
           {/* Confirm Remove Dialog */}
           <ConfirmDialog

@@ -65,4 +65,7 @@ export const MESSAGES = {
     REMOVE_SPELL_CONFIRM: 'Remove "{spellName}" from this spellbook?',
     BACK_TO_SPELLBOOKS: '← Back to Spellbooks',
   },
+  GENERATED: {
+    COPY_SUFFIX: ' (Copy)',
+  },
 } as const;

@@ -13,6 +13,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { SpellbookList } from './SpellbookList';
 import { exportImportService } from '../services/exportImport.service';
+const DEFAULT_ABILITY = 'INT';
 
 // Mock dependencies
 vi.mock('../services/exportImport.service', () => ({
@@ -39,7 +40,7 @@ vi.mock('./CreateSpellbookModal', () => ({
           onClick={() => {
             const data = {
               name: initialData ? initialData.name : 'New Spellbook',
-              spellcastingAbility: initialData?.spellcastingAbility || 'INT',
+              spellcastingAbility: initialData?.spellcastingAbility || DEFAULT_ABILITY,
             };
             onSubmit(data);
           }}

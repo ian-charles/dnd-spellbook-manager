@@ -2,6 +2,14 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useSpellbookOperations } from './useSpellbookOperations';
 import { Spellbook } from '../types/spellbook';
+import { exportImportService } from '../services/exportImport.service';
+
+vi.mock('../services/exportImport.service', () => ({
+    exportImportService: {
+        downloadSpellbooks: vi.fn(),
+        importSpellbooks: vi.fn(),
+    },
+}));
 
 describe('useSpellbookOperations', () => {
     const mockSpellbooks: Spellbook[] = [
@@ -59,5 +67,59 @@ describe('useSpellbookOperations', () => {
         expect(mockOnCreateSpellbook).toHaveBeenCalled();
         expect(mockOnAddSpellToSpellbook).toHaveBeenCalledWith('2', 'fireball');
         expect(mockOnRefreshSpellbooks).toHaveBeenCalled();
+    });
+    it('should handle create spellbook failure', async () => {
+        const error = new Error('Create failed');
+        mockOnCreateSpellbook.mockRejectedValue(error);
+        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
+
+        await expect(result.current.handleCreateSpellbook({ name: 'Fail' }))
+            .rejects.toThrow('Create failed');
+    });
+
+    it('should handle delete spellbook failure', async () => {
+        mockOnDeleteSpellbook.mockRejectedValue(new Error('Delete failed'));
+        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
+
+        await act(async () => {
+            await result.current.handleConfirmDelete('1');
+        });
+
+        expect(mockCloseConfirm).toHaveBeenCalled();
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            variant: 'error',
+        }));
+    });
+
+    it('should handle export failure', async () => {
+        (exportImportService.downloadSpellbooks as any).mockRejectedValue(new Error('Export failed'));
+        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
+
+        await act(async () => {
+            await result.current.handleExport();
+        });
+
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            variant: 'error',
+        }));
+    });
+
+    it('should handle import failure', async () => {
+        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
+        const file = new File(['{}'], 'test.json', { type: 'application/json' });
+        const event = { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+        (exportImportService.importSpellbooks as any).mockRejectedValue(new Error('Import failed'));
+
+        await act(async () => {
+            await result.current.handleImport(event);
+        });
+
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            variant: 'error',
+        }));
     });
 });

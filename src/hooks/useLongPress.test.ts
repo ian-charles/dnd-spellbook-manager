@@ -83,4 +83,24 @@ describe('useLongPress', () => {
         expect(onLongPress).not.toHaveBeenCalled();
         vi.useRealTimers();
     });
+    it('should clean up timer on unmount', () => {
+        vi.useFakeTimers();
+        const onLongPress = vi.fn();
+        const { result, unmount } = renderHook(() => useLongPress({ onLongPress, delay: 500 }));
+
+        act(() => {
+            result.current.onTouchStart({
+                touches: [{ clientX: 100, clientY: 100 }],
+            } as unknown as React.TouchEvent);
+        });
+
+        unmount();
+
+        act(() => {
+            vi.advanceTimersByTime(500);
+        });
+
+        expect(onLongPress).not.toHaveBeenCalled();
+        vi.useRealTimers();
+    });
 });

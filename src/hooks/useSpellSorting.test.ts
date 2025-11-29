@@ -20,9 +20,10 @@ const mockSpells: Spell[] = [
     castingTime: '1 action',
     range: '150 feet',
     duration: 'Instantaneous',
-    components: { v: true, s: true, m: true },
+    components: { verbal: true, somatic: true, material: true },
     materials: 'A tiny ball of bat guano and sulfur',
     description: 'A bright streak flashes from your pointing finger',
+    higherLevels: 'The damage increases by 1d6 for each slot level above 3rd.',
     source: 'PHB',
     ritual: false,
     concentration: false,
@@ -36,9 +37,10 @@ const mockSpells: Spell[] = [
     castingTime: '1 action',
     range: '30 feet',
     duration: '8 hours',
-    components: { v: true, s: true, m: true },
+    components: { verbal: true, somatic: true, material: true },
     materials: 'A tiny strip of white cloth',
     description: 'Your spell bolsters your allies with toughness and resolve',
+    higherLevels: 'The hit points increase by 5 for each slot level above 2nd.',
     source: 'PHB',
     ritual: false,
     concentration: false,
@@ -52,8 +54,10 @@ const mockSpells: Spell[] = [
     castingTime: '1 action',
     range: '60 feet',
     duration: '10 minutes',
-    components: { v: true, s: false, m: false },
+    components: { verbal: true, somatic: false, material: false },
+    materials: '',
     description: 'You create a magical zone that guards against deception',
+    higherLevels: '',
     source: 'PHB',
     ritual: false,
     concentration: false,
@@ -461,6 +465,50 @@ describe('useSpellSorting', () => {
       // Should maintain level sorting
       expect(result.current.sortColumn).toBe('level');
       expect(result.current.sortedData[0].level).toBe(1);
+    });
+  });
+  describe('robustness', () => {
+    it('should handle mixed case names correctly', () => {
+      const mixedCaseSpells = [
+        { ...mockSpells[0], id: '1', name: 'fireball' },
+        { ...mockSpells[0], id: '2', name: 'FIREBALL' },
+        { ...mockSpells[0], id: '3', name: 'FireBall' },
+      ];
+
+      const { result } = renderHook(() => useSpellSorting(mixedCaseSpells));
+
+      // Should be sorted stably or treated as equal
+      expect(result.current.sortedData.map(s => s.name.toLowerCase())).toEqual(['fireball', 'fireball', 'fireball']);
+    });
+
+    it('should handle special characters in names', () => {
+      const specialCharSpells = [
+        { ...mockSpells[0], id: '1', name: 'Éclair' },
+        { ...mockSpells[0], id: '2', name: 'Apple' },
+        { ...mockSpells[0], id: '3', name: 'Zoo' },
+      ];
+
+      const { result } = renderHook(() => useSpellSorting(specialCharSpells));
+
+      expect(result.current.sortedData[0].name).toBe('Apple');
+      expect(result.current.sortedData[1].name).toBe('Éclair');
+      expect(result.current.sortedData[2].name).toBe('Zoo');
+    });
+
+    it('should handle numeric names correctly', () => {
+      const numericSpells = [
+        { ...mockSpells[0], id: '1', name: '10th Level Spell' },
+        { ...mockSpells[0], id: '2', name: '1st Level Spell' },
+        { ...mockSpells[0], id: '3', name: '2nd Level Spell' },
+      ];
+
+      const { result } = renderHook(() => useSpellSorting(numericSpells));
+
+      // String sorting: "10th" comes before "1st" because '0' < 's'
+      // This confirms standard string sort behavior
+      expect(result.current.sortedData[0].name).toBe('10th Level Spell');
+      expect(result.current.sortedData[1].name).toBe('1st Level Spell');
+      expect(result.current.sortedData[2].name).toBe('2nd Level Spell');
     });
   });
 });

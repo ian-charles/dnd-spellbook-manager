@@ -41,17 +41,22 @@ export function Layout({
           <button
             className={`nav-link ${currentView === 'browse' ? 'active' : ''}`}
             onClick={onNavigateToBrowse}
+            aria-current={currentView === 'browse' ? 'page' : undefined}
           >
             Browse Spells
           </button>
           <button
-            className={`nav-link ${
-              currentView === 'spellbooks' || currentView === 'spellbook-detail'
+            className={`nav-link ${currentView === 'spellbooks' || currentView === 'spellbook-detail'
                 ? 'active'
                 : ''
-            }`}
+              }`}
             onClick={onNavigateToSpellbooks}
             data-testid="nav-spellbooks"
+            aria-current={
+              currentView === 'spellbooks' || currentView === 'spellbook-detail'
+                ? 'page'
+                : undefined
+            }
           >
             My Spellbooks ({spellbookCount})
           </button>

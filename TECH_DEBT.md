@@ -106,72 +106,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 
-#### Missing Unit Tests for Layout
-**Location**: src/components/Layout.tsx
-**Issue**: Basic layout component lacks tests.
-**Impact**: Layout regressions.
-**Solution**: Create `src/components/Layout.test.tsx`.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
 
-
-
-#### Missing Error Boundary Tests
-**Location**: src/components/ErrorBoundary.tsx
-**Issue**: Error boundary logic is not tested.
-**Impact**: App might crash without graceful fallback.
-**Solution**: Add tests for ErrorBoundary.
-**Effort**: Medium (2 hours)
-**Priority**: Medium
-
-#### Missing Tests for useLocalStorage
-**Location**: src/hooks/useLocalStorage.ts
-**Issue**: Custom hook for local storage is not tested.
-**Impact**: Data persistence bugs.
-**Solution**: Add tests for useLocalStorage.
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
-
-#### Missing Tests for useDebounce
-**Location**: src/hooks/useDebounce.ts
-**Issue**: Custom hook for debouncing is not tested.
-**Impact**: Performance issues or incorrect search behavior.
-**Solution**: Add tests for useDebounce.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
-
-#### Missing Tests for useOnClickOutside
-**Location**: src/hooks/useOnClickOutside.ts
-**Issue**: Custom hook for click outside is not tested.
-**Impact**: Modal/dropdown closing bugs.
-**Solution**: Add tests for useOnClickOutside.
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
-#### Missing Tests for useMediaQuery
-**Location**: src/hooks/useMediaQuery.ts
-**Issue**: Custom hook for media queries is not tested.
-**Impact**: Responsive design bugs.
-**Solution**: Add tests for useMediaQuery.
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
-#### Potential Memory Leak in useHashRouter
-**Location**: src/hooks/useHashRouter.ts
-**Issue**: Reviewer flagged potential memory leak.
-**Impact**: Performance degradation over time.
-**Solution**: Investigate and verify cleanup logic.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
-
-#### Missing Test Coverage for DEFAULT_SPELLCASTING_ABILITY
-**Location**: src/constants/gameRules.ts
-**Issue**: No tests verify the default value is applied when creating spellbooks without specifying an ability.
-**Impact**: Default behavior might break without detection.
-**Solution**: Add test verifying spellbook creation without spellcastingAbility applies DEFAULT_SPELLCASTING_ABILITY.
-**Effort**: Low (15 minutes)
-**Priority**: Medium
 
 #### Missing Edge Case Tests for Sort Logic
 **Location**: src/hooks/useSpellSorting.ts
@@ -334,6 +269,18 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ---
 
 ## Completed Refactoring
+
+### ✅ Missing Unit Tests for Layout (Completed 2025-11-29)
+- **Created**: `src/components/Layout.test.tsx`
+- **Result**: Added unit tests for layout rendering and navigation.
+
+### ✅ Missing Error Boundary Tests (Completed 2025-11-29)
+- **Created**: `src/components/ErrorBoundary.test.tsx`
+- **Result**: Added unit tests for error catching and fallback UI.
+
+### ✅ Missing Test Coverage for DEFAULT_SPELLCASTING_ABILITY (Completed 2025-11-29)
+- **Created**: `src/constants/gameRules.test.ts`
+- **Result**: Added unit tests for game constants.
 
 ### ✅ Unbounded Spellbook Name Length (Completed 2025-11-29)
 - **Updated**: `src/components/CreateSpellbookModal.tsx`, `src/constants/gameRules.ts`

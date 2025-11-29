@@ -13,6 +13,10 @@ export interface ImportResult {
   errors: string[];
 }
 
+/**
+ * Service for handling spellbook import and export operations.
+ * Supports JSON format with versioning and schema validation.
+ */
 class ExportImportService {
   private readonly CURRENT_VERSION = '1.0';
 
@@ -62,6 +66,12 @@ class ExportImportService {
       // Import each spellbook
       for (const spellbook of data.spellbooks) {
         try {
+          // Validate spellbook schema
+          if (!this.isValidSpellbook(spellbook)) {
+            result.errors.push(`Invalid spellbook format: "${spellbook.name || 'Unknown'}"`);
+            continue;
+          }
+
           // Skip if ID already exists
           if (existingIds.has(spellbook.id)) {
             result.skipped++;
@@ -89,6 +99,42 @@ class ExportImportService {
       // Throw JSON parse errors
       throw new Error(`Failed to parse import data: ${error}`);
     }
+  }
+
+  /**
+   * Validates the structure and types of a spellbook object.
+   * Ensures all required fields are present and have correct types.
+   * 
+   * @param spellbook - The object to validate
+   * @returns True if the object matches the Spellbook interface
+   */
+  private isValidSpellbook(spellbook: any): spellbook is Spellbook {
+    if (!spellbook || typeof spellbook !== 'object') return false;
+
+    // Check required fields
+    const requiredFields = ['id', 'name', 'spells', 'created', 'updated'];
+    for (const field of requiredFields) {
+      if (!(field in spellbook)) return false;
+    }
+
+    // Validate types
+    if (typeof spellbook.id !== 'string') return false;
+    if (typeof spellbook.name !== 'string') return false;
+    if (!Array.isArray(spellbook.spells)) return false;
+
+    // Validate spells array content
+    for (const spell of spellbook.spells) {
+      if (!spell || typeof spell !== 'object') return false;
+      if (typeof spell.spellId !== 'string') return false;
+      // prepared and notes are optional in older versions? No, interface says required.
+      // But let's be lenient if possible, or strict if we want to enforce schema.
+      // Given this is "Missing Schema Validation", strict is better.
+      if (typeof spell.prepared !== 'boolean') return false;
+      // notes might be missing in very old exports if added later, but let's check if it exists
+      if (typeof spell.notes !== 'string') return false;
+    }
+
+    return true;
   }
 
   /**

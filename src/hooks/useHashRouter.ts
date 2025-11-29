@@ -42,31 +42,42 @@ export function useHashRouter(): HashRouterReturn {
 
   useEffect(() => {
     const handleHashChange = () => {
-      const rawHash = window.location.hash.slice(1); // Remove '#' prefix
-      const [path, query] = rawHash.split('?');
-      const queryParams = new URLSearchParams(query);
+      if (typeof window === 'undefined') return;
+      try {
+        const rawHash = window.location.hash.slice(1); // Remove '#' prefix
+        const [path, query] = rawHash.split('?');
+        const queryParams = new URLSearchParams(query);
 
-      if (path.startsWith('/spellbooks/')) {
-        // Detail view: #/spellbooks/:id
-        const id = path.split('/')[2];
-        setRoute({
-          currentView: 'spellbook-detail',
-          selectedSpellbookId: id,
-          queryParams,
-        });
-      } else if (path === '/spellbooks') {
-        // List view: #/spellbooks
-        setRoute({
-          currentView: 'spellbooks',
-          selectedSpellbookId: null,
-          queryParams,
-        });
-      } else {
-        // Browse view: # or #/ or anything else
+        if (path.startsWith('/spellbooks/')) {
+          // Detail view: #/spellbooks/:id
+          const id = path.split('/')[2];
+          setRoute({
+            currentView: 'spellbook-detail',
+            selectedSpellbookId: id,
+            queryParams,
+          });
+        } else if (path === '/spellbooks') {
+          // List view: #/spellbooks
+          setRoute({
+            currentView: 'spellbooks',
+            selectedSpellbookId: null,
+            queryParams,
+          });
+        } else {
+          // Browse view: # or #/ or anything else
+          setRoute({
+            currentView: 'browse',
+            selectedSpellbookId: null,
+            queryParams,
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing hash route:', error);
+        // Fallback to browse view
         setRoute({
           currentView: 'browse',
           selectedSpellbookId: null,
-          queryParams,
+          queryParams: new URLSearchParams(),
         });
       }
     };
@@ -82,19 +93,19 @@ export function useHashRouter(): HashRouterReturn {
   }, []);
 
   const navigateToBrowse = () => {
-    window.location.hash = '';
+    if (typeof window !== 'undefined') window.location.hash = '';
   };
 
   const navigateToSpellbooks = () => {
-    window.location.hash = '/spellbooks';
+    if (typeof window !== 'undefined') window.location.hash = '/spellbooks';
   };
 
   const navigateToSpellbookDetail = (spellbookId: string) => {
-    window.location.hash = `/spellbooks/${spellbookId}`;
+    if (typeof window !== 'undefined') window.location.hash = `/spellbooks/${spellbookId}`;
   };
 
   const navigateToCopySpellbook = (spellbookId: string) => {
-    window.location.hash = `/spellbooks?copy=${spellbookId}`;
+    if (typeof window !== 'undefined') window.location.hash = `/spellbooks?copy=${spellbookId}`;
   };
 
   return {

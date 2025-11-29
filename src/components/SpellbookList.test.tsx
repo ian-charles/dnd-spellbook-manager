@@ -115,7 +115,7 @@ describe('SpellbookList', () => {
   const mockOnCreateSpellbook = vi.fn();
   const mockOnDeleteSpellbook = vi.fn();
   const mockOnRefreshSpellbooks = vi.fn();
-  const mockOnAddSpellToSpellbook = vi.fn();
+  const mockOnAddSpellsToSpellbook = vi.fn();
 
   const defaultProps = {
     spellbooks: [],
@@ -124,7 +124,7 @@ describe('SpellbookList', () => {
     onCreateSpellbook: mockOnCreateSpellbook,
     onDeleteSpellbook: mockOnDeleteSpellbook,
     onRefreshSpellbooks: mockOnRefreshSpellbooks,
-    onAddSpellToSpellbook: mockOnAddSpellToSpellbook,
+    onAddSpellsToSpellbook: mockOnAddSpellsToSpellbook,
   };
 
   beforeEach(() => {
@@ -279,8 +279,8 @@ describe('SpellbookList', () => {
 
     // Verify spells were copied
     await waitFor(() => {
-      expect(mockOnAddSpellToSpellbook).toHaveBeenCalledTimes(1);
-      expect(mockOnAddSpellToSpellbook).toHaveBeenCalledWith('new-spellbook-id', 'cure-wounds');
+      expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledTimes(1);
+      expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('new-spellbook-id', ['cure-wounds']);
     });
 
     // Verify refresh was called
@@ -298,7 +298,7 @@ describe('SpellbookList', () => {
     });
 
     // Mock slow spell copying
-    mockOnAddSpellToSpellbook.mockImplementation(async () => {
+    mockOnAddSpellsToSpellbook.mockImplementation(async () => {
       await new Promise(resolve => setTimeout(resolve, 100));
     });
 
@@ -315,7 +315,7 @@ describe('SpellbookList', () => {
     // Verify progress text appears
     await waitFor(() => {
       expect(screen.getByTestId('loading-text')).toBeTruthy();
-      expect(screen.getByText(/Copying \d+\/\d+ spells/)).toBeTruthy();
+      expect(screen.getByText('Copying spells...')).toBeTruthy();
     });
 
     // Verify completion

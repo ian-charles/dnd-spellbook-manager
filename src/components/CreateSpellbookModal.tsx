@@ -170,7 +170,6 @@ export function CreateSpellbookModal({
               className="btn-secondary"
               onClick={onClose}
               data-testid="cancel-button"
-              disabled={loading}
             >
               Cancel
             </button>

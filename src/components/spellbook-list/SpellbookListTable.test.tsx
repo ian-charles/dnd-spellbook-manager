@@ -8,7 +8,10 @@ describe('SpellbookListTable', () => {
         {
             id: '1',
             name: 'Spellbook 1',
-            spells: ['spell1', 'spell2'] as any, // Cast to any to avoid complex mocking of SpellbookSpell
+            spells: [
+                { spellId: 'spell1', prepared: true, notes: '' },
+                { spellId: 'spell2', prepared: false, notes: '' },
+            ],
             updated: new Date('2023-01-01').toISOString(),
             spellcastingAbility: 'INT',
             spellAttackModifier: 5,

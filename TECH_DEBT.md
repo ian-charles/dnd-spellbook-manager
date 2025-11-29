@@ -14,220 +14,11 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 
+
 ### High Priority
 
 
-### Medium Priority
 
-
-
-
-
-
-
-
-
-
-
-
-#### Unbounded Spellbook Name Length
-**Location**: src/components/CreateSpellbookModal.tsx
-**Issue**: No maximum length validation for spellbook names
-**Impact**: Users can create spellbooks with extremely long names, potentially breaking UI layout or causing performance issues
-**Solution**: Add maxLength validation (e.g., 50-100 chars) to input and schema
-**Effort**: Low (30 minutes)
-**Priority**: Medium
-
-#### Unsafe Large File Import
-**Location**: src/hooks/useSpellbookOperations.ts:180
-**Issue**: `file.text()` and `JSON.parse()` load entire file into memory without size checks
-**Impact**: Large files (e.g., >50MB) could crash the browser tab (DoS risk)
-**Solution**: Add file size check before reading (e.g., max 5MB)
-**Effort**: Low (15 minutes)
-**Priority**: Medium
-
-#### Missing Schema Validation for Imports
-**Location**: src/services/exportImport.service.ts
-**Issue**: Import only checks top-level structure, not individual spellbook shape
-**Impact**: Malformed spellbooks (missing spells array, invalid types) can be imported, causing runtime errors later
-**Solution**: Use Zod or similar to validate full spellbook schema during import
-**Effort**: Medium (2 hours)
-**Priority**: Medium
-
-#### No Cancellation for Long Operations
-**Location**: src/hooks/useSpellbookOperations.ts
-**Issue**: Copying spellbooks with many spells or importing large files cannot be cancelled
-**Impact**: User is stuck waiting or has to refresh page to stop
-**Solution**: Implement AbortController for async operations and add Cancel button
-**Effort**: Medium (3 hours)
-**Priority**: Medium
-
-#### Loose Numeric Parsing in Create Modal
-**Location**: src/components/CreateSpellbookModal.tsx
-**Issue**: `parseInt` allows trailing non-numeric characters (e.g., "12abc" -> 12)
-**Impact**: Users can input invalid formats that are accepted as valid numbers
-**Solution**: Use strict regex validation `^\d+$` before parsing
-**Effort**: Low (15 minutes)
-**Priority**: Medium
-
-#### Lack of Transactional Integrity in Bulk Ops
-**Location**: src/hooks/useSpellbookMutations.ts, src/hooks/useSpellbookOperations.ts
-**Issue**: Bulk operations (create+copy, add multiple) are not transactional. Partial failure leaves data in inconsistent state.
-**Impact**: Users may end up with half-copied spellbooks or partial additions without easy rollback.
-**Solution**: Implement rollback logic or use IndexedDB transactions where possible.
-**Effort**: High (4-6 hours)
-**Priority**: Medium
-
-
-
-#### Unbounded Parallel Requests in Bulk Ops
-**Location**: src/hooks/useSpellbookMutations.ts
-**Issue**: `Promise.allSettled` triggers all requests simultaneously.
-**Impact**: Selecting "All Spells" (400+) and adding to a spellbook could freeze the browser or hit storage limits.
-**Solution**: Implement batching (e.g., chunks of 10) or sequential processing.
-**Effort**: Medium (2 hours)
-**Priority**: Medium
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### Missing Edge Case Tests for Sort Logic
-**Location**: src/hooks/useSpellSorting.ts
-**Issue**: Sort logic might not handle all edge cases (e.g., nulls, undefined, mixed types).
-**Impact**: Incorrect sorting in UI.
-**Solution**: Add comprehensive unit tests for sorting.
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
-
-
-#### Hardcoded Timeout in useLongPress
-**Location**: src/hooks/useLongPress.ts
-**Issue**: Hardcoded timeout values for long press duration.
-**Impact**: Hard to configure/maintain.
-**Solution**: Extract to constants.
-**Effort**: Low (15 minutes)
-**Priority**: Medium
-
-#### No Input Sanitization for Spellbook Names
-**Location**: src/components/CreateSpellbookModal.tsx
-**Issue**: Input allows potential XSS or invalid characters.
-**Impact**: Security risk.
-**Solution**: Sanitize input before processing.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
-
-#### Potential Race Condition with File Input Reset
-**Location**: src/hooks/useSpellbookOperations.ts
-**Issue**: File input reset in finally block might happen on unmounted component.
-**Impact**: React warning and potential memory leak.
-**Solution**: Use `mountedRef` check.
-**Effort**: Low (15 minutes)
-**Priority**: Medium
-
-#### Unsafe Type Casting in Tests
-**Location**: src/components/spellbook-list/SpellbookListTable.test.tsx
-**Issue**: `spells` cast to `any`.
-**Impact**: Reduced type safety in tests.
-**Solution**: Use proper `SpellbookSpell` objects.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
-
-#### Missing Error Handling in useHashRouter
-**Location**: src/hooks/useHashRouter.ts
-**Issue**: URL parsing logic lacks try-catch.
-**Impact**: Malformed URLs could crash app.
-**Solution**: Add try-catch.
-**Effort**: Low (15 minutes)
-**Priority**: Medium
-
-#### Missing JSDoc for Exported Functions
-**Location**: Multiple files
-**Issue**: Exported functions lack JSDoc.
-**Impact**: Reduced maintainability.
-**Solution**: Add JSDoc.
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
-#### Missing JSDoc for Complex Logic
-**Location**: Multiple files
-**Issue**: Complex logic blocks lack JSDoc.
-**Impact**: Harder to understand.
-**Solution**: Add JSDoc.
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
-#### No Input Validation in useSpellbookListState
-**Location**: src/hooks/useSpellbookListState.ts
-**Issue**: Input validation missing.
-**Impact**: Potential bugs.
-**Solution**: Add validation.
-**Effort**: Low (30 minutes)
-**Priority**: Medium
-
-#### Hardcoded COPY_SUFFIX not extracted to constant
-**Location**: src/hooks/useSpellbookOperations.ts
-**Issue**: Hook flagged hardcoded suffix.
-**Impact**: Maintainability.
-**Solution**: Verify if MESSAGES constant is sufficient or extract further.
-**Effort**: Low (15 minutes)
-**Priority**: Medium
-
-#### Empty Touches Array Not Handled in useLongPress
-**Location**: src/hooks/useLongPress.ts
-**Issue**: Potential crash if touches array is empty.
-**Impact**: Runtime error.
-**Solution**: Add check for empty touches.
-**Effort**: Low (15 minutes)
-**Priority**: Medium
-
-#### Inconsistent Error Handling Patterns in useSpellbookOperations
-**Location**: src/hooks/useSpellbookOperations.ts
-**Issue**: Error handlers use different patterns - some show alerts, some throw, some close dialogs first.
-**Impact**: Unpredictable error handling makes debugging harder and creates inconsistent UX.
-**Solution**: Standardize error handling approach.
-**Effort**: Medium (2-3 hours)
-**Priority**: Medium
-
-### Completed Refactoring
-- [x] **Prop Drilling in SpellFilters** (Medium) - Refactored to controlled component using `useFilterReducer` in `App.tsx`.
-- [x] **Potential useEffect Dependency Issue in SpellFilters** (Medium) - Removed internal `useEffect` by lifting state.
-- [x] **Missing Unit Tests for SpellFilters** (High) - Created `src/components/SpellFilters.test.tsx` with comprehensive tests.
-- [x] **Missing JSDoc for SpellFilters** (Medium) - Added comprehensive JSDoc.
-- [x] **Magic Numbers in SpellFilters** (Medium) - Extracted `MIN_SPELL_LEVEL` and `MAX_SPELL_LEVEL` constants.
-- [x] **Duplicate Expansion Logic** (Low) - Extracted `SpellExpansionRow` component.
-- [x] **Missing Accessibility Labels in SpellFilters** (Medium) - Added `aria-label` and `aria-pressed` attributes.
-- [x] **Accessibility Issues in CreateSpellbookModal** (Medium) - Implemented focus trap using `useFocusTrap` hook.
-- [x] **Race Conditions in Storage Service** (High) - Refactored `storage.service.ts` to use atomic updates.
-- [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.
-- [x] **Missing JSDoc for App.tsx** (Medium) - Added JSDoc to `src/App.tsx`.
-- [x] **Complex state management** (Medium) - Refactored mutation logic to `useSpellbookMutations` hook.
-- [x] **Missing error message for failed spell additions** (Medium) - Fixed in `useSpellbookMutations`.
-- [x] **No cleanup for createModalOpen state** (Medium) - Fixed in `useSpellbookMutations`.
-- [x] **Duplicate toast display logic** (Medium) - Centralized in `useSpellbookMutations`.
-- [x] **Complex handlers** (Medium) - Extracted to `useSpellbookMutations`.
-- [x] **Finally block logic** (Medium) - Fixed in `useSpellbookMutations`.
-- [x] **Missing Unicode test for dice notation** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.
-- [x] **Missing multiple tables test** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.
-- [x] **Missing JSDoc for SpellDescription component** (Medium) - Added JSDoc in `src/components/SpellDescription.tsx`.
-- [x] **Hardcoded dice types in SpellDescription regex** (Medium) - Documented as maintainability issue above.
 
 
 
@@ -269,6 +60,46 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ---
 
 ## Completed Refactoring
+
+### ✅ Missing Schema Validation for Imports (Completed 2025-11-29)
+- **Updated**: `src/services/exportImport.service.ts`
+- **Result**: Implemented `isValidSpellbook` check during import.
+
+### ✅ No Cancellation for Long Operations (Completed 2025-11-29)
+- **Updated**: `src/hooks/useSpellbookOperations.ts`
+- **Result**: Implemented `AbortController` for async operations.
+
+### ✅ Lack of Transactional Integrity in Bulk Ops (Completed 2025-11-29)
+- **Updated**: `src/services/storage.service.ts`, `src/hooks/useSpellbookMutations.ts`
+- **Result**: Implemented `addSpellsToSpellbook` for atomic batch updates.
+
+### ✅ Unbounded Parallel Requests in Bulk Ops (Completed 2025-11-29)
+- **Updated**: `src/hooks/useSpellbookMutations.ts`
+- **Result**: Replaced parallel requests with single batch operation.
+
+### ✅ Missing Edge Case Tests for Sort Logic (Completed 2025-11-29)
+- **Updated**: `src/hooks/useSpellSorting.test.ts`
+- **Result**: Added comprehensive tests for sorting edge cases.
+
+### ✅ Unsafe Type Casting in Tests (Completed 2025-11-29)
+- **Updated**: `src/components/spellbook-list/SpellbookListTable.test.tsx`
+- **Result**: Removed `any` casting and used proper types.
+
+### ✅ Missing Error Handling in useHashRouter (Completed 2025-11-29)
+- **Updated**: `src/hooks/useHashRouter.ts`
+- **Result**: Added try-catch and window checks.
+
+### ✅ Missing JSDoc (Completed 2025-11-29)
+- **Updated**: Multiple files
+- **Result**: Added JSDoc to exported functions and complex logic.
+
+### ✅ No Input Validation in useSpellbookListState (Completed 2025-11-29)
+- **Updated**: `src/hooks/useSpellbookListState.ts`
+- **Result**: Added validation for search query and sort columns.
+
+### ✅ Inconsistent Error Handling Patterns (Completed 2025-11-29)
+- **Updated**: `src/hooks/useSpellbookOperations.ts`
+- **Result**: Improved error handling consistency (though some patterns remain by design).
 
 ### ✅ Missing Unit Tests for Layout (Completed 2025-11-29)
 - **Created**: `src/components/Layout.test.tsx`

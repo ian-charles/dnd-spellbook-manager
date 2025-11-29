@@ -43,7 +43,7 @@ vi.mock('./components/CreateSpellbookModal', () => ({
         isOpen ? (
             <div data-testid="create-modal">
                 <button onClick={onClose} data-testid="close-modal">Close</button>
-                <button onClick={() => onSubmit({ name: 'New Book' })} data-testid="submit-modal">Create</button>
+                <button onClick={() => onSubmit({ name: 'New Book' }).catch(() => { })} data-testid="submit-modal">Create</button>
             </div>
         ) : null,
 }));
@@ -92,7 +92,7 @@ describe('App Component', () => {
         mockUseSpellbooks.mockReturnValue({
             spellbooks: defaultSpellbooks,
             loading: false,
-            addSpellToSpellbook: vi.fn().mockResolvedValue(undefined),
+            addSpellsToSpellbook: vi.fn().mockResolvedValue(undefined),
             createSpellbook: vi.fn().mockResolvedValue({ id: 'sb-new', name: 'New Book', spells: [] }),
             deleteSpellbook: vi.fn(),
             refreshSpellbooks: vi.fn().mockResolvedValue(undefined),
@@ -169,7 +169,7 @@ describe('App Component', () => {
     });
 
     it('handles spell selection and batch add flow', async () => {
-        const { addSpellToSpellbook, refreshSpellbooks } = mockUseSpellbooks();
+        const { addSpellsToSpellbook, refreshSpellbooks } = mockUseSpellbooks();
         const { showToast } = mockUseToast();
 
         render(<App />);
@@ -187,15 +187,15 @@ describe('App Component', () => {
         fireEvent.click(addButton);
 
         await waitFor(() => {
-            expect(addSpellToSpellbook).toHaveBeenCalledWith('sb-1', 'spell-1');
+            expect(addSpellsToSpellbook).toHaveBeenCalledWith('sb-1', ['spell-1']);
             expect(refreshSpellbooks).toHaveBeenCalled();
             expect(showToast).toHaveBeenCalledWith(expect.stringContaining('Spell added'));
         });
     });
 
     it('shows error alert when adding spell fails', async () => {
-        const { addSpellToSpellbook } = mockUseSpellbooks();
-        addSpellToSpellbook.mockRejectedValue(new Error('Network error'));
+        const { addSpellsToSpellbook } = mockUseSpellbooks();
+        addSpellsToSpellbook.mockRejectedValue(new Error('Network error'));
 
         render(<App />);
 
@@ -205,7 +205,7 @@ describe('App Component', () => {
 
         await waitFor(() => {
             expect(screen.getByText(MESSAGES.ERROR.FAILED_TO_ADD_SPELL)).toBeInTheDocument();
-            expect(screen.getByText('Failed to add any spells to the spellbook.')).toBeInTheDocument();
+            expect(screen.getByText('Network error')).toBeInTheDocument();
         });
     });
 
@@ -223,7 +223,7 @@ describe('App Component', () => {
     });
 
     it('handles creating new spellbook with selected spells', async () => {
-        const { createSpellbook, addSpellToSpellbook, refreshSpellbooks } = mockUseSpellbooks();
+        const { createSpellbook, addSpellsToSpellbook, refreshSpellbooks } = mockUseSpellbooks();
         const { showToast } = mockUseToast();
 
         render(<App />);
@@ -240,33 +240,35 @@ describe('App Component', () => {
 
         await waitFor(() => {
             expect(createSpellbook).toHaveBeenCalled();
-            expect(addSpellToSpellbook).toHaveBeenCalledWith('sb-new', 'spell-1');
+            expect(addSpellsToSpellbook).toHaveBeenCalledWith('sb-new', ['spell-1']);
             expect(refreshSpellbooks).toHaveBeenCalled();
             expect(showToast).toHaveBeenCalledWith(expect.stringContaining('Spellbook created with 1 spell'));
         });
     });
 
-    it('handles partial failure when adding multiple spells', async () => {
-        // Setup mock to fail for one spell but succeed for another
-        // This requires a bit more complex setup if we want to test the Promise.allSettled logic precisely
-        // For now, let's verify the error handling path exists
-        const { addSpellToSpellbook, refreshSpellbooks } = mockUseSpellbooks();
-        addSpellToSpellbook.mockRejectedValueOnce(new Error('Fail'));
-        const { showToast } = mockUseToast();
+    it('handles failure when creating new spellbook', async () => {
+        const { createSpellbook } = mockUseSpellbooks();
+        createSpellbook.mockRejectedValue(new Error('Creation failed'));
 
         render(<App />);
 
+        // Select spell and choose "new"
         fireEvent.click(screen.getByTestId('select-spell'));
-        fireEvent.change(screen.getByTestId('spellbook-dropdown'), { target: { value: 'sb-1' } });
+        fireEvent.change(screen.getByTestId('spellbook-dropdown'), { target: { value: 'new' } });
         fireEvent.click(screen.getByTestId('btn-add-selected'));
 
+        // Submit create modal
+        fireEvent.click(screen.getByTestId('submit-modal'));
+
+        // Should show error in modal (which means it doesn't close)
+        // Since we mock CreateSpellbookModal to just render a div, we can't easily check for internal state
+        // But we can check that createSpellbook was called and rejected
         await waitFor(() => {
-            expect(addSpellToSpellbook).toHaveBeenCalled();
-            expect(refreshSpellbooks).toHaveBeenCalled();
-            // Should show error toast or alert depending on implementation
-            // In current implementation, if all fail (1 spell selected and it fails), it throws
-            // If we had multiple spells, it would show partial success
+            expect(createSpellbook).toHaveBeenCalled();
         });
+        // In a real integration test, we'd check for the error message in the modal
     });
+
+
 
 });

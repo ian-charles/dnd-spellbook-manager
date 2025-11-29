@@ -23,7 +23,7 @@ interface SpellbookListProps {
   onCreateSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
   onDeleteSpellbook: (id: string) => Promise<void>;
   onRefreshSpellbooks: () => Promise<void>;
-  onAddSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
+  onAddSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
 }
 
 export function SpellbookList({
@@ -33,7 +33,7 @@ export function SpellbookList({
   onCreateSpellbook,
   onDeleteSpellbook,
   onRefreshSpellbooks,
-  onAddSpellToSpellbook,
+  onAddSpellsToSpellbook,
 }: SpellbookListProps) {
   // Custom hooks
   const {
@@ -68,12 +68,13 @@ export function SpellbookList({
     handleExport,
     handleImportClick,
     handleImport,
+    cancelOperation,
   } = useSpellbookOperations({
     spellbooks,
     onCreateSpellbook,
     onDeleteSpellbook,
     onRefreshSpellbooks,
-    onAddSpellToSpellbook,
+    onAddSpellsToSpellbook,
     setAlertDialog,
     closeConfirm,
   });
@@ -209,6 +210,7 @@ export function SpellbookList({
       <CreateSpellbookModal
         isOpen={createModalOpen}
         onClose={() => {
+          cancelOperation();
           setCreateModalOpen(false);
           setCopyData(undefined);
         }}

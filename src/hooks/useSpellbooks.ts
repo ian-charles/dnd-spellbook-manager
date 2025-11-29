@@ -82,6 +82,10 @@ export function useSpellbooks() {
     // to avoid race conditions when adding multiple spells in parallel
   };
 
+  const addSpellsToSpellbook = async (spellbookId: string, spellIds: string[]) => {
+    await storageService.addSpellsToSpellbook(spellbookId, spellIds);
+  };
+
   const removeSpellFromSpellbook = async (spellbookId: string, spellId: string) => {
     await storageService.removeSpellFromSpellbook(spellbookId, spellId);
     await reloadSpellbook(spellbookId);
@@ -107,6 +111,7 @@ export function useSpellbooks() {
     refreshSpellbooks,
     getSpellbook,
     addSpellToSpellbook,
+    addSpellsToSpellbook,
     removeSpellFromSpellbook,
     togglePrepared,
     updateSpellNotes,

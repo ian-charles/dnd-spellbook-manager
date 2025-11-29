@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useSpellbookOperations } from './useSpellbookOperations';
 import { Spellbook } from '../types/spellbook';
 import { exportImportService } from '../services/exportImport.service';
@@ -19,7 +19,7 @@ describe('useSpellbookOperations', () => {
     const mockOnCreateSpellbook = vi.fn();
     const mockOnDeleteSpellbook = vi.fn();
     const mockOnRefreshSpellbooks = vi.fn();
-    const mockOnAddSpellToSpellbook = vi.fn();
+    const mockOnAddSpellsToSpellbook = vi.fn();
     const mockSetAlertDialog = vi.fn();
     const mockCloseConfirm = vi.fn();
 
@@ -28,10 +28,19 @@ describe('useSpellbookOperations', () => {
         onCreateSpellbook: mockOnCreateSpellbook,
         onDeleteSpellbook: mockOnDeleteSpellbook,
         onRefreshSpellbooks: mockOnRefreshSpellbooks,
-        onAddSpellToSpellbook: mockOnAddSpellToSpellbook,
+        onAddSpellsToSpellbook: mockOnAddSpellsToSpellbook,
         setAlertDialog: mockSetAlertDialog,
         closeConfirm: mockCloseConfirm,
     };
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+        vi.useRealTimers();
+    });
 
     it('should handle create spellbook', async () => {
         mockOnCreateSpellbook.mockResolvedValue({ id: '2', name: 'New Spellbook', spells: [] });
@@ -65,7 +74,7 @@ describe('useSpellbookOperations', () => {
         });
 
         expect(mockOnCreateSpellbook).toHaveBeenCalled();
-        expect(mockOnAddSpellToSpellbook).toHaveBeenCalledWith('2', 'fireball');
+        expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('2', ['fireball']);
         expect(mockOnRefreshSpellbooks).toHaveBeenCalled();
     });
     it('should handle create spellbook failure', async () => {
@@ -123,7 +132,7 @@ describe('useSpellbookOperations', () => {
         }));
     });
 
-    it('should handle partial failure when copying spells', async () => {
+    it('should handle failure when copying spells', async () => {
         // Create a source spellbook with multiple spells for this test
         const multiSpellBook = {
             ...mockSpellbooks[0],
@@ -146,33 +155,8 @@ describe('useSpellbookOperations', () => {
             result.current.handleCopy('1');
         });
 
-        // Mock add spell to fail for the first spell, succeed for the second
-        mockOnAddSpellToSpellbook
-            .mockRejectedValueOnce(new Error('Failed to add spell'))
-            .mockResolvedValueOnce(undefined);
-
-        await act(async () => {
-            await result.current.handleCreateSpellbook({ name: 'Copy' });
-        });
-
-        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
-            isOpen: true,
-            title: 'Partial Copy Warning',
-            variant: 'warning',
-        }));
-    });
-
-    it('should handle complete failure when copying spells', async () => {
-        mockOnCreateSpellbook.mockResolvedValue({ id: '2', name: 'Copy', spells: [] });
-        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
-
-        // Setup copy data
-        act(() => {
-            result.current.handleCopy('1');
-        });
-
-        // Mock add spell to fail for all spells (only 1 in mock data)
-        mockOnAddSpellToSpellbook.mockRejectedValue(new Error('Failed to add spell'));
+        // Mock batch add to fail
+        mockOnAddSpellsToSpellbook.mockRejectedValue(new Error('Failed to add spells'));
 
         await act(async () => {
             await result.current.handleCreateSpellbook({ name: 'Copy' });
@@ -181,7 +165,7 @@ describe('useSpellbookOperations', () => {
         expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
             isOpen: true,
             title: 'Copy Failed',
-            variant: 'error',
+            variant: 'warning',
         }));
     });
 

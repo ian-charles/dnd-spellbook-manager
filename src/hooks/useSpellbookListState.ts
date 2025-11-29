@@ -78,7 +78,23 @@ export function useSpellbookListState(spellbooks: Spellbook[]) {
         return sorted;
     }, [spellbooks, searchQuery, sortColumn, sortDirection]);
 
+    const handleSearch = (query: string) => {
+        // Basic sanitization and length limit
+        if (query.length > 100) {
+            setSearchQuery(query.slice(0, 100));
+        } else {
+            setSearchQuery(query);
+        }
+    };
+
     const handleSort = (column: SortColumn) => {
+        // Validate column exists in allowed values
+        const validColumns: SortColumn[] = ['name', 'spells', 'ability', 'attack', 'saveDC', 'updated'];
+        if (!validColumns.includes(column)) {
+            console.warn(`Invalid sort column: ${column}`);
+            return;
+        }
+
         if (sortColumn === column) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
@@ -89,7 +105,7 @@ export function useSpellbookListState(spellbooks: Spellbook[]) {
 
     return {
         searchQuery,
-        setSearchQuery,
+        setSearchQuery: handleSearch,
         sortColumn,
         sortDirection,
         handleSort,

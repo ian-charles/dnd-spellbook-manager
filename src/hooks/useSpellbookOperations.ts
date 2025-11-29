@@ -10,7 +10,7 @@ interface UseSpellbookOperationsProps {
     onCreateSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
     onDeleteSpellbook: (id: string) => Promise<void>;
     onRefreshSpellbooks: () => Promise<void>;
-    onAddSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
+    onAddSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
     setAlertDialog: (state: AlertDialogState) => void;
     closeConfirm: () => void;
 }
@@ -49,7 +49,7 @@ export function useSpellbookOperations({
     onCreateSpellbook,
     onDeleteSpellbook,
     onRefreshSpellbooks,
-    onAddSpellToSpellbook,
+    onAddSpellsToSpellbook,
     setAlertDialog,
     closeConfirm,
 }: UseSpellbookOperationsProps) {
@@ -65,7 +65,7 @@ export function useSpellbookOperations({
     const [importing, setImporting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const processedSpellCountRef = useRef(0);
+
     const mountedRef = useRef(true);
 
     useEffect(() => {
@@ -75,7 +75,36 @@ export function useSpellbookOperations({
         };
     }, []);
 
+    /**
+     * Handles spellbook creation.
+     * 
+     * Error Handling Strategy:
+     * - Creation errors are propagated to the caller (modal form) to be displayed inline.
+     * - Copy errors (partial or total) are handled via AlertDialog since the creation itself succeeded.
+     */
+    const abortControllerRef = useRef<AbortController | null>(null);
+
+    /**
+     * Cancels the currently running operation (create/copy/import).
+     */
+    const cancelOperation = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+        }
+    };
+
+    /**
+     * Handles spellbook creation.
+     * 
+     * Error Handling Strategy:
+     * - Creation errors are propagated to the caller (modal form) to be displayed inline.
+     * - Copy errors (partial or total) are handled via AlertDialog since the creation itself succeeded.
+     */
     const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
+        abortControllerRef.current = new AbortController();
+        const signal = abortControllerRef.current.signal;
+
         try {
             const newSpellbook = await onCreateSpellbook(input);
 
@@ -86,56 +115,56 @@ export function useSpellbookOperations({
                     // Copy all spells from the source spellbook to the new one
                     const errors: string[] = [];
                     const spellsToCopy = sourceSpellbook.spells.map(spell => spell.spellId);
-                    const totalSpells = spellsToCopy.length;
 
-                    // Track processed spell count to avoid race conditions in async closure
-                    processedSpellCountRef.current = 0;
-                    setCopyProgress(MESSAGES.LOADING.COPYING_SPELLS.replace('{current}', '0').replace('{total}', String(totalSpells)));
 
-                    const results = await Promise.allSettled(spellsToCopy.map(async (spellId) => {
-                        try {
-                            await onAddSpellToSpellbook(newSpellbook.id, spellId);
-                        } finally {
-                            if (mountedRef.current) {
-                                processedSpellCountRef.current++;
-                                setCopyProgress(MESSAGES.LOADING.COPYING_SPELLS.replace('{current}', String(processedSpellCountRef.current)).replace('{total}', String(totalSpells)));
-                            }
+                    // Use batch add operation
+                    setCopyProgress('Copying spells...');
+
+                    try {
+                        if (signal.aborted) return;
+                        await onAddSpellsToSpellbook(newSpellbook.id, spellsToCopy);
+                    } catch (error) {
+                        if (!signal.aborted) {
+                            errors.push(`Failed to copy spells: ${error instanceof Error ? error.message : 'Unknown error'}`);
                         }
-                    }));
+                    }
 
-                    results.forEach((result, index) => {
-                        if (result.status === 'rejected') {
-                            errors.push(`Failed to copy spell ${spellsToCopy[index]}`);
-                        }
-                    });
-
-                    if (errors.length > 0) {
-                        const allFailed = errors.length === spellsToCopy.length;
+                    if (signal.aborted) {
                         setAlertDialog({
                             isOpen: true,
-                            title: allFailed ? 'Copy Failed' : 'Partial Copy Warning',
-                            message: allFailed
-                                ? 'Failed to copy any spells. The spellbook was created but is empty.'
-                                : `Spellbook created, but some spells failed to copy: ${errors.length} errors.`,
-                            variant: allFailed ? 'error' : 'warning'
+                            title: 'Copy Cancelled',
+                            message: 'The copy operation was cancelled. The spellbook was created with partial spells.',
+                            variant: 'warning'
+                        });
+                    } else if (errors.length > 0) {
+                        setAlertDialog({
+                            isOpen: true,
+                            title: 'Copy Failed',
+                            message: `Spellbook created, but failed to copy spells: ${errors[0]}`,
+                            variant: 'warning'
                         });
                     }
                 }
             }
 
-            if (mountedRef.current) {
+            if (mountedRef.current && !signal.aborted) {
                 setCreateModalOpen(false);
                 setCopyData(undefined);
                 setCopyProgress('');
             }
-        } catch (error) {
-            throw error; // Let the modal handle the error
         } finally {
+            abortControllerRef.current = null;
             // Ensure spellbooks list is refreshed after creation (and potential copying)
             await onRefreshSpellbooks();
         }
     };
 
+    /**
+     * Initiates the copy process for a spellbook.
+     * Opens the create modal pre-filled with the source spellbook's data.
+     * 
+     * @param id - ID of the spellbook to copy
+     */
     const handleCopy = (id: string) => {
         const spellbook = spellbooks.find(sb => sb.id === id);
         if (!spellbook) return;
@@ -150,6 +179,11 @@ export function useSpellbookOperations({
         setCreateModalOpen(true);
     };
 
+    /**
+     * Confirms and executes spellbook deletion.
+     * 
+     * @param spellbookId - ID of the spellbook to delete
+     */
     const handleConfirmDelete = async (spellbookId: string) => {
         try {
             await onDeleteSpellbook(spellbookId);
@@ -165,6 +199,9 @@ export function useSpellbookOperations({
         }
     };
 
+    /**
+     * Exports all spellbooks to a JSON file.
+     */
     const handleExport = async () => {
         try {
             await exportImportService.downloadSpellbooks();
@@ -178,10 +215,19 @@ export function useSpellbookOperations({
         }
     };
 
+    /**
+     * Triggers the hidden file input for importing spellbooks.
+     */
     const handleImportClick = () => {
         fileInputRef.current?.click();
     };
 
+    /**
+     * Handles the file selection and import process.
+     * Validates file size and content before importing.
+     * 
+     * @param e - Change event from the file input
+     */
     const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -200,9 +246,19 @@ export function useSpellbookOperations({
         }
 
         setImporting(true);
+        abortControllerRef.current = new AbortController();
+
         try {
             const text = await file.text();
+            // Note: JSON.parse and basic validation are synchronous, so we can't easily abort them
+            // unless we move them to a worker or use a streaming parser.
+            // For now, we just support aborting the overall process state.
+
+            if (abortControllerRef.current?.signal.aborted) return;
+
             const result = await exportImportService.importSpellbooks(text);
+
+            if (abortControllerRef.current?.signal.aborted) return;
 
             // Show result
             if (result.errors.length > 0) {
@@ -228,6 +284,8 @@ export function useSpellbookOperations({
             // Refresh the spellbooks list
             onRefreshSpellbooks();
         } catch (error) {
+            if (abortControllerRef.current?.signal.aborted) return;
+
             setAlertDialog({
                 isOpen: true,
                 title: MESSAGES.ERROR.IMPORT_FAILED,
@@ -235,6 +293,7 @@ export function useSpellbookOperations({
                 variant: 'error',
             });
         } finally {
+            abortControllerRef.current = null;
             if (mountedRef.current) {
                 setImporting(false);
                 // Reset file input
@@ -259,5 +318,6 @@ export function useSpellbookOperations({
         handleExport,
         handleImportClick,
         handleImport,
+        cancelOperation,
     };
 }

@@ -20,13 +20,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ### Medium Priority
 
 
-#### Missing Virtualization for SpellTable
-**Location**: src/components/SpellTable.tsx
-**Issue**: Renders all spells in the DOM.
-**Impact**: Performance degradation as spell list grows (currently ~400 spells).
-**Solution**: Implement `react-virtuoso` or similar windowing library.
-**Effort**: Medium (2-3 hours)
-**Priority**: Medium
+
 
 - src/hooks/useSpellbookOperations.ts:18-32
 - src/hooks/useSpellbookListState.ts:13-18  

@@ -17,47 +17,56 @@ import { useState, useEffect } from 'react';
 
 export type View = 'browse' | 'spellbooks' | 'spellbook-detail';
 
-interface RouteState {
+export interface RouteState {
   currentView: View;
   selectedSpellbookId: string | null;
+  queryParams: URLSearchParams;
 }
 
 interface HashRouterReturn {
   currentView: View;
   selectedSpellbookId: string | null;
+  queryParams: URLSearchParams;
   navigateToBrowse: () => void;
   navigateToSpellbooks: () => void;
   navigateToSpellbookDetail: (spellbookId: string) => void;
+  navigateToCopySpellbook: (spellbookId: string) => void;
 }
 
 export function useHashRouter(): HashRouterReturn {
   const [route, setRoute] = useState<RouteState>({
     currentView: 'browse',
     selectedSpellbookId: null,
+    queryParams: new URLSearchParams(),
   });
 
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.slice(1); // Remove '#' prefix
+      const rawHash = window.location.hash.slice(1); // Remove '#' prefix
+      const [path, query] = rawHash.split('?');
+      const queryParams = new URLSearchParams(query);
 
-      if (hash.startsWith('/spellbooks/')) {
+      if (path.startsWith('/spellbooks/')) {
         // Detail view: #/spellbooks/:id
-        const id = hash.split('/')[2];
+        const id = path.split('/')[2];
         setRoute({
           currentView: 'spellbook-detail',
           selectedSpellbookId: id,
+          queryParams,
         });
-      } else if (hash === '/spellbooks') {
+      } else if (path === '/spellbooks') {
         // List view: #/spellbooks
         setRoute({
           currentView: 'spellbooks',
           selectedSpellbookId: null,
+          queryParams,
         });
       } else {
         // Browse view: # or #/ or anything else
         setRoute({
           currentView: 'browse',
           selectedSpellbookId: null,
+          queryParams,
         });
       }
     };
@@ -84,11 +93,17 @@ export function useHashRouter(): HashRouterReturn {
     window.location.hash = `/spellbooks/${spellbookId}`;
   };
 
+  const navigateToCopySpellbook = (spellbookId: string) => {
+    window.location.hash = `/spellbooks?copy=${spellbookId}`;
+  };
+
   return {
     currentView: route.currentView,
     selectedSpellbookId: route.selectedSpellbookId,
+    queryParams: route.queryParams,
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
+    navigateToCopySpellbook,
   };
 }

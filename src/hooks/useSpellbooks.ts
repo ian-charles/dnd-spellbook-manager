@@ -14,7 +14,7 @@ export function useSpellbooks() {
     try {
       setLoading(true);
       const books = await storageService.getSpellbooks();
-      console.log('[useSpellbooks] Loaded spellbooks:', books.length);
+
       setSpellbooks(books);
     } catch (err) {
       setError(err as Error);
@@ -29,12 +29,10 @@ export function useSpellbooks() {
 
   const createSpellbook = async (input: CreateSpellbookInput) => {
     try {
-      console.log('[useSpellbooks] Creating spellbook:', input.name);
       const newBook = await storageService.createSpellbook(input);
-      console.log('[useSpellbooks] Created spellbook:', newBook.id);
       // Reload from storage to ensure we have the latest data
       await loadSpellbooks();
-      console.log('[useSpellbooks] Reloaded after create');
+
       return newBook;
     } catch (err) {
       setError(err as Error);

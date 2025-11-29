@@ -29,6 +29,9 @@ export function useLongPress({ onLongPress, threshold = 10, delay = 500 }: UseLo
     }, []);
 
     const handleTouchStart = useCallback((e: React.TouchEvent) => {
+        // Ignore multi-touch
+        if (e.touches.length > 1) return;
+
         const touch = e.touches[0];
         longPressStartPos.current = { x: touch.clientX, y: touch.clientY };
 
@@ -39,6 +42,15 @@ export function useLongPress({ onLongPress, threshold = 10, delay = 500 }: UseLo
 
     const handleTouchMove = useCallback((e: React.TouchEvent) => {
         if (!longPressStartPos.current) return;
+
+        if (e.touches.length === 0) {
+            if (longPressTimer.current) {
+                clearTimeout(longPressTimer.current);
+                longPressTimer.current = null;
+            }
+            longPressStartPos.current = null;
+            return;
+        }
 
         const touch = e.touches[0];
         const deltaX = Math.abs(touch.clientX - longPressStartPos.current.x);

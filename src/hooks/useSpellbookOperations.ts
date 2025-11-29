@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { exportImportService } from '../services/exportImport.service';
 import { MESSAGES } from '../constants/messages';
@@ -29,19 +29,19 @@ interface UseSpellbookOperationsProps {
  * @param props.setAlertDialog - Callback to show an alert dialog
  * @param props.closeConfirm - Callback to close the confirmation dialog
  * @returns Object containing state and handlers for spellbook operations:
- * - createModalOpen: Boolean indicating if the create modal is open
- * - setCreateModalOpen: Function to set create modal state
- * - copyData: Data for the spellbook being copied (if any)
- * - setCopyData: Function to set copy data
- * - copyProgress: String description of current copy progress
- * - importing: Boolean indicating if an import is in progress
- * - fileInputRef: Ref for the hidden file input element
- * - handleCreateSpellbook: Function to handle spellbook creation
- * - handleCopy: Function to initiate spellbook copy
- * - handleConfirmDelete: Function to confirm spellbook deletion
- * - handleExport: Function to handle spellbook export
- * - handleImportClick: Function to trigger file input click
- * - handleImport: Function to handle file selection and import
+ * - `createModalOpen`: Boolean indicating if the create modal is open
+ * - `setCreateModalOpen`: Function to set create modal state
+ * - `copyData`: Data for the spellbook being copied (if any)
+ * - `setCopyData`: Function to set copy data
+ * - `copyProgress`: String description of current copy progress
+ * - `importing`: Boolean indicating if an import is in progress
+ * - `fileInputRef`: Ref for the hidden file input element
+ * - `handleCreateSpellbook`: Function to handle spellbook creation
+ * - `handleCopy`: Function to initiate spellbook copy
+ * - `handleConfirmDelete`: Function to confirm spellbook deletion
+ * - `handleExport`: Function to handle spellbook export
+ * - `handleImportClick`: Function to trigger file input click
+ * - `handleImport`: Function to handle file selection and import
  */
 export function useSpellbookOperations({
     spellbooks,
@@ -64,6 +64,16 @@ export function useSpellbookOperations({
     const [importing, setImporting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const processedSpellCountRef = useRef(0);
+    const mountedRef = useRef(true);
+
+    useEffect(() => {
+        mountedRef.current = true;
+        return () => {
+            mountedRef.current = false;
+        };
+    }, []);
+
     const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
         try {
             const newSpellbook = await onCreateSpellbook(input);
@@ -82,15 +92,17 @@ export function useSpellbookOperations({
                      * Tracks the number of spells that have been processed (either successfully copied or failed)
                      * during a spellbook copy operation.
                      */
-                    let processedSpellCount = 0;
+                    processedSpellCountRef.current = 0;
                     setCopyProgress(MESSAGES.LOADING.COPYING_SPELLS.replace('{current}', '0').replace('{total}', String(totalSpells)));
 
                     const results = await Promise.allSettled(spellsToCopy.map(async (spellId) => {
                         try {
                             await onAddSpellToSpellbook(newSpellbook.id, spellId);
                         } finally {
-                            processedSpellCount++;
-                            setCopyProgress(MESSAGES.LOADING.COPYING_SPELLS.replace('{current}', String(processedSpellCount)).replace('{total}', String(totalSpells)));
+                            if (mountedRef.current) {
+                                processedSpellCountRef.current++;
+                                setCopyProgress(MESSAGES.LOADING.COPYING_SPELLS.replace('{current}', String(processedSpellCountRef.current)).replace('{total}', String(totalSpells)));
+                            }
                         }
                     }));
 
@@ -114,9 +126,11 @@ export function useSpellbookOperations({
                 }
             }
 
-            setCreateModalOpen(false);
-            setCopyData(undefined);
-            setCopyProgress('');
+            if (mountedRef.current) {
+                setCreateModalOpen(false);
+                setCopyData(undefined);
+                setCopyProgress('');
+            }
         } catch (error) {
             throw error; // Let the modal handle the error
         } finally {

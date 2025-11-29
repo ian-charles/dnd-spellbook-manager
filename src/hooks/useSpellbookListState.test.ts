@@ -115,4 +115,51 @@ describe('useSpellbookListState', () => {
         expect(result.current.filteredAndSortedSpellbooks[0].spellAttackModifier).toBe(5);
         expect(result.current.filteredAndSortedSpellbooks[1].spellAttackModifier).toBe(null);
     });
+
+    it('should escape special regex characters in search query', () => {
+        const books = [
+            { ...mockSpellbooks[0], name: 'Spell (Fire)' },
+            { ...mockSpellbooks[1], name: 'Spell [Ice]' },
+        ];
+        const { result } = renderHook(() => useSpellbookListState(books));
+
+        act(() => {
+            result.current.setSearchQuery('(Fire)');
+        });
+
+        expect(result.current.filteredAndSortedSpellbooks).toHaveLength(1);
+        expect(result.current.filteredAndSortedSpellbooks[0].name).toBe('Spell (Fire)');
+    });
+
+    it('should maintain secondary sort by name when primary sort values are equal', () => {
+        const books = [
+            { ...mockSpellbooks[0], name: 'B Book', spells: [1] } as any,
+            { ...mockSpellbooks[1], name: 'A Book', spells: [1] } as any,
+        ];
+        const { result } = renderHook(() => useSpellbookListState(books));
+
+        act(() => {
+            result.current.handleSort('spells');
+        });
+
+        // Both have 1 spell, so should sort by name asc
+        expect(result.current.filteredAndSortedSpellbooks[0].name).toBe('A Book');
+        expect(result.current.filteredAndSortedSpellbooks[1].name).toBe('B Book');
+    });
+
+    it('should handle undefined values in sort', () => {
+        const books = [
+            { ...mockSpellbooks[0], spellAttackModifier: undefined } as any,
+            { ...mockSpellbooks[1], spellAttackModifier: 5 },
+        ];
+        const { result } = renderHook(() => useSpellbookListState(books));
+
+        act(() => {
+            result.current.handleSort('attack');
+        });
+
+        // Undefined should be treated same as null (last)
+        expect(result.current.filteredAndSortedSpellbooks[0].spellAttackModifier).toBe(5);
+        expect(result.current.filteredAndSortedSpellbooks[1].spellAttackModifier).toBe(undefined);
+    });
 });

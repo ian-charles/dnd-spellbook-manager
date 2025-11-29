@@ -47,6 +47,7 @@ function App() {
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
+    navigateToCopySpellbook,
   } = useHashRouter();
 
   // Toast hook for success messages
@@ -128,7 +129,7 @@ function App() {
           spellbookId={selectedSpellbookId}
           onBack={navigateToSpellbooks}
           onCopySpellbook={() => {
-            window.location.hash = `#spellbooks?copy=${selectedSpellbookId}`;
+            navigateToCopySpellbook(selectedSpellbookId);
           }}
         />
       )}

@@ -122,4 +122,93 @@ describe('useSpellbookOperations', () => {
             variant: 'error',
         }));
     });
+
+    it('should handle partial failure when copying spells', async () => {
+        // Create a source spellbook with multiple spells for this test
+        const multiSpellBook = {
+            ...mockSpellbooks[0],
+            spells: [
+                { spellId: 'fireball', prepared: true, notes: '' },
+                { spellId: 'magic-missile', prepared: true, notes: '' }
+            ]
+        };
+
+        const propsWithMultiSpell = {
+            ...defaultProps,
+            spellbooks: [multiSpellBook]
+        };
+
+        mockOnCreateSpellbook.mockResolvedValue({ id: '2', name: 'Copy', spells: [] });
+        const { result } = renderHook(() => useSpellbookOperations(propsWithMultiSpell));
+
+        // Setup copy data
+        act(() => {
+            result.current.handleCopy('1');
+        });
+
+        // Mock add spell to fail for the first spell, succeed for the second
+        mockOnAddSpellToSpellbook
+            .mockRejectedValueOnce(new Error('Failed to add spell'))
+            .mockResolvedValueOnce(undefined);
+
+        await act(async () => {
+            await result.current.handleCreateSpellbook({ name: 'Copy' });
+        });
+
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            title: 'Partial Copy Warning',
+            variant: 'warning',
+        }));
+    });
+
+    it('should handle complete failure when copying spells', async () => {
+        mockOnCreateSpellbook.mockResolvedValue({ id: '2', name: 'Copy', spells: [] });
+        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
+
+        // Setup copy data
+        act(() => {
+            result.current.handleCopy('1');
+        });
+
+        // Mock add spell to fail for all spells (only 1 in mock data)
+        mockOnAddSpellToSpellbook.mockRejectedValue(new Error('Failed to add spell'));
+
+        await act(async () => {
+            await result.current.handleCreateSpellbook({ name: 'Copy' });
+        });
+
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            title: 'Copy Failed',
+            variant: 'error',
+        }));
+    });
+
+    it('should handle import with validation errors', async () => {
+        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
+
+        // Mock file with text method
+        const file = {
+            text: vi.fn().mockResolvedValue('{}'),
+        };
+        const event = { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+        // Mock import to return errors
+        (exportImportService.importSpellbooks as any).mockResolvedValue({
+            imported: 1,
+            skipped: 0,
+            errors: ['Invalid spellbook format'],
+        });
+
+        await act(async () => {
+            await result.current.handleImport(event);
+        });
+
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            title: expect.stringContaining('Import Completed with Errors'),
+            variant: 'warning',
+        }));
+    });
 });

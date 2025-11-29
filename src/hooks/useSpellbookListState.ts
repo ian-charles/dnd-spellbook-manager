@@ -11,12 +11,12 @@ type SortDirection = 'asc' | 'desc';
  * 
  * @param spellbooks - The list of spellbooks to filter and sort
  * @returns Object containing state and handlers for filtering and sorting:
- * - searchQuery: Current search query string
- * - setSearchQuery: Function to update search query
- * - sortColumn: Current column being sorted
- * - sortDirection: Current sort direction ('asc' or 'desc')
- * - handleSort: Function to handle column header clicks
- * - filteredAndSortedSpellbooks: Resulting list of spellbooks after filtering and sorting
+ * - `searchQuery`: Current search query string
+ * - `setSearchQuery`: Function to update search query
+ * - `sortColumn`: Current column being sorted
+ * - `sortDirection`: Current sort direction ('asc' or 'desc')
+ * - `handleSort`: Function to handle column header clicks
+ * - `filteredAndSortedSpellbooks`: Resulting list of spellbooks after filtering and sorting
  */
 export function useSpellbookListState(spellbooks: Spellbook[]) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -70,7 +70,9 @@ export function useSpellbookListState(spellbooks: Spellbook[]) {
 
             if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
             if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-            return 0;
+
+            // Secondary sort by name (always asc)
+            return a.name.localeCompare(b.name);
         });
 
         return sorted;

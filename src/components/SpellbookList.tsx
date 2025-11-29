@@ -13,6 +13,7 @@ import { useDialogs } from '../hooks/useDialogs';
 import { useSpellbookListState } from '../hooks/useSpellbookListState';
 import { useSpellbookOperations } from '../hooks/useSpellbookOperations';
 import { useContextMenu } from '../hooks/useContextMenu';
+import { useHashRouter } from '../hooks/useHashRouter';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -83,16 +84,17 @@ export function SpellbookList({
     spellbookName: string;
   }>();
 
+  const { queryParams, navigateToSpellbooks } = useHashRouter();
+
   // Handle copy from URL parameter
   useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.split('?')[1]);
-    const copyId = params.get('copy');
+    const copyId = queryParams.get('copy');
     if (copyId && spellbooks.length > 0) {
       handleCopy(copyId);
-      // Clear the parameter from URL
-      window.location.hash = '#spellbooks';
+      // Clear the parameter from URL by navigating to base spellbooks route
+      navigateToSpellbooks();
     }
-  }, [spellbooks]);
+  }, [spellbooks, queryParams, navigateToSpellbooks]);
 
   // Long-press handlers for mobile context menu
   const pendingSpellbook = useRef<Spellbook | null>(null);
@@ -155,7 +157,7 @@ export function SpellbookList({
         type="file"
         accept="application/json,.json"
         onChange={handleImport}
-        style={{ display: 'none' }}
+        className="hidden-file-input"
         data-testid="file-input-import"
       />
 
@@ -243,7 +245,6 @@ export function SpellbookList({
         <div
           className="context-menu"
           style={{
-            position: 'fixed',
             left: `${contextMenu.x}px`,
             top: `${contextMenu.y}px`,
           }}

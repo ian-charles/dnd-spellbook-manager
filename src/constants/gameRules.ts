@@ -27,3 +27,9 @@ export const MIN_SAVE_DC = 8;
  * Maximum spell save DC.
  */
 export const MAX_SAVE_DC = 26;
+
+/**
+ * Default spellcasting ability used when creating a new spellbook if none is specified.
+ * Defaults to 'INT' (Intelligence).
+ */
+export const DEFAULT_SPELLCASTING_ABILITY = 'INT';

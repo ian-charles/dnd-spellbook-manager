@@ -1,0 +1,363 @@
+
+ RUN  v1.6.0 /Users/sjaconette/dnd/dnd-spellbook-manager
+
+ ✓ src/hooks/useSpellSorting.test.ts  (23 tests) 229ms
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should load the page successfully
+✓ Page title: D&D Spellbook Manager
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should display spell table
+✓ Spell table found
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should load spells
+✓ Found 319 spell rows
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Desktop (1280x800) > should expand spell inline on desktop
+✓ Desktop spell expansion works
+
+stdout | src/services/spell.service.test.ts > SpellService > loadSpells > should load spells from the API
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > loadSpells > should only load spells once
+✅ Loaded 6 spells
+
+stderr | src/services/spell.service.test.ts > SpellService > loadSpells > should throw error if fetch fails
+❌ Error loading spells: Error: Failed to load spells: Not Found
+    at SpellService.loadSpells (/Users/sjaconette/dnd/dnd-spellbook-manager/src/services/spell.service.ts:23:15)
+    at /Users/sjaconette/dnd/dnd-spellbook-manager/src/services/spell.service.test.ts:48:7
+    at runTest (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:781:11)
+    at runSuite (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5)
+
+stderr | src/services/spell.service.test.ts > SpellService > loadSpells > should throw error if JSON parsing fails
+❌ Error loading spells: Error: Invalid JSON
+    at Object.json (/Users/sjaconette/dnd/dnd-spellbook-manager/src/services/spell.service.test.ts:55:38)
+    at SpellService.loadSpells (/Users/sjaconette/dnd/dnd-spellbook-manager/src/services/spell.service.ts:26:46)
+    at /Users/sjaconette/dnd/dnd-spellbook-manager/src/services/spell.service.test.ts:59:7
+    at runTest (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:781:11)
+    at runSuite (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///Users/sjaconette/dnd/dnd-spellbook-manager/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+
+stdout | src/services/spell.service.test.ts > SpellService > getAllSpells > should return all loaded spells
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSpellById > should return spell by ID
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSpellById > should return undefined for non-existent ID
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > text search > should search by spell name
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > text search > should search case-insensitively
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > text search > should search in description
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > text search > should search by school
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > text search > should search by class
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > text search > should return all spells for empty search
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > text search > should return empty array for non-matching search
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > level filtering > should filter by single level
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > level filtering > should filter by multiple levels
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > level filtering > should filter cantrips (level 0)
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > school filtering > should filter by single school
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > school filtering > should filter by multiple schools
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > class filtering > should filter by single class
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > class filtering > should filter by multiple classes
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > class filtering > should filter warlock-only spells
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > concentration filtering > should filter concentration spells
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > concentration filtering > should filter non-concentration spells
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > ritual filtering > should filter ritual spells
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > ritual filtering > should filter non-ritual spells
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > component filtering > should filter spells requiring verbal component
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > component filtering > should filter spells NOT requiring verbal component
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > component filtering > should filter spells requiring somatic component
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > component filtering > should filter spells NOT requiring somatic component
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > component filtering > should filter spells requiring material component
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > component filtering > should filter spells NOT requiring material component
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > component filtering > should filter V-only spells (V but not S or M)
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > combined filtering > should combine text search and level filter
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > combined filtering > should combine multiple filters
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > combined filtering > should return empty array when no spells match all filters
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > combined filtering > should handle complex filter combinations
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > searchSpells > should return all spells for empty filters
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSchools > should return unique list of schools
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSchools > should return sorted schools
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSchools > should return empty array when no spells loaded
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getClasses > should return unique list of classes
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getClasses > should return sorted classes
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getClasses > should handle spells with multiple classes
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSources > should return unique list of sources
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSources > should return sorted sources
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSpellCountByLevel > should return count of spells by level
+✅ Loaded 6 spells
+
+stdout | src/services/spell.service.test.ts > SpellService > getSpellCountByLevel > should not include levels with zero spells
+✅ Loaded 6 spells
+
+ ✓ src/services/spell.service.test.ts  (49 tests) 114ms
+ ✓ src/components/SpellbookDetailView.test.tsx  (53 tests) 2442ms
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should load on mobile
+✓ Mobile page loaded
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should have no horizontal scroll
+✓ No horizontal scroll
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should display spell cards with mobile styling
+✓ Found 319 mobile spell cards
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should display spell cards with mobile styling
+✓ Mobile card styling: { display: 'flex', borderRadius: '12px' }
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should expand spell inline on mobile
+✓ Mobile spell expansion works
+
+stdout | src/e2e/production-test.test.ts > Production Site Tests > Mobile (375x667) > should have touch-friendly buttons if present
+ℹ No add buttons (expected - appear after creating spellbook)
+
+ ✓ src/e2e/spell-tooltip.test.ts  (6 tests) 6716ms
+ ✓ src/e2e/production-test.test.ts  (9 tests) 6847ms
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > initial state > should start with loading=true and empty spellbooks
+[useSpellbooks] Loaded spellbooks: 0
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > initial state > should load spellbooks on mount
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should create a new spellbook
+[useSpellbooks] Loaded spellbooks: 0
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should create a new spellbook
+[useSpellbooks] Creating spellbook: New Spellbook
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should create a new spellbook
+[useSpellbooks] Created spellbook: test-uuid-1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should create a new spellbook
+[useSpellbooks] Loaded spellbooks: 1
+[useSpellbooks] Reloaded after create
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should update spellbooks list after creation
+[useSpellbooks] Loaded spellbooks: 0
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should update spellbooks list after creation
+[useSpellbooks] Creating spellbook: First
+[useSpellbooks] Created spellbook: test-uuid-1
+[useSpellbooks] Loaded spellbooks: 1
+[useSpellbooks] Reloaded after create
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should update spellbooks list after creation
+[useSpellbooks] Creating spellbook: Second
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > createSpellbook > should update spellbooks list after creation
+[useSpellbooks] Created spellbook: test-uuid-2
+[useSpellbooks] Loaded spellbooks: 2
+[useSpellbooks] Reloaded after create
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > deleteSpellbook > should delete a spellbook
+[useSpellbooks] Loaded spellbooks: 1
+
+ ✓ src/services/storage.service.test.ts  (29 tests) 457ms
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > deleteSpellbook > should delete a spellbook
+[useSpellbooks] Loaded spellbooks: 0
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > deleteSpellbook > should remove spellbook from list after deletion
+[useSpellbooks] Loaded spellbooks: 2
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > deleteSpellbook > should remove spellbook from list after deletion
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > getSpellbook > should return a spellbook by ID
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > getSpellbook > should return undefined for non-existent spellbook
+[useSpellbooks] Loaded spellbooks: 0
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > addSpellToSpellbook > should add a spell to spellbook
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > addSpellToSpellbook > should add a spell to spellbook
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > addSpellToSpellbook > should update spellbooks after manual refresh
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > addSpellToSpellbook > should update spellbooks after manual refresh
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > removeSpellFromSpellbook > should remove a spell from spellbook
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > removeSpellFromSpellbook > should remove a spell from spellbook
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > togglePrepared > should toggle spell prepared status
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > togglePrepared > should toggle spell prepared status
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > togglePrepared > should toggle back to false
+[useSpellbooks] Loaded spellbooks: 1
+
+ ✓ src/hooks/useFilterReducer.test.ts  (28 tests) 36ms
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > togglePrepared > should toggle back to false
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > updateSpellNotes > should update spell notes
+[useSpellbooks] Loaded spellbooks: 1
+
+ ✓ src/components/SpellTooltip.test.tsx  (27 tests) 88ms
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > updateSpellNotes > should update spell notes
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > updateSpellNotes > should reload spellbooks after updating notes
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > updateSpellNotes > should reload spellbooks after updating notes
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > refreshSpellbooks > should reload spellbooks from storage
+[useSpellbooks] Loaded spellbooks: 0
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > refreshSpellbooks > should reload spellbooks from storage
+[useSpellbooks] Loaded spellbooks: 1
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > error handling > should set error on creation failure
+[useSpellbooks] Loaded spellbooks: 0
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > error handling > should set error on creation failure
+[useSpellbooks] Creating spellbook: Will Fail
+
+stdout | src/hooks/useSpellbooks.test.ts > useSpellbooks > error handling > should set error on deletion failure
+[useSpellbooks] Loaded spellbooks: 0
+
+ ✓ src/hooks/useSpellbooks.test.ts  (18 tests) 1369ms
+ ✓ src/App.test.tsx  (10 tests) 107ms
+ ✓ src/components/SpellDescription.test.tsx  (21 tests) 145ms
+ ✓ src/components/SpellbookList.test.tsx  (9 tests) 233ms
+ ✓ src/utils/spellSortValues.test.ts  (32 tests) 10ms
+ ✓ src/components/SpellTable.test.tsx  (7 tests) 134ms
+ ✓ src/components/ConfirmDialog.test.tsx  (14 tests) 99ms
+ ✓ src/components/AlertDialog.test.tsx  (16 tests) 123ms
+ ✓ src/services/exportImport.service.test.ts  (8 tests) 31ms
+ ✓ src/components/LoadingButton.test.tsx  (15 tests) 116ms
+ ✓ src/components/SortIcon.test.tsx  (10 tests) 37ms
+ ✓ src/components/ErrorBoundary.test.tsx  (10 tests) 104ms
+ ✓ src/components/CreateSpellbookModal.test.tsx  (9 tests) 334ms
+ ✓ src/hooks/useToast.test.ts  (10 tests) 22ms
+ ✓ src/hooks/useHashRouter.test.ts  (10 tests) 32ms
+ ✓ src/hooks/useModal.test.ts  (9 tests) 34ms
+ ✓ src/components/LoadingSkeleton.test.tsx  (12 tests) 20ms
+ ✓ src/components/LoadingSpinner.test.tsx  (10 tests) 40ms
+ ✓ src/e2e/spell-selection.test.ts  (13 tests) 15987ms
+ ✓ src/e2e/ui-interactions.test.ts  (19 tests) 33070ms
+ ❯ src/e2e/spell-sorting.test.ts  (7 tests | 1 failed) 37795ms
+   ❯ src/e2e/spell-sorting.test.ts > Spell Table Sorting E2E > should maintain sort when filtering
+     → Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/e2e/spell-search.test.ts  (7 tests | 1 failed) 38260ms
+   ❯ src/e2e/spell-search.test.ts > Spell Search E2E > should combine search with filters
+     → Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/e2e/spell-filtering.test.ts  (13 tests | 1 failed) 39024ms
+   ❯ src/e2e/spell-filtering.test.ts > Spell Filtering E2E > should filter spells by verbal component
+     → Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/e2e/spell-filtering.test.ts > Spell Filtering E2E > should filter spells by verbal component
+ FAIL  src/e2e/spell-search.test.ts > Spell Search E2E > should combine search with filters
+ FAIL  src/e2e/spell-sorting.test.ts > Spell Table Sorting E2E > should maintain sort when filtering
+Error: Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ Test Files  3 failed | 28 passed (31)
+      Tests  3 failed | 510 passed (513)
+   Start at  11:13:30
+   Duration  39.59s (transform 1.45s, setup 2.79s, collect 8.57s, tests 184.06s, environment 10.70s, prepare 3.31s)
+

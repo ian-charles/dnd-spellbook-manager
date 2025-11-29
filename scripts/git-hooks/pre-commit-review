@@ -69,6 +69,12 @@ This allows you to spot issues that require broader context to identify.
 - Slow tests that could be optimized
 - Tests that don't verify actual behavior
 
+**EXEMPTION**: Tests are NOT required for commits that ONLY fix:
+- TypeScript type errors (adding type annotations, fixing type mismatches)
+- Build errors (compilation failures, missing imports)
+- Test failures at HEAD (fixing broken tests after a merge/pull)
+These are remediation commits and don't introduce new behavior.
+
 ### 3. **Logic Errors** 🐛 CRITICAL
 - Off-by-one errors in loops/arrays
 - Null/undefined handling missing
@@ -177,6 +183,7 @@ REVIEW_EOF
 # Replace placeholder with actual file contents
 # Use printf to properly escape the content
 printf '%s\n' "g/FILES_PLACEHOLDER/d" "i" "$REVIEW_CONTEXT" "." "w" | ed -s "$REVIEW_REQUEST" 2>/dev/null || {
+  echo "Warning: 'ed' command failed, falling back to temp file method" >> "$REVIEW_LOG_FILE"
   # Fallback: use a simpler approach with a temp file
   TEMP_FILE=$(mktemp)
   head -n -1 "$REVIEW_REQUEST" > "$TEMP_FILE"
@@ -205,7 +212,9 @@ LOG_HEADER
 
 # Run Claude Code in headless mode for review
 echo "Analyzing changes with Claude..."
-REVIEW_OUTPUT=$(/Users/sjaconette/.local/bin/claude -p "$(cat $REVIEW_REQUEST)" 2>&1)
+# Use CLAUDE_CODE_BIN if set, otherwise default to standard path
+CLAUDE_BIN="${CLAUDE_CODE_BIN:-/Users/sjaconette/.local/bin/claude}"
+REVIEW_OUTPUT=$("$CLAUDE_BIN" -p "$(cat $REVIEW_REQUEST)" 2>&1)
 
 # Append review output to log file
 echo "$REVIEW_OUTPUT" >> "$REVIEW_LOG_FILE"

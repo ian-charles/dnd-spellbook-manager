@@ -22,7 +22,7 @@
 
   /* Hide table headers on mobile */
   .spell-table thead,
-  .spellbook-table thead {
+  .spellbook-table>thead {
     display: none;
   }
 
@@ -98,7 +98,8 @@
 
   /* Spell name - takes available space on left */
   .spell-name {
-    flex: 1 1 auto;
+    flex: 1 1 100%;
+    /* Force full width to push badges to new line */
     padding: var(--space-2) var(--space-1) var(--space-2) 3rem;
     margin: 0;
     min-width: 0;
@@ -112,8 +113,10 @@
 
   /* Spellbook table - make room for both prep checkbox (left) and remove button (right) */
   .spellbook-table .spell-name {
-    padding-left: 3rem;
-    padding-right: 12rem;
+    padding-left: 3.5rem;
+    /* Space for checkbox */
+    padding-right: 3.5rem;
+    /* Space for remove button */
   }
 
   /* Spell name text itself */
@@ -130,28 +133,32 @@
   /* Show level and school as inline badges - right-aligned */
   .level-col,
   .school-col {
-    display: block !important;
+    display: inline-block !important;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     padding: var(--space-1) var(--space-2);
-    margin: var(--space-1) var(--space-1) var(--space-1) 0;
+    margin: var(--space-1) var(--space-1) 0 0;
     border-radius: var(--radius-md);
     background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
     color: light-dark(#6d28d9, #a78bfa);
     border: 1px solid light-dark(rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.3));
     white-space: nowrap;
     text-align: center;
+    vertical-align: middle;
   }
 
   .level-col {
-    flex: 0 0 3rem;
+    flex: 0 0 auto;
     order: 2;
+    margin-left: 3.5rem;
+    /* Align with name text */
+    margin-bottom: var(--space-2);
   }
 
   .school-col {
     flex: 0 0 auto;
     order: 3;
-    margin-right: 2rem;
+    margin-bottom: var(--space-2);
   }
 
   /* Reset widths and allow wrapping for other columns */

@@ -1,5 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useFocusTrap } from '../hooks/useFocusTrap';
+import { useCreateSpellbookForm } from '../hooks/useCreateSpellbookForm';
 import { CreateSpellbookInput } from '../types/spellbook';
+import {
+  MIN_ATTACK_MODIFIER,
+  MAX_ATTACK_MODIFIER,
+  MIN_SAVE_DC,
+  MAX_SAVE_DC
+} from '../constants/gameRules';
 import './CreateSpellbookModal.css';
 
 interface CreateSpellbookModalProps {
@@ -14,6 +21,7 @@ interface CreateSpellbookModalProps {
     spellSaveDC?: number;
   };
   title?: string;
+  loadingText?: string;
 }
 
 export function CreateSpellbookModal({
@@ -23,105 +31,40 @@ export function CreateSpellbookModal({
   existingNames,
   initialData,
   title,
+  loadingText,
 }: CreateSpellbookModalProps) {
-  const [name, setName] = useState('');
-  const [spellcastingAbility, setSpellcastingAbility] = useState<'INT' | 'WIS' | 'CHA' | ''>('');
-  const [spellAttackModifier, setSpellAttackModifier] = useState('');
-  const [spellSaveDC, setSpellSaveDC] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const {
+    name,
+    setName,
+    spellcastingAbility,
+    setSpellcastingAbility,
+    spellAttackModifier,
+    setSpellAttackModifier,
+    spellSaveDC,
+    setSpellSaveDC,
+    error,
+    loading,
+    handleSubmit,
+  } = useCreateSpellbookForm({
+    isOpen,
+    onSubmit,
+    existingNames,
+    initialData,
+  });
 
-  // Initialize or reset form when modal opens/closes
-  useEffect(() => {
-    if (isOpen && initialData) {
-      // Pre-fill with initial data
-      setName(initialData.name || '');
-      setSpellcastingAbility(initialData.spellcastingAbility || '');
-      setSpellAttackModifier(initialData.spellAttackModifier !== undefined ? String(initialData.spellAttackModifier) : '');
-      setSpellSaveDC(initialData.spellSaveDC !== undefined ? String(initialData.spellSaveDC) : '');
-      setError('');
-      setLoading(false);
-    } else if (!isOpen) {
-      // Reset form when modal closes
-      setName('');
-      setSpellcastingAbility('');
-      setSpellAttackModifier('');
-      setSpellSaveDC('');
-      setError('');
-      setLoading(false);
-    }
-  }, [isOpen, initialData]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    // Validate name
-    if (!name.trim()) {
-      setError('Spellbook name is required');
-      setLoading(false);
-      return;
-    }
-
-    // Check for duplicate name (case-insensitive)
-    if (existingNames.some(n => n.toLowerCase() === name.trim().toLowerCase())) {
-      setError('A spellbook with this name already exists');
-      setLoading(false);
-      return;
-    }
-
-    // Validate spell attack modifier
-    if (spellAttackModifier && !isValidAttackModifier(spellAttackModifier)) {
-      setError('Spell Attack Modifier must be an integer between 0 and 18');
-      setLoading(false);
-      return;
-    }
-
-    // Validate spell save DC
-    if (spellSaveDC && !isValidSaveDC(spellSaveDC)) {
-      setError('Spell Save DC must be an integer between 8 and 26');
-      setLoading(false);
-      return;
-    }
-
-    const input: CreateSpellbookInput = {
-      name: name.trim(),
-      spellcastingAbility: spellcastingAbility || undefined,
-      spellAttackModifier: spellAttackModifier ? parseInt(spellAttackModifier) : undefined,
-      spellSaveDC: spellSaveDC ? parseInt(spellSaveDC) : undefined,
-    };
-
-    try {
-      await onSubmit(input);
-      // Reset form
-      setName('');
-      setSpellcastingAbility('');
-      setSpellAttackModifier('');
-      setSpellSaveDC('');
-      setError('');
-      setLoading(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create spellbook');
-      setLoading(false);
-    }
-  };
-
-  const isValidAttackModifier = (value: string): boolean => {
-    const num = parseInt(value);
-    return Number.isInteger(num) && num >= 0 && num <= 18;
-  };
-
-  const isValidSaveDC = (value: string): boolean => {
-    const num = parseInt(value);
-    return Number.isInteger(num) && num >= 8 && num <= 26;
-  };
+  // Focus trap
+  const modalRef = useFocusTrap(isOpen);
 
   if (!isOpen) return null;
 
   return (
     <div className="dialog-overlay">
-      <div className="dialog create-spellbook-modal" onClick={(e) => e.stopPropagation()} data-testid="create-spellbook-dialog">
+      <div
+        className="dialog create-spellbook-modal"
+        onClick={(e) => e.stopPropagation()}
+        data-testid="create-spellbook-dialog"
+        ref={modalRef}
+      >
         <h3>{title || 'Create New Spellbook'}</h3>
         <form onSubmit={handleSubmit} data-testid="create-spellbook-form">
           <div className="form-group">
@@ -181,9 +124,9 @@ export function CreateSpellbookModal({
                 value={spellAttackModifier}
                 onChange={(e) => setSpellAttackModifier(e.target.value)}
                 className="form-input"
-                placeholder="0-18"
-                min="0"
-                max="18"
+                placeholder={`${MIN_ATTACK_MODIFIER}-${MAX_ATTACK_MODIFIER}`}
+                min={MIN_ATTACK_MODIFIER}
+                max={MAX_ATTACK_MODIFIER}
                 data-testid="attack-modifier-input"
               />
             </div>
@@ -198,9 +141,9 @@ export function CreateSpellbookModal({
                 value={spellSaveDC}
                 onChange={(e) => setSpellSaveDC(e.target.value)}
                 className="form-input"
-                placeholder="8-26"
-                min="8"
-                max="26"
+                placeholder={`${MIN_SAVE_DC}-${MAX_SAVE_DC}`}
+                min={MIN_SAVE_DC}
+                max={MAX_SAVE_DC}
                 data-testid="save-dc-input"
               />
             </div>
@@ -224,7 +167,7 @@ export function CreateSpellbookModal({
               data-testid="create-button"
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Save Spellbook'}
+              {loading ? (loadingText || 'Saving...') : 'Save Spellbook'}
             </button>
           </div>
         </form >

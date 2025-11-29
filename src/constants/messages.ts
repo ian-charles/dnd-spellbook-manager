@@ -10,6 +10,7 @@ export const MESSAGES = {
     SPELLS: 'Loading spells from the archive...',
     SPELLBOOKS: 'Loading spellbooks...',
     SPELLBOOK: 'Loading spellbook...',
+    COPYING_SPELLS: 'Copying {current}/{total} spells...',
   },
   SUCCESS: {
     SPELL_ADDED: '✓ Spell added to spellbook!',
@@ -63,5 +64,8 @@ export const MESSAGES = {
     REMOVE_SPELL: 'Remove Spell',
     REMOVE_SPELL_CONFIRM: 'Remove "{spellName}" from this spellbook?',
     BACK_TO_SPELLBOOKS: '← Back to Spellbooks',
+  },
+  GENERATED: {
+    COPY_SUFFIX: ' (Copy)',
   },
 } as const;

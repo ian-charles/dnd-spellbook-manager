@@ -1,3 +1,5 @@
+import { Spell } from './spell';
+
 export interface SpellbookSpell {
   spellId: string;
   prepared: boolean;
@@ -28,4 +30,10 @@ export interface UpdateSpellbookInput {
   spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
   spellAttackModifier?: number;
   spellSaveDC?: number;
+}
+
+export interface EnrichedSpell {
+  spell: Spell;
+  prepared: boolean;
+  notes: string;
 }

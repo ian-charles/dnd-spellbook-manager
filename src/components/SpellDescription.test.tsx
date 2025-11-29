@@ -218,4 +218,26 @@ Text in between.
         const dice = screen.getByTestId('dice-notation');
         expect(dice.textContent, 'Dice in table should be highlighted').toBe('1d4');
     });
+
+    it('should render table with correct CSS classes for mobile fix', () => {
+        const text = `
+| Size | HP | AC |
+|---|---|---|
+| Tiny | 20 | 18 |
+`;
+        const { container } = render(<SpellDescription text={text} />);
+
+        // Verify table structure and CSS classes exist
+        const wrapper = container.querySelector('.spell-table-wrapper');
+        expect(wrapper, 'Table wrapper with correct class should exist').toBeTruthy();
+
+        const table = container.querySelector('.spell-table-rendered');
+        expect(table, 'Table with correct CSS class should exist').toBeTruthy();
+
+        const thead = table?.querySelector('thead');
+        expect(thead, 'Table header element should exist in DOM').toBeTruthy();
+
+        const thElements = thead?.querySelectorAll('th');
+        expect(thElements?.length, 'Should have 3 header cells').toBe(3);
+    });
 });

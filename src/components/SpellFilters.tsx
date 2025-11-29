@@ -8,70 +8,68 @@
  * This provides cleaner, more predictable state management.
  */
 
-import { useEffect } from 'react';
-import { SpellFilters as Filters } from '../types/spell';
-import { useFilterReducer } from '../hooks/useFilterReducer';
+import { useState, useEffect } from 'react';
+import { MIN_SPELL_LEVEL, MAX_SPELL_LEVEL } from '../constants/gameRules';
+import { UseFilterReducerReturn } from '../hooks/useFilterReducer';
 import './SpellFilters.css';
 
-interface SpellFiltersProps {
-  onFiltersChange: (filters: Filters) => void;
+// ... (interface remains same)
+
+/**
+ * Props for the SpellFilters component.
+ * Extends the return type of useFilterReducer to include schools and classes.
+ */
+interface SpellFiltersProps extends UseFilterReducerReturn {
+  /**
+   * List of available spell schools to filter by.
+   */
   schools: string[];
+
+  /**
+   * List of available spell classes to filter by.
+   */
   classes: string[];
 }
 
-export function SpellFilters({ onFiltersChange, schools, classes }: SpellFiltersProps) {
-  const {
-    state,
-    setSearchText: setSearchTextAction,
-    setLevelRange,
-    toggleSchool,
-    toggleClass,
-    toggleConcentration,
-    toggleRitual,
-    toggleVerbal,
-    toggleSomatic,
-    toggleMaterial,
-    clearFilters: clearFiltersAction,
-  } = useFilterReducer();
+export function SpellFilters({
+  state,
+  setSearchText,
+  setLevelRange,
+  toggleSchool,
+  toggleClass,
+  toggleConcentration,
+  toggleRitual,
+  toggleVerbal,
+  toggleSomatic,
+  toggleMaterial,
+  clearFilters,
+  schools,
+  classes
+}: SpellFiltersProps) {
+  const [localSearchText, setLocalSearchText] = useState(state.searchText);
 
-  // Update parent component whenever filter state changes
+  // Sync local state with prop when prop changes (e.g. clear filters)
   useEffect(() => {
-    const filters: Filters = {
-      searchText: state.searchText,
-      levelRange: state.levelRange,
-      schools: state.selectedSchools.length > 0 ? state.selectedSchools : undefined,
-      classes: state.selectedClasses.length > 0 ? state.selectedClasses : undefined,
-      concentration: state.concentrationOnly || undefined,
-      ritual: state.ritualOnly || undefined,
-      componentVerbal: state.verbalOnly || undefined,
-      componentSomatic: state.somaticOnly || undefined,
-      componentMaterial: state.materialOnly || undefined,
-    };
-    onFiltersChange(filters);
-  }, [
-    state.searchText,
-    state.levelRange.min,
-    state.levelRange.max,
-    state.selectedSchools,
-    state.selectedClasses,
-    state.concentrationOnly,
-    state.ritualOnly,
-    state.verbalOnly,
-    state.somaticOnly,
-    state.materialOnly,
-    onFiltersChange,
-  ]);
+    setLocalSearchText(state.searchText);
+  }, [state.searchText]);
+
+  // Debounce search updates
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearchText !== state.searchText) {
+        setSearchText(localSearchText);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [localSearchText, setSearchText, state.searchText]);
 
   const handleSearchChange = (value: string) => {
-    setSearchTextAction(value);
+    setLocalSearchText(value);
   };
 
   const handleClearFilters = () => {
-    clearFiltersAction();
-  };
-
-  const getLevelLabel = (level: number) => {
-    return level === 0 ? 'Cantrip' : level.toString();
+    clearFilters();
   };
 
   // Check if any filters are active
@@ -97,6 +95,8 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               className={`filter-btn ${state.selectedClasses.includes(className) ? 'active' : ''}`}
               onClick={() => toggleClass(className)}
               data-class={className}
+              aria-pressed={state.selectedClasses.includes(className)}
+              aria-label={`Filter by class ${className}`}
             >
               {className}
             </button>
@@ -120,8 +120,9 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               }}
               className={`level-select level-select-${state.levelRange.min}`}
               data-testid="level-range-min"
+              aria-label="Minimum spell level"
             >
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+              {Array.from({ length: MAX_SPELL_LEVEL - MIN_SPELL_LEVEL + 1 }, (_, i) => i + MIN_SPELL_LEVEL).map((level) => (
                 <option key={level} value={level}>
                   {level === 0 ? 'Cantrip' : level}
                 </option>
@@ -141,8 +142,9 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               }}
               className={`level-select level-select-${state.levelRange.max}`}
               data-testid="level-range-max"
+              aria-label="Maximum spell level"
             >
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
+              {Array.from({ length: MAX_SPELL_LEVEL - MIN_SPELL_LEVEL + 1 }, (_, i) => i + MIN_SPELL_LEVEL).map((level) => (
                 <option key={level} value={level}>
                   {level === 0 ? 'Cantrip' : level}
                 </option>
@@ -160,6 +162,8 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
               key={school}
               className={`filter-btn ${state.selectedSchools.includes(school) ? 'active' : ''}`}
               onClick={() => toggleSchool(school)}
+              aria-pressed={state.selectedSchools.includes(school)}
+              aria-label={`Filter by school ${school}`}
             >
               {school}
             </button>
@@ -177,6 +181,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
                   type="checkbox"
                   checked={state.verbalOnly}
                   onChange={toggleVerbal}
+                  aria-label="Filter by Verbal component"
                 />
                 <span className="checkbox-badge checkbox-badge-verbal">Verbal</span>
               </label>
@@ -185,6 +190,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
                   type="checkbox"
                   checked={state.somaticOnly}
                   onChange={toggleSomatic}
+                  aria-label="Filter by Somatic component"
                 />
                 <span className="checkbox-badge checkbox-badge-somatic">Somatic</span>
               </label>
@@ -193,6 +199,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
                   type="checkbox"
                   checked={state.materialOnly}
                   onChange={toggleMaterial}
+                  aria-label="Filter by Material component"
                 />
                 <span className="checkbox-badge checkbox-badge-material">Material</span>
               </label>
@@ -206,6 +213,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
                   type="checkbox"
                   checked={state.concentrationOnly}
                   onChange={toggleConcentration}
+                  aria-label="Filter by Concentration"
                 />
                 <span className="checkbox-badge checkbox-badge-concentration">Concentration</span>
               </label>
@@ -214,6 +222,7 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
                   type="checkbox"
                   checked={state.ritualOnly}
                   onChange={toggleRitual}
+                  aria-label="Filter by Ritual"
                 />
                 <span className="checkbox-badge checkbox-badge-ritual">Ritual</span>
               </label>
@@ -229,11 +238,16 @@ export function SpellFilters({ onFiltersChange, schools, classes }: SpellFilters
           value={state.searchText}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="search-input"
+          aria-label="Search spells"
         />
       </div>
 
       {hasActiveFilters && (
-        <button className="btn-clear-filters" onClick={handleClearFilters}>
+        <button
+          className="btn-clear-filters"
+          onClick={handleClearFilters}
+          aria-label="Clear all active filters"
+        >
           Clear All Filters
         </button>
       )}

@@ -70,6 +70,18 @@ async function setupHooks() {
         }
 
         console.log(`✅ ${file} installed`);
+
+        // Verify file exists and is executable (on non-Windows)
+        if (process.platform !== 'win32') {
+          try {
+            const destStats = await stat(destPath);
+            if ((destStats.mode & 0o111) === 0) {
+              console.warn(`⚠️ Warning: ${file} might not be executable. Please run: chmod +x ${destPath}`);
+            }
+          } catch (e) {
+            console.warn(`⚠️ Warning: Could not verify ${file}: ${e.message}`);
+          }
+        }
       }
     }
 

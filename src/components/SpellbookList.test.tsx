@@ -13,6 +13,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { SpellbookList } from './SpellbookList';
 import { exportImportService } from '../services/exportImport.service';
+const DEFAULT_ABILITY = 'INT';
 
 // Mock dependencies
 vi.mock('../services/exportImport.service', () => ({
@@ -23,16 +24,23 @@ vi.mock('../services/exportImport.service', () => ({
 }));
 
 vi.mock('./CreateSpellbookModal', () => ({
-  CreateSpellbookModal: ({ isOpen, onClose, onSubmit, initialData }: any) => {
+  CreateSpellbookModal: ({ isOpen, onClose, onSubmit, initialData, loadingText }: {
+    isOpen: boolean;
+    onClose: () => void;
+    onSubmit: (data: any) => void;
+    initialData?: any;
+    loadingText?: string;
+  }) => {
     if (!isOpen) return null;
     return (
       <div data-testid="create-spellbook-modal">
+        {loadingText && <div data-testid="loading-text">{loadingText}</div>}
         <button onClick={onClose}>Cancel</button>
         <button
           onClick={() => {
             const data = {
               name: initialData ? initialData.name : 'New Spellbook',
-              spellcastingAbility: initialData?.spellcastingAbility || 'INT',
+              spellcastingAbility: initialData?.spellcastingAbility || DEFAULT_ABILITY,
             };
             onSubmit(data);
           }}
@@ -45,7 +53,11 @@ vi.mock('./CreateSpellbookModal', () => ({
 }));
 
 vi.mock('./ConfirmDialog', () => ({
-  ConfirmDialog: ({ isOpen, onConfirm, onCancel }: any) => {
+  ConfirmDialog: ({ isOpen, onConfirm, onCancel }: {
+    isOpen: boolean;
+    onConfirm: () => void;
+    onCancel: () => void;
+  }) => {
     if (!isOpen) return null;
     return (
       <div data-testid="confirm-dialog">
@@ -57,7 +69,11 @@ vi.mock('./ConfirmDialog', () => ({
 }));
 
 vi.mock('./AlertDialog', () => ({
-  AlertDialog: ({ isOpen, message, onClose }: any) => {
+  AlertDialog: ({ isOpen, message, onClose }: {
+    isOpen: boolean;
+    message: string;
+    onClose: () => void;
+  }) => {
     if (!isOpen) return null;
     return (
       <div data-testid="alert-dialog">
@@ -171,8 +187,9 @@ describe('SpellbookList', () => {
     render(<SpellbookList {...defaultProps} spellbooks={spellbooksWithMissingStats} />);
 
     // Verify N/A values for spells without those stats
+    // We expect 3 N/A values: one for Ability, one for Attack, one for Save DC
     const naElements = screen.getAllByText('N/A');
-    expect(naElements.length).toBe(3); // Should have N/A for Ability, Attack, and Save DC
+    expect(naElements.length).toBe(3);
 
     // Verify we have the specific columns with N/A
     const rows = screen.getAllByRole('row');
@@ -267,6 +284,41 @@ describe('SpellbookList', () => {
     });
 
     // Verify refresh was called
+    await waitFor(() => {
+      expect(mockOnRefreshSpellbooks).toHaveBeenCalled();
+    });
+  });
+
+  it('should show progress feedback during copy', async () => {
+    // Mock create response
+    mockOnCreateSpellbook.mockResolvedValue({
+      id: 'new-spellbook-id',
+      name: 'Copy of My First Spellbook',
+      spells: [],
+    });
+
+    // Mock slow spell copying
+    mockOnAddSpellToSpellbook.mockImplementation(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
+
+    // Start copy
+    const copyButtons = screen.getAllByTitle('Copy Spellbook');
+    fireEvent.click(copyButtons[0]);
+
+    // Click Create
+    const createButton = screen.getByText('Create');
+    fireEvent.click(createButton);
+
+    // Verify progress text appears
+    await waitFor(() => {
+      expect(screen.getByTestId('loading-text')).toBeTruthy();
+      expect(screen.getByText(/Copying \d+\/\d+ spells/)).toBeTruthy();
+    });
+
+    // Verify completion
     await waitFor(() => {
       expect(mockOnRefreshSpellbooks).toHaveBeenCalled();
     });

@@ -21,8 +21,6 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
-    min-width: 600px;
-    /* Ensure table doesn't get too squished */
 }
 
 .spell-table-rendered th,
@@ -36,8 +34,19 @@
 .spell-table-rendered th {
     background-color: var(--color-bg-secondary);
     font-weight: 600;
-    white-space: nowrap;
-    /* Prevent headers from wrapping awkwardly */
+}
+
+/* Override mobile table hiding for spell description tables */
+@media (max-width: 768px) {
+
+    .spell-table-rendered thead,
+    .spell-table-rendered th {
+        display: table-header-group !important;
+    }
+
+    .spell-table-rendered th {
+        display: table-cell !important;
+    }
 }
 
 .spell-text-line {

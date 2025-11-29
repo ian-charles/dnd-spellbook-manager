@@ -144,6 +144,8 @@ describe('SpellTable', () => {
         // Check for expansion behavior/structure rather than specific class name
         expect(expansionRow, 'Expansion row should be visible').toBeTruthy();
         const cell = expansionRow?.querySelector('td');
+        // Colspan is 9 because checkbox column is not rendered (onSelectionChange not provided)
+        // Columns: Name, Level, Time, Range, Duration, Comp., School, Classes, Source
         expect(cell?.getAttribute('colSpan'), 'Expansion row should span 9 columns').toBe('9');
     });
 

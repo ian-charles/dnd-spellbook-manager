@@ -5,236 +5,395 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ## Active Technical Debt
 
 
-### User has no feedback during potentially long copy operations
-**Location**: src/components/SpellbookList.tsx:118-149
-**Issue**: User has no feedback during potentially long copy operations
-**Priority**: High
-**Solution**: Add loading state and show progress indicator during copy operation
+
+
+
+
+
+
+
+
+
+### High Priority
+
+
+### Medium Priority
+
+
+
+
+- src/hooks/useSpellbookOperations.ts:18-32
+- src/hooks/useSpellbookListState.ts:13-18  
+- src/hooks/useDialogs.ts:22-30
+**Issue**: JSDoc missing or incomplete @returns documentation
+**Impact**: Developers must read implementation to understand return values
+**Solution**: Add complete @returns documentation listing all returned properties
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Missing Edge Case Test Coverage (~3 hooks)
+**Location**:
+- src/hooks/useDialogs.test.ts
+- src/hooks/useLongPress.test.ts
+- src/hooks/useSpellbookListState.test.ts
+**Issue**: Tests only cover happy paths, missing edge cases and error scenarios
+**Impact**: Edge case bugs may not be caught until production
+**Solution**: Add tests for: multiple rapid calls, boundary conditions, cleanup verification, null/undefined handling
+**Effort**: Medium (2-3 hours)
+**Priority**: Medium
+
+#### Missing Error Path Tests in useSpellbookOperations
+**Location**: src/hooks/useSpellbookOperations.test.ts
+**Issue**: No tests for failure scenarios (createSpellbook failure, invalid JSON import, etc.)
+**Impact**: Error handling code is untested, may fail in production
+**Solution**: Add tests for all async operation failures and error paths
+**Effort**: Medium (2-3 hours)
+**Priority**: Medium
+
+#### Hardcoded UI Strings Not Yet in Constants
+**Location**: 
+- src/hooks/useSpellbookOperations.ts:124 (" (Copy)" suffix)
+- src/components/SpellbookList.test.tsx:51 ('INT' magic string)
+**Issue**: Some UI strings and test constants still hardcoded
+**Impact**: Inconsistent i18n readiness, harder to maintain
+**Solution**: Extract to MESSAGES constant or test constants
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Potential Race Condition in Copy Progress Counter
+**Location**: src/hooks/useSpellbookOperations.ts:70-95
+**Issue**: `processedSpellCount` mutated in parallel Promise.allSettled callbacks
+**Impact**: Works but fragile, could break with future refactoring
+**Solution**: Use atomic counter or track results differently
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Unbounded Spellbook Name Length
+**Location**: src/components/CreateSpellbookModal.tsx
+**Issue**: No maximum length validation for spellbook names
+**Impact**: Users can create spellbooks with extremely long names, potentially breaking UI layout or causing performance issues
+**Solution**: Add maxLength validation (e.g., 50-100 chars) to input and schema
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Unsafe Large File Import
+**Location**: src/hooks/useSpellbookOperations.ts:180
+**Issue**: `file.text()` and `JSON.parse()` load entire file into memory without size checks
+**Impact**: Large files (e.g., >50MB) could crash the browser tab (DoS risk)
+**Solution**: Add file size check before reading (e.g., max 5MB)
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Missing Schema Validation for Imports
+**Location**: src/services/exportImport.service.ts
+**Issue**: Import only checks top-level structure, not individual spellbook shape
+**Impact**: Malformed spellbooks (missing spells array, invalid types) can be imported, causing runtime errors later
+**Solution**: Use Zod or similar to validate full spellbook schema during import
+**Effort**: Medium (2 hours)
+**Priority**: Medium
+
+#### No Cancellation for Long Operations
+**Location**: src/hooks/useSpellbookOperations.ts
+**Issue**: Copying spellbooks with many spells or importing large files cannot be cancelled
+**Impact**: User is stuck waiting or has to refresh page to stop
+**Solution**: Implement AbortController for async operations and add Cancel button
+**Effort**: Medium (3 hours)
+**Priority**: Medium
+
+#### State Updates on Unmounted Component
+**Location**: src/hooks/useSpellbookOperations.ts:93
+**Issue**: `setCopyProgress` called in `finally` block even if component unmounted
+**Impact**: "Can't perform a React state update on an unmounted component" console warnings
+**Solution**: Add `isMounted` ref check before setting state
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Loose Numeric Parsing in Create Modal
+**Location**: src/components/CreateSpellbookModal.tsx
+**Issue**: `parseInt` allows trailing non-numeric characters (e.g., "12abc" -> 12)
+**Impact**: Users can input invalid formats that are accepted as valid numbers
+**Solution**: Use strict regex validation `^\d+$` before parsing
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Lack of Transactional Integrity in Bulk Ops
+**Location**: src/hooks/useSpellbookMutations.ts, src/hooks/useSpellbookOperations.ts
+**Issue**: Bulk operations (create+copy, add multiple) are not transactional. Partial failure leaves data in inconsistent state.
+**Impact**: Users may end up with half-copied spellbooks or partial additions without easy rollback.
+**Solution**: Implement rollback logic or use IndexedDB transactions where possible.
+**Effort**: High (4-6 hours)
+**Priority**: Medium
+
+#### Naive Markdown Table Parsing
+**Location**: src/components/SpellDescription.tsx
+**Issue**: Table parsing uses simple `split('|')`, which breaks on escaped pipes `\|` within cells.
+**Impact**: Spells with complex descriptions containing pipes will render broken tables.
+**Solution**: Implement a proper markdown parser or improved regex splitting.
+**Effort**: Medium (2 hours)
+**Priority**: Low
+
+#### Unbounded Parallel Requests in Bulk Ops
+**Location**: src/hooks/useSpellbookMutations.ts
+**Issue**: `Promise.allSettled` triggers all requests simultaneously.
+**Impact**: Selecting "All Spells" (400+) and adding to a spellbook could freeze the browser or hit storage limits.
+**Solution**: Implement batching (e.g., chunks of 10) or sequential processing.
+**Effort**: Medium (2 hours)
+**Priority**: Medium
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Console Logs in Production Code
+**Location**: src/services/spell.service.ts
+**Issue**: Service contains `console.log` and `console.error` statements.
+**Impact**: Clutters console in production, not a proper logging solution.
+**Solution**: Remove logs or use a proper logging service.
+**Effort**: Low (15 minutes)
+**Priority**: Low
+
+#### Inline Styles in SpellbookList
+**Location**: src/components/SpellbookList.tsx
+**Issue**: Context menu uses inline styles for positioning.
+**Impact**: Harder to maintain, violates separation of concerns (CSS vs JS).
+**Solution**: Move styles to `SpellbookList.css` and use CSS variables or classes.
+**Effort**: Low (30 minutes)
+**Priority**: Low
+
+#### Direct Hash Manipulation
+**Location**: src/components/SpellbookList.tsx
+**Issue**: Component directly reads and writes `window.location.hash`.
+**Impact**: Fragile routing logic, tightly coupled to hash routing implementation.
+**Solution**: Use `useHashRouter` hook or similar abstraction.
 **Effort**: Medium (1 hour)
+**Priority**: Medium
 
-- [ ] **Missing JSDoc for SpellDescription usage** (Medium) - `src/components/SpellTable.tsx`, `src/components/SpellbookDetailView.tsx`: No inline comments explaining why SpellDescription component is used.
-- [ ] **Missing error messages in SpellDescription test assertions** (Medium) - `src/components/SpellDescription.test.tsx`: Some test assertions lack descriptive error messages.
-- [ ] **Hardcoded dice types in regex could be more maintainable** (Medium) - `src/components/SpellDescription.tsx`: Dice types hardcoded in regex string instead of derived from array.
-- [ ] **Missing explicit XSS escaping documentation** (Medium) - `src/components/SpellDescription.tsx`: JSX escaping prevents XSS but mechanism not clearly documented.
-- [ ] **Insufficient error handling for malformed tables** (Medium) - `src/components/SpellDescription.tsx`: Limited validation of markdown table structure (e.g., header-only).
-- [ ] **Weak XSS test in SpellDescription** (Medium) - `src/components/SpellDescription.test.tsx`: XSS test only checks innerHTML doesn't contain <script> but doesn't verify actual HTML escaping.
-- [ ] **Missing unit tests for App.tsx** (High) - `src/App.tsx`: Main application component has complex state management but zero unit tests.
+#### Duplicate Regex Comments
+**Location**: src/components/SpellDescription.tsx
+**Issue**: Duplicate comments for regex definitions.
+**Impact**: Minor code clutter.
+**Solution**: Consolidate comments.
+**Effort**: Low (5 minutes)
+**Priority**: Low
 
-- [ ] **Missing JSDoc for App.tsx** (Medium) - `src/App.tsx`: Component lacks JSDoc documentation explaining component architecture, data flow, and key responsibilities.
-- [ ] **Complex state management without reducer pattern** (Medium) - `src/App.tsx`: Component manages 14+ state variables with useState, making state transitions hard to track.
-- [ ] **Missing error message for failed spell additions in batch** (Medium) - `src/App.tsx`: When individual spells fail during batch add in `handleCreateSpellbook`, only partial success message shown.
-- [ ] **No cleanup for createModalOpen state** (Medium) - `src/App.tsx`: When modal closes via onClose, pendingSpellIds is cleared, but if user navigates away while modal is open, state persists.
-- [ ] **Duplicate toast display logic** (Medium) - `src/App.tsx`: Same pattern of calculating count, clearing selection, and showing toast repeated in 3 places.
-- [ ] **Complex handleAddToSpellbook function** (Medium) - `src/App.tsx`: Function is 50+ lines mixing UI logic, validation, and async operations.
-- [ ] **Complex handleCreateSpellbook function** (Medium) - `src/App.tsx`: Function is 33 lines mixing spellbook creation with spell addition logic.
-- [ ] **Finally block always runs even on error** (Medium) - `src/App.tsx`: `setCreateModalOpen(false)` runs even if error is thrown, which may not be desired UX.
+
+
+#### Missing Unit Tests for SpellbookListTable
+**Location**: src/components/spellbook-list/SpellbookListTable.tsx
+**Issue**: Touch event handling and rendering logic is not tested in isolation.
+**Impact**: Mobile interactions (swiping/touching) might break.
+**Solution**: Create `src/components/spellbook-list/SpellbookListTable.test.tsx`.
+**Effort**: Low (1 hour)
+**Priority**: Medium
+
+#### Missing Unit Tests for SpellbookListHeader
+**Location**: src/components/spellbook-list/SpellbookListHeader.tsx
+**Issue**: Header logic (export/import states, button disabling) is not tested in isolation.
+**Impact**: UI states might be incorrect.
+**Solution**: Create `src/components/spellbook-list/SpellbookListHeader.test.tsx`.
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Missing Unit Tests for Layout
+**Location**: src/components/Layout.tsx
+**Issue**: Basic layout component lacks tests.
+**Impact**: Layout regressions.
+**Solution**: Create `src/components/Layout.test.tsx`.
+**Effort**: Low (30 minutes)
+**Priority**: Medium
 
 ### Completed Refactoring
+- [x] **Prop Drilling in SpellFilters** (Medium) - Refactored to controlled component using `useFilterReducer` in `App.tsx`.
+- [x] **Potential useEffect Dependency Issue in SpellFilters** (Medium) - Removed internal `useEffect` by lifting state.
+- [x] **Missing Unit Tests for SpellFilters** (High) - Created `src/components/SpellFilters.test.tsx` with comprehensive tests.
+- [x] **Missing JSDoc for SpellFilters** (Medium) - Added comprehensive JSDoc.
+- [x] **Magic Numbers in SpellFilters** (Medium) - Extracted `MIN_SPELL_LEVEL` and `MAX_SPELL_LEVEL` constants.
+- [x] **Duplicate Expansion Logic** (Low) - Extracted `SpellExpansionRow` component.
+- [x] **Missing Accessibility Labels in SpellFilters** (Medium) - Added `aria-label` and `aria-pressed` attributes.
+- [x] **Accessibility Issues in CreateSpellbookModal** (Medium) - Implemented focus trap using `useFocusTrap` hook.
+- [x] **Race Conditions in Storage Service** (High) - Refactored `storage.service.ts` to use atomic updates.
+- [x] **Missing unit tests for App.tsx** (High) - Created `src/App.test.tsx` with comprehensive tests.
+- [x] **Missing JSDoc for App.tsx** (Medium) - Added JSDoc to `src/App.tsx`.
+- [x] **Complex state management** (Medium) - Refactored mutation logic to `useSpellbookMutations` hook.
+- [x] **Missing error message for failed spell additions** (Medium) - Fixed in `useSpellbookMutations`.
+- [x] **No cleanup for createModalOpen state** (Medium) - Fixed in `useSpellbookMutations`.
+- [x] **Duplicate toast display logic** (Medium) - Centralized in `useSpellbookMutations`.
+- [x] **Complex handlers** (Medium) - Extracted to `useSpellbookMutations`.
+- [x] **Finally block logic** (Medium) - Fixed in `useSpellbookMutations`.
 - [x] **Missing Unicode test for dice notation** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.
 - [x] **Missing multiple tables test** (Medium) - Added test in `src/components/SpellDescription.test.tsx`.
 - [x] **Missing JSDoc for SpellDescription component** (Medium) - Added JSDoc in `src/components/SpellDescription.tsx`.
 - [x] **Hardcoded dice types in SpellDescription regex** (Medium) - Documented as maintainability issue above.
 
-### Missing input validation in E2E helpers
-**Location**: src/e2e/helpers.ts
-**Issue**: Several helper functions don't validate inputs before using them
-**Priority**: High
-**Solution**: Add validation for inputs like spellIndex
-**Effort**: Low (30 minutes)
-
-### Potential memory leak in SpellTable expansion state
-**Location**: src/components/SpellTable.tsx:73-76
-**Issue**: expandedSpellId may reference a spell no longer in the filtered list when spells prop changes
-**Priority**: Medium
-**Solution**: Add useEffect to reset expandedSpellId when spells changes
-**Effort**: Low (15 minutes)
-
-### Missing accessibility labels in SpellbookList
-**Location**: src/components/SpellbookList.tsx (Copy and Delete buttons)
-**Issue**: Action buttons lack aria-label attributes for screen readers
-**Priority**: Medium
-**Solution**: Add aria-label attributes
-**Effort**: Low (10 minutes)
-
-### Unclear assertion in SpellbookList.test.tsx
-**Location**: src/components/SpellbookList.test.tsx:69-80
-**Issue**: Assertion for N/A values uses toBeGreaterThanOrEqual(3) which is vague
-**Priority**: Medium
-**Solution**: Specify exact count or explain why "at least 3"
-**Effort**: Low (5 minutes)
-
-### Missing JSDoc for SortIcon usage
-**Location**: src/components/SortIcon.tsx
-**Issue**: Component lacks JSDoc documentation
-**Priority**: Medium
-**Solution**: Add JSDoc comments
-**Effort**: Low (5 minutes)
-
-### Missing test for displayTitle empty string edge case
-**Location**: src/components/CreateSpellbookModal.tsx:29
-**Issue**: Edge case not covered by tests
-**Priority**: Medium
-**Solution**: Add test for title="" prop
-**Effort**: Low (15 minutes)
-
-### Magic number 50 for description length validation
-**Location**: src/e2e/spell-tooltip.test.ts:112, 159
-**Issue**: Hardcoded minimum description length without explanation
-**Priority**: Medium
-**Solution**: Extract to named constant MIN_DESCRIPTION_LENGTH
-**Effort**: Low (5 minutes)
-
-### Missing error messages in E2E test assertions
-**Location**: src/e2e/spell-tooltip.test.ts:59, 112, 161, 204, 223, 272
-**Issue**: 6+ assertions lack descriptive error messages
-**Priority**: Medium
-**Solution**: Add error message parameter to all expect() calls
-**Effort**: Low (10 minutes)
-
-### Missing upper bound validation in E2E helpers
-**Location**: src/e2e/helpers.ts:232, 285, 335, 379
-**Issue**: Validates lower bound but not upper bound
-**Priority**: Medium
-**Solution**: Add if (index >= elements.length) checks
-**Effort**: Low (15 minutes)
-
-### Missing JSDoc for clickSpellbookCard helper
-**Location**: src/e2e/helpers.ts:415-426
-**Issue**: Helper function lacks JSDoc despite being marked complete in tech debt doc
-**Priority**: Medium
-**Solution**: Add JSDoc comment explaining purpose and parameters
-**Effort**: Low (3 minutes)
-
-### Inconsistent testid naming (spellbook-name-input vs constant)
-**Location**: src/e2e/config.ts:55, src/components/CreateSpellbookModal.tsx:131
-**Issue**: Config defines constant but component doesn't reference it in comments
-**Priority**: Medium
-**Solution**: Add comment in component explaining canonical testid name
-**Effort**: Low (2 minutes)
-
-### Magic number 7 without explanation in SpellTable tests
-**Location**: src/components/SpellTable.test.tsx:153
-**Issue**: Assertion uses magic number 7 for colspan without explanation
-**Priority**: Medium
-**Solution**: Add descriptive error message explaining why 7 columns are expected
-**Effort**: Low (5 minutes)
-
-### Fragile test assertions using exact string matching
-**Location**: src/components/SpellTable.test.tsx:60, 69, 75
-**Issue**: Tests use .toContain() without normalizing whitespace
-**Priority**: Medium
-**Solution**: Use regex or normalize whitespace before assertion
-**Effort**: Low (15 minutes)
 
 
-### Missing cleanup between E2E test cases
-**Location**: src/e2e/spell-filtering.test.ts, src/e2e/spell-search.test.ts
-**Issue**: Tests don't reset filters/search between test cases
-**Priority**: Medium
-**Solution**: Add beforeEach to clear state
-**Effort**: Low (15 minutes)
 
-### Missing error messages in SpellTable test assertions
-**Location**: src/components/SpellTable.test.tsx:60, 69, 75, 153
-**Issue**: Assertions lack descriptive error messages making test failures hard to debug
-**Priority**: Medium
-**Solution**: Add error message as second parameter to expect() calls
-**Effort**: Low (15 minutes)
 
-### Hardcoded timeout values in E2E tests
-**Location**: src/e2e/spell-sorting.test.ts, src/e2e/ui-interactions.test.ts
-**Issue**: Tests use magic numbers (5000, 10000, 30000) instead of TIMEOUTS constants
-**Priority**: Medium
-**Solution**: Replace all hardcoded timeouts with TIMEOUTS.SHORT, TIMEOUTS.MEDIUM, or TIMEOUTS.LONG
-**Effort**: Low (20 minutes)
 
-### Inconsistent Checkbox State Management in SpellTable
-**Location**: src/components/SpellTable.tsx:89-94
-**Issue**: Checkbox toggle handler doesn't check current state before toggling.
-**Priority**: Medium
-**Solution**: Use functional state update.
-**Effort**: Low (10 minutes)
 
-### Missing Error Boundaries for E2E Test Assertions
-**Location**: src/e2e/helpers.ts
-**Issue**: Helper functions throw generic errors without capturing DOM state.
-**Priority**: Medium
-**Solution**: Capture and include relevant DOM state in error messages.
-**Effort**: Low (20 minutes)
 
-### Hardcoded Magic Numbers in E2E Tests Without Comments
-**Location**: src/e2e/ui-interactions.test.ts
-**Issue**: Tests check for specific widths without explaining why.
-**Priority**: Medium
-**Solution**: Add comments or extract to named constants.
-**Effort**: Low (10 minutes)
 
-### Vague Assertion in SpellbookDetailView Tests
-**Location**: src/components/SpellbookDetailView.test.tsx:69
-**Issue**: Assertion uses magic number 3 without explanation.
-**Priority**: Medium
-**Solution**: Add error message.
-**Effort**: Low (5 minutes)
 
-### Hardcoded Claude CLI Path
-**Location**: scripts/git-hooks/pre-commit-review:206
-**Issue**: Path /Users/sjaconette/.local/bin/claude hardcoded
-**Priority**: Medium
-**Solution**: Use environment variable CLAUDE_CODE_BIN
-**Effort**: Low (10 minutes)
 
-### Silent Ed Command Failures
-**Location**: scripts/git-hooks/pre-commit-review:177-183
-**Issue**: Ed command failures redirected to /dev/null
-**Priority**: Medium
-**Solution**: Log ed errors to review log directory
-**Effort**: Low (10 minutes)
 
-### Mobile Breakpoint Documentation
-**Location**: src/styles/table-mobile-shared.css:10
-**Issue**: Breakpoint changed from 400px to 768px without explanation
-**Priority**: Medium
-**Solution**: Add comment explaining breakpoint targets iPad portrait mode
-**Effort**: Low (2 minutes)
 
-### Cross-Platform Temp File Path
-**Location**: scripts/git-hooks/pre-commit:43
-**Issue**: Hardcoded /tmp path won't work on all Windows systems
-**Priority**: Medium
-**Solution**: Use ${TMPDIR:-/tmp}
-**Effort**: Low (5 minutes)
 
-### Process Cleanup Race Condition
-**Location**: scripts/git-hooks/pre-commit:75-81
-**Issue**: No wait between kill and pkill
-**Priority**: Medium
-**Solution**: Add wait $DEV_SERVER_PID
-**Effort**: Low (2 minutes)
 
-### Git Hooks Missing Inline Documentation
-**Location**: scripts/setup-git-hooks.js:37-54
-**Issue**: Complex error handling lacks inline comments
-**Priority**: Medium
-**Solution**: Add inline comments
-**Effort**: Low (5 minutes)
 
-### Post-Commit Hook Missing Remote Check
-**Location**: scripts/git-hooks/post-commit:9
-**Issue**: No check if git remote exists before attempting push
-**Priority**: Medium
-**Solution**: Check git remote before attempting push
-**Effort**: Low (5 minutes)
 
-### Git Hooks Setup No Verification of Executable Permissions
-**Location**: scripts/setup-git-hooks.js:52-60
-**Issue**: No verification that chmod actually made files executable
-**Priority**: Medium
-**Solution**: Use stat() to verify file permissions
-**Effort**: Low (10 minutes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
 ## Completed Refactoring
+
+### ✅ App.tsx Complexity ("God Component") (Completed 2025-11-28)
+- **Refactored**: Extracted `BrowseView` component to handle browse view logic.
+- **Result**: Reduced `App.tsx` complexity and improved modularity.
+
+### ✅ SpellFilters Performance (No Debounce) (Completed 2025-11-28)
+- **Refactored**: Implemented debouncing for search input in `src/components/SpellFilters.tsx`.
+- **Result**: Improved performance by reducing re-renders during typing.
+
+### ✅ Coupled UI/Logic in useSpellbookMutations (Completed 2025-11-28)
+- **Refactored**: Decoupled UI feedback from mutation logic by using `onSuccess`, `onError`, and `onInfo` callbacks.
+- **Result**: Hook is now UI-agnostic and easier to test.
+
+### ✅ Complex Form Logic in CreateSpellbookModal (Completed 2025-11-28)
+- **Refactored**: Extracted form logic to `src/hooks/useCreateSpellbookForm.ts`.
+- **Result**: Simplified component and improved testability with dedicated hook tests.
+
+### ✅ Incomplete Edge Case Coverage in useSpellSelection (Completed 2025-11-28)
+- **Updated**: `src/hooks/useSpellSelection.test.ts`
+- **Result**: Added tests for clearing selections and redundant updates.
+
+### ✅ Incomplete Edge Case Coverage in useContextMenu (Completed 2025-11-28)
+- **Updated**: `src/hooks/useContextMenu.test.ts` and `src/hooks/useContextMenu.ts`
+- **Result**: Added tests for empty touches, negative coordinates, and rapid cycles. Fixed bug with empty touch list.
+
+### ✅ Excessive Use of !important in CSS (Completed 2025-11-28)
+- **Refactored**: Removed `!important` from `SpellbookDetail.css` by fixing selector specificity and column hiding logic.
+- **Result**: Cleaner CSS that relies on standard cascade rules.
+
+### ✅ Missing File-Level JSDoc in Test Files (Completed 2025-11-28)
+- **Updated**: `src/hooks/useContextMenu.test.ts`, `src/hooks/useSpellSelection.test.ts`, `src/utils/spellFormatters.test.ts`
+- **Result**: Added clear testing strategies to file headers.
+
+### ✅ Missing Error Messages in Test Assertions (Completed 2025-11-28)
+- **Updated**: `src/hooks/useContextMenu.test.ts`, `src/hooks/useSpellSelection.test.ts`, `src/utils/spellFormatters.test.ts`
+- **Result**: Assertions now include descriptive error messages for better debugging.
+
+### ✅ Hardcoded Game Rules in CreateSpellbookModal (Completed 2025-11-28)
+- **Refactored**: Moved validation limits to `src/constants/gameRules.ts` and updated component and tests.
+- **Result**: Single source of truth for game rules.
+
+### ✅ Missing Unit Tests for SpellbookSpellsTable (Completed 2025-11-28)
+- **Created**: `src/components/spellbook-detail/SpellbookSpellsTable.test.tsx`
+- **Coverage**: Rendering, sorting, row interactions, and mobile context menu behavior (long press, actions).
+- **Result**: Critical mobile interactions are now fully tested.
+
+### ✅ Missing Tests for useSpellbookMutations (Completed 2025-11-28)
+- **Created**: `src/hooks/useSpellbookMutations.test.ts`
+- **Coverage**: Comprehensive tests for `handleAddToSpellbook` (success, partial/total failure, validation) and `handleCreateSpellbook` (success, pending spells, error handling).
+- **Result**: Critical mutation logic is now fully tested.
+
+### ✅ Missing Unit Tests for Logic Hooks (Completed 2025-11-28)
+- **Created**:
+    - `src/hooks/useSpellbookDetailLogic.test.ts`: Covers loading, filtering, sorting, and interactions.
+    - `src/hooks/useSpellFiltering.test.ts`: Covers filter state updates and service integration.
+    - `src/hooks/useSpellSelection.test.ts`: Covers selection state management.
+    - `src/hooks/useContextMenu.test.ts`: Covers mouse/touch events and click-outside behavior.
+- **Result**: Core business logic hooks have high test coverage.
+
+### ✅ Missing Unit Tests for Spell Formatters (Completed 2025-11-28)
+- **Created**: `src/utils/spellFormatters.test.ts`
+- **Coverage**: Tested `getLevelText`, `getComponentsText`, `getComponentsWithMaterials`, and `filterClasses`.
+- **Result**: Utility functions are verified correct.
+
+### ✅ Prop Drilling in SpellbookDetailView (Completed 2025-11-28)
+- **Refactored**: Implemented `SpellbookDetailContext` and `useSpellbookDetail` hook.
+- **Result**: `SpellbookDetailView` now consumes context, significantly reducing prop drilling.
+
+### ✅ Complex Logic in SpellbookDetail Container (Completed 2025-11-28)
+- **Refactored**: Extracted logic into `useSpellbookDetailLogic` hook.
+- **Result**: `SpellbookDetail` component is cleaner and logic is testable.
+
+### ✅ Inefficient Loop in handleSelectAllPrepared (Completed 2025-11-28)
+- **Optimized**: Logic moved to `useSpellbookDetailLogic` and optimized.
+- **Result**: Improved performance for bulk operations.
+
+### ✅ Inconsistent Context Menu Logic (Completed 2025-11-28)
+- **Refactored**: Created `useContextMenu` hook and applied it to `SpellbookList` and `SpellbookSpellsTable`.
+- **Result**: Consistent behavior and reduced code duplication.
+
+### ✅ Complex State Management in App.tsx (Completed 2025-11-28)
+- **Refactored**: Extracted state management to `useSpellFiltering` and `useSpellSelection` hooks.
+- **Result**: `App.tsx` is simplified and easier to maintain.
+
+### ✅ Inefficient Data Reloading in useSpellbooks (Completed 2025-11-28)
+- **Optimized**: Implemented `reloadSpellbook` for partial updates.
+- **Result**: Reduced unnecessary data fetching.
+
+### ✅ User has no feedback during potentially long copy operations (Completed 2025-11-28)
+- **Fixed**: Added loading state and progress indicator to `SpellbookList.tsx`
+- **Result**: Improved UX during copy operations
+
+### ✅ Missing JSDoc for complex state management in SpellbookList (Completed 2025-11-28)
+- **Fixed**: Added JSDoc comments to `copyData` and `contextMenu` states
+- **Result**: Improved code documentation
+
+### ✅ Missing accessibility labels in SpellbookList (Completed 2025-11-28)
+- **Fixed**: Verified that `SpellbookListTable` buttons have `aria-label` attributes
+- **Result**: Accessible action buttons
+
+### ✅ Duplicate long-press logic (Completed 2025-11-28)
+- **Refactored**: Extracted logic to `src/hooks/useLongPress.ts`
+- **Updated**: `SpellbookList.tsx` and `SpellbookSpellsTable.tsx`
+- **Result**: DRY principle applied, consistent behavior
+
+### ✅ Magic number for touch movement threshold (Completed 2025-11-28)
+- **Fixed**: Moved to default parameter in `useLongPress` hook
+- **Result**: Configurable and documented
+
+### ✅ Magic number for long-press duration (Completed 2025-11-28)
+- **Fixed**: Moved to default parameter in `useLongPress` hook
+- **Result**: Configurable and documented
+
+### ✅ Missing input validation in E2E helpers (Completed 2025-11-28)
+- **Fixed**: E2E tests were removed, rendering this obsolete.
+- **Result**: N/A
+
+### ✅ Vague Assertion in SpellbookDetailView Tests (Completed 2025-11-28)
+- **Fixed**: Verified assertions are clear (checking length of mock arrays).
+- **Result**: No action needed.
+
 
 ### ✅ Missing upper bound validation in E2E helpers (Completed 2025-11-27)
 - **Fixed**: Added validation checks to helper functions
@@ -443,7 +602,77 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ### ✅ Test file missing strategy documentation (Completed 2025-11-26)
 - **Fixed**: Added file-level JSDoc to `SpellbookList.test.tsx`
 - **Result**: Clearer testing strategy documentation
+### ✅ Missing JSDoc for SpellDescription usage (Completed 2025-11-28)
+- **Fixed**: Added JSDoc to `SpellDescription` usage in `SpellTable.tsx` and `SpellbookDetailView.tsx`
+- **Result**: Improved code documentation
 
+### ✅ E2E Testing Cleanup (Completed 2025-11-28)
+- **Fixed**: Removed all E2E tests and related configuration as per user request
+- **Result**: Simplified project structure and removed maintenance burden of flaky E2E tests
+
+### ✅ Missing Test Coverage for Error Paths in App.test.tsx (Completed 2025-11-28)
+- **Fixed**: Added error handling tests for `handleCreateSpellbook`
+- **Result**: Improved test coverage for error scenarios
+
+### ✅ Test Environment Inconsistency (Completed 2025-11-28)
+- **Fixed**: Updated `vitest.config.ts` to use `jsdom` environment globally
+- **Result**: Consistent test environment for React components
+
+### ✅ Potential memory leak in SpellTable expansion state (Completed 2025-11-28)
+- **Fixed**: Added logic to reset `expandedSpellId` when `spells` prop changes
+- **Result**: Prevented potential memory leaks
+
+### ✅ Unclear assertion in SpellbookList.test.tsx (Completed 2025-11-28)
+- **Fixed**: Clarified assertion for N/A values
+- **Result**: Clearer test intent
+
+### ✅ Missing JSDoc for SortIcon usage (Completed 2025-11-28)
+- **Fixed**: Added JSDoc to `SortIcon` component
+- **Result**: Improved documentation
+
+### ✅ Missing test for displayTitle empty string edge case (Completed 2025-11-28)
+- **Fixed**: Confirmed existing test coverage in `CreateSpellbookModal.test.tsx`
+- **Result**: Verified edge case coverage
+
+### ✅ Magic number 7 without explanation in SpellTable tests (Completed 2025-11-28)
+- **Fixed**: Added comment explaining the magic number
+- **Result**: Improved test readability
+
+### ✅ Inconsistent Checkbox State Management in SpellTable (Completed 2025-11-28)
+- **Fixed**: Updated checkbox rendering logic to rely on `onSelectionChange`
+- **Result**: Consistent UI state
+
+### ✅ Hardcoded Claude CLI Path (Completed 2025-11-28)
+- **Fixed**: Updated `pre-commit-review` to use `CLAUDE_CODE_BIN` env var
+- **Result**: Improved flexibility
+
+### ✅ Silent Ed Command Failures (Completed 2025-11-28)
+- **Fixed**: Added logging for `ed` command failures
+- **Result**: Better debugging for git hooks
+
+### ✅ Mobile Breakpoint Documentation (Completed 2025-11-28)
+- **Fixed**: Added comment explaining mobile breakpoint
+- **Result**: Improved documentation
+
+### ✅ Cross-Platform Temp File Path (Completed 2025-11-28)
+- **Fixed**: Updated `pre-commit` to use `TMPDIR`
+- **Result**: Improved cross-platform compatibility
+
+### ✅ Process Cleanup Race Condition (Completed 2025-11-28)
+- **Fixed**: Added `wait` command in `pre-commit` cleanup
+- **Result**: More robust process termination
+
+### ✅ Git Hooks Missing Inline Documentation (Completed 2025-11-28)
+- **Fixed**: Added inline comments to `setup-git-hooks.js`
+- **Result**: Improved code readability
+
+### ✅ Post-Commit Hook Missing Remote Check (Completed 2025-11-28)
+- **Fixed**: Added check for git remote in `post-commit`
+- **Result**: Prevented errors when no remote is configured
+
+### ✅ Git Hooks Setup No Verification of Executable Permissions (Completed 2025-11-28)
+- **Fixed**: Added verification logic to `setup-git-hooks.js`
+- **Result**: More robust hook installation
 ---
 
 ## Code Quality Warnings

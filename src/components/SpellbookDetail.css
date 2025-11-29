@@ -100,7 +100,7 @@
   letter-spacing: 0.05em;
 }
 
-.spellbook-attributes span > :not(strong) {
+.spellbook-attributes span> :not(strong) {
   color: var(--color-text-primary);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
@@ -117,7 +117,7 @@
   border: 1px solid var(--color-border-primary);
 }
 
-.spell-slots-display > strong {
+.spell-slots-display>strong {
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
@@ -240,23 +240,23 @@
 }
 
 .btn-remove-small {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  background: var(--color-error);
-  color: white;
+  background: transparent;
+  color: var(--color-text-tertiary);
   border: none;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-md);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-remove-small:hover {
-  background: var(--color-error-hover);
+  background: var(--color-error-bg);
+  color: var(--color-error);
 }
 
 /* Context Menu */
@@ -349,15 +349,32 @@
     width: 100%;
   }
 
-  /* Hide all columns except spell name, level, school, and expansion */
-  .spellbook-table td:not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell) {
+  /* Hide all columns except spell name, level, school, expansion, action, and prepared */
+  .spellbook-table td:not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell):not(.action-col):not(.prepared-col) {
     display: none;
   }
 
-  /* Hide prepared checkbox and remove button on mobile */
-  .spellbook-table .prepared-col,
+  /* Position prepared checkbox on mobile */
+  .spellbook-table .prepared-col {
+    display: block;
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-4);
+    width: auto;
+    padding: 0;
+    z-index: 2;
+  }
+
+  /* Position remove button on mobile - top right */
   .spellbook-table .action-col {
-    display: none !important;
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-4);
+    bottom: auto;
+    /* Reset bottom */
+    width: auto;
+    display: block;
+    padding: 0;
   }
 
   /* Prepared spell styling on mobile - different background and bolder border */

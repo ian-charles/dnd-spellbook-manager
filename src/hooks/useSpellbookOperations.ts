@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { exportImportService } from '../services/exportImport.service';
 import { MESSAGES } from '../constants/messages';
+import { MAX_IMPORT_FILE_SIZE } from '../constants/gameRules';
 import { AlertDialogState } from './useDialogs';
 
 interface UseSpellbookOperationsProps {
@@ -87,11 +88,7 @@ export function useSpellbookOperations({
                     const spellsToCopy = sourceSpellbook.spells.map(spell => spell.spellId);
                     const totalSpells = spellsToCopy.length;
 
-                    // Use a ref to track progress to avoid race conditions in closure
-                    /**
-                     * Tracks the number of spells that have been processed (either successfully copied or failed)
-                     * during a spellbook copy operation.
-                     */
+                    // Track processed spell count to avoid race conditions in async closure
                     processedSpellCountRef.current = 0;
                     setCopyProgress(MESSAGES.LOADING.COPYING_SPELLS.replace('{current}', '0').replace('{total}', String(totalSpells)));
 
@@ -189,6 +186,19 @@ export function useSpellbookOperations({
         const file = e.target.files?.[0];
         if (!file) return;
 
+        if (file.size > MAX_IMPORT_FILE_SIZE) {
+            setAlertDialog({
+                isOpen: true,
+                title: MESSAGES.ERROR.IMPORT_FAILED,
+                message: `File size exceeds limit of ${MAX_IMPORT_FILE_SIZE / 1024 / 1024}MB`,
+                variant: 'error',
+            });
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+            return;
+        }
+
         setImporting(true);
         try {
             const text = await file.text();
@@ -225,10 +235,12 @@ export function useSpellbookOperations({
                 variant: 'error',
             });
         } finally {
-            setImporting(false);
-            // Reset file input
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
+            if (mountedRef.current) {
+                setImporting(false);
+                // Reset file input
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
             }
         }
     };

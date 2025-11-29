@@ -5,7 +5,9 @@ import {
   MIN_ATTACK_MODIFIER,
   MAX_ATTACK_MODIFIER,
   MIN_SAVE_DC,
-  MAX_SAVE_DC
+  MAX_SAVE_DC,
+  MAX_SPELLBOOK_NAME_LENGTH,
+  STRICT_NUMERIC_REGEX
 } from '../constants/gameRules';
 import './CreateSpellbookModal.css';
 
@@ -80,6 +82,7 @@ export function CreateSpellbookModal({
               className="form-input"
               placeholder="My Spellbook"
               autoFocus
+              maxLength={MAX_SPELLBOOK_NAME_LENGTH}
             />
           </div>
 
@@ -122,7 +125,12 @@ export function CreateSpellbookModal({
                 type="number"
                 id="attack-modifier"
                 value={spellAttackModifier}
-                onChange={(e) => setSpellAttackModifier(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '' || STRICT_NUMERIC_REGEX.test(val)) {
+                    setSpellAttackModifier(val);
+                  }
+                }}
                 className="form-input"
                 placeholder={`${MIN_ATTACK_MODIFIER}-${MAX_ATTACK_MODIFIER}`}
                 min={MIN_ATTACK_MODIFIER}
@@ -139,7 +147,12 @@ export function CreateSpellbookModal({
                 type="number"
                 id="save-dc"
                 value={spellSaveDC}
-                onChange={(e) => setSpellSaveDC(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '' || STRICT_NUMERIC_REGEX.test(val)) {
+                    setSpellSaveDC(val);
+                  }
+                }}
                 className="form-input"
                 placeholder={`${MIN_SAVE_DC}-${MAX_SAVE_DC}`}
                 min={MIN_SAVE_DC}

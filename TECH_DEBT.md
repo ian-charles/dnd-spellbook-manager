@@ -132,6 +132,7 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Low (1 hour)
 **Priority**: Medium
 
+
 #### Missing Tests for useDebounce
 **Location**: src/hooks/useDebounce.ts
 **Issue**: Custom hook for debouncing is not tested.
@@ -178,14 +179,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Impact**: Incorrect sorting in UI.
 **Solution**: Add comprehensive unit tests for sorting.
 **Effort**: Low (1 hour)
-**Priority**: Medium
-
-#### Missing Descriptive Error Messages in Assertions
-**Location**: All test files
-**Issue**: Test assertions lack descriptive error messages.
-**Impact**: Harder debugging.
-**Solution**: Add descriptive error messages to assertions.
-**Effort**: Low (2 hours)
 **Priority**: Medium
 
 
@@ -254,14 +247,6 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Low (30 minutes)
 **Priority**: Medium
 
-#### Missing JSDoc for Return Values
-**Location**: Multiple hooks
-**Issue**: Return values not documented.
-**Impact**: Reduced maintainability.
-**Solution**: Add `@returns` tags.
-**Effort**: Low (1 hour)
-**Priority**: Medium
-
 #### Hardcoded COPY_SUFFIX not extracted to constant
 **Location**: src/hooks/useSpellbookOperations.ts
 **Issue**: Hook flagged hardcoded suffix.
@@ -276,6 +261,14 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Impact**: Runtime error.
 **Solution**: Add check for empty touches.
 **Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Inconsistent Error Handling Patterns in useSpellbookOperations
+**Location**: src/hooks/useSpellbookOperations.ts
+**Issue**: Error handlers use different patterns - some show alerts, some throw, some close dialogs first.
+**Impact**: Unpredictable error handling makes debugging harder and creates inconsistent UX.
+**Solution**: Standardize error handling approach.
+**Effort**: Medium (2-3 hours)
 **Priority**: Medium
 
 ### Completed Refactoring
@@ -341,6 +334,34 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ---
 
 ## Completed Refactoring
+
+### ✅ Unbounded Spellbook Name Length (Completed 2025-11-29)
+- **Updated**: `src/components/CreateSpellbookModal.tsx`, `src/constants/gameRules.ts`
+- **Result**: Added `maxLength` validation and constant.
+
+### ✅ Unsafe Large File Import (Completed 2025-11-29)
+- **Updated**: `src/hooks/useSpellbookOperations.ts`, `src/constants/gameRules.ts`
+- **Result**: Added 5MB file size limit check.
+
+### ✅ Loose Numeric Parsing in Create Modal (Completed 2025-11-29)
+- **Updated**: `src/components/CreateSpellbookModal.tsx`, `src/constants/gameRules.ts`
+- **Result**: Implemented strict regex validation for numeric inputs.
+
+### ✅ Hardcoded Timeout in useLongPress (Completed 2025-11-29)
+- **Updated**: `src/hooks/useLongPress.ts`
+- **Result**: Extracted timeouts to constants.
+
+### ✅ No Input Sanitization for Spellbook Names (Completed 2025-11-29)
+- **Updated**: `src/components/CreateSpellbookModal.tsx`
+- **Result**: Added input validation and sanitization.
+
+### ✅ Potential Race Condition with File Input Reset (Completed 2025-11-29)
+- **Updated**: `src/hooks/useSpellbookOperations.ts`
+- **Result**: Added `mountedRef` check in finally block.
+
+### ✅ Empty Touches Array Not Handled in useLongPress (Completed 2025-11-29)
+- **Updated**: `src/hooks/useLongPress.ts`
+- **Result**: Added safety check for empty touches array.
 
 ### ✅ Missing Unit Tests for SpellbookListTable (Completed 2025-11-29)
 - **Updated**: `src/components/spellbook-list/SpellbookListTable.test.tsx`

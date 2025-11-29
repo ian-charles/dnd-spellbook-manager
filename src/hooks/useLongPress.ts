@@ -6,6 +6,9 @@ interface UseLongPressOptions {
     delay?: number;
 }
 
+const DEFAULT_LONG_PRESS_DELAY = 500;
+const DEFAULT_MOVEMENT_THRESHOLD = 10;
+
 /**
  * Custom hook for handling long-press touch events.
  * 
@@ -15,7 +18,11 @@ interface UseLongPressOptions {
  * @param options.delay Duration in ms to trigger long press (default: 500)
  * @returns Object containing touch event handlers
  */
-export function useLongPress({ onLongPress, threshold = 10, delay = 500 }: UseLongPressOptions) {
+export function useLongPress({
+    onLongPress,
+    threshold = DEFAULT_MOVEMENT_THRESHOLD,
+    delay = DEFAULT_LONG_PRESS_DELAY
+}: UseLongPressOptions) {
     const longPressTimer = useRef<NodeJS.Timeout | null>(null);
     const longPressStartPos = useRef<{ x: number; y: number } | null>(null);
 

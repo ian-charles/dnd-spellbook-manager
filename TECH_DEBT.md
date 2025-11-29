@@ -13,10 +13,76 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 
+
 ### Medium Priority
 
-#### Incomplete JSDoc for Custom Hooks (~4 hooks)
-**Location**: 
+#### Missing Error Messages in Test Assertions
+**Location**:
+- src/hooks/useContextMenu.test.ts
+- src/hooks/useSpellSelection.test.ts
+- src/utils/spellFormatters.test.ts
+**Issue**: Test assertions lack descriptive error messages.
+**Impact**: Harder to debug test failures.
+**Solution**: Add custom error messages to `expect` calls.
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Incomplete Edge Case Coverage in useContextMenu
+**Location**: src/hooks/useContextMenu.test.ts
+**Issue**: Missing tests for empty touch array, negative coordinates, and rapid cycles.
+**Impact**: Potential bugs in edge cases.
+**Solution**: Add tests for these scenarios.
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Incomplete Edge Case Coverage in useSpellSelection
+**Location**: src/hooks/useSpellSelection.test.ts
+**Issue**: Missing tests for clearing selections and setting same value twice.
+**Impact**: Potential state management bugs.
+**Solution**: Add tests for these scenarios.
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Missing File-Level JSDoc in Test Files
+**Location**: All 6 new test files
+**Issue**: Missing documentation explaining testing strategy.
+**Impact**: Harder for new developers to understand test intent.
+**Solution**: Add file-level JSDoc.
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Coupled UI/Logic in useSpellbookMutations
+**Location**: src/hooks/useSpellbookMutations.ts
+**Issue**: Hook handles both data mutations and UI feedback (toasts, alerts) directly.
+**Impact**: Hard to test, violates separation of concerns, makes UI changes difficult.
+**Solution**: Return status/errors to component and let component handle UI, or use a separate UI orchestration hook.
+**Effort**: Medium (2-3 hours)
+**Priority**: Medium
+
+#### App.tsx Complexity ("God Component")
+**Location**: src/App.tsx
+**Issue**: Component handles routing, data fetching, global state, and layout.
+**Impact**: Hard to maintain, test, and reason about.
+**Solution**: Extract `BrowseView` and `SpellbookListView` into separate components.
+**Effort**: Medium (2-3 hours)
+**Priority**: Medium
+
+#### SpellFilters Performance (No Debounce)
+**Location**: src/components/SpellFilters.tsx
+**Issue**: Search input updates state on every keystroke, causing re-renders of the entire spell list.
+**Impact**: UI lag on slower devices when typing.
+**Solution**: Implement `useDebounce` for the search term.
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Missing Virtualization for SpellTable
+**Location**: src/components/SpellTable.tsx
+**Issue**: Renders all spells in the DOM.
+**Impact**: Performance degradation as spell list grows (currently ~400 spells).
+**Solution**: Implement `react-virtuoso` or similar windowing library.
+**Effort**: Medium (2-3 hours)
+**Priority**: Medium
+
 - src/hooks/useSpellbookOperations.ts:18-32
 - src/hooks/useSpellbookListState.ts:13-18  
 - src/hooks/useDialogs.ts:22-30
@@ -63,6 +129,45 @@ This document tracks known technical debt, code quality issues, and refactoring 
 **Effort**: Low (30 minutes)
 **Priority**: Medium
 
+#### Unbounded Spellbook Name Length
+**Location**: src/components/CreateSpellbookModal.tsx
+**Issue**: No maximum length validation for spellbook names
+**Impact**: Users can create spellbooks with extremely long names, potentially breaking UI layout or causing performance issues
+**Solution**: Add maxLength validation (e.g., 50-100 chars) to input and schema
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Unsafe Large File Import
+**Location**: src/hooks/useSpellbookOperations.ts:180
+**Issue**: `file.text()` and `JSON.parse()` load entire file into memory without size checks
+**Impact**: Large files (e.g., >50MB) could crash the browser tab (DoS risk)
+**Solution**: Add file size check before reading (e.g., max 5MB)
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Missing Schema Validation for Imports
+**Location**: src/services/exportImport.service.ts
+**Issue**: Import only checks top-level structure, not individual spellbook shape
+**Impact**: Malformed spellbooks (missing spells array, invalid types) can be imported, causing runtime errors later
+**Solution**: Use Zod or similar to validate full spellbook schema during import
+**Effort**: Medium (2 hours)
+**Priority**: Medium
+
+#### No Cancellation for Long Operations
+**Location**: src/hooks/useSpellbookOperations.ts
+**Issue**: Copying spellbooks with many spells or importing large files cannot be cancelled
+**Impact**: User is stuck waiting or has to refresh page to stop
+**Solution**: Implement AbortController for async operations and add Cancel button
+**Effort**: Medium (3 hours)
+**Priority**: Medium
+
+#### State Updates on Unmounted Component
+**Location**: src/hooks/useSpellbookOperations.ts:93
+**Issue**: `setCopyProgress` called in `finally` block even if component unmounted
+**Impact**: "Can't perform a React state update on an unmounted component" console warnings
+**Solution**: Add `isMounted` ref check before setting state
+**Effort**: Low (30 minutes)
+**Priority**: Medium
 
 
 
@@ -74,6 +179,31 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 
+
+
+#### Console Logs in Production Code
+**Location**: src/services/spell.service.ts
+**Issue**: Service contains `console.log` and `console.error` statements.
+**Impact**: Clutters console in production, not a proper logging solution.
+**Solution**: Remove logs or use a proper logging service.
+**Effort**: Low (15 minutes)
+**Priority**: Low
+
+#### Inline Styles in SpellbookList
+**Location**: src/components/SpellbookList.tsx
+**Issue**: Context menu uses inline styles for positioning.
+**Impact**: Harder to maintain, violates separation of concerns (CSS vs JS).
+**Solution**: Move styles to `SpellbookList.css` and use CSS variables or classes.
+**Effort**: Low (30 minutes)
+**Priority**: Low
+
+#### Direct Hash Manipulation
+**Location**: src/components/SpellbookList.tsx
+**Issue**: Component directly reads and writes `window.location.hash`.
+**Impact**: Fragile routing logic, tightly coupled to hash routing implementation.
+**Solution**: Use `useHashRouter` hook or similar abstraction.
+**Effort**: Medium (1 hour)
+**Priority**: Medium
 
 ### Completed Refactoring
 - [x] **Prop Drilling in SpellFilters** (Medium) - Refactored to controlled component using `useFilterReducer` in `App.tsx`.
@@ -138,6 +268,24 @@ This document tracks known technical debt, code quality issues, and refactoring 
 ---
 
 ## Completed Refactoring
+
+### ✅ Missing Tests for useSpellbookMutations (Completed 2025-11-28)
+- **Created**: `src/hooks/useSpellbookMutations.test.ts`
+- **Coverage**: Comprehensive tests for `handleAddToSpellbook` (success, partial/total failure, validation) and `handleCreateSpellbook` (success, pending spells, error handling).
+- **Result**: Critical mutation logic is now fully tested.
+
+### ✅ Missing Unit Tests for Logic Hooks (Completed 2025-11-28)
+- **Created**:
+    - `src/hooks/useSpellbookDetailLogic.test.ts`: Covers loading, filtering, sorting, and interactions.
+    - `src/hooks/useSpellFiltering.test.ts`: Covers filter state updates and service integration.
+    - `src/hooks/useSpellSelection.test.ts`: Covers selection state management.
+    - `src/hooks/useContextMenu.test.ts`: Covers mouse/touch events and click-outside behavior.
+- **Result**: Core business logic hooks have high test coverage.
+
+### ✅ Missing Unit Tests for Spell Formatters (Completed 2025-11-28)
+- **Created**: `src/utils/spellFormatters.test.ts`
+- **Coverage**: Tested `getLevelText`, `getComponentsText`, `getComponentsWithMaterials`, and `filterClasses`.
+- **Result**: Utility functions are verified correct.
 
 ### ✅ Prop Drilling in SpellbookDetailView (Completed 2025-11-28)
 - **Refactored**: Implemented `SpellbookDetailContext` and `useSpellbookDetail` hook.

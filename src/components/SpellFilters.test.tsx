@@ -78,12 +78,20 @@ describe('SpellFilters', () => {
     });
 
     it('updates search text on input change', () => {
+        vi.useFakeTimers();
         render(<SpellFilters {...defaultProps} />);
 
         const searchInput = screen.getByPlaceholderText('Search spells...');
         fireEvent.change(searchInput, { target: { value: 'fireball' } });
 
+        // Should not be called immediately
+        expect(mockSetSearchText).not.toHaveBeenCalled();
+
+        // Fast-forward time
+        vi.advanceTimersByTime(300);
+
         expect(mockSetSearchText).toHaveBeenCalledWith('fireball');
+        vi.useRealTimers();
     });
 
     it('toggles class filters on click', () => {

@@ -349,19 +349,19 @@
     width: 100%;
   }
 
-  /* Hide all columns except spell name, level, school, expansion, and action */
-  .spellbook-table td:not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell):not(.action-col) {
+  /* Hide all columns except spell name, level, school, expansion, action, and prepared */
+  .spellbook-table td:not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell):not(.action-col):not(.prepared-col) {
     display: none;
   }
 
   /* Position prepared checkbox on mobile */
   .spellbook-table .prepared-col {
-    display: block !important;
+    display: block;
     position: absolute;
     top: var(--space-3);
     left: var(--space-4);
-    width: auto !important;
-    padding: 0 !important;
+    width: auto;
+    padding: 0;
     z-index: 2;
   }
 
@@ -372,9 +372,9 @@
     right: var(--space-4);
     bottom: auto;
     /* Reset bottom */
-    width: auto !important;
-    display: block !important;
-    padding: 0 !important;
+    width: auto;
+    display: block;
+    padding: 0;
   }
 
   /* Prepared spell styling on mobile - different background and bolder border */

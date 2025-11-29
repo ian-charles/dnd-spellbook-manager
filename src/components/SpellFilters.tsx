@@ -8,9 +8,12 @@
  * This provides cleaner, more predictable state management.
  */
 
+import { useState, useEffect } from 'react';
 import { MIN_SPELL_LEVEL, MAX_SPELL_LEVEL } from '../constants/gameRules';
 import { UseFilterReducerReturn } from '../hooks/useFilterReducer';
 import './SpellFilters.css';
+
+// ... (interface remains same)
 
 /**
  * Props for the SpellFilters component.
@@ -28,19 +31,6 @@ interface SpellFiltersProps extends UseFilterReducerReturn {
   classes: string[];
 }
 
-/**
- * SpellFilters Component
- * 
- * Provides a UI for filtering spells by various criteria:
- * - Class (e.g., Wizard, Sorcerer)
- * - Spell Level (Range: Min to Max)
- * - School (e.g., Evocation, Necromancy)
- * - Components (Verbal, Somatic, Material)
- * - Properties (Concentration, Ritual)
- * - Text Search
- * 
- * Controlled component that receives state and handlers from parent.
- */
 export function SpellFilters({
   state,
   setSearchText,
@@ -56,8 +46,26 @@ export function SpellFilters({
   schools,
   classes
 }: SpellFiltersProps) {
+  const [localSearchText, setLocalSearchText] = useState(state.searchText);
+
+  // Sync local state with prop when prop changes (e.g. clear filters)
+  useEffect(() => {
+    setLocalSearchText(state.searchText);
+  }, [state.searchText]);
+
+  // Debounce search updates
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearchText !== state.searchText) {
+        setSearchText(localSearchText);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [localSearchText, setSearchText, state.searchText]);
+
   const handleSearchChange = (value: string) => {
-    setSearchText(value);
+    setLocalSearchText(value);
   };
 
   const handleClearFilters = () => {

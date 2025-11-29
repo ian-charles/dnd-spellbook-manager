@@ -10,6 +10,12 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
+import {
+    MIN_ATTACK_MODIFIER,
+    MAX_ATTACK_MODIFIER,
+    MIN_SAVE_DC,
+    MAX_SAVE_DC
+} from '../constants/gameRules';
 
 describe('CreateSpellbookModal', () => {
     const defaultProps = {
@@ -77,7 +83,7 @@ describe('CreateSpellbookModal', () => {
         fireEvent.submit(form);
 
         await waitFor(() => {
-            expect(screen.getByText('Spell Attack Modifier must be an integer between 0 and 18')).toBeTruthy();
+            expect(screen.getByText(`Spell Attack Modifier must be an integer between ${MIN_ATTACK_MODIFIER} and ${MAX_ATTACK_MODIFIER}`)).toBeTruthy();
         });
         expect(defaultProps.onSubmit).not.toHaveBeenCalled();
     });
@@ -96,7 +102,7 @@ describe('CreateSpellbookModal', () => {
         fireEvent.submit(form);
 
         await waitFor(() => {
-            expect(screen.getByText('Spell Save DC must be an integer between 8 and 26')).toBeTruthy();
+            expect(screen.getByText(`Spell Save DC must be an integer between ${MIN_SAVE_DC} and ${MAX_SAVE_DC}`)).toBeTruthy();
         });
         expect(defaultProps.onSubmit).not.toHaveBeenCalled();
     });

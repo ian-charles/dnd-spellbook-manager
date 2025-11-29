@@ -31,6 +31,7 @@ export function useContextMenu<T>() {
         let clientY: number;
 
         if ('touches' in e) {
+            if (e.touches.length === 0) return;
             clientX = e.touches[0].clientX;
             clientY = e.touches[0].clientY;
         } else {

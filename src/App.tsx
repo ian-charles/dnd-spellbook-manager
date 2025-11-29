@@ -1,20 +1,15 @@
 import { useState } from 'react';
 import { Layout } from './components/Layout';
-import { SpellTable } from './components/SpellTable';
-import { SpellFilters } from './components/SpellFilters';
+import { BrowseView } from './components/BrowseView';
 import { SpellbookList } from './components/SpellbookList';
 import { SpellbookDetail } from './components/SpellbookDetail';
 import { AlertDialog } from './components/AlertDialog';
-import { CreateSpellbookModal } from './components/CreateSpellbookModal';
+
 import LoadingSpinner from './components/LoadingSpinner';
-import { LoadingButton } from './components/LoadingButton';
 import { useSpells } from './hooks/useSpells';
 import { useSpellbooks } from './hooks/useSpellbooks';
 import { useHashRouter } from './hooks/useHashRouter';
 import { useToast } from './hooks/useToast';
-import { useSpellbookMutations } from './hooks/useSpellbookMutations';
-import { useSpellFiltering } from './hooks/useSpellFiltering';
-import { useSpellSelection } from './hooks/useSpellSelection';
 import { MESSAGES } from './constants/messages';
 import './App.css';
 
@@ -27,7 +22,6 @@ import './App.css';
  * - Data Fetching: Manages spells and spellbooks data via custom hooks.
  * - Routing: Handles simple hash-based routing between views (Browse, Spellbooks, Detail).
  * - State Management: Manages UI state for filters, selection, and modals.
- * - Mutation Logic: Delegates complex spellbook operations to `useSpellbookMutations`.
  *
  * Key Features:
  * - Browse View: Filter and select spells to add to spellbooks.
@@ -55,8 +49,6 @@ function App() {
     navigateToSpellbookDetail,
   } = useHashRouter();
 
-
-
   // Toast hook for success messages
   const { isVisible: showToast, showToast: displayToast } = useToast();
 
@@ -72,49 +64,6 @@ function App() {
     message: '',
     variant: 'info',
   });
-
-  // ... inside App component
-  // Spell filtering state
-  const {
-    filterReducer,
-    filteredSpells,
-    schools,
-    classes,
-  } = useSpellFiltering(spells, loading);
-
-
-  // Selected spells state
-  const {
-    selectedSpellIds,
-    setSelectedSpellIds,
-    targetSpellbookId,
-    setTargetSpellbookId,
-  } = useSpellSelection();
-
-  // Create spellbook modal state
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [pendingSpellIds, setPendingSpellIds] = useState<Set<string>>(new Set());
-
-  // Mutation hook
-  const {
-    isAddingSpells,
-    handleAddToSpellbook,
-    handleCreateSpellbook,
-  } = useSpellbookMutations({
-    spellbooks,
-    addSpellToSpellbook,
-    createSpellbook,
-    refreshSpellbooks,
-    displayToast,
-    setAlertDialog,
-    selectedSpellIds,
-    setSelectedSpellIds,
-    setCreateModalOpen,
-    setPendingSpellIds,
-    pendingSpellIds,
-    targetSpellbookId,
-  });
-
 
   // Loading state
   if (loading) {
@@ -147,58 +96,17 @@ function App() {
     >
       {/* Browse View */}
       {currentView === 'browse' && (
-        <>
-          <div className="browse-header">
-            <p>
-              Browse {spells.length} spells • {filteredSpells.length} results
-              {selectedSpellIds.size > 0 && ` • ${selectedSpellIds.size} selected`}
-            </p>
-          </div>
-          <SpellFilters
-            {...filterReducer}
-            schools={schools}
-            classes={classes}
-          />
-          <div className="batch-add-container">
-            <button
-              className="btn-secondary"
-              onClick={() => setSelectedSpellIds(new Set())}
-              data-testid="btn-unselect-all"
-              disabled={selectedSpellIds.size === 0}
-            >
-              Unselect All
-            </button>
-            <select
-              className="spellbook-dropdown"
-              value={targetSpellbookId}
-              onChange={(e) => setTargetSpellbookId(e.target.value)}
-              data-testid="spellbook-dropdown"
-            >
-              <option value="">Select a spellbook...</option>
-              <option value="new">+ Create New Spellbook</option>
-              {spellbooks.map((spellbook) => (
-                <option key={spellbook.id} value={spellbook.id}>
-                  {spellbook.name} ({spellbook.spells.length} spells)
-                </option>
-              ))}
-            </select>
-            <LoadingButton
-              className="btn-primary"
-              onClick={handleAddToSpellbook}
-              data-testid="btn-add-selected"
-              disabled={selectedSpellIds.size === 0 || !targetSpellbookId}
-              loading={isAddingSpells}
-              loadingText="Adding..."
-            >
-              Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
-            </LoadingButton>
-          </div>
-          <SpellTable
-            spells={filteredSpells}
-            selectedSpellIds={selectedSpellIds}
-            onSelectionChange={setSelectedSpellIds}
-          />
-        </>
+        <BrowseView
+          spells={spells}
+          spellbooks={spellbooks}
+          loading={loading}
+          addSpellToSpellbook={addSpellToSpellbook}
+          createSpellbook={createSpellbook}
+          refreshSpellbooks={refreshSpellbooks}
+          onSuccess={displayToast}
+          onError={(title, message) => setAlertDialog({ isOpen: true, title, message, variant: 'error' })}
+          onInfo={(title, message) => setAlertDialog({ isOpen: true, title, message, variant: 'info' })}
+        />
       )}
 
       {/* Spellbooks List View */}
@@ -224,18 +132,6 @@ function App() {
           }}
         />
       )}
-
-
-      {/* Create Spellbook Modal */}
-      <CreateSpellbookModal
-        isOpen={createModalOpen}
-        onClose={() => {
-          setCreateModalOpen(false);
-          setPendingSpellIds(new Set());
-        }}
-        onSubmit={handleCreateSpellbook}
-        existingNames={spellbooks.map(sb => sb.name)}
-      />
 
       {/* Success Toast */}
       {showToast && (

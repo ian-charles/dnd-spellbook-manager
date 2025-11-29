@@ -13,8 +13,9 @@ describe('useSpellbookMutations', () => {
     const mockAddSpellToSpellbook = vi.fn();
     const mockCreateSpellbook = vi.fn();
     const mockRefreshSpellbooks = vi.fn();
-    const mockDisplayToast = vi.fn();
-    const mockSetAlertDialog = vi.fn();
+    const mockOnSuccess = vi.fn();
+    const mockOnError = vi.fn();
+    const mockOnInfo = vi.fn();
     const mockSetSelectedSpellIds = vi.fn();
     const mockSetCreateModalOpen = vi.fn();
     const mockSetPendingSpellIds = vi.fn();
@@ -24,8 +25,9 @@ describe('useSpellbookMutations', () => {
         addSpellToSpellbook: mockAddSpellToSpellbook,
         createSpellbook: mockCreateSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
-        displayToast: mockDisplayToast,
-        setAlertDialog: mockSetAlertDialog,
+        onSuccess: mockOnSuccess,
+        onError: mockOnError,
+        onInfo: mockOnInfo,
         selectedSpellIds: new Set<string>(),
         setSelectedSpellIds: mockSetSelectedSpellIds,
         setCreateModalOpen: mockSetCreateModalOpen,
@@ -44,22 +46,20 @@ describe('useSpellbookMutations', () => {
     });
 
     describe('handleAddToSpellbook', () => {
-        it('should show alert if no spells are selected', async () => {
+        it('should show info if no spells are selected', async () => {
             const { result } = renderHook(() => useSpellbookMutations(defaultProps));
 
             await act(async () => {
                 await result.current.handleAddToSpellbook();
             });
 
-            expect(mockSetAlertDialog).toHaveBeenCalledWith({
-                isOpen: true,
-                title: 'No Spells Selected',
-                message: 'Please select at least one spell to add to a spellbook.',
-                variant: 'info',
-            });
+            expect(mockOnInfo).toHaveBeenCalledWith(
+                'No Spells Selected',
+                'Please select at least one spell to add to a spellbook.'
+            );
         });
 
-        it('should show alert if no spellbook is selected', async () => {
+        it('should show info if no spellbook is selected', async () => {
             const { result } = renderHook(() => useSpellbookMutations({
                 ...defaultProps,
                 selectedSpellIds: new Set(['spell1']),
@@ -69,12 +69,10 @@ describe('useSpellbookMutations', () => {
                 await result.current.handleAddToSpellbook();
             });
 
-            expect(mockSetAlertDialog).toHaveBeenCalledWith({
-                isOpen: true,
-                title: 'No Spellbook Selected',
-                message: 'Please select a spellbook from the dropdown menu.',
-                variant: 'info',
-            });
+            expect(mockOnInfo).toHaveBeenCalledWith(
+                'No Spellbook Selected',
+                'Please select a spellbook from the dropdown menu.'
+            );
         });
 
         it('should open create modal if "new" is selected', async () => {
@@ -93,7 +91,7 @@ describe('useSpellbookMutations', () => {
             expect(mockSetCreateModalOpen).toHaveBeenCalledWith(true);
         });
 
-        it('should show alert if target spellbook does not exist', async () => {
+        it('should show error if target spellbook does not exist', async () => {
             const { result } = renderHook(() => useSpellbookMutations({
                 ...defaultProps,
                 selectedSpellIds: new Set(['spell1']),
@@ -104,12 +102,10 @@ describe('useSpellbookMutations', () => {
                 await result.current.handleAddToSpellbook();
             });
 
-            expect(mockSetAlertDialog).toHaveBeenCalledWith({
-                isOpen: true,
-                title: 'Spellbook Not Found',
-                message: 'The selected spellbook no longer exists. Please select another spellbook.',
-                variant: 'error',
-            });
+            expect(mockOnError).toHaveBeenCalledWith(
+                'Spellbook Not Found',
+                'The selected spellbook no longer exists. Please select another spellbook.'
+            );
         });
 
         it('should successfully add spells to existing spellbook', async () => {
@@ -130,7 +126,7 @@ describe('useSpellbookMutations', () => {
             expect(mockAddSpellToSpellbook).toHaveBeenCalledWith('sb1', 'spell1');
             expect(mockAddSpellToSpellbook).toHaveBeenCalledWith('sb1', 'spell2');
             expect(mockRefreshSpellbooks).toHaveBeenCalled();
-            expect(mockDisplayToast).toHaveBeenCalledWith('2 spells added to spellbook');
+            expect(mockOnSuccess).toHaveBeenCalledWith('2 spells added to spellbook');
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
         });
 
@@ -152,7 +148,7 @@ describe('useSpellbookMutations', () => {
             });
 
             expect(mockRefreshSpellbooks).toHaveBeenCalled();
-            expect(mockDisplayToast).toHaveBeenCalledWith('Added 1 spells. Failed to add 1 spells.');
+            expect(mockOnSuccess).toHaveBeenCalledWith('Added 1 spells. Failed to add 1 spells.');
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
         });
 
@@ -171,11 +167,10 @@ describe('useSpellbookMutations', () => {
                 await result.current.handleAddToSpellbook();
             });
 
-            expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
-                isOpen: true,
-                title: MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
-                variant: 'error',
-            }));
+            expect(mockOnError).toHaveBeenCalledWith(
+                MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
+                expect.any(String)
+            );
         });
     });
 
@@ -191,7 +186,7 @@ describe('useSpellbookMutations', () => {
             });
 
             expect(mockCreateSpellbook).toHaveBeenCalledWith({ name: 'New Book' });
-            expect(mockDisplayToast).toHaveBeenCalledWith('Spellbook created successfully');
+            expect(mockOnSuccess).toHaveBeenCalledWith('Spellbook created successfully');
             expect(mockRefreshSpellbooks).toHaveBeenCalled();
             expect(mockSetCreateModalOpen).toHaveBeenCalledWith(false);
         });
@@ -212,7 +207,7 @@ describe('useSpellbookMutations', () => {
             });
 
             expect(mockAddSpellToSpellbook).toHaveBeenCalledWith('new-sb', 'spell1');
-            expect(mockDisplayToast).toHaveBeenCalledWith('Spellbook created with 1 spell');
+            expect(mockOnSuccess).toHaveBeenCalledWith('Spellbook created with 1 spell');
             expect(mockSetPendingSpellIds).toHaveBeenCalledWith(new Set());
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
             expect(mockSetCreateModalOpen).toHaveBeenCalledWith(false);

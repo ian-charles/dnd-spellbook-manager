@@ -7,8 +7,9 @@ interface UseSpellbookMutationsProps {
     addSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
     createSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
     refreshSpellbooks: () => Promise<void>;
-    displayToast: (message: string) => void;
-    setAlertDialog: (dialog: { isOpen: boolean; title: string; message: string; variant: 'error' | 'success' | 'warning' | 'info' }) => void;
+    onSuccess: (message: string) => void;
+    onError: (title: string, message: string) => void;
+    onInfo: (title: string, message: string) => void;
     selectedSpellIds: Set<string>;
     setSelectedSpellIds: (ids: Set<string>) => void;
     setCreateModalOpen: (isOpen: boolean) => void;
@@ -22,8 +23,9 @@ export function useSpellbookMutations({
     addSpellToSpellbook,
     createSpellbook,
     refreshSpellbooks,
-    displayToast,
-    setAlertDialog,
+    onSuccess,
+    onError,
+    onInfo,
     selectedSpellIds,
     setSelectedSpellIds,
     setCreateModalOpen,
@@ -35,22 +37,12 @@ export function useSpellbookMutations({
 
     const handleAddToSpellbook = async () => {
         if (selectedSpellIds.size === 0) {
-            setAlertDialog({
-                isOpen: true,
-                title: 'No Spells Selected',
-                message: 'Please select at least one spell to add to a spellbook.',
-                variant: 'info',
-            });
+            onInfo('No Spells Selected', 'Please select at least one spell to add to a spellbook.');
             return;
         }
 
         if (!targetSpellbookId) {
-            setAlertDialog({
-                isOpen: true,
-                title: 'No Spellbook Selected',
-                message: 'Please select a spellbook from the dropdown menu.',
-                variant: 'info',
-            });
+            onInfo('No Spellbook Selected', 'Please select a spellbook from the dropdown menu.');
             return;
         }
 
@@ -64,12 +56,7 @@ export function useSpellbookMutations({
         // Validate spellbook exists
         const targetExists = spellbooks.some(sb => sb.id === targetSpellbookId);
         if (!targetExists) {
-            setAlertDialog({
-                isOpen: true,
-                title: 'Spellbook Not Found',
-                message: 'The selected spellbook no longer exists. Please select another spellbook.',
-                variant: 'error',
-            });
+            onError('Spellbook Not Found', 'The selected spellbook no longer exists. Please select another spellbook.');
             return;
         }
 
@@ -89,23 +76,21 @@ export function useSpellbookMutations({
             if (failed.length > 0) {
                 const successCount = selectedSpellIds.size - failed.length;
                 if (successCount > 0) {
-                    displayToast(`Added ${successCount} spells. Failed to add ${failed.length} spells.`);
+                    onSuccess(`Added ${successCount} spells. Failed to add ${failed.length} spells.`);
                 } else {
                     throw new Error(`Failed to add any spells to the spellbook.`);
                 }
             } else {
                 const count = selectedSpellIds.size; // Calculate count BEFORE clearing
-                displayToast(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
+                onSuccess(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
             }
 
             setSelectedSpellIds(new Set()); // Clear selection after adding
         } catch (error) {
-            setAlertDialog({
-                isOpen: true,
-                title: MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
-                message: error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_ADD_SPELL_GENERIC,
-                variant: 'error',
-            });
+            onError(
+                MESSAGES.ERROR.FAILED_TO_ADD_SPELL,
+                error instanceof Error ? error.message : MESSAGES.ERROR.FAILED_TO_ADD_SPELL_GENERIC
+            );
         } finally {
             setIsAddingSpells(false);
         }
@@ -133,19 +118,19 @@ export function useSpellbookMutations({
                     // If some failed, we still show success for the ones that worked, but warn about failures
                     const successCount = pendingSpellIds.size - failed.length;
                     if (successCount > 0) {
-                        displayToast(`Spellbook created with ${successCount} spells. Failed to add ${failed.length} spells.`);
+                        onSuccess(`Spellbook created with ${successCount} spells. Failed to add ${failed.length} spells.`);
                     } else {
                         throw new Error(`Failed to add any spells to the new spellbook.`);
                     }
                 } else {
                     const count = pendingSpellIds.size;
-                    displayToast(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
+                    onSuccess(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
                 }
 
                 setPendingSpellIds(new Set());
                 setSelectedSpellIds(new Set());
             } else {
-                displayToast('Spellbook created successfully');
+                onSuccess('Spellbook created successfully');
                 // Always refresh and close modal
                 await refreshSpellbooks();
             }

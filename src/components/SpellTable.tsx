@@ -3,7 +3,7 @@ import { useState, Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText } from '../utils/spellFormatters';
+import { getLevelText, truncateCastingTime } from '../utils/spellFormatters';
 import { SpellExpansionRow } from './SpellExpansionRow';
 import './SpellTable.css';
 
@@ -93,7 +93,7 @@ export function SpellTable({
             </th>
             <th className="sortable-header time-col">
               <button onClick={() => handleSort('castingTime')} className="sort-button">
-                Time
+                Cast Time
                 <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
               </button>
             </th>
@@ -109,13 +109,13 @@ export function SpellTable({
                 <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
               </button>
             </th>
-            <th className="components-col">Comp.</th>
             <th className="sortable-header school-col">
               <button onClick={() => handleSort('school')} className="sort-button">
                 School
                 <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
               </button>
             </th>
+            <th className="components-col">Comp.</th>
             <th className="classes-col">Classes</th>
             <th className="sortable-header source-col">
               <button onClick={() => handleSort('source')} className="sort-button">
@@ -145,16 +145,24 @@ export function SpellTable({
                 <td className="spell-name">
                   <div className="spell-name-header">
                     {spell.name}
-                    {spell.concentration && <span className="badge badge-concentration">C</span>}
-                    {spell.ritual && <span className="badge badge-ritual">R</span>}
                   </div>
                 </td>
                 <td className="level-col">{getLevelText(spell.level)}</td>
-                <td className="time-col">{spell.castingTime}</td>
+                <td className="time-col">
+                  <span className="cell-content">
+                    {truncateCastingTime(spell.castingTime)}
+                    {spell.ritual && <span className="badge badge-ritual">R</span>}
+                  </span>
+                </td>
                 <td className="range-col">{spell.range}</td>
-                <td className="duration-col">{spell.duration}</td>
-                <td className="components-col"><ComponentBadges spell={spell} /></td>
+                <td className="duration-col">
+                  <span className="cell-content">
+                    {spell.duration}
+                    {spell.concentration && <span className="badge badge-concentration">C</span>}
+                  </span>
+                </td>
                 <td className="school-col">{spell.school}</td>
+                <td className="components-col"><ComponentBadges spell={spell} /></td>
                 <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
                 <td className="source-col">{spell.source}</td>
               </tr>

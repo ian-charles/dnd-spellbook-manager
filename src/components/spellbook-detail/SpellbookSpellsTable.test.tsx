@@ -113,7 +113,7 @@ describe('SpellbookSpellsTable', () => {
         expect(screen.getByText('Fireball')).toBeInTheDocument();
         expect(screen.getByText('Mage Armor')).toBeInTheDocument();
         expect(screen.getByText('Level')).toBeInTheDocument();
-        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Cast Time')).toBeInTheDocument();
     });
 
     it('calls onSort when column headers are clicked', () => {
@@ -122,7 +122,7 @@ describe('SpellbookSpellsTable', () => {
         fireEvent.click(screen.getByText('Level'));
         expect(defaultContextValue.onSort).toHaveBeenCalledWith('level');
 
-        fireEvent.click(screen.getByText('Time'));
+        fireEvent.click(screen.getByText('Cast Time'));
         expect(defaultContextValue.onSort).toHaveBeenCalledWith('castingTime');
     });
 

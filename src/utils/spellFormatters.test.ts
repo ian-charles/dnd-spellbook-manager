@@ -7,7 +7,7 @@
  * - Tests formatting of spell levels, components, and class lists.
  */
 import { describe, it, expect } from 'vitest';
-import { getLevelText, getComponentsText, getComponentsWithMaterials, filterClasses } from './spellFormatters';
+import { getLevelText, getComponentsText, getComponentsWithMaterials, filterClasses, truncateCastingTime, formatMaterialsWithCosts } from './spellFormatters';
 import { Spell } from '../types/spell';
 
 describe('spellFormatters', () => {
@@ -76,6 +76,61 @@ describe('spellFormatters', () => {
         it('should keep other classes', () => {
             const classes = ['Wizard', 'Cleric'];
             expect(filterClasses(classes), 'Should keep other classes').toEqual(['Wizard', 'Cleric']);
+        });
+    });
+
+    describe('truncateCastingTime', () => {
+        it('should return unchanged text when no comma present', () => {
+            expect(truncateCastingTime('1 action')).toBe('1 action');
+            expect(truncateCastingTime('1 bonus action')).toBe('1 bonus action');
+            expect(truncateCastingTime('1 minute')).toBe('1 minute');
+        });
+
+        it('should truncate at first comma for reaction spells', () => {
+            expect(truncateCastingTime('1 reaction, which you take when you see a creature within 60 feet of you casting a spell'))
+                .toBe('1 reaction');
+            expect(truncateCastingTime('1 reaction, which you take in response to being damaged by a creature within 60 feet of you that you can see'))
+                .toBe('1 reaction');
+        });
+
+        it('should handle empty string', () => {
+            expect(truncateCastingTime('')).toBe('');
+        });
+    });
+
+    describe('formatMaterialsWithCosts', () => {
+        it('should normalize costs without spaces to include space', () => {
+            expect(formatMaterialsWithCosts('Gold dust worth at least 25gp'))
+                .toBe('Gold dust worth at least <strong class="material-cost">25 gp</strong>');
+        });
+
+        it('should keep costs with spaces unchanged', () => {
+            expect(formatMaterialsWithCosts('A miniature platinum sword worth 250 gp'))
+                .toBe('A miniature platinum sword worth <strong class="material-cost">250 gp</strong>');
+        });
+
+        it('should handle costs with commas', () => {
+            expect(formatMaterialsWithCosts('A diamond worth at least 1,000gp'))
+                .toBe('A diamond worth at least <strong class="material-cost">1,000 gp</strong>');
+            expect(formatMaterialsWithCosts('Diamonds worth at least 25,000 gp'))
+                .toBe('Diamonds worth at least <strong class="material-cost">25,000 gp</strong>');
+        });
+
+        it('should handle multiple costs in one string', () => {
+            expect(formatMaterialsWithCosts('One jacinth worth at least 1,000gp and one bar of silver worth at least 100gp'))
+                .toBe('One jacinth worth at least <strong class="material-cost">1,000 gp</strong> and one bar of silver worth at least <strong class="material-cost">100 gp</strong>');
+        });
+
+        it('should be case insensitive', () => {
+            expect(formatMaterialsWithCosts('Ruby dust worth 50 GP'))
+                .toBe('Ruby dust worth <strong class="material-cost">50 gp</strong>');
+            expect(formatMaterialsWithCosts('Jade dust worth 25gp'))
+                .toBe('Jade dust worth <strong class="material-cost">25 gp</strong>');
+        });
+
+        it('should handle text without costs', () => {
+            expect(formatMaterialsWithCosts('A sprig of mistletoe'))
+                .toBe('A sprig of mistletoe');
         });
     });
 });

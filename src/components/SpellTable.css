@@ -43,8 +43,8 @@
   border-radius: var(--radius-xl);
 }
 
-/* Tablet responsive */
-@media (max-width: 768px) {
+/* Tablet responsive (426px - 1024px) */
+@media (max-width: 1024px) and (min-width: 426px) {
   .spell-table {
     font-size: var(--font-size-sm);
   }
@@ -61,7 +61,7 @@
 }
 
 /* Mobile responsive - component-specific overrides */
-@media (max-width: 768px) {
+@media (max-width: 425px) {
 
   /* Hide all columns except checkbox, spell name, level, school, and expansion */
   .spell-table>tbody>tr>td:not(.checkbox-col):not(.spell-name):not(.level-col):not(.school-col):not(.spell-expansion-cell) {

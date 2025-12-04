@@ -35,8 +35,8 @@ describe('SpellExpansionRow', () => {
             </table>
         );
 
-        // Check for meta info
-        expect(screen.getByText(/3 Evocation/)).toBeInTheDocument();
+        // Check for meta info (now formatted as "Level 3 • Evocation")
+        expect(screen.getByText(/Level 3 • Evocation/)).toBeInTheDocument();
 
         // Check for details
         expect(screen.getByText(/Casting Time:/)).toBeInTheDocument();

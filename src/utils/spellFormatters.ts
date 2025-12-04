@@ -41,3 +41,28 @@ export function getComponentsWithMaterials(spell: Spell): string {
 export function filterClasses(classes: string[]): string[] {
   return classes.filter(c => c.toLowerCase() !== 'ritual caster');
 }
+
+/**
+ * Truncates casting time at the first comma for table display.
+ * Used to shorten reaction spells like "1 reaction, which you take when..."
+ * Returns only the part before the comma.
+ */
+export function truncateCastingTime(castingTime: string): string {
+  const commaIndex = castingTime.indexOf(',');
+  if (commaIndex === -1) {
+    return castingTime;
+  }
+  return castingTime.substring(0, commaIndex);
+}
+
+/**
+ * Formats materials text by normalizing monetary costs to "X gp" format
+ * and wrapping them in <strong class="material-cost"> tags for styling.
+ * Handles various formats like "25gp", "25 gp", "1,000gp", "1,000 gp".
+ * Returns HTML string that should be rendered with dangerouslySetInnerHTML.
+ */
+export function formatMaterialsWithCosts(materials: string): string {
+  // Replace all variations of gold piece costs with normalized bold format
+  // Matches: digits (with optional commas) followed by optional space and "gp" (case insensitive)
+  return materials.replace(/(\d{1,3}(?:,\d{3})*)\s*gp/gi, '<strong class="material-cost">$1 gp</strong>');
+}

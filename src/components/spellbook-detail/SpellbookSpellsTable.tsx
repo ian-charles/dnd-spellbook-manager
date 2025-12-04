@@ -2,7 +2,7 @@ import { Fragment, useRef } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { ComponentBadges } from '../SpellBadges';
-import { getLevelText } from '../../utils/spellFormatters';
+import { getLevelText, truncateCastingTime } from '../../utils/spellFormatters';
 import { useLongPress } from '../../hooks/useLongPress';
 import { SpellExpansionRow } from '../SpellExpansionRow';
 import { useContextMenu } from '../../hooks/useContextMenu';
@@ -82,7 +82,7 @@ export function SpellbookSpellsTable() {
                             </th>
                             <th onClick={() => onSort('castingTime')} className="sortable time-col">
                                 <div className="th-content">
-                                    Time
+                                    Cast Time
                                     <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
                                 </div>
                             </th>
@@ -98,13 +98,13 @@ export function SpellbookSpellsTable() {
                                     <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
                                 </div>
                             </th>
-                            <th className="components-col">Comp.</th>
                             <th onClick={() => onSort('school')} className="sortable school-col">
                                 <div className="th-content">
                                     School
                                     <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
                                 </div>
                             </th>
+                            <th className="components-col">Comp.</th>
                             <th onClick={() => onSort('source')} className="sortable source-col">
                                 <div className="th-content">
                                     Source
@@ -139,16 +139,24 @@ export function SpellbookSpellsTable() {
                                         <td className="spell-name">
                                             <div className="spell-name-header">
                                                 {spell.name}
-                                                {spell.concentration && <span className="badge badge-concentration">C</span>}
-                                                {spell.ritual && <span className="badge badge-ritual">R</span>}
                                             </div>
                                         </td>
                                         <td className="level-col">{getLevelText(spell.level)}</td>
-                                        <td className="time-col">{spell.castingTime}</td>
+                                        <td className="time-col">
+                                            <span className="cell-content">
+                                                {truncateCastingTime(spell.castingTime)}
+                                                {spell.ritual && <span className="badge badge-ritual">R</span>}
+                                            </span>
+                                        </td>
                                         <td className="range-col">{spell.range}</td>
-                                        <td className="duration-col">{spell.duration}</td>
-                                        <td className="components-col"><ComponentBadges spell={spell} /></td>
+                                        <td className="duration-col">
+                                            <span className="cell-content">
+                                                {spell.duration}
+                                                {spell.concentration && <span className="badge badge-concentration">C</span>}
+                                            </span>
+                                        </td>
                                         <td className="school-col">{spell.school}</td>
+                                        <td className="components-col"><ComponentBadges spell={spell} /></td>
                                         <td className="source-col">{spell.source}</td>
                                         <td className="action-col" onClick={(e) => e.stopPropagation()}>
                                             <button
@@ -169,7 +177,7 @@ export function SpellbookSpellsTable() {
                                         <SpellExpansionRow
                                             spell={spell}
                                             colSpan={10}
-                                            variant="compact"
+                                            variant="full"
                                         />
                                     )}
                                 </Fragment>

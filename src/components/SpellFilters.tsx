@@ -235,7 +235,7 @@ export function SpellFilters({
         <input
           type="text"
           placeholder="Search spells..."
-          value={state.searchText}
+          value={localSearchText}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="search-input"
           aria-label="Search spells"

@@ -54,15 +54,11 @@ export class SpellService {
   searchSpells(filters: SpellFilters): Spell[] {
     let results = this.spells;
 
-    // Text search across name and description
+    // Text search by spell name only (case insensitive)
     if (filters.searchText) {
       const searchLower = filters.searchText.toLowerCase();
-      results = results.filter(
-        (spell) =>
-          spell.name.toLowerCase().includes(searchLower) ||
-          spell.description.toLowerCase().includes(searchLower) ||
-          spell.school.toLowerCase().includes(searchLower) ||
-          spell.classes.some((c) => c.toLowerCase().includes(searchLower))
+      results = results.filter((spell) =>
+        spell.name.toLowerCase().includes(searchLower)
       );
     }
 

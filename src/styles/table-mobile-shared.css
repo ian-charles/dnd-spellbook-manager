@@ -328,7 +328,7 @@
     display: block;
     margin-bottom: var(--space-2);
     font-size: var(--font-size-base);
-    color: var(--color-primary);
+    color: light-dark(#ca8a04, #fbbf24);
   }
 
   .spell-inline-expansion .spell-expanded-footer,

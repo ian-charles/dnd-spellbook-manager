@@ -301,8 +301,46 @@
   background: var(--color-error-bg);
 }
 
-/* Mobile responsive - spellbook-specific */
-@media (max-width: 768px) {
+/* Tablet responsive - spellbook-specific (426px - 768px) */
+@media (max-width: 768px) and (min-width: 426px) {
+  .spellbook-detail {
+    padding: var(--space-6);
+  }
+
+  .spellbook-header-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .spellbook-header-top h2 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .spellbook-header-top .header-actions {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-2);
+  }
+
+  .spellbook-header-top .btn-secondary {
+    flex: 1;
+  }
+
+  .spellbook-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .spellbook-controls button {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+/* Mobile responsive - spellbook-specific (≤425px) */
+@media (max-width: 425px) {
   .spellbook-detail {
     padding: var(--space-4);
   }

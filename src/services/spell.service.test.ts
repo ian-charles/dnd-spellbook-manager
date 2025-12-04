@@ -114,25 +114,11 @@ describe('SpellService', () => {
         expect(results[0].name).toBe('Shield');
       });
 
-      it('should search in description', () => {
-        const results = service.searchSpells({ searchText: 'magical force' });
+      it('should find partial name matches', () => {
+        const results = service.searchSpells({ searchText: 'ball' });
 
         expect(results).toHaveLength(1);
-        expect(results[0].name).toBe('Shield');
-      });
-
-      it('should search by school', () => {
-        const results = service.searchSpells({ searchText: 'evocation' });
-
-        expect(results.length).toBeGreaterThanOrEqual(3);
-        expect(results.some(s => s.name === 'Fireball')).toBe(true);
-      });
-
-      it('should search by class', () => {
-        const results = service.searchSpells({ searchText: 'warlock' });
-
-        expect(results).toHaveLength(1);
-        expect(results[0].name).toBe('Eldritch Blast');
+        expect(results[0].name).toBe('Fireball');
       });
 
       it('should return all spells for empty search', () => {
@@ -296,11 +282,12 @@ describe('SpellService', () => {
     describe('combined filtering', () => {
       it('should combine text search and level filter', () => {
         const results = service.searchSpells({
-          searchText: 'wizard',
+          searchText: 'magic',
           levelRange: { min: 1, max: 1 },
         });
 
-        expect(results).toHaveLength(2); // Shield, Detect Magic
+        expect(results).toHaveLength(1); // Detect Magic
+        expect(results[0].name).toBe('Detect Magic');
       });
 
       it('should combine multiple filters', () => {

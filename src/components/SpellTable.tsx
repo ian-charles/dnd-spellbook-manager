@@ -3,7 +3,7 @@ import { useState, Fragment, useRef } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText, truncateCastingTime } from '../utils/spellFormatters';
+import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime } from '../utils/spellFormatters';
 import { SpellExpansionRow } from './SpellExpansionRow';
 import { useLongPress } from '../hooks/useLongPress';
 import './SpellTable.css';
@@ -172,8 +172,10 @@ export function SpellTable({
                   <div className="spell-name-header">
                     {spell.name}
                   </div>
+                  <span className="level-col mobile-badge">{getLevelTextMobile(spell.level)}</span>
+                  <span className="school-col mobile-badge">{getSchoolAbbreviation(spell.school)}</span>
                 </td>
-                <td className="level-col">{getLevelText(spell.level)}</td>
+                <td className="level-col desktop-only">{getLevelText(spell.level)}</td>
                 <td className="time-col">
                   <span className="cell-content">
                     {truncateCastingTime(spell.castingTime)}
@@ -187,7 +189,7 @@ export function SpellTable({
                     {spell.concentration && <span className="badge badge-concentration">C</span>}
                   </span>
                 </td>
-                <td className="school-col">{spell.school}</td>
+                <td className="school-col desktop-only">{spell.school}</td>
                 <td className="components-col"><ComponentBadges spell={spell} /></td>
                 <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
                 <td className="source-col">{spell.source}</td>

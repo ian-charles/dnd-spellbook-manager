@@ -9,7 +9,19 @@
  * This file eliminates ~200 lines of duplicated CSS between the two components.
  */
 
+/* Hide mobile badges on desktop */
+@media (min-width: 426px) {
+  .mobile-badge {
+    display: none !important;
+  }
+}
+
 @media (max-width: 425px) {
+
+  /* Hide desktop-only columns on mobile */
+  .desktop-only {
+    display: none !important;
+  }
 
   /* Container - remove desktop table styling */
   .spell-table-container,
@@ -96,10 +108,12 @@
     border: none;
   }
 
-  /* Spell name - takes available space on left */
+  /* Spell name container - flexbox to keep name/level/school inline */
   .spell-name {
     flex: 1 1 100%;
-    /* Force full width to push badges to new line */
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
     padding: var(--space-2) var(--space-1) var(--space-2) 3rem;
     margin: 0;
     min-width: 0;
@@ -119,9 +133,10 @@
     /* Space for remove button */
   }
 
-  /* Spell name text itself */
+  /* Spell name text itself - grows to fill space, wraps within container */
   .spell-name-header {
-    display: inline;
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
     color: light-dark(#4c1d95, #a5b4fc);
@@ -130,14 +145,15 @@
     word-break: break-word;
   }
 
-  /* Show level and school as inline badges - right-aligned */
-  .level-col,
-  .school-col {
+  /* Show level and school as inline badges - stay on same line */
+  .mobile-badge.level-col,
+  .mobile-badge.school-col {
+    flex: 0 0 auto;
     display: inline-block !important;
-    font-size: var(--font-size-xs);
+    font-size: 1rem;
     font-weight: var(--font-weight-semibold);
-    padding: var(--space-1) var(--space-2);
-    margin: var(--space-1) var(--space-1) 0 0;
+    padding: 0.125rem 0.2rem !important;
+    margin: 0;
     border-radius: var(--radius-md);
     background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
     color: light-dark(#6d28d9, #a78bfa);
@@ -147,18 +163,12 @@
     vertical-align: middle;
   }
 
-  .level-col {
-    flex: 0 0 auto;
+  .mobile-badge.level-col {
     order: 2;
-    margin-left: 3.5rem;
-    /* Align with name text */
-    margin-bottom: var(--space-2);
   }
 
-  .school-col {
-    flex: 0 0 auto;
+  .mobile-badge.school-col {
     order: 3;
-    margin-bottom: var(--space-2);
   }
 
   /* Reset widths and allow wrapping for other columns */

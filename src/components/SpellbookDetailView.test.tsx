@@ -259,8 +259,9 @@ describe('SpellbookDetailView', () => {
     it('should render spell levels', () => {
       renderWithContext();
 
-      expect(screen.getByText('3')).toBeTruthy(); // Fireball
-      expect(screen.getAllByText('1').length).toBe(2); // Shield and Detect Magic
+      // Each spell level appears twice: once in mobile badge, once in desktop column
+      expect(screen.getAllByText('3').length).toBe(2); // Fireball (mobile + desktop)
+      expect(screen.getAllByText('1').length).toBe(4); // Shield and Detect Magic (mobile + desktop each)
     });
 
     it('should render spell schools', () => {

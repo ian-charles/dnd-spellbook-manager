@@ -10,6 +10,22 @@ export function getLevelText(level: number): string {
 }
 
 /**
+ * Formats spell level as text for mobile display.
+ * Returns "0" for level 0 (cantrips), otherwise returns the level number as a string.
+ */
+export function getLevelTextMobile(level: number): string {
+  return level.toString();
+}
+
+/**
+ * Abbreviates school name to first 3 characters for mobile display.
+ * Examples: "Evocation" -> "Evo", "Abjuration" -> "Abj"
+ */
+export function getSchoolAbbreviation(school: string): string {
+  return school.substring(0, 3);
+}
+
+/**
  * Formats spell components as a compact string (e.g., "V,S,M").
  */
 export function getComponentsText(spell: Spell): string {

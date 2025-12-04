@@ -2,7 +2,7 @@ import { Fragment, useRef } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { ComponentBadges } from '../SpellBadges';
-import { getLevelText, truncateCastingTime } from '../../utils/spellFormatters';
+import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime } from '../../utils/spellFormatters';
 import { useLongPress } from '../../hooks/useLongPress';
 import { SpellExpansionRow } from '../SpellExpansionRow';
 
@@ -119,8 +119,10 @@ export function SpellbookSpellsTable() {
                                             <div className="spell-name-header">
                                                 {spell.name}
                                             </div>
+                                            <span className="level-col mobile-badge">{getLevelTextMobile(spell.level)}</span>
+                                            <span className="school-col mobile-badge">{getSchoolAbbreviation(spell.school)}</span>
                                         </td>
-                                        <td className="level-col">{getLevelText(spell.level)}</td>
+                                        <td className="level-col desktop-only">{getLevelText(spell.level)}</td>
                                         <td className="time-col">
                                             <span className="cell-content">
                                                 {truncateCastingTime(spell.castingTime)}
@@ -134,7 +136,7 @@ export function SpellbookSpellsTable() {
                                                 {spell.concentration && <span className="badge badge-concentration">C</span>}
                                             </span>
                                         </td>
-                                        <td className="school-col">{spell.school}</td>
+                                        <td className="school-col desktop-only">{spell.school}</td>
                                         <td className="components-col"><ComponentBadges spell={spell} /></td>
                                         <td className="source-col">{spell.source}</td>
                                     </tr>

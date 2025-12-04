@@ -119,7 +119,7 @@ export function SpellbookDetailView() {
                 onChange={onToggleShowPreparedOnly}
                 data-testid="filter-prepared-only"
               />
-              <span>Show Prepared Only</span>
+              <span>Show <span className="prepared-text">Prepared</span> Only</span>
             </label>
             <div className="spellbook-actions">
               <button

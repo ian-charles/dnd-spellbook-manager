@@ -5,7 +5,6 @@ import { ComponentBadges } from '../SpellBadges';
 import { getLevelText, truncateCastingTime } from '../../utils/spellFormatters';
 import { useLongPress } from '../../hooks/useLongPress';
 import { SpellExpansionRow } from '../SpellExpansionRow';
-import { useContextMenu } from '../../hooks/useContextMenu';
 
 import { useSpellbookDetail } from '../../contexts/SpellbookDetailContext';
 
@@ -15,20 +14,13 @@ export function SpellbookSpellsTable() {
         expandedSpellId,
         sortColumn,
         sortDirection,
+        selectedSpellIds,
         onSort,
         onRowClick,
-        onTogglePrepared,
-        onRemoveSpell,
+        onToggleSelected,
     } = useSpellbookDetail();
-    // ... inside component
-    // Context menu state for mobile
-    const { contextMenu, openContextMenu, closeContextMenu } = useContextMenu<{
-        spellId: string;
-        spellName: string;
-        prepared: boolean;
-    }>();
 
-    // Long-press handlers for mobile context menu
+    // Long-press handlers for mobile selection
     const pendingSpell = useRef<EnrichedSpell | null>(null);
 
     const {
@@ -36,13 +28,9 @@ export function SpellbookSpellsTable() {
         onTouchMove,
         onTouchEnd
     } = useLongPress({
-        onLongPress: (e: React.TouchEvent) => {
+        onLongPress: () => {
             if (pendingSpell.current) {
-                openContextMenu(e, {
-                    spellId: pendingSpell.current.spell.id,
-                    spellName: pendingSpell.current.spell.name,
-                    prepared: pendingSpell.current.prepared,
-                });
+                onToggleSelected(pendingSpell.current.spell.id);
             }
         }
     });
@@ -52,22 +40,13 @@ export function SpellbookSpellsTable() {
         onTouchStartHook(e);
     };
 
-    const handleContextMenuAction = (action: 'prep' | 'remove', spellId: string, spellName: string) => {
-        closeContextMenu();
-        if (action === 'prep') {
-            onTogglePrepared(spellId);
-        } else {
-            onRemoveSpell(spellId, spellName);
-        }
-    };
-
     return (
         <>
             <div className="spellbook-table-container" data-testid="spellbook-spell-list">
                 <table className="spell-table spellbook-table">
                     <thead>
                         <tr>
-                            <th className="prepared-col">Prep</th>
+                            <th className="prepared-col">Select</th>
                             <th onClick={() => onSort('name')} className="sortable">
                                 <div className="th-content">
                                     Spell Name
@@ -111,16 +90,16 @@ export function SpellbookSpellsTable() {
                                     <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
                                 </div>
                             </th>
-                            <th className="action-col">Remove</th>
                         </tr>
                     </thead>
                     <tbody>
                         {sortedSpells.map((enrichedSpell) => {
                             const { spell, prepared } = enrichedSpell;
+                            const isSelected = selectedSpellIds.has(spell.id);
                             return (
                                 <Fragment key={spell.id}>
                                     <tr
-                                        className={`spell-row ${prepared ? 'prepared-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                                        className={`spell-row ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
                                         data-testid={`spellbook-spell-${spell.id}`}
                                         onClick={() => onRowClick(spell.id)}
                                         onTouchStart={(e) => handleTouchStart(e, enrichedSpell)}
@@ -130,10 +109,10 @@ export function SpellbookSpellsTable() {
                                         <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"
-                                                checked={prepared}
-                                                onChange={() => onTogglePrepared(spell.id)}
-                                                data-testid="toggle-prepared"
-                                                aria-label={`Toggle ${spell.name} prepared status`}
+                                                checked={isSelected}
+                                                onChange={() => onToggleSelected(spell.id)}
+                                                data-testid="toggle-selected"
+                                                aria-label={`Select ${spell.name}`}
                                             />
                                         </td>
                                         <td className="spell-name">
@@ -158,25 +137,11 @@ export function SpellbookSpellsTable() {
                                         <td className="school-col">{spell.school}</td>
                                         <td className="components-col"><ComponentBadges spell={spell} /></td>
                                         <td className="source-col">{spell.source}</td>
-                                        <td className="action-col" onClick={(e) => e.stopPropagation()}>
-                                            <button
-                                                className="btn-remove-small"
-                                                onClick={() => onRemoveSpell(spell.id, spell.name)}
-                                                data-testid={`btn-remove-spell-${spell.id}`}
-                                                aria-label={`Remove ${spell.name}`}
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M3 6h18"></path>
-                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                </svg>
-                                            </button>
-                                        </td>
                                     </tr>
                                     {expandedSpellId === spell.id && (
                                         <SpellExpansionRow
                                             spell={spell}
-                                            colSpan={10}
+                                            colSpan={9}
                                             variant="full"
                                         />
                                     )}
@@ -186,31 +151,6 @@ export function SpellbookSpellsTable() {
                     </tbody>
                 </table>
             </div>
-
-            {contextMenu && (
-                <div
-                    className="context-menu"
-                    style={{
-                        position: 'fixed',
-                        left: `${contextMenu.x}px`,
-                        top: `${contextMenu.y}px`,
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <button
-                        className="context-menu-item"
-                        onClick={() => handleContextMenuAction('prep', contextMenu.data.spellId, contextMenu.data.spellName)}
-                    >
-                        {contextMenu.data.prepared ? 'Unprep' : 'Prep'}
-                    </button>
-                    <button
-                        className="context-menu-item context-menu-item-danger"
-                        onClick={() => handleContextMenuAction('remove', contextMenu.data.spellId, contextMenu.data.spellName)}
-                    >
-                        Remove
-                    </button>
-                </div>
-            )}
         </>
     );
 }

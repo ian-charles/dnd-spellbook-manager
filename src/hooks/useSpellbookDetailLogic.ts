@@ -22,10 +22,11 @@ export function useSpellbookDetailLogic({
     const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [showPreparedOnly, setShowPreparedOnly] = useState(false);
-    const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellId: string; spellName: string }>({
+    const [selectedSpellIds, setSelectedSpellIds] = useState<Set<string>>(new Set());
+    const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellIds: string[]; message: string }>({
         isOpen: false,
-        spellId: '',
-        spellName: '',
+        spellIds: [],
+        message: '',
     });
 
     // Filter spells based on prepared status
@@ -40,6 +41,13 @@ export function useSpellbookDetailLogic({
         filteredSpells,
         { getSpell: (item) => item.spell }
     );
+
+    // Check if all selected spells are prepared
+    const allPrepared = useMemo(() => {
+        if (selectedSpellIds.size === 0) return false;
+        const selectedSpells = enrichedSpells.filter(s => selectedSpellIds.has(s.spell.id));
+        return selectedSpells.every(s => s.prepared);
+    }, [selectedSpellIds, enrichedSpells]);
 
     useEffect(() => {
         loadSpellbook();
@@ -68,23 +76,79 @@ export function useSpellbookDetailLogic({
         }
     };
 
-    const handleTogglePrepared = async (spellId: string) => {
-        await togglePrepared(spellbookId, spellId);
-        await loadSpellbook();
+    const handleToggleSelected = (spellId: string) => {
+        setSelectedSpellIds(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(spellId)) {
+                newSet.delete(spellId);
+            } else {
+                newSet.add(spellId);
+            }
+            return newSet;
+        });
     };
 
-    const handleRemoveSpell = (spellId: string, spellName: string) => {
-        setConfirmDialog({ isOpen: true, spellId, spellName });
+    const handleSelectAll = () => {
+        const allSpellIds = new Set(enrichedSpells.map(s => s.spell.id));
+        setSelectedSpellIds(allSpellIds);
+    };
+
+    const handleDeselectAll = () => {
+        setSelectedSpellIds(new Set());
+    };
+
+    const handlePrepSelected = async () => {
+        if (selectedSpellIds.size === 0) return;
+
+        const selectedSpells = enrichedSpells.filter(s => selectedSpellIds.has(s.spell.id));
+        const shouldPrep = !allPrepared;
+
+        // Toggle prepared status for all selected spells
+        const promises: Promise<void>[] = [];
+        for (const enrichedSpell of selectedSpells) {
+            // Only toggle if the spell doesn't already have the desired state
+            if (enrichedSpell.prepared !== shouldPrep) {
+                promises.push(togglePrepared(spellbookId, enrichedSpell.spell.id));
+            }
+        }
+
+        await Promise.all(promises);
+        await loadSpellbook();
+
+        // Deselect all after prep/unprep completion
+        setSelectedSpellIds(new Set());
+    };
+
+    const handleRemoveSelected = () => {
+        if (selectedSpellIds.size === 0) return;
+
+        const selectedSpells = enrichedSpells.filter(s => selectedSpellIds.has(s.spell.id));
+        const spellNames = selectedSpells.map(s => s.spell.name).join(', ');
+        const message = selectedSpells.length === 1
+            ? `Are you sure you want to remove ${spellNames}?`
+            : `Are you sure you want to remove ${selectedSpells.length} spells?`;
+
+        setConfirmDialog({
+            isOpen: true,
+            spellIds: Array.from(selectedSpellIds),
+            message,
+        });
     };
 
     const handleConfirmRemove = async () => {
-        await removeSpellFromSpellbook(spellbookId, confirmDialog.spellId);
-        setConfirmDialog({ isOpen: false, spellId: '', spellName: '' });
+        const promises: Promise<void>[] = [];
+        for (const spellId of confirmDialog.spellIds) {
+            promises.push(removeSpellFromSpellbook(spellbookId, spellId));
+        }
+
+        await Promise.all(promises);
+        setConfirmDialog({ isOpen: false, spellIds: [], message: '' });
+        setSelectedSpellIds(new Set());
         await loadSpellbook();
     };
 
     const handleCancelRemove = () => {
-        setConfirmDialog({ isOpen: false, spellId: '', spellName: '' });
+        setConfirmDialog({ isOpen: false, spellIds: [], message: '' });
     };
 
     const handleRowClick = (spellId: string) => {
@@ -107,26 +171,6 @@ export function useSpellbookDetailLogic({
         await loadSpellbook();
     };
 
-    const handleSelectAllPrepared = async () => {
-        // Determine if we should select all or deselect all
-        const allPrepared = enrichedSpells.every(s => s.prepared);
-        const promises: Promise<void>[] = [];
-
-        // Toggle all spells
-        for (const spell of enrichedSpells) {
-            if (allPrepared && spell.prepared) {
-                // If all are prepared, deselect all
-                promises.push(togglePrepared(spellbookId, spell.spell.id));
-            } else if (!allPrepared && !spell.prepared) {
-                // If not all are prepared, select all unprepared
-                promises.push(togglePrepared(spellbookId, spell.spell.id));
-            }
-        }
-
-        await Promise.all(promises);
-        await loadSpellbook();
-    };
-
     const handleCopy = () => {
         if (onCopySpellbook) {
             onCopySpellbook(spellbookId);
@@ -142,13 +186,18 @@ export function useSpellbookDetailLogic({
         expandedSpellId,
         sortColumn,
         sortDirection,
+        selectedSpellIds,
         confirmDialog,
         editModalOpen,
         showPreparedOnly,
+        allPrepared,
         onBack,
         onSort: handleSort,
-        onTogglePrepared: handleTogglePrepared,
-        onRemoveSpell: handleRemoveSpell,
+        onToggleSelected: handleToggleSelected,
+        onSelectAll: handleSelectAll,
+        onDeselectAll: handleDeselectAll,
+        onPrepSelected: handlePrepSelected,
+        onRemoveSelected: handleRemoveSelected,
         onConfirmRemove: handleConfirmRemove,
         onCancelRemove: handleCancelRemove,
         onRowClick: handleRowClick,
@@ -156,7 +205,6 @@ export function useSpellbookDetailLogic({
         onEditClose: () => setEditModalOpen(false),
         onEditSave: handleEditSave,
         onToggleShowPreparedOnly: () => setShowPreparedOnly(prev => !prev),
-        onSelectAllPrepared: handleSelectAllPrepared,
         onCopy: handleCopy,
         existingNames,
     };

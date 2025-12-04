@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SpellbookSpellsTable } from './SpellbookSpellsTable';
 import * as SpellbookDetailContext from '../../contexts/SpellbookDetailContext';
@@ -15,12 +15,6 @@ vi.mock('../../hooks/useLongPress', () => ({
         onTouchMove: vi.fn(),
         onTouchEnd: vi.fn(),
     }),
-}));
-
-// Mock useContextMenu
-const useContextMenuMock = vi.fn();
-vi.mock('../../hooks/useContextMenu', () => ({
-    useContextMenu: () => useContextMenuMock(),
 }));
 
 // Mock EnrichedSpell data
@@ -72,26 +66,30 @@ const mockSpells: EnrichedSpell[] = [
 const defaultContextValue = {
     sortedSpells: mockSpells,
     expandedSpellId: null,
-    sortColumn: 'name',
-    sortDirection: 'asc',
+    sortColumn: 'name' as const,
+    sortDirection: 'asc' as const,
+    selectedSpellIds: new Set<string>(),
     onSort: vi.fn(),
     onRowClick: vi.fn(),
-    onTogglePrepared: vi.fn(),
-    onRemoveSpell: vi.fn(),
+    onToggleSelected: vi.fn(),
     // Other unused values
     spellbook: null,
     enrichedSpells: mockSpells,
-    confirmDialog: { isOpen: false, spellId: '', spellName: '' },
+    confirmDialog: { isOpen: false, spellIds: [], message: '' },
     editModalOpen: false,
     showPreparedOnly: false,
+    allPrepared: false,
     onBack: vi.fn(),
+    onSelectAll: vi.fn(),
+    onDeselectAll: vi.fn(),
+    onPrepSelected: vi.fn(),
+    onRemoveSelected: vi.fn(),
     onConfirmRemove: vi.fn(),
     onCancelRemove: vi.fn(),
     onEdit: vi.fn(),
     onEditClose: vi.fn(),
     onEditSave: vi.fn(),
     onToggleShowPreparedOnly: vi.fn(),
-    onSelectAllPrepared: vi.fn(),
     onCopy: vi.fn(),
     existingNames: [],
 };
@@ -100,11 +98,6 @@ describe('SpellbookSpellsTable', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         useSpellbookDetailMock.mockReturnValue(defaultContextValue);
-        useContextMenuMock.mockReturnValue({
-            contextMenu: null,
-            openContextMenu: vi.fn(),
-            closeContextMenu: vi.fn(),
-        });
     });
 
     it('renders the table with spells', () => {
@@ -126,13 +119,13 @@ describe('SpellbookSpellsTable', () => {
         expect(defaultContextValue.onSort).toHaveBeenCalledWith('castingTime');
     });
 
-    it('calls onTogglePrepared when checkbox is clicked', () => {
+    it('calls onToggleSelected when checkbox is clicked', () => {
         render(<SpellbookSpellsTable />);
 
-        const checkboxes = screen.getAllByTestId('toggle-prepared');
+        const checkboxes = screen.getAllByTestId('toggle-selected');
         fireEvent.click(checkboxes[0]);
 
-        expect(defaultContextValue.onTogglePrepared).toHaveBeenCalledWith('spell-1');
+        expect(defaultContextValue.onToggleSelected).toHaveBeenCalledWith('spell-1');
     });
 
     it('calls onRowClick when a row is clicked', () => {
@@ -155,91 +148,35 @@ describe('SpellbookSpellsTable', () => {
         expect(screen.getByText(/A bright streak flashes/)).toBeInTheDocument();
     });
 
-    it('calls onRemoveSpell when remove button is clicked', () => {
+    it('marks rows as selected when in selectedSpellIds', () => {
+        useSpellbookDetailMock.mockReturnValue({
+            ...defaultContextValue,
+            selectedSpellIds: new Set(['spell-1']),
+        });
+
         render(<SpellbookSpellsTable />);
 
-        const removeBtn = screen.getByTestId('btn-remove-spell-spell-1');
-        fireEvent.click(removeBtn);
+        const row = screen.getByTestId('spellbook-spell-spell-1');
+        expect(row).toHaveClass('selected-row');
+    });
 
-        expect(defaultContextValue.onRemoveSpell).toHaveBeenCalledWith('spell-1', 'Fireball');
+    it('marks rows as prepared when prepared is true', () => {
+        render(<SpellbookSpellsTable />);
+
+        const row = screen.getByTestId('spellbook-spell-spell-1');
+        expect(row).toHaveClass('prepared-row');
     });
 
     describe('Mobile Interactions', () => {
-        it('triggers openContextMenu on long press', () => {
-            const openContextMenu = vi.fn();
-            useContextMenuMock.mockReturnValue({
-                contextMenu: null,
-                openContextMenu,
-                closeContextMenu: vi.fn(),
-            });
-
+        it('triggers onToggleSelected on long press', () => {
             render(<SpellbookSpellsTable />);
 
             const row = screen.getByTestId('spellbook-spell-spell-1');
 
-            // Simulate touch start which triggers mocked useLongPress -> onLongPress -> openContextMenu
+            // Simulate touch start which triggers mocked useLongPress -> onLongPress -> onToggleSelected
             fireEvent.touchStart(row, { touches: [{ clientX: 100, clientY: 100 }] });
 
-            expect(openContextMenu).toHaveBeenCalled();
-        });
-
-        it('renders context menu when state is active', () => {
-            useContextMenuMock.mockReturnValue({
-                contextMenu: {
-                    data: { spellId: 'spell-1', spellName: 'Fireball', prepared: true },
-                    x: 100,
-                    y: 100
-                },
-                openContextMenu: vi.fn(),
-                closeContextMenu: vi.fn(),
-            });
-
-            render(<SpellbookSpellsTable />);
-
-            expect(screen.getByText('Unprep')).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument();
-        });
-
-        it('calls onTogglePrepared from context menu', () => {
-            const closeContextMenu = vi.fn();
-            useContextMenuMock.mockReturnValue({
-                contextMenu: {
-                    data: { spellId: 'spell-1', spellName: 'Fireball', prepared: true },
-                    x: 100,
-                    y: 100
-                },
-                openContextMenu: vi.fn(),
-                closeContextMenu,
-            });
-
-            render(<SpellbookSpellsTable />);
-
-            const prepBtn = screen.getByText('Unprep');
-            fireEvent.click(prepBtn);
-
-            expect(closeContextMenu).toHaveBeenCalled();
-            expect(defaultContextValue.onTogglePrepared).toHaveBeenCalledWith('spell-1');
-        });
-
-        it('calls onRemoveSpell from context menu', () => {
-            const closeContextMenu = vi.fn();
-            useContextMenuMock.mockReturnValue({
-                contextMenu: {
-                    data: { spellId: 'spell-1', spellName: 'Fireball', prepared: true },
-                    x: 100,
-                    y: 100
-                },
-                openContextMenu: vi.fn(),
-                closeContextMenu,
-            });
-
-            render(<SpellbookSpellsTable />);
-
-            const removeBtn = screen.getByRole('button', { name: 'Remove' });
-            fireEvent.click(removeBtn);
-
-            expect(closeContextMenu).toHaveBeenCalled();
-            expect(defaultContextValue.onRemoveSpell).toHaveBeenCalledWith('spell-1', 'Fireball');
+            expect(defaultContextValue.onToggleSelected).toHaveBeenCalledWith('spell-1');
         });
     });
 });

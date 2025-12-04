@@ -23,17 +23,22 @@ export function SpellbookDetailView() {
   const {
     spellbook,
     enrichedSpells,
+    selectedSpellIds,
     confirmDialog,
     editModalOpen,
     showPreparedOnly,
+    allPrepared,
     onBack,
+    onSelectAll,
+    onDeselectAll,
+    onPrepSelected,
+    onRemoveSelected,
     onConfirmRemove,
     onCancelRemove,
     onEdit,
     onEditClose,
     onEditSave,
     onToggleShowPreparedOnly,
-    onSelectAllPrepared,
     onCopy,
     existingNames,
   } = useSpellbookDetail();
@@ -49,7 +54,8 @@ export function SpellbookDetailView() {
   }
 
   const preparedCount = enrichedSpells.filter(s => s.prepared).length;
-  const allPrepared = enrichedSpells.length > 0 && enrichedSpells.every(s => s.prepared);
+  const hasSelection = selectedSpellIds.size > 0;
+  const allSelected = enrichedSpells.length > 0 && selectedSpellIds.size === enrichedSpells.length;
 
   return (
     <div className="spellbook-detail" data-testid="spellbook-detail">
@@ -104,7 +110,7 @@ export function SpellbookDetailView() {
         </div>
       ) : (
         <>
-          {/* Filter and Select All Controls */}
+          {/* Filter and Selection Controls */}
           <div className="spellbook-controls">
             <label className="filter-checkbox-label">
               <input
@@ -115,14 +121,32 @@ export function SpellbookDetailView() {
               />
               <span>Show Prepared Only</span>
             </label>
-            <button
-              className="btn-secondary"
-              onClick={onSelectAllPrepared}
-              data-testid="btn-select-all-prepared"
-              disabled={enrichedSpells.length === 0}
-            >
-              {allPrepared ? 'Deselect All' : 'Select All'}
-            </button>
+            <div className="spellbook-actions">
+              <button
+                className="btn-secondary"
+                onClick={allSelected ? onDeselectAll : onSelectAll}
+                data-testid="btn-select-all"
+                disabled={enrichedSpells.length === 0}
+              >
+                {allSelected ? 'Deselect All' : 'Select All'}
+              </button>
+              <button
+                className={`btn-secondary ${!allPrepared && hasSelection ? 'btn-prep' : ''} ${allPrepared && hasSelection ? 'btn-unprep' : ''}`}
+                onClick={onPrepSelected}
+                data-testid="btn-prep-selected"
+                disabled={!hasSelection}
+              >
+                {allPrepared ? 'Unprep' : 'Prep'}
+              </button>
+              <button
+                className="btn-secondary btn-danger"
+                onClick={onRemoveSelected}
+                data-testid="btn-remove-selected"
+                disabled={!hasSelection}
+              >
+                Remove
+              </button>
+            </div>
           </div>
 
           <SpellbookSpellsTable />
@@ -131,7 +155,7 @@ export function SpellbookDetailView() {
           <ConfirmDialog
             isOpen={confirmDialog.isOpen}
             title={MESSAGES.DIALOG.REMOVE_SPELL}
-            message={MESSAGES.DIALOG.REMOVE_SPELL_CONFIRM.replace('{spellName}', confirmDialog.spellName)}
+            message={confirmDialog.message}
             confirmLabel="Remove"
             cancelLabel="Cancel"
             variant="danger"

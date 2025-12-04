@@ -8,17 +8,22 @@ export interface SpellbookDetailContextType {
     expandedSpellId: string | null;
     sortColumn: SortColumn;
     sortDirection: SortDirection;
+    selectedSpellIds: Set<string>;
     confirmDialog: {
         isOpen: boolean;
-        spellId: string;
-        spellName: string;
+        spellIds: string[];
+        message: string;
     };
     editModalOpen: boolean;
     showPreparedOnly: boolean;
+    allPrepared: boolean;
     onBack: () => void;
     onSort: (column: SortColumn) => void;
-    onTogglePrepared: (spellId: string) => void;
-    onRemoveSpell: (spellId: string, spellName: string) => void;
+    onToggleSelected: (spellId: string) => void;
+    onSelectAll: () => void;
+    onDeselectAll: () => void;
+    onPrepSelected: () => void;
+    onRemoveSelected: () => void;
     onConfirmRemove: () => void;
     onCancelRemove: () => void;
     onRowClick: (spellId: string) => void;
@@ -26,7 +31,6 @@ export interface SpellbookDetailContextType {
     onEditClose: () => void;
     onEditSave: (input: CreateSpellbookInput) => Promise<void>;
     onToggleShowPreparedOnly: () => void;
-    onSelectAllPrepared: () => void;
     onCopy: () => void;
     existingNames: string[];
 }

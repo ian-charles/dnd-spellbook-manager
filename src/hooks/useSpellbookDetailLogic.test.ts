@@ -83,21 +83,30 @@ describe('useSpellbookDetailLogic', () => {
         expect(result.current.sortedSpells[0].spell.id).toBe('spell1');
     });
 
-    it('should handle spell removal flow', async () => {
+    it('should handle spell removal flow via selection', async () => {
         const { result } = renderHook(() => useSpellbookDetailLogic({
             spellbookId: 'sb1',
             onBack: vi.fn(),
         }));
 
-        act(() => {
-            result.current.onRemoveSpell('spell1', 'Fireball');
+        await waitFor(() => {
+            expect(result.current.enrichedSpells).toHaveLength(2);
         });
 
-        expect(result.current.confirmDialog).toEqual({
-            isOpen: true,
-            spellId: 'spell1',
-            spellName: 'Fireball',
+        // Select spell first
+        act(() => {
+            result.current.onToggleSelected('spell1');
         });
+
+        expect(result.current.selectedSpellIds.has('spell1')).toBe(true);
+
+        // Trigger remove
+        act(() => {
+            result.current.onRemoveSelected();
+        });
+
+        expect(result.current.confirmDialog.isOpen).toBe(true);
+        expect(result.current.confirmDialog.spellIds).toEqual(['spell1']);
 
         await act(async () => {
             await result.current.onConfirmRemove();
@@ -108,21 +117,26 @@ describe('useSpellbookDetailLogic', () => {
         expect(mockGetSpellbook).toHaveBeenCalledTimes(2); // Initial load + reload after remove
     });
 
-    it('should handle toggle prepared', async () => {
+    it('should handle selection and deselection', () => {
         const { result } = renderHook(() => useSpellbookDetailLogic({
             spellbookId: 'sb1',
             onBack: vi.fn(),
         }));
 
-        await act(async () => {
-            await result.current.onTogglePrepared('spell1');
+        // Select spell
+        act(() => {
+            result.current.onToggleSelected('spell1');
         });
+        expect(result.current.selectedSpellIds.has('spell1')).toBe(true);
 
-        expect(mockTogglePrepared).toHaveBeenCalledWith('sb1', 'spell1');
-        expect(mockGetSpellbook).toHaveBeenCalledTimes(2);
+        // Deselect spell
+        act(() => {
+            result.current.onToggleSelected('spell1');
+        });
+        expect(result.current.selectedSpellIds.has('spell1')).toBe(false);
     });
 
-    it('should handle select all prepared (when some unprepared)', async () => {
+    it('should handle select all and deselect all', async () => {
         const { result } = renderHook(() => useSpellbookDetailLogic({
             spellbookId: 'sb1',
             onBack: vi.fn(),
@@ -132,16 +146,22 @@ describe('useSpellbookDetailLogic', () => {
             expect(result.current.enrichedSpells).toHaveLength(2);
         });
 
-        await act(async () => {
-            await result.current.onSelectAllPrepared();
+        // Select all
+        act(() => {
+            result.current.onSelectAll();
         });
 
-        // Should toggle the unprepared one (spell2)
-        expect(mockTogglePrepared).toHaveBeenCalledWith('sb1', 'spell2');
-        expect(mockTogglePrepared).toHaveBeenCalledTimes(1);
+        expect(result.current.selectedSpellIds.size).toBe(2);
+
+        // Deselect all
+        act(() => {
+            result.current.onDeselectAll();
+        });
+
+        expect(result.current.selectedSpellIds.size).toBe(0);
     });
 
-    it('should handle deselect all prepared (when all prepared)', async () => {
+    it('should select all and prep/unprep selected spells', async () => {
         // Mock all prepared
         const allPreparedSpellbook = {
             ...mockSpellbook,
@@ -161,14 +181,27 @@ describe('useSpellbookDetailLogic', () => {
             expect(result.current.enrichedSpells).toHaveLength(2);
         });
 
-        await act(async () => {
-            await result.current.onSelectAllPrepared();
+        // Select all spells
+        act(() => {
+            result.current.onSelectAll();
         });
 
-        // Should toggle both to unprepared
+        expect(result.current.selectedSpellIds.size).toBe(2);
+        expect(result.current.allPrepared).toBe(true);
+
+        // Unprep all selected (should toggle both to unprepared)
+        await act(async () => {
+            await result.current.onPrepSelected();
+        });
+
         expect(mockTogglePrepared).toHaveBeenCalledWith('sb1', 'spell1');
         expect(mockTogglePrepared).toHaveBeenCalledWith('sb1', 'spell2');
         expect(mockTogglePrepared).toHaveBeenCalledTimes(2);
+
+        // Selection should be cleared after prep/unprep
+        await waitFor(() => {
+            expect(result.current.selectedSpellIds.size).toBe(0);
+        });
     });
 
     it('should handle edit spellbook', async () => {

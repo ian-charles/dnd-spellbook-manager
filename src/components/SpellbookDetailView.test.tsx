@@ -108,13 +108,18 @@ const defaultProps: SpellbookDetailContextType = {
   expandedSpellId: null,
   sortColumn: 'name' as const,
   sortDirection: 'asc' as const,
-  confirmDialog: { isOpen: false, spellId: '', spellName: '' },
+  selectedSpellIds: new Set<string>(),
+  confirmDialog: { isOpen: false, spellIds: [], message: '' },
   editModalOpen: false,
   showPreparedOnly: false,
+  allPrepared: false,
   onBack: vi.fn(),
   onSort: vi.fn(),
-  onTogglePrepared: vi.fn(),
-  onRemoveSpell: vi.fn(),
+  onToggleSelected: vi.fn(),
+  onSelectAll: vi.fn(),
+  onDeselectAll: vi.fn(),
+  onPrepSelected: vi.fn(),
+  onRemoveSelected: vi.fn(),
   onConfirmRemove: vi.fn(),
   onCancelRemove: vi.fn(),
   onRowClick: vi.fn(),
@@ -122,7 +127,6 @@ const defaultProps: SpellbookDetailContextType = {
   onEditClose: vi.fn(),
   onEditSave: vi.fn(),
   onToggleShowPreparedOnly: vi.fn(),
-  onSelectAllPrepared: vi.fn(),
   onCopy: vi.fn(),
   existingNames: [],
 };
@@ -288,29 +292,29 @@ describe('SpellbookDetailView', () => {
     it('should render checkboxes for all spells', () => {
       renderWithContext();
 
-      const checkboxes = screen.getAllByTestId('toggle-prepared');
+      const checkboxes = screen.getAllByTestId('toggle-selected');
       expect(checkboxes.length).toBe(3);
     });
 
-    it('should check prepared spells', () => {
-      renderWithContext();
+    it('should check selected spells', () => {
+      renderWithContext({ selectedSpellIds: new Set(['spell-1']) });
 
-      const checkboxes = screen.getAllByTestId('toggle-prepared') as HTMLInputElement[];
-      expect(checkboxes[0].checked).toBe(true); // Fireball prepared
-      expect(checkboxes[1].checked).toBe(false); // Shield not prepared
-      expect(checkboxes[2].checked).toBe(true); // Detect Magic prepared
+      const checkboxes = screen.getAllByTestId('toggle-selected') as HTMLInputElement[];
+      expect(checkboxes[0].checked).toBe(true); // spell-1 selected
+      expect(checkboxes[1].checked).toBe(false); // spell-2 not selected
+      expect(checkboxes[2].checked).toBe(false); // spell-3 not selected
     });
 
-    it('should call onTogglePrepared when checkbox clicked', async () => {
+    it('should call onToggleSelected when checkbox clicked', async () => {
       const user = userEvent.setup();
-      const onTogglePrepared = vi.fn();
+      const onToggleSelected = vi.fn();
 
-      renderWithContext({ onTogglePrepared });
+      renderWithContext({ onToggleSelected });
 
-      const checkboxes = screen.getAllByTestId('toggle-prepared');
+      const checkboxes = screen.getAllByTestId('toggle-selected');
       await user.click(checkboxes[0]);
 
-      expect(onTogglePrepared).toHaveBeenCalledWith('spell-1');
+      expect(onToggleSelected).toHaveBeenCalledWith('spell-1');
     });
   });
 
@@ -363,25 +367,47 @@ describe('SpellbookDetailView', () => {
     });
   });
 
-  describe('Remove Button', () => {
-    it('should render remove button for each spell', () => {
+  describe('Bulk Actions', () => {
+    it('should render Select All button', () => {
       renderWithContext();
 
-      expect(screen.getByTestId('btn-remove-spell-spell-1')).toBeTruthy();
-      expect(screen.getByTestId('btn-remove-spell-spell-2')).toBeTruthy();
-      expect(screen.getByTestId('btn-remove-spell-spell-3')).toBeTruthy();
+      expect(screen.getByTestId('btn-select-all')).toBeTruthy();
     });
 
-    it('should call onRemoveSpell when button clicked', async () => {
+    it('should render Prep button', () => {
+      renderWithContext();
+
+      expect(screen.getByTestId('btn-prep-selected')).toBeTruthy();
+    });
+
+    it('should render Remove button', () => {
+      renderWithContext();
+
+      expect(screen.getByTestId('btn-remove-selected')).toBeTruthy();
+    });
+
+    it('should call onSelectAll when Select All button clicked', async () => {
       const user = userEvent.setup();
-      const onRemoveSpell = vi.fn();
+      const onSelectAll = vi.fn();
 
-      renderWithContext({ onRemoveSpell });
+      renderWithContext({ onSelectAll });
 
-      const removeButton = screen.getByTestId('btn-remove-spell-spell-1');
+      const selectAllButton = screen.getByTestId('btn-select-all');
+      await user.click(selectAllButton);
+
+      expect(onSelectAll).toHaveBeenCalled();
+    });
+
+    it('should call onRemoveSelected when Remove button clicked', async () => {
+      const user = userEvent.setup();
+      const onRemoveSelected = vi.fn();
+
+      renderWithContext({ onRemoveSelected, selectedSpellIds: new Set(['spell-1']) });
+
+      const removeButton = screen.getByTestId('btn-remove-selected');
       await user.click(removeButton);
 
-      expect(onRemoveSpell).toHaveBeenCalledWith('spell-1', 'Fireball');
+      expect(onRemoveSelected).toHaveBeenCalled();
     });
   });
 
@@ -439,11 +465,11 @@ describe('SpellbookDetailView', () => {
 
     it('should render dialog when open', () => {
       renderWithContext({
-        confirmDialog: { isOpen: true, spellId: 'spell-1', spellName: 'Fireball' },
+        confirmDialog: { isOpen: true, spellIds: ['spell-1'], message: 'Are you sure you want to remove Fireball?' },
       });
 
       expect(screen.getByText('Remove Spell')).toBeTruthy();
-      expect(screen.getByText('Remove "Fireball" from this spellbook?')).toBeTruthy();
+      expect(screen.getByText('Are you sure you want to remove Fireball?')).toBeTruthy();
     });
 
     it('should call onConfirmRemove when confirm clicked', async () => {
@@ -451,7 +477,7 @@ describe('SpellbookDetailView', () => {
       const onConfirmRemove = vi.fn();
 
       renderWithContext({
-        confirmDialog: { isOpen: true, spellId: 'spell-1', spellName: 'Fireball' },
+        confirmDialog: { isOpen: true, spellIds: ['spell-1'], message: 'Are you sure you want to remove Fireball?' },
         onConfirmRemove,
       });
 
@@ -466,7 +492,7 @@ describe('SpellbookDetailView', () => {
       const onCancelRemove = vi.fn();
 
       renderWithContext({
-        confirmDialog: { isOpen: true, spellId: 'spell-1', spellName: 'Fireball' },
+        confirmDialog: { isOpen: true, spellIds: ['spell-1'], message: 'Are you sure you want to remove Fireball?' },
         onCancelRemove,
       });
 
@@ -500,18 +526,19 @@ describe('SpellbookDetailView', () => {
       expect(screen.getByTestId('spellbook-detail')).toBeTruthy();
     });
 
-    it('should have aria-label on prepared checkboxes', () => {
+    it('should have aria-label on selection checkboxes for spell names', () => {
       renderWithContext();
 
-      const checkbox = screen.getAllByTestId('toggle-prepared')[0];
-      expect(checkbox.getAttribute('aria-label')).toBe('Toggle Fireball prepared status');
+      const checkbox = screen.getAllByTestId('toggle-selected')[0];
+      expect(checkbox.getAttribute('aria-label')).toContain('Select');
     });
 
-    it('should have aria-label on remove buttons', () => {
+    it('should have aria-label on selection checkboxes', () => {
       renderWithContext();
 
-      const removeButton = screen.getByTestId('btn-remove-spell-spell-1');
-      expect(removeButton.getAttribute('aria-label')).toBe('Remove Fireball');
+      const checkboxes = screen.getAllByRole('checkbox', { name: /Select/i });
+      expect(checkboxes.length).toBeGreaterThan(0);
+      expect(checkboxes[0].getAttribute('aria-label')).toContain('Select');
     });
   });
 

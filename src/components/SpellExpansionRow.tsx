@@ -1,7 +1,7 @@
 import { Spell } from '../types/spell';
 import { SpellDescription } from './SpellDescription';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
-import { getLevelText, formatMaterialsWithCosts } from '../utils/spellFormatters';
+import { formatMaterialsWithCosts } from '../utils/spellFormatters';
 import './SpellTable.css'; // Reusing existing styles
 
 interface SpellExpansionRowProps {

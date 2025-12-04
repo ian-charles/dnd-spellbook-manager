@@ -100,6 +100,37 @@ export class StorageService {
   }
 
   /**
+   * Add multiple spells to a spellbook
+   * Uses atomic update to avoid race conditions
+   */
+  async addSpellsToSpellbook(spellbookId: string, spellIds: string[]): Promise<void> {
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
+      const existingIds = new Set(spellbook.spells.map(s => s.spellId));
+      const newSpells: SpellbookSpell[] = [];
+
+      for (const spellId of spellIds) {
+        if (!existingIds.has(spellId)) {
+          newSpells.push({
+            spellId,
+            prepared: false,
+            notes: '',
+          });
+          existingIds.add(spellId);
+        }
+      }
+
+      if (newSpells.length > 0) {
+        spellbook.spells = [...spellbook.spells, ...newSpells];
+        spellbook.updated = new Date().toISOString();
+      }
+    });
+
+    if (updateCount === 0) {
+      throw new Error(`Spellbook ${spellbookId} not found`);
+    }
+  }
+
+  /**
    * Remove a spell from a spellbook
    */
   async removeSpellFromSpellbook(

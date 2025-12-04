@@ -10,7 +10,7 @@ describe('useSpellbookMutations', () => {
         { id: 'sb2', name: 'Spellbook 2', spells: [], updated: new Date().toISOString(), created: new Date().toISOString() },
     ];
 
-    const mockAddSpellToSpellbook = vi.fn();
+    const mockAddSpellsToSpellbook = vi.fn();
     const mockCreateSpellbook = vi.fn();
     const mockRefreshSpellbooks = vi.fn();
     const mockOnSuccess = vi.fn();
@@ -22,7 +22,7 @@ describe('useSpellbookMutations', () => {
 
     const defaultProps = {
         spellbooks: mockSpellbooks,
-        addSpellToSpellbook: mockAddSpellToSpellbook,
+        addSpellsToSpellbook: mockAddSpellsToSpellbook,
         createSpellbook: mockCreateSpellbook,
         refreshSpellbooks: mockRefreshSpellbooks,
         onSuccess: mockOnSuccess,
@@ -109,7 +109,7 @@ describe('useSpellbookMutations', () => {
         });
 
         it('should successfully add spells to existing spellbook', async () => {
-            mockAddSpellToSpellbook.mockResolvedValue(undefined);
+            mockAddSpellsToSpellbook.mockResolvedValue(undefined);
             const selectedSpells = new Set(['spell1', 'spell2']);
 
             const { result } = renderHook(() => useSpellbookMutations({
@@ -122,38 +122,17 @@ describe('useSpellbookMutations', () => {
                 await result.current.handleAddToSpellbook();
             });
 
-            expect(mockAddSpellToSpellbook).toHaveBeenCalledTimes(2);
-            expect(mockAddSpellToSpellbook).toHaveBeenCalledWith('sb1', 'spell1');
-            expect(mockAddSpellToSpellbook).toHaveBeenCalledWith('sb1', 'spell2');
+            expect(mockAddSpellsToSpellbook).toHaveBeenCalledTimes(1);
+            expect(mockAddSpellsToSpellbook).toHaveBeenCalledWith('sb1', ['spell1', 'spell2']);
             expect(mockRefreshSpellbooks).toHaveBeenCalled();
             expect(mockOnSuccess).toHaveBeenCalledWith('2 spells added to spellbook');
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
         });
 
-        it('should handle partial failures when adding spells', async () => {
-            mockAddSpellToSpellbook
-                .mockResolvedValueOnce(undefined) // spell1 succeeds
-                .mockRejectedValueOnce(new Error('Failed')); // spell2 fails
 
-            const selectedSpells = new Set(['spell1', 'spell2']);
 
-            const { result } = renderHook(() => useSpellbookMutations({
-                ...defaultProps,
-                selectedSpellIds: selectedSpells,
-                targetSpellbookId: 'sb1',
-            }));
-
-            await act(async () => {
-                await result.current.handleAddToSpellbook();
-            });
-
-            expect(mockRefreshSpellbooks).toHaveBeenCalled();
-            expect(mockOnSuccess).toHaveBeenCalledWith('Added 1 spells. Failed to add 1 spells.');
-            expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
-        });
-
-        it('should handle total failure when adding spells', async () => {
-            mockAddSpellToSpellbook.mockRejectedValue(new Error('Failed'));
+        it('should handle failure when adding spells', async () => {
+            mockAddSpellsToSpellbook.mockRejectedValue(new Error('Failed'));
 
             const selectedSpells = new Set(['spell1']);
 
@@ -194,7 +173,7 @@ describe('useSpellbookMutations', () => {
         it('should create spellbook and add pending spells', async () => {
             const newSpellbook = { id: 'new-sb', name: 'New Book' };
             mockCreateSpellbook.mockResolvedValue(newSpellbook);
-            mockAddSpellToSpellbook.mockResolvedValue(undefined);
+            mockAddSpellsToSpellbook.mockResolvedValue(undefined);
 
             const pendingSpells = new Set(['spell1']);
             const { result } = renderHook(() => useSpellbookMutations({
@@ -206,7 +185,7 @@ describe('useSpellbookMutations', () => {
                 await result.current.handleCreateSpellbook({ name: 'New Book' });
             });
 
-            expect(mockAddSpellToSpellbook).toHaveBeenCalledWith('new-sb', 'spell1');
+            expect(mockAddSpellsToSpellbook).toHaveBeenCalledWith('new-sb', ['spell1']);
             expect(mockOnSuccess).toHaveBeenCalledWith('Spellbook created with 1 spell');
             expect(mockSetPendingSpellIds).toHaveBeenCalledWith(new Set());
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());

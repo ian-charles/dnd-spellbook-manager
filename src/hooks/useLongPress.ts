@@ -6,6 +6,9 @@ interface UseLongPressOptions {
     delay?: number;
 }
 
+const DEFAULT_LONG_PRESS_DELAY = 500;
+const DEFAULT_MOVEMENT_THRESHOLD = 10;
+
 /**
  * Custom hook for handling long-press touch events.
  * 
@@ -15,7 +18,11 @@ interface UseLongPressOptions {
  * @param options.delay Duration in ms to trigger long press (default: 500)
  * @returns Object containing touch event handlers
  */
-export function useLongPress({ onLongPress, threshold = 10, delay = 500 }: UseLongPressOptions) {
+export function useLongPress({
+    onLongPress,
+    threshold = DEFAULT_MOVEMENT_THRESHOLD,
+    delay = DEFAULT_LONG_PRESS_DELAY
+}: UseLongPressOptions) {
     const longPressTimer = useRef<NodeJS.Timeout | null>(null);
     const longPressStartPos = useRef<{ x: number; y: number } | null>(null);
 
@@ -29,6 +36,9 @@ export function useLongPress({ onLongPress, threshold = 10, delay = 500 }: UseLo
     }, []);
 
     const handleTouchStart = useCallback((e: React.TouchEvent) => {
+        // Ignore multi-touch
+        if (e.touches.length > 1) return;
+
         const touch = e.touches[0];
         longPressStartPos.current = { x: touch.clientX, y: touch.clientY };
 
@@ -39,6 +49,15 @@ export function useLongPress({ onLongPress, threshold = 10, delay = 500 }: UseLo
 
     const handleTouchMove = useCallback((e: React.TouchEvent) => {
         if (!longPressStartPos.current) return;
+
+        if (e.touches.length === 0) {
+            if (longPressTimer.current) {
+                clearTimeout(longPressTimer.current);
+                longPressTimer.current = null;
+            }
+            longPressStartPos.current = null;
+            return;
+        }
 
         const touch = e.touches[0];
         const deltaX = Math.abs(touch.clientX - longPressStartPos.current.x);

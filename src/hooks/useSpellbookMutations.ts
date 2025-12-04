@@ -4,7 +4,7 @@ import { MESSAGES } from '../constants/messages';
 
 interface UseSpellbookMutationsProps {
     spellbooks: Spellbook[];
-    addSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
+    addSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
     createSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
     refreshSpellbooks: () => Promise<void>;
     onSuccess: (message: string) => void;
@@ -18,9 +18,20 @@ interface UseSpellbookMutationsProps {
     targetSpellbookId: string;
 }
 
+/**
+ * Custom hook for handling spellbook mutations (adding spells, creating spellbooks from selection).
+ * 
+ * Manages the state and logic for:
+ * - Adding selected spells to an existing spellbook
+ * - Creating a new spellbook with selected spells
+ * - Validating selection and target spellbook
+ * 
+ * @param props - Hook properties
+ * @returns Object containing mutation state and handlers
+ */
 export function useSpellbookMutations({
     spellbooks,
-    addSpellToSpellbook,
+    addSpellsToSpellbook,
     createSpellbook,
     refreshSpellbooks,
     onSuccess,
@@ -35,6 +46,10 @@ export function useSpellbookMutations({
 }: UseSpellbookMutationsProps) {
     const [isAddingSpells, setIsAddingSpells] = useState(false);
 
+    /**
+     * Handles adding selected spells to a target spellbook.
+     * Validates selection and target, then performs batch add.
+     */
     const handleAddToSpellbook = async () => {
         if (selectedSpellIds.size === 0) {
             onInfo('No Spells Selected', 'Please select at least one spell to add to a spellbook.');
@@ -62,28 +77,14 @@ export function useSpellbookMutations({
 
         setIsAddingSpells(true);
         try {
-            // Add all selected spells to the spellbook in parallel
-            const results = await Promise.allSettled(
-                Array.from(selectedSpellIds).map(spellId => addSpellToSpellbook(targetSpellbookId, spellId))
-            );
-
-            // Check for failures
-            const failed = results.filter(r => r.status === 'rejected');
+            // Add all selected spells to the spellbook in a single batch
+            await addSpellsToSpellbook(targetSpellbookId, Array.from(selectedSpellIds));
 
             // Ensure spellbooks list is refreshed to show updated spell counts
             await refreshSpellbooks();
 
-            if (failed.length > 0) {
-                const successCount = selectedSpellIds.size - failed.length;
-                if (successCount > 0) {
-                    onSuccess(`Added ${successCount} spells. Failed to add ${failed.length} spells.`);
-                } else {
-                    throw new Error(`Failed to add any spells to the spellbook.`);
-                }
-            } else {
-                const count = selectedSpellIds.size; // Calculate count BEFORE clearing
-                onSuccess(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
-            }
+            const count = selectedSpellIds.size;
+            onSuccess(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
 
             setSelectedSpellIds(new Set()); // Clear selection after adding
         } catch (error) {
@@ -96,6 +97,11 @@ export function useSpellbookMutations({
         }
     };
 
+    /**
+     * Handles creating a new spellbook, optionally adding pending spells.
+     * 
+     * @param input - Spellbook creation input
+     */
     const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
         try {
             const newSpellbook = await createSpellbook(input);
@@ -104,28 +110,14 @@ export function useSpellbookMutations({
             if (pendingSpellIds.size > 0) {
                 setIsAddingSpells(true);
 
-                // Add spells in parallel
-                const results = await Promise.allSettled(
-                    Array.from(pendingSpellIds).map(spellId => addSpellToSpellbook(newSpellbook.id, spellId))
-                );
-
-                const failed = results.filter(r => r.status === 'rejected');
+                // Add spells in a single batch
+                await addSpellsToSpellbook(newSpellbook.id, Array.from(pendingSpellIds));
 
                 // Ensure spellbooks list is refreshed to show updated spell counts
                 await refreshSpellbooks();
 
-                if (failed.length > 0) {
-                    // If some failed, we still show success for the ones that worked, but warn about failures
-                    const successCount = pendingSpellIds.size - failed.length;
-                    if (successCount > 0) {
-                        onSuccess(`Spellbook created with ${successCount} spells. Failed to add ${failed.length} spells.`);
-                    } else {
-                        throw new Error(`Failed to add any spells to the new spellbook.`);
-                    }
-                } else {
-                    const count = pendingSpellIds.size;
-                    onSuccess(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
-                }
+                const count = pendingSpellIds.size;
+                onSuccess(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
 
                 setPendingSpellIds(new Set());
                 setSelectedSpellIds(new Set());

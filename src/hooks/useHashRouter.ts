@@ -17,47 +17,67 @@ import { useState, useEffect } from 'react';
 
 export type View = 'browse' | 'spellbooks' | 'spellbook-detail';
 
-interface RouteState {
+export interface RouteState {
   currentView: View;
   selectedSpellbookId: string | null;
+  queryParams: URLSearchParams;
 }
 
 interface HashRouterReturn {
   currentView: View;
   selectedSpellbookId: string | null;
+  queryParams: URLSearchParams;
   navigateToBrowse: () => void;
   navigateToSpellbooks: () => void;
   navigateToSpellbookDetail: (spellbookId: string) => void;
+  navigateToCopySpellbook: (spellbookId: string) => void;
 }
 
 export function useHashRouter(): HashRouterReturn {
   const [route, setRoute] = useState<RouteState>({
     currentView: 'browse',
     selectedSpellbookId: null,
+    queryParams: new URLSearchParams(),
   });
 
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.slice(1); // Remove '#' prefix
+      if (typeof window === 'undefined') return;
+      try {
+        const rawHash = window.location.hash.slice(1); // Remove '#' prefix
+        const [path, query] = rawHash.split('?');
+        const queryParams = new URLSearchParams(query);
 
-      if (hash.startsWith('/spellbooks/')) {
-        // Detail view: #/spellbooks/:id
-        const id = hash.split('/')[2];
-        setRoute({
-          currentView: 'spellbook-detail',
-          selectedSpellbookId: id,
-        });
-      } else if (hash === '/spellbooks') {
-        // List view: #/spellbooks
-        setRoute({
-          currentView: 'spellbooks',
-          selectedSpellbookId: null,
-        });
-      } else {
-        // Browse view: # or #/ or anything else
+        if (path.startsWith('/spellbooks/')) {
+          // Detail view: #/spellbooks/:id
+          const id = path.split('/')[2];
+          setRoute({
+            currentView: 'spellbook-detail',
+            selectedSpellbookId: id,
+            queryParams,
+          });
+        } else if (path === '/spellbooks') {
+          // List view: #/spellbooks
+          setRoute({
+            currentView: 'spellbooks',
+            selectedSpellbookId: null,
+            queryParams,
+          });
+        } else {
+          // Browse view: # or #/ or anything else
+          setRoute({
+            currentView: 'browse',
+            selectedSpellbookId: null,
+            queryParams,
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing hash route:', error);
+        // Fallback to browse view
         setRoute({
           currentView: 'browse',
           selectedSpellbookId: null,
+          queryParams: new URLSearchParams(),
         });
       }
     };
@@ -73,22 +93,28 @@ export function useHashRouter(): HashRouterReturn {
   }, []);
 
   const navigateToBrowse = () => {
-    window.location.hash = '';
+    if (typeof window !== 'undefined') window.location.hash = '';
   };
 
   const navigateToSpellbooks = () => {
-    window.location.hash = '/spellbooks';
+    if (typeof window !== 'undefined') window.location.hash = '/spellbooks';
   };
 
   const navigateToSpellbookDetail = (spellbookId: string) => {
-    window.location.hash = `/spellbooks/${spellbookId}`;
+    if (typeof window !== 'undefined') window.location.hash = `/spellbooks/${spellbookId}`;
+  };
+
+  const navigateToCopySpellbook = (spellbookId: string) => {
+    if (typeof window !== 'undefined') window.location.hash = `/spellbooks?copy=${spellbookId}`;
   };
 
   return {
     currentView: route.currentView,
     selectedSpellbookId: route.selectedSpellbookId,
+    queryParams: route.queryParams,
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
+    navigateToCopySpellbook,
   };
 }

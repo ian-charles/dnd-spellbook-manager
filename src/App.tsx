@@ -34,7 +34,7 @@ function App() {
   const {
     spellbooks,
     loading: spellbooksLoading,
-    addSpellToSpellbook,
+    addSpellsToSpellbook,
     createSpellbook,
     deleteSpellbook,
     refreshSpellbooks,
@@ -47,6 +47,7 @@ function App() {
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
+    navigateToCopySpellbook,
   } = useHashRouter();
 
   // Toast hook for success messages
@@ -100,7 +101,7 @@ function App() {
           spells={spells}
           spellbooks={spellbooks}
           loading={loading}
-          addSpellToSpellbook={addSpellToSpellbook}
+          addSpellsToSpellbook={addSpellsToSpellbook}
           createSpellbook={createSpellbook}
           refreshSpellbooks={refreshSpellbooks}
           onSuccess={displayToast}
@@ -118,7 +119,7 @@ function App() {
           onCreateSpellbook={createSpellbook}
           onDeleteSpellbook={deleteSpellbook}
           onRefreshSpellbooks={refreshSpellbooks}
-          onAddSpellToSpellbook={addSpellToSpellbook}
+          onAddSpellsToSpellbook={addSpellsToSpellbook}
         />
       )}
 
@@ -128,7 +129,7 @@ function App() {
           spellbookId={selectedSpellbookId}
           onBack={navigateToSpellbooks}
           onCopySpellbook={() => {
-            window.location.hash = `#spellbooks?copy=${selectedSpellbookId}`;
+            navigateToCopySpellbook(selectedSpellbookId);
           }}
         />
       )}

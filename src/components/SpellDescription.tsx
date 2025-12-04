@@ -1,7 +1,21 @@
 import './SpellDescription.css';
 
+/**
+ * Props for the SpellDescription component.
+ */
 interface SpellDescriptionProps {
+    /**
+     * The spell description text to parse and render.
+     * Supports markdown syntax including:
+     * - Bold (**text**)
+     * - Italic (*text*)
+     * - Tables (standard markdown table syntax)
+     * - Dice notation highlighting (e.g., 1d6, d20)
+     */
     text: string;
+    /**
+     * Optional CSS class name for the wrapper div.
+     */
     className?: string;
 }
 
@@ -12,11 +26,6 @@ interface SpellDescriptionProps {
 // - Number suffix (4, 6, 8, 10, 12, 20, 100)
 const VALID_DICE_TYPES = '(?:4|6|8|10|12|20|100)';
 
-// Regex to match dice notations like 1d4, 2d6, d20, 10d100, etc.
-// Matches:
-// - Optional number prefix (e.g., "1" in "1d6")
-// - "d" character (case insensitive)
-// - Number suffix (4, 6, 8, 10, 12, 20, 100)
 // Using a capturing group to include the separator in split results
 const SPLIT_REGEX = new RegExp(`(\\b\\d*d${VALID_DICE_TYPES}\\b)`, 'gi');
 
@@ -70,7 +79,11 @@ function MarkdownTable({ lines }: { lines: string[] }) {
     // React's JSX automatically escapes text content, preventing XSS attacks
     // See test at line 155 for XSS protection verification
     const parseRow = (line: string) => {
-        let cells = line.split('|');
+        // 1. Replace escaped pipes with a placeholder
+        const placeholder = '__ESCAPED_PIPE__';
+        const safeLine = line.replace(/\\\|/g, placeholder);
+
+        let cells = safeLine.split('|');
         // Remove first and last if empty (from leading/trailing pipes)
         // e.g. "| a | b |" -> ["", " a ", " b ", ""] -> [" a ", " b "]
         if (cells.length > 0 && cells[0].trim() === '') {
@@ -80,7 +93,8 @@ function MarkdownTable({ lines }: { lines: string[] }) {
             cells = cells.slice(0, -1);
         }
 
-        return cells.map(cell => cell.trim());
+        // 3. Restore pipes and trim
+        return cells.map(cell => cell.replace(new RegExp(placeholder, 'g'), '|').trim());
     };
 
     const headers = parseRow(headerLine);
@@ -169,7 +183,7 @@ function MarkdownItalic({ text }: { text: string }) {
  * <SpellDescription text="Deals **1d6** fire damage" />
  */
 export function SpellDescription({ text, className = '' }: SpellDescriptionProps) {
-    if (!text || typeof text !== 'string') return null;
+    if (!text) return null;
 
     // Split by newlines to process blocks
     const lines = text.split('\n');

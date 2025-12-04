@@ -11,12 +11,12 @@ type SortDirection = 'asc' | 'desc';
  * 
  * @param spellbooks - The list of spellbooks to filter and sort
  * @returns Object containing state and handlers for filtering and sorting:
- * - searchQuery: Current search query string
- * - setSearchQuery: Function to update search query
- * - sortColumn: Current column being sorted
- * - sortDirection: Current sort direction ('asc' or 'desc')
- * - handleSort: Function to handle column header clicks
- * - filteredAndSortedSpellbooks: Resulting list of spellbooks after filtering and sorting
+ * - `searchQuery`: Current search query string
+ * - `setSearchQuery`: Function to update search query
+ * - `sortColumn`: Current column being sorted
+ * - `sortDirection`: Current sort direction ('asc' or 'desc')
+ * - `handleSort`: Function to handle column header clicks
+ * - `filteredAndSortedSpellbooks`: Resulting list of spellbooks after filtering and sorting
  */
 export function useSpellbookListState(spellbooks: Spellbook[]) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -70,13 +70,31 @@ export function useSpellbookListState(spellbooks: Spellbook[]) {
 
             if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
             if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-            return 0;
+
+            // Secondary sort by name (always asc)
+            return a.name.localeCompare(b.name);
         });
 
         return sorted;
     }, [spellbooks, searchQuery, sortColumn, sortDirection]);
 
+    const handleSearch = (query: string) => {
+        // Basic sanitization and length limit
+        if (query.length > 100) {
+            setSearchQuery(query.slice(0, 100));
+        } else {
+            setSearchQuery(query);
+        }
+    };
+
     const handleSort = (column: SortColumn) => {
+        // Validate column exists in allowed values
+        const validColumns: SortColumn[] = ['name', 'spells', 'ability', 'attack', 'saveDC', 'updated'];
+        if (!validColumns.includes(column)) {
+            console.warn(`Invalid sort column: ${column}`);
+            return;
+        }
+
         if (sortColumn === column) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
@@ -87,7 +105,7 @@ export function useSpellbookListState(spellbooks: Spellbook[]) {
 
     return {
         searchQuery,
-        setSearchQuery,
+        setSearchQuery: handleSearch,
         sortColumn,
         sortDirection,
         handleSort,

@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useSpellbookOperations } from './useSpellbookOperations';
 import { Spellbook } from '../types/spellbook';
 import { exportImportService } from '../services/exportImport.service';
@@ -19,7 +19,7 @@ describe('useSpellbookOperations', () => {
     const mockOnCreateSpellbook = vi.fn();
     const mockOnDeleteSpellbook = vi.fn();
     const mockOnRefreshSpellbooks = vi.fn();
-    const mockOnAddSpellToSpellbook = vi.fn();
+    const mockOnAddSpellsToSpellbook = vi.fn();
     const mockSetAlertDialog = vi.fn();
     const mockCloseConfirm = vi.fn();
 
@@ -28,10 +28,19 @@ describe('useSpellbookOperations', () => {
         onCreateSpellbook: mockOnCreateSpellbook,
         onDeleteSpellbook: mockOnDeleteSpellbook,
         onRefreshSpellbooks: mockOnRefreshSpellbooks,
-        onAddSpellToSpellbook: mockOnAddSpellToSpellbook,
+        onAddSpellsToSpellbook: mockOnAddSpellsToSpellbook,
         setAlertDialog: mockSetAlertDialog,
         closeConfirm: mockCloseConfirm,
     };
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+        vi.useRealTimers();
+    });
 
     it('should handle create spellbook', async () => {
         mockOnCreateSpellbook.mockResolvedValue({ id: '2', name: 'New Spellbook', spells: [] });
@@ -65,7 +74,7 @@ describe('useSpellbookOperations', () => {
         });
 
         expect(mockOnCreateSpellbook).toHaveBeenCalled();
-        expect(mockOnAddSpellToSpellbook).toHaveBeenCalledWith('2', 'fireball');
+        expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('2', ['fireball']);
         expect(mockOnRefreshSpellbooks).toHaveBeenCalled();
     });
     it('should handle create spellbook failure', async () => {
@@ -120,6 +129,70 @@ describe('useSpellbookOperations', () => {
         expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
             isOpen: true,
             variant: 'error',
+        }));
+    });
+
+    it('should handle failure when copying spells', async () => {
+        // Create a source spellbook with multiple spells for this test
+        const multiSpellBook = {
+            ...mockSpellbooks[0],
+            spells: [
+                { spellId: 'fireball', prepared: true, notes: '' },
+                { spellId: 'magic-missile', prepared: true, notes: '' }
+            ]
+        };
+
+        const propsWithMultiSpell = {
+            ...defaultProps,
+            spellbooks: [multiSpellBook]
+        };
+
+        mockOnCreateSpellbook.mockResolvedValue({ id: '2', name: 'Copy', spells: [] });
+        const { result } = renderHook(() => useSpellbookOperations(propsWithMultiSpell));
+
+        // Setup copy data
+        act(() => {
+            result.current.handleCopy('1');
+        });
+
+        // Mock batch add to fail
+        mockOnAddSpellsToSpellbook.mockRejectedValue(new Error('Failed to add spells'));
+
+        await act(async () => {
+            await result.current.handleCreateSpellbook({ name: 'Copy' });
+        });
+
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            title: 'Copy Failed',
+            variant: 'warning',
+        }));
+    });
+
+    it('should handle import with validation errors', async () => {
+        const { result } = renderHook(() => useSpellbookOperations(defaultProps));
+
+        // Mock file with text method
+        const file = {
+            text: vi.fn().mockResolvedValue('{}'),
+        };
+        const event = { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+        // Mock import to return errors
+        (exportImportService.importSpellbooks as any).mockResolvedValue({
+            imported: 1,
+            skipped: 0,
+            errors: ['Invalid spellbook format'],
+        });
+
+        await act(async () => {
+            await result.current.handleImport(event);
+        });
+
+        expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({
+            isOpen: true,
+            title: expect.stringContaining('Import Completed with Errors'),
+            variant: 'warning',
         }));
     });
 });

@@ -4,16 +4,29 @@ import { SortDirection } from '../../hooks/useSpellSorting';
 
 export type SortColumn = 'name' | 'spells' | 'ability' | 'attack' | 'saveDC' | 'updated';
 
-interface SpellbookListTableProps {
+/**
+ * Props for the SpellbookListTable component.
+ */
+export interface SpellbookListTableProps {
+    /** List of spellbooks to display */
     spellbooks: Spellbook[];
+    /** Current sort column */
     sortColumn: SortColumn;
+    /** Current sort direction */
     sortDirection: SortDirection;
+    /** Callback to update sort column */
     onSort: (column: SortColumn) => void;
+    /** Callback when a spellbook is clicked */
     onSpellbookClick: (id: string) => void;
+    /** Callback when the copy button is clicked */
     onCopy: (id: string) => void;
+    /** Callback when the delete button is clicked */
     onDelete: (id: string, name: string) => void;
+    /** Callback for touch start event (long press) */
     onTouchStart: (e: React.TouchEvent, spellbook: Spellbook) => void;
+    /** Callback for touch move event */
     onTouchMove: (e: React.TouchEvent) => void;
+    /** Callback for touch end event */
     onTouchEnd: () => void;
 }
 
@@ -106,7 +119,10 @@ export function SpellbookListTable({
                         <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
                             <button
                                 className="btn-secondary-small"
-                                onClick={() => onCopy(spellbook.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onCopy(spellbook.id);
+                                }}
                                 data-testid={`btn-copy-spellbook-${spellbook.id}`}
                                 title="Copy Spellbook"
                                 aria-label={`Copy spellbook ${spellbook.name}`}
@@ -115,7 +131,10 @@ export function SpellbookListTable({
                             </button>
                             <button
                                 className="btn-danger-small"
-                                onClick={() => onDelete(spellbook.id, spellbook.name)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(spellbook.id, spellbook.name);
+                                }}
                                 data-testid={`btn-delete-spellbook-${spellbook.id}`}
                                 title="Delete Spellbook"
                                 aria-label={`Delete spellbook ${spellbook.name}`}

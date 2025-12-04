@@ -1,11 +1,19 @@
 import { MESSAGES } from '../../constants/messages';
 import { LoadingButton } from '../LoadingButton';
 
-interface SpellbookListHeaderProps {
+/**
+ * Props for the SpellbookListHeader component.
+ */
+export interface SpellbookListHeaderProps {
+    /** Number of spellbooks */
     spellbookCount: number;
+    /** Whether an import operation is in progress */
     importing: boolean;
+    /** Callback when the export button is clicked */
     onExport: () => void;
+    /** Callback when the import button is clicked */
     onImportClick: () => void;
+    /** Callback when the create button is clicked */
     onCreateClick: () => void;
 }
 

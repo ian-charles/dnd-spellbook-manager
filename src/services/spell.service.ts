@@ -27,7 +27,7 @@ export class SpellService {
       this.spells = data.spells;
       this.loaded = true;
 
-      console.log(`✅ Loaded ${this.spells.length} spells`);
+
     } catch (error) {
       console.error('❌ Error loading spells:', error);
       throw error;

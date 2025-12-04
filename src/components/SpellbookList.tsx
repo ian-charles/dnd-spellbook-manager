@@ -13,6 +13,7 @@ import { useDialogs } from '../hooks/useDialogs';
 import { useSpellbookListState } from '../hooks/useSpellbookListState';
 import { useSpellbookOperations } from '../hooks/useSpellbookOperations';
 import { useContextMenu } from '../hooks/useContextMenu';
+import { useHashRouter } from '../hooks/useHashRouter';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -22,7 +23,7 @@ interface SpellbookListProps {
   onCreateSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
   onDeleteSpellbook: (id: string) => Promise<void>;
   onRefreshSpellbooks: () => Promise<void>;
-  onAddSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
+  onAddSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
 }
 
 export function SpellbookList({
@@ -32,7 +33,7 @@ export function SpellbookList({
   onCreateSpellbook,
   onDeleteSpellbook,
   onRefreshSpellbooks,
-  onAddSpellToSpellbook,
+  onAddSpellsToSpellbook,
 }: SpellbookListProps) {
   // Custom hooks
   const {
@@ -67,12 +68,13 @@ export function SpellbookList({
     handleExport,
     handleImportClick,
     handleImport,
+    cancelOperation,
   } = useSpellbookOperations({
     spellbooks,
     onCreateSpellbook,
     onDeleteSpellbook,
     onRefreshSpellbooks,
-    onAddSpellToSpellbook,
+    onAddSpellsToSpellbook,
     setAlertDialog,
     closeConfirm,
   });
@@ -83,16 +85,17 @@ export function SpellbookList({
     spellbookName: string;
   }>();
 
+  const { queryParams, navigateToSpellbooks } = useHashRouter();
+
   // Handle copy from URL parameter
   useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.split('?')[1]);
-    const copyId = params.get('copy');
+    const copyId = queryParams.get('copy');
     if (copyId && spellbooks.length > 0) {
       handleCopy(copyId);
-      // Clear the parameter from URL
-      window.location.hash = '#spellbooks';
+      // Clear the parameter from URL by navigating to base spellbooks route
+      navigateToSpellbooks();
     }
-  }, [spellbooks]);
+  }, [spellbooks, queryParams, navigateToSpellbooks]);
 
   // Long-press handlers for mobile context menu
   const pendingSpellbook = useRef<Spellbook | null>(null);
@@ -155,7 +158,7 @@ export function SpellbookList({
         type="file"
         accept="application/json,.json"
         onChange={handleImport}
-        style={{ display: 'none' }}
+        className="hidden-file-input"
         data-testid="file-input-import"
       />
 
@@ -207,6 +210,7 @@ export function SpellbookList({
       <CreateSpellbookModal
         isOpen={createModalOpen}
         onClose={() => {
+          cancelOperation();
           setCreateModalOpen(false);
           setCopyData(undefined);
         }}
@@ -243,7 +247,6 @@ export function SpellbookList({
         <div
           className="context-menu"
           style={{
-            position: 'fixed',
             left: `${contextMenu.x}px`,
             top: `${contextMenu.y}px`,
           }}

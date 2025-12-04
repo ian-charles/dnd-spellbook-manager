@@ -79,4 +79,46 @@ describe('useDialogs', () => {
             variant: 'warning',
         });
     });
+
+    it('should handle rapid consecutive calls to showConfirm', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        act(() => {
+            result.current.showConfirm('1', 'First');
+            result.current.showConfirm('2', 'Second');
+        });
+
+        // Should show the last one
+        expect(result.current.confirmDialog).toEqual({
+            isOpen: true,
+            spellbookId: '2',
+            spellbookName: 'Second',
+        });
+    });
+
+    it('should handle closeConfirm when already closed', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        // Ensure initially closed
+        expect(result.current.confirmDialog.isOpen).toBe(false);
+
+        act(() => {
+            result.current.closeConfirm();
+        });
+
+        expect(result.current.confirmDialog.isOpen).toBe(false);
+    });
+
+    it('should handle closeAlert when already closed', () => {
+        const { result } = renderHook(() => useDialogs());
+
+        // Ensure initially closed
+        expect(result.current.alertDialog.isOpen).toBe(false);
+
+        act(() => {
+            result.current.closeAlert();
+        });
+
+        expect(result.current.alertDialog.isOpen).toBe(false);
+    });
 });

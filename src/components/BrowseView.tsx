@@ -13,7 +13,7 @@ interface BrowseViewProps {
     spells: Spell[];
     spellbooks: Spellbook[];
     loading: boolean;
-    addSpellToSpellbook: (spellbookId: string, spellId: string) => Promise<void>;
+    addSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
     createSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
     refreshSpellbooks: () => Promise<void>;
     onSuccess: (message: string) => void;
@@ -25,7 +25,7 @@ export function BrowseView({
     spells,
     spellbooks,
     loading,
-    addSpellToSpellbook,
+    addSpellsToSpellbook,
     createSpellbook,
     refreshSpellbooks,
     onSuccess,
@@ -59,7 +59,7 @@ export function BrowseView({
         handleCreateSpellbook,
     } = useSpellbookMutations({
         spellbooks,
-        addSpellToSpellbook,
+        addSpellsToSpellbook,
         createSpellbook,
         refreshSpellbooks,
         onSuccess,

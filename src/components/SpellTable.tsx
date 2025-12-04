@@ -1,10 +1,11 @@
 
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useRef } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
 import { getLevelText, truncateCastingTime } from '../utils/spellFormatters';
 import { SpellExpansionRow } from './SpellExpansionRow';
+import { useLongPress } from '../hooks/useLongPress';
 import './SpellTable.css';
 
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -63,6 +64,26 @@ export function SpellTable({
       newSelection.add(spellId);
     }
     onSelectionChange(newSelection);
+  };
+
+  // Long-press handlers for mobile selection
+  const pendingSpell = useRef<Spell | null>(null);
+
+  const {
+    onTouchStart: onTouchStartHook,
+    onTouchMove,
+    onTouchEnd
+  } = useLongPress({
+    onLongPress: () => {
+      if (pendingSpell.current && onSelectionChange) {
+        handleCheckboxToggle(pendingSpell.current.id);
+      }
+    }
+  });
+
+  const handleTouchStart = (e: React.TouchEvent, spell: Spell) => {
+    pendingSpell.current = spell;
+    onTouchStartHook(e);
   };
 
   if (spells.length === 0) {
@@ -126,11 +147,16 @@ export function SpellTable({
           </tr>
         </thead>
         <tbody>
-          {sortedSpells.map((spell) => (
+          {sortedSpells.map((spell) => {
+            const isSelected = selectedSpellIds.has(spell.id);
+            return (
             <Fragment key={spell.id}>
               <tr
                 onClick={() => handleRowClick(spell.id)}
-                className={`spell-row ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                className={`spell-row ${isSelected ? 'selected-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                onTouchStart={(e) => handleTouchStart(e, spell)}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
               >
                 {onSelectionChange && (
                   <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
@@ -174,7 +200,9 @@ export function SpellTable({
                 />
               )}
             </Fragment>
-          ))}
+            );
+          }
+          )}
         </tbody>
       </table>
     </div>

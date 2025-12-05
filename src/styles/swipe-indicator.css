@@ -82,11 +82,8 @@
   color: white;
 }
 
-/* Row content - shifts with swipe */
-.swipe-row-content {
-  position: relative;
-  z-index: 2;
-  background: var(--color-bg-primary);
+/* Row styling for swipe - entire row slides */
+.swipe-container {
   transition: transform 0.1s ease-out;
 }
 

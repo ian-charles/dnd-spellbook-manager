@@ -50,6 +50,10 @@ export function SpellTableRow({
   const showLeftIndicator = swipeState.isSwiping && swipeState.swipeDistance < 0;
   const showRightIndicator = swipeState.isSwiping && swipeState.swipeDistance > 0;
 
+  const rowContentStyle = {
+    transform: swipeState.isSwiping ? `translateX(${swipeState.swipeDistance}px)` : 'translateX(0)',
+  };
+
   return (
     <Fragment key={spell.id}>
       <tr
@@ -87,47 +91,47 @@ export function SpellTableRow({
             isCommitted={isCommitted}
           />
         )}
-        {onSelectionChange && (
-          <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
+        <td className="checkbox-col swipe-row-content" style={onSelectionChange ? rowContentStyle : undefined} onClick={(e) => e.stopPropagation()}>
+          {onSelectionChange && (
             <input
               type="checkbox"
               checked={selectedSpellIds.has(spell.id)}
               onChange={() => onCheckboxToggle(spell.id)}
               data-testid="spell-checkbox"
             />
-          </td>
-        )}
-        <td className="spell-name">
+          )}
+        </td>
+        <td className="spell-name swipe-row-content" style={rowContentStyle}>
           <div className="spell-name-header">
             {formatSpellNameForWrapping(spell.name)}
           </div>
           <span className="level-col mobile-badge" data-level={spell.level}>{getLevelTextMobile(spell.level)}</span>
           <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
         </td>
-        <td className="level-col desktop-only">
+        <td className="level-col desktop-only swipe-row-content" style={rowContentStyle}>
           <span className="desktop-badge level-badge" data-level={spell.level}>
             {getLevelText(spell.level)}
           </span>
         </td>
-        <td className="time-col">
+        <td className="time-col swipe-row-content" style={rowContentStyle}>
           <span className="cell-content">
             {truncateCastingTime(spell.castingTime)}
             {spell.ritual && <span className="badge badge-ritual">R</span>}
           </span>
         </td>
-        <td className="range-col">{spell.range}</td>
-        <td className="duration-col">
+        <td className="range-col swipe-row-content" style={rowContentStyle}>{spell.range}</td>
+        <td className="duration-col swipe-row-content" style={rowContentStyle}>
           <span className="cell-content">
             {spell.duration}
             {spell.concentration && <span className="badge badge-concentration">C</span>}
           </span>
         </td>
-        <td className="school-col desktop-only" data-school={spell.school}>
+        <td className="school-col desktop-only swipe-row-content" style={rowContentStyle} data-school={spell.school}>
           {spell.school}
         </td>
-        <td className="components-col"><ComponentBadges spell={spell} /></td>
-        <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
-        <td className="source-col">{spell.source}</td>
+        <td className="components-col swipe-row-content" style={rowContentStyle}><ComponentBadges spell={spell} /></td>
+        <td className="classes-col swipe-row-content" style={rowContentStyle}><ClassBadges classes={spell.classes} /></td>
+        <td className="source-col swipe-row-content" style={rowContentStyle}>{spell.source}</td>
       </tr>
       {isExpanded && (
         <SpellExpansionRow

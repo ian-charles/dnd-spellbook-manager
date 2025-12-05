@@ -3,6 +3,7 @@ import { EnrichedSpell } from '../../types/spellbook';
 import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../../utils/spellFormatters';
 import { useSwipe } from '../../hooks/useSwipe';
 import { SpellExpansionRow } from '../SpellExpansionRow';
+import { SwipeIndicator } from '../SwipeIndicator';
 import { ComponentBadges } from '../SpellBadges';
 
 interface SpellbookSpellRowProps {
@@ -64,21 +65,13 @@ export function SpellbookSpellRow({
     transform: swipeState.isSwiping ? `translateX(${swipeState.swipeDistance}px)` : 'translateX(0)',
   };
 
-  const containerClass = `spell-row swipe-container ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''} ${
-    showLeftIndicator ? `swiping-left swipe-action-${leftSwipeAction}` : ''
-  } ${showRightIndicator && !prepared ? 'swiping-right swipe-action-prep' : ''} ${isCommitted ? 'swipe-committed' : ''}`.trim();
-
-  const containerStyle = {
-    '--swipe-progress': `${swipeState.swipeProgress}%`,
-  } as React.CSSProperties;
-
   return (
     <Fragment key={spell.id}>
       <tr
-        className={containerClass}
-        data-testid={`spellbook-spell-${spell.id}`}
-        style={{ ...rowStyle, ...containerStyle }}
         onClick={() => onRowClick(spell.id)}
+        className={`spell-row swipe-container ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''}`}
+        style={rowStyle}
+        data-testid={`spellbook-spell-${spell.id}`}
         onTouchStart={(e) => {
           onTouchStartLongPress(e);
           swipeHandlers.onTouchStart(e);
@@ -95,6 +88,22 @@ export function SpellbookSpellRow({
           swipeHandlers.onTouchCancel(e);
         }}
       >
+        {showLeftIndicator && (
+          <SwipeIndicator
+            action={leftSwipeAction}
+            direction="left"
+            progress={swipeState.swipeProgress}
+            isCommitted={isCommitted}
+          />
+        )}
+        {showRightIndicator && !prepared && (
+          <SwipeIndicator
+            action="prep"
+            direction="right"
+            progress={swipeState.swipeProgress}
+            isCommitted={isCommitted}
+          />
+        )}
         <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
           <input
             type="checkbox"

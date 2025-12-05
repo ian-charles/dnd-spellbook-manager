@@ -9,75 +9,90 @@
   position: relative;
   touch-action: pan-y; /* Allow vertical scrolling, lock horizontal */
   transition: transform 0.1s ease-out;
+  overflow: hidden; /* Clip indicator within row boundaries */
 }
 
-/* Pseudo-element for background indicator - stays in place while row slides */
-.swipe-container::before {
-  content: '';
+/* Cells must be positioned but with lower z-index than indicator */
+.swipe-container > td {
+  position: relative;
+  z-index: 1;
+}
+
+/* Base swipe indicator - covers entire row */
+.swipe-indicator {
   position: absolute;
   top: 0;
-  bottom: 0;
-  width: 100%;
-  opacity: 0;
-  transition: opacity 0.1s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Show indicator when swiping */
-.swipe-container.swiping-left::before,
-.swipe-container.swiping-right::before {
-  opacity: calc(var(--swipe-progress) / 50); /* Fade in from 0-50% */
-}
-
-/* Right swipe - SELECT (Browse Spells) */
-.swipe-container.swiping-right::before {
-  background: light-dark(rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.25));
   left: 0;
-}
-
-.swipe-container.swiping-right.swipe-committed::before {
-  background: light-dark(rgba(34, 197, 94, 0.35), rgba(34, 197, 94, 0.4));
-  opacity: 1;
-}
-
-/* Left swipe - DESELECT (Browse Spells) */
-.swipe-container.swiping-left::before {
-  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.25));
   right: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content */
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 10; /* Above the cells */
+  transition: opacity 0.1s ease;
+  gap: 0.5rem;
 }
 
-.swipe-container.swiping-left.swipe-committed::before {
-  background: light-dark(rgba(148, 163, 184, 0.35), rgba(148, 163, 184, 0.4));
-  opacity: 1;
+.swipe-indicator-icon {
+  font-size: 1.5rem;
 }
 
-/* Spellbook - Right swipe - PREP */
-.swipe-container.swiping-right.swipe-action-prep::before {
-  background: light-dark(rgba(34, 139, 34, 0.3), rgba(46, 125, 50, 0.35));
+/* No left/right positioning needed - always centered */
+.swipe-indicator-left,
+.swipe-indicator-right {
+  justify-content: center;
 }
 
-.swipe-container.swiping-right.swipe-action-prep.swipe-committed::before {
-  background: light-dark(rgba(34, 197, 94, 0.35), rgba(34, 197, 94, 0.4));
-  opacity: 1;
+/* Action-specific colors */
+
+/* SELECT (Browse Spells - swipe right) */
+.swipe-indicator-select {
+  background: light-dark(rgba(34, 197, 94, 0.85), rgba(34, 197, 94, 0.9));
+  color: light-dark(rgb(21, 128, 61), rgb(134, 239, 172));
 }
 
-/* Spellbook - Left swipe - UNPREP */
-.swipe-container.swiping-left.swipe-action-unprep::before {
-  background: light-dark(rgba(100, 100, 100, 0.3), rgba(115, 115, 115, 0.35));
+.swipe-indicator-select.committed {
+  background: light-dark(rgba(34, 197, 94, 0.95), rgba(34, 197, 94, 1));
 }
 
-.swipe-container.swiping-left.swipe-action-unprep.swipe-committed::before {
-  background: light-dark(rgba(100, 100, 100, 0.45), rgba(115, 115, 115, 0.5));
-  opacity: 1;
+/* DESELECT (Browse Spells - swipe left) */
+.swipe-indicator-deselect {
+  background: light-dark(rgba(148, 163, 184, 0.85), rgba(148, 163, 184, 0.9));
+  color: light-dark(rgb(71, 85, 105), rgb(203, 213, 225));
 }
 
-/* Spellbook - Left swipe - REMOVE */
-.swipe-container.swiping-left.swipe-action-remove::before {
-  background: light-dark(rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.35));
+.swipe-indicator-deselect.committed {
+  background: light-dark(rgba(148, 163, 184, 0.95), rgba(148, 163, 184, 1));
 }
 
-.swipe-container.swiping-left.swipe-action-remove.swipe-committed::before {
-  background: light-dark(rgba(239, 68, 68, 0.45), rgba(220, 38, 38, 0.5));
-  opacity: 1;
+/* PREP (Spellbook - swipe right) */
+.swipe-indicator-prep {
+  background: light-dark(rgba(34, 139, 34, 0.85), rgba(46, 125, 50, 0.9));
+  color: light-dark(rgb(21, 128, 61), rgb(134, 239, 172));
+}
+
+.swipe-indicator-prep.committed {
+  background: light-dark(rgba(34, 197, 94, 0.95), rgba(34, 197, 94, 1));
+}
+
+/* UNPREP (Spellbook - swipe left when prepared) */
+.swipe-indicator-unprep {
+  background: light-dark(rgba(100, 100, 100, 0.85), rgba(115, 115, 115, 0.9));
+  color: light-dark(rgb(71, 85, 105), rgb(203, 213, 225));
+}
+
+.swipe-indicator-unprep.committed {
+  background: light-dark(rgba(100, 100, 100, 0.95), rgba(115, 115, 115, 1));
+}
+
+/* REMOVE (Spellbook - swipe left when unprepared) */
+.swipe-indicator-remove {
+  background: light-dark(rgba(239, 68, 68, 0.85), rgba(220, 38, 38, 0.9));
+  color: light-dark(rgb(185, 28, 28), rgb(252, 165, 165));
+}
+
+.swipe-indicator-remove.committed {
+  background: light-dark(rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 1));
 }

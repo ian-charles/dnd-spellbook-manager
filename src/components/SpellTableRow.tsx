@@ -3,6 +3,7 @@ import { Spell } from '../types/spell';
 import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../utils/spellFormatters';
 import { SpellExpansionRow } from './SpellExpansionRow';
 import { useSwipe } from '../hooks/useSwipe';
+import { SwipeIndicator } from './SwipeIndicator';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
 
 interface SpellTableRowProps {
@@ -52,20 +53,12 @@ export function SpellTableRow({
     transform: swipeState.isSwiping ? `translateX(${swipeState.swipeDistance}px)` : 'translateX(0)',
   };
 
-  const containerClass = `spell-row swipe-container ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''} ${
-    showLeftIndicator && onSelectionChange ? 'swiping-left' : ''
-  } ${showRightIndicator && onSelectionChange ? 'swiping-right' : ''} ${isCommitted ? 'swipe-committed' : ''}`.trim();
-
-  const containerStyle = {
-    '--swipe-progress': `${swipeState.swipeProgress}%`,
-  } as React.CSSProperties;
-
   return (
     <Fragment key={spell.id}>
       <tr
         onClick={() => onRowClick(spell.id)}
-        className={containerClass}
-        style={{ ...rowStyle, ...containerStyle }}
+        className={`spell-row swipe-container ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''}`}
+        style={rowStyle}
         onTouchStart={(e) => {
           onTouchStartLongPress(e);
           swipeHandlers.onTouchStart(e);
@@ -82,6 +75,22 @@ export function SpellTableRow({
           swipeHandlers.onTouchCancel(e);
         }}
       >
+        {showLeftIndicator && onSelectionChange && (
+          <SwipeIndicator
+            action="deselect"
+            direction="left"
+            progress={swipeState.swipeProgress}
+            isCommitted={isCommitted}
+          />
+        )}
+        {showRightIndicator && onSelectionChange && (
+          <SwipeIndicator
+            action="select"
+            direction="right"
+            progress={swipeState.swipeProgress}
+            isCommitted={isCommitted}
+          />
+        )}
         {onSelectionChange && (
           <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
             <input

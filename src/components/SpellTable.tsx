@@ -3,7 +3,7 @@ import { useState, Fragment, useRef } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime } from '../utils/spellFormatters';
+import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../utils/spellFormatters';
 import { SpellExpansionRow } from './SpellExpansionRow';
 import { useLongPress } from '../hooks/useLongPress';
 import './SpellTable.css';
@@ -170,10 +170,10 @@ export function SpellTable({
                 )}
                 <td className="spell-name">
                   <div className="spell-name-header">
-                    {spell.name}
+                    {formatSpellNameForWrapping(spell.name)}
                   </div>
                   <span className="level-col mobile-badge">{getLevelTextMobile(spell.level)}</span>
-                  <span className="school-col mobile-badge">{getSchoolAbbreviation(spell.school)}</span>
+                  <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
                 </td>
                 <td className="level-col desktop-only">{getLevelText(spell.level)}</td>
                 <td className="time-col">

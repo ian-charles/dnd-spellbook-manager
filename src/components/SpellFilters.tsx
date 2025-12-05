@@ -164,6 +164,7 @@ export function SpellFilters({
               onClick={() => toggleSchool(school)}
               aria-pressed={state.selectedSchools.includes(school)}
               aria-label={`Filter by school ${school}`}
+              data-school={school}
             >
               {school}
             </button>

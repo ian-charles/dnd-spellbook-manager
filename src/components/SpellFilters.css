@@ -73,15 +73,112 @@
   transition: all var(--transition-base);
 }
 
-.filter-btn:hover:not([data-class]) {
+.filter-btn:hover:not([data-class]):not([data-school]) {
   border-color: var(--color-accent);
   color: var(--color-text-link);
 }
 
-.filter-btn.active:not([data-class]) {
+.filter-btn.active:not([data-class]):not([data-school]) {
   background: var(--color-accent-light);
   border-color: var(--color-accent);
   color: var(--color-text-link);
+}
+
+/* School-specific colors for filter buttons */
+/* Abjuration - Light Blue */
+.filter-btn[data-school="abjuration" i] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e40af, #93c5fd);
+}
+
+.filter-btn[data-school="abjuration" i]:hover,
+.filter-btn[data-school="abjuration" i].active {
+  background: light-dark(rgba(96, 165, 250, 0.35), rgba(96, 165, 250, 0.3));
+}
+
+/* Conjuration - Aqua */
+.filter-btn[data-school="conjuration" i] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#06b6d4, #0891b2);
+  color: light-dark(#0e7490, #67e8f9);
+}
+
+.filter-btn[data-school="conjuration" i]:hover,
+.filter-btn[data-school="conjuration" i].active {
+  background: light-dark(rgba(103, 232, 249, 0.35), rgba(103, 232, 249, 0.3));
+}
+
+/* Divination - Yellow/Gold */
+.filter-btn[data-school="divination" i] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#fbbf24, #eab308);
+  color: light-dark(#b45309, #fde047);
+}
+
+.filter-btn[data-school="divination" i]:hover,
+.filter-btn[data-school="divination" i].active {
+  background: light-dark(rgba(253, 224, 71, 0.35), rgba(253, 224, 71, 0.3));
+}
+
+/* Enchantment - Pink */
+.filter-btn[data-school="enchantment" i] {
+  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15));
+  border-color: light-dark(#ec4899, #db2777);
+  color: light-dark(#be185d, #f9a8d4);
+}
+
+.filter-btn[data-school="enchantment" i]:hover,
+.filter-btn[data-school="enchantment" i].active {
+  background: light-dark(rgba(236, 72, 153, 0.35), rgba(236, 72, 153, 0.3));
+}
+
+/* Evocation - Red */
+.filter-btn[data-school="evocation" i] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#dc2626, #fca5a5);
+}
+
+.filter-btn[data-school="evocation" i]:hover,
+.filter-btn[data-school="evocation" i].active {
+  background: light-dark(rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.3));
+}
+
+/* Illusion - Violet */
+.filter-btn[data-school="illusion" i] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #7c3aed);
+  color: light-dark(#6d28d9, #c4b5fd);
+}
+
+.filter-btn[data-school="illusion" i]:hover,
+.filter-btn[data-school="illusion" i].active {
+  background: light-dark(rgba(196, 181, 253, 0.35), rgba(196, 181, 253, 0.3));
+}
+
+/* Necromancy - Yellow-Green */
+.filter-btn[data-school="necromancy" i] {
+  background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2));
+  border-color: light-dark(#a3e635, #84cc16);
+  color: light-dark(#4d7c0f, #d9f99d);
+}
+
+.filter-btn[data-school="necromancy" i]:hover,
+.filter-btn[data-school="necromancy" i].active {
+  background: light-dark(rgba(217, 249, 157, 0.45), rgba(217, 249, 157, 0.35));
+}
+
+/* Transmutation - Orange */
+.filter-btn[data-school="transmutation" i] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#ea580c, #fdba74);
+}
+
+.filter-btn[data-school="transmutation" i]:hover,
+.filter-btn[data-school="transmutation" i].active {
+  background: light-dark(rgba(251, 146, 60, 0.35), rgba(251, 146, 60, 0.3));
 }
 
 /* Class-specific colors for filter buttons */
@@ -206,10 +303,27 @@
 
 .filter-checkboxes-inline .checkbox-group {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-3);
   align-items: center;
   justify-content: center;
+}
+
+/* When content wraps, stack everything vertically with centered labels */
+@media (max-width: 1100px) {
+  .filter-checkboxes-inline>div {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .filter-checkboxes-inline h3 {
+    text-align: center;
+  }
+
+  .filter-checkboxes-inline .checkbox-group {
+    flex-wrap: wrap;
+  }
 }
 
 .checkbox-label {

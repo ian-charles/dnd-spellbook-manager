@@ -2,7 +2,7 @@ import { Fragment, useRef } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { ComponentBadges } from '../SpellBadges';
-import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime } from '../../utils/spellFormatters';
+import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../../utils/spellFormatters';
 import { useLongPress } from '../../hooks/useLongPress';
 import { SpellExpansionRow } from '../SpellExpansionRow';
 
@@ -117,10 +117,10 @@ export function SpellbookSpellsTable() {
                                         </td>
                                         <td className="spell-name">
                                             <div className="spell-name-header">
-                                                {spell.name}
+                                                {formatSpellNameForWrapping(spell.name)}
                                             </div>
                                             <span className="level-col mobile-badge">{getLevelTextMobile(spell.level)}</span>
-                                            <span className="school-col mobile-badge">{getSchoolAbbreviation(spell.school)}</span>
+                                            <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
                                         </td>
                                         <td className="level-col desktop-only">{getLevelText(spell.level)}</td>
                                         <td className="time-col">

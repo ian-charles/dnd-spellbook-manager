@@ -155,12 +155,83 @@
     padding: 0.125rem 0.2rem !important;
     margin: 0;
     border-radius: var(--radius-md);
-    background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
-    color: light-dark(#6d28d9, #a78bfa);
-    border: 1px solid light-dark(rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.3));
     white-space: nowrap;
     text-align: center;
     vertical-align: middle;
+  }
+
+  .mobile-badge.level-col {
+    min-width: 1.5rem !important;
+    width: 1.5rem !important;
+    background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
+    color: light-dark(#6d28d9, #a78bfa);
+    border: 1px solid light-dark(rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.3));
+  }
+
+  .mobile-badge.school-col {
+    text-transform: uppercase;
+    min-width: 3rem !important;
+    width: 3rem !important;
+    background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+    border: 1px solid light-dark(#64748b, #475569);
+    color: light-dark(#334155, #cbd5e1);
+  }
+
+  /* School-specific colors for mobile badges */
+  /* Abjuration - Light Blue */
+  .mobile-badge.school-col[data-school="abjuration" i] {
+    background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15)) !important;
+    border-color: light-dark(#3b82f6, #2563eb) !important;
+    color: light-dark(#1e40af, #93c5fd) !important;
+  }
+
+  /* Conjuration - Aqua */
+  .mobile-badge.school-col[data-school="conjuration" i] {
+    background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15)) !important;
+    border-color: light-dark(#06b6d4, #0891b2) !important;
+    color: light-dark(#0e7490, #67e8f9) !important;
+  }
+
+  /* Divination - Yellow/Gold */
+  .mobile-badge.school-col[data-school="divination" i] {
+    background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15)) !important;
+    border-color: light-dark(#fbbf24, #eab308) !important;
+    color: light-dark(#b45309, #fde047) !important;
+  }
+
+  /* Enchantment - Pink */
+  .mobile-badge.school-col[data-school="enchantment" i] {
+    background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15)) !important;
+    border-color: light-dark(#ec4899, #db2777) !important;
+    color: light-dark(#be185d, #f9a8d4) !important;
+  }
+
+  /* Evocation - Red */
+  .mobile-badge.school-col[data-school="evocation" i] {
+    background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15)) !important;
+    border-color: light-dark(#ef4444, #dc2626) !important;
+    color: light-dark(#dc2626, #fca5a5) !important;
+  }
+
+  /* Illusion - Violet */
+  .mobile-badge.school-col[data-school="illusion" i] {
+    background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15)) !important;
+    border-color: light-dark(#a78bfa, #7c3aed) !important;
+    color: light-dark(#6d28d9, #c4b5fd) !important;
+  }
+
+  /* Necromancy - Yellow-Green */
+  .mobile-badge.school-col[data-school="necromancy" i] {
+    background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2)) !important;
+    border-color: light-dark(#a3e635, #84cc16) !important;
+    color: light-dark(#4d7c0f, #d9f99d) !important;
+  }
+
+  /* Transmutation - Orange */
+  .mobile-badge.school-col[data-school="transmutation" i] {
+    background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15)) !important;
+    border-color: light-dark(#fb923c, #f97316) !important;
+    color: light-dark(#ea580c, #fdba74) !important;
   }
 
   .mobile-badge.level-col {

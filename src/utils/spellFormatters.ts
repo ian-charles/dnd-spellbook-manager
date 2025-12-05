@@ -26,6 +26,15 @@ export function getSchoolAbbreviation(school: string): string {
 }
 
 /**
+ * Adds zero-width space after "/" to allow line breaks at that point.
+ * Useful for spell names like "Antipathy/Sympathy" or "Antimagic/Magic" on mobile.
+ */
+export function formatSpellNameForWrapping(name: string): string {
+  // Insert zero-width space (U+200B) after forward slash
+  return name.replace(/\//g, '/\u200B');
+}
+
+/**
  * Formats spell components as a compact string (e.g., "V,S,M").
  */
 export function getComponentsText(spell: Spell): string {

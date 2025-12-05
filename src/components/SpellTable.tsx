@@ -6,6 +6,8 @@ import { useSpellSorting } from '../hooks/useSpellSorting';
 import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../utils/spellFormatters';
 import { SpellExpansionRow } from './SpellExpansionRow';
 import { useLongPress } from '../hooks/useLongPress';
+import { useSwipe } from '../hooks/useSwipe';
+import { SwipeIndicator } from './SwipeIndicator';
 import './SpellTable.css';
 
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -149,15 +151,62 @@ export function SpellTable({
         <tbody>
           {sortedSpells.map((spell) => {
             const isSelected = selectedSpellIds.has(spell.id);
+
+            // Swipe handlers for mobile
+            const { swipeState, swipeHandlers } = useSwipe({
+              onSwipeRight: () => {
+                if (onSelectionChange && !isSelected) {
+                  handleCheckboxToggle(spell.id);
+                }
+              },
+              onSwipeLeft: () => {
+                if (onSelectionChange && isSelected) {
+                  handleCheckboxToggle(spell.id);
+                }
+              },
+            });
+
+            const isCommitted = swipeState.swipeProgress >= 100;
+            const showLeftIndicator = swipeState.isSwiping && swipeState.swipeDistance < 0;
+            const showRightIndicator = swipeState.isSwiping && swipeState.swipeDistance > 0;
+
             return (
             <Fragment key={spell.id}>
               <tr
                 onClick={() => handleRowClick(spell.id)}
-                className={`spell-row ${isSelected ? 'selected-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
-                onTouchStart={(e) => handleTouchStart(e, spell)}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
+                className={`spell-row swipe-container ${isSelected ? 'selected-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                onTouchStart={(e) => {
+                  handleTouchStart(e, spell);
+                  swipeHandlers.onTouchStart(e);
+                }}
+                onTouchMove={(e) => {
+                  onTouchMove(e);
+                  swipeHandlers.onTouchMove(e);
+                }}
+                onTouchEnd={(e) => {
+                  onTouchEnd(e);
+                  swipeHandlers.onTouchEnd(e);
+                }}
+                onTouchCancel={(e) => {
+                  swipeHandlers.onTouchCancel(e);
+                }}
               >
+                {showLeftIndicator && onSelectionChange && (
+                  <SwipeIndicator
+                    action="deselect"
+                    direction="left"
+                    progress={swipeState.swipeProgress}
+                    isCommitted={isCommitted}
+                  />
+                )}
+                {showRightIndicator && onSelectionChange && (
+                  <SwipeIndicator
+                    action="select"
+                    direction="right"
+                    progress={swipeState.swipeProgress}
+                    isCommitted={isCommitted}
+                  />
+                )}
                 {onSelectionChange && (
                   <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
                     <input

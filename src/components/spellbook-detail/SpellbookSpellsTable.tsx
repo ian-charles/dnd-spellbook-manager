@@ -4,9 +4,12 @@ import { SortIcon } from '../SortIcon';
 import { ComponentBadges } from '../SpellBadges';
 import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../../utils/spellFormatters';
 import { useLongPress } from '../../hooks/useLongPress';
+import { useSwipe } from '../../hooks/useSwipe';
+import { SwipeIndicator } from '../SwipeIndicator';
 import { SpellExpansionRow } from '../SpellExpansionRow';
 
 import { useSpellbookDetail } from '../../contexts/SpellbookDetailContext';
+import { useSpellbooks } from '../../hooks/useSpellbooks';
 
 export function SpellbookSpellsTable() {
     const {
@@ -15,10 +18,13 @@ export function SpellbookSpellsTable() {
         sortColumn,
         sortDirection,
         selectedSpellIds,
+        spellbook,
         onSort,
         onRowClick,
         onToggleSelected,
     } = useSpellbookDetail();
+
+    const { togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
 
     // Long-press handlers for mobile selection
     const pendingSpell = useRef<EnrichedSpell | null>(null);
@@ -96,16 +102,73 @@ export function SpellbookSpellsTable() {
                         {sortedSpells.map((enrichedSpell) => {
                             const { spell, prepared } = enrichedSpell;
                             const isSelected = selectedSpellIds.has(spell.id);
+
+                            // Swipe handlers for mobile
+                            const { swipeState, swipeHandlers } = useSwipe({
+                                onSwipeRight: () => {
+                                    // Swipe right = Prep spell (only if unprepped)
+                                    if (!prepared && spellbook) {
+                                        togglePrepared(spellbook.id, spell.id);
+                                    }
+                                },
+                                onSwipeLeft: () => {
+                                    if (!spellbook) return;
+
+                                    if (prepared) {
+                                        // If prepared, unprep
+                                        togglePrepared(spellbook.id, spell.id);
+                                    } else {
+                                        // If unprepped, remove
+                                        removeSpellFromSpellbook(spellbook.id, spell.id);
+                                    }
+                                },
+                            });
+
+                            const isCommitted = swipeState.swipeProgress >= 100;
+                            const showLeftIndicator = swipeState.isSwiping && swipeState.swipeDistance < 0;
+                            const showRightIndicator = swipeState.isSwiping && swipeState.swipeDistance > 0;
+
+                            // Determine which action to show for left swipe
+                            const leftSwipeAction = prepared ? 'unprep' : 'remove';
+
                             return (
                                 <Fragment key={spell.id}>
                                     <tr
-                                        className={`spell-row ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
+                                        className={`spell-row swipe-container ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
                                         data-testid={`spellbook-spell-${spell.id}`}
                                         onClick={() => onRowClick(spell.id)}
-                                        onTouchStart={(e) => handleTouchStart(e, enrichedSpell)}
-                                        onTouchMove={onTouchMove}
-                                        onTouchEnd={onTouchEnd}
+                                        onTouchStart={(e) => {
+                                            handleTouchStart(e, enrichedSpell);
+                                            swipeHandlers.onTouchStart(e);
+                                        }}
+                                        onTouchMove={(e) => {
+                                            onTouchMove(e);
+                                            swipeHandlers.onTouchMove(e);
+                                        }}
+                                        onTouchEnd={(e) => {
+                                            onTouchEnd(e);
+                                            swipeHandlers.onTouchEnd(e);
+                                        }}
+                                        onTouchCancel={(e) => {
+                                            swipeHandlers.onTouchCancel(e);
+                                        }}
                                     >
+                                        {showLeftIndicator && (
+                                            <SwipeIndicator
+                                                action={leftSwipeAction}
+                                                direction="left"
+                                                progress={swipeState.swipeProgress}
+                                                isCommitted={isCommitted}
+                                            />
+                                        )}
+                                        {showRightIndicator && !prepared && (
+                                            <SwipeIndicator
+                                                action="prep"
+                                                direction="right"
+                                                progress={swipeState.swipeProgress}
+                                                isCommitted={isCommitted}
+                                            />
+                                        )}
                                         <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
                                             <input
                                                 type="checkbox"

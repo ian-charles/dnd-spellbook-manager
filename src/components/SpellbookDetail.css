@@ -221,14 +221,14 @@
 }
 
 .spellbook-actions .btn-prep {
-  background: light-dark(rgb(22, 163, 74), rgb(34, 197, 94));
+  background: light-dark(rgb(34, 139, 34), rgb(46, 125, 50));
   color: white;
-  border-color: light-dark(rgb(22, 163, 74), rgb(34, 197, 94));
+  border-color: light-dark(rgb(34, 139, 34), rgb(46, 125, 50));
   font-weight: 600;
 }
 
 .spellbook-actions .btn-prep:hover:not(:disabled) {
-  background: light-dark(rgb(21, 128, 61), rgb(74, 222, 128));
+  background: light-dark(rgb(21, 128, 61), rgb(56, 142, 60));
 }
 
 .spellbook-actions .btn-unprep {
@@ -292,14 +292,14 @@
   background: light-dark(rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.22));
 }
 
-/* Selected unprepared spells - higher contrast, no color change */
+/* Selected unprepared spells - blue highlight matching Browse Spells table */
 .spellbook-table .selected-row {
-  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
-  border-left: 3px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.4));
+  background: light-dark(rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.2));
+  border-left: 4px solid light-dark(#3b82f6, #60a5fa);
 }
 
 .spellbook-table .selected-row:hover {
-  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.18));
+  background: light-dark(rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.3));
 }
 
 /* Selected prepared spells - green + higher contrast + border */
@@ -436,11 +436,11 @@
     background: light-dark(rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.17));
   }
 
-  /* Selected unprepared spell styling on mobile - higher contrast + thicker border */
+  /* Selected unprepared spell styling on mobile - blue highlight matching Browse Spells table */
   .spellbook-table .selected-row {
-    background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
-    border: 2px solid light-dark(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.35));
-    border-left: 5px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.4));
+    background: light-dark(rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.2));
+    border: 2px solid light-dark(rgba(96, 165, 250, 0.4), rgba(96, 165, 250, 0.5));
+    border-left: 5px solid light-dark(#3b82f6, #60a5fa);
   }
 
   /* Selected prepared spell styling on mobile - green + higher contrast + thicker border */

@@ -43,6 +43,18 @@
   border-radius: var(--radius-xl);
 }
 
+/* Selected spell styling on desktop/tablet - higher contrast */
+@media (min-width: 426px) {
+  .spell-table .selected-row {
+    background: light-dark(rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.2));
+    border-left: 4px solid light-dark(#3b82f6, #60a5fa);
+  }
+
+  .spell-table .selected-row:hover {
+    background: light-dark(rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.3));
+  }
+}
+
 /* Tablet responsive (426px - 1024px) */
 @media (max-width: 1024px) and (min-width: 426px) {
   .spell-table {

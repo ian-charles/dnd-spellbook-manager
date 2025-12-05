@@ -1,16 +1,11 @@
 
-import { useState, Fragment, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
-import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../utils/spellFormatters';
-import { SpellExpansionRow } from './SpellExpansionRow';
 import { useLongPress } from '../hooks/useLongPress';
-import { useSwipe } from '../hooks/useSwipe';
-import { SwipeIndicator } from './SwipeIndicator';
+import { SpellTableRow } from './SpellTableRow';
 import './SpellTable.css';
-
-import { ComponentBadges, ClassBadges } from './SpellBadges';
 
 interface SpellTableProps {
   spells: Spell[];
@@ -149,117 +144,21 @@ export function SpellTable({
           </tr>
         </thead>
         <tbody>
-          {sortedSpells.map((spell) => {
-            const isSelected = selectedSpellIds.has(spell.id);
-
-            // Swipe handlers for mobile
-            const { swipeState, swipeHandlers } = useSwipe({
-              onSwipeRight: () => {
-                if (onSelectionChange && !isSelected) {
-                  handleCheckboxToggle(spell.id);
-                }
-              },
-              onSwipeLeft: () => {
-                if (onSelectionChange && isSelected) {
-                  handleCheckboxToggle(spell.id);
-                }
-              },
-            });
-
-            const isCommitted = swipeState.swipeProgress >= 100;
-            const showLeftIndicator = swipeState.isSwiping && swipeState.swipeDistance < 0;
-            const showRightIndicator = swipeState.isSwiping && swipeState.swipeDistance > 0;
-
-            return (
-            <Fragment key={spell.id}>
-              <tr
-                onClick={() => handleRowClick(spell.id)}
-                className={`spell-row swipe-container ${isSelected ? 'selected-row' : ''} ${expandedSpellId === spell.id ? 'expanded' : ''}`}
-                onTouchStart={(e) => {
-                  handleTouchStart(e, spell);
-                  swipeHandlers.onTouchStart(e);
-                }}
-                onTouchMove={(e) => {
-                  onTouchMove(e);
-                  swipeHandlers.onTouchMove(e);
-                }}
-                onTouchEnd={(e) => {
-                  onTouchEnd(e);
-                  swipeHandlers.onTouchEnd(e);
-                }}
-                onTouchCancel={(e) => {
-                  swipeHandlers.onTouchCancel(e);
-                }}
-              >
-                {showLeftIndicator && onSelectionChange && (
-                  <SwipeIndicator
-                    action="deselect"
-                    direction="left"
-                    progress={swipeState.swipeProgress}
-                    isCommitted={isCommitted}
-                  />
-                )}
-                {showRightIndicator && onSelectionChange && (
-                  <SwipeIndicator
-                    action="select"
-                    direction="right"
-                    progress={swipeState.swipeProgress}
-                    isCommitted={isCommitted}
-                  />
-                )}
-                {onSelectionChange && (
-                  <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={selectedSpellIds.has(spell.id)}
-                      onChange={() => handleCheckboxToggle(spell.id)}
-                      data-testid="spell-checkbox"
-                    />
-                  </td>
-                )}
-                <td className="spell-name">
-                  <div className="spell-name-header">
-                    {formatSpellNameForWrapping(spell.name)}
-                  </div>
-                  <span className="level-col mobile-badge" data-level={spell.level}>{getLevelTextMobile(spell.level)}</span>
-                  <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
-                </td>
-                <td className="level-col desktop-only">
-                  <span className="desktop-badge level-badge" data-level={spell.level}>
-                    {getLevelText(spell.level)}
-                  </span>
-                </td>
-                <td className="time-col">
-                  <span className="cell-content">
-                    {truncateCastingTime(spell.castingTime)}
-                    {spell.ritual && <span className="badge badge-ritual">R</span>}
-                  </span>
-                </td>
-                <td className="range-col">{spell.range}</td>
-                <td className="duration-col">
-                  <span className="cell-content">
-                    {spell.duration}
-                    {spell.concentration && <span className="badge badge-concentration">C</span>}
-                  </span>
-                </td>
-                <td className="school-col desktop-only" data-school={spell.school}>
-                  {spell.school}
-                </td>
-                <td className="components-col"><ComponentBadges spell={spell} /></td>
-                <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
-                <td className="source-col">{spell.source}</td>
-              </tr>
-              {expandedSpellId === spell.id && (
-                <SpellExpansionRow
-                  spell={spell}
-                  colSpan={onSelectionChange ? 10 : 9}
-                  variant="full"
-                />
-              )}
-            </Fragment>
-            );
-          }
-          )}
+          {sortedSpells.map((spell) => (
+            <SpellTableRow
+              key={spell.id}
+              spell={spell}
+              isSelected={selectedSpellIds.has(spell.id)}
+              isExpanded={expandedSpellId === spell.id}
+              onSelectionChange={onSelectionChange}
+              selectedSpellIds={selectedSpellIds}
+              onRowClick={handleRowClick}
+              onCheckboxToggle={handleCheckboxToggle}
+              onTouchStartLongPress={(e) => handleTouchStart(e, spell)}
+              onTouchMoveLongPress={onTouchMove}
+              onTouchEndLongPress={onTouchEnd}
+            />
+          ))}
         </tbody>
       </table>
     </div>

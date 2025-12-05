@@ -11,12 +11,12 @@ interface SpellExpansionRowProps {
 }
 
 export function SpellExpansionRow({ spell, colSpan, variant = 'full' }: SpellExpansionRowProps) {
-    const formatSchoolLevel = (level: number, school: string) => {
-        const capitalizedSchool = school.charAt(0).toUpperCase() + school.slice(1).toLowerCase();
-        if (level === 0) {
-            return `Cantrip • ${capitalizedSchool}`;
-        }
-        return `Level ${level} • ${capitalizedSchool}`;
+    const getLevelBadgeText = (level: number) => {
+        return level === 0 ? 'Cantrip' : `Level ${level}`;
+    };
+
+    const capitalizeSchool = (school: string) => {
+        return school.charAt(0).toUpperCase() + school.slice(1).toLowerCase();
     };
 
     return (
@@ -26,7 +26,13 @@ export function SpellExpansionRow({ spell, colSpan, variant = 'full' }: SpellExp
                     {variant === 'full' && (
                         <>
                             <div className="spell-meta">
-                                {formatSchoolLevel(spell.level, spell.school)}
+                                <span className="spell-meta-badge level-badge" data-level={spell.level}>
+                                    {getLevelBadgeText(spell.level)}
+                                </span>
+                                <span className="spell-meta-separator">•</span>
+                                <span className="spell-meta-badge school-badge" data-school={spell.school}>
+                                    {capitalizeSchool(spell.school)}
+                                </span>
                             </div>
                             <div className="spell-expanded-details">
                                 <div>

@@ -115,6 +115,151 @@
   border-left: 3px solid var(--color-primary);
 }
 
+/* Desktop table badges for Level and School columns */
+.desktop-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.desktop-badge.level-badge {
+  background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+  border: 1px solid light-dark(#64748b, #475569);
+  color: light-dark(#334155, #cbd5e1);
+}
+
+/* Level-specific colors for desktop level badges */
+/* Level 0 (Cantrip) - Gray/Slate */
+.desktop-badge.level-badge[data-level="0"] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
+}
+
+/* Level 1 - Violet */
+.desktop-badge.level-badge[data-level="1"] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #8b5cf6);
+  color: light-dark(#6d28d9, #ddd6fe);
+}
+
+/* Level 2 - Indigo */
+.desktop-badge.level-badge[data-level="2"] {
+  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
+  border-color: light-dark(#6366f1, #4f46e5);
+  color: light-dark(#3730a3, #c7d2fe);
+}
+
+/* Level 3 - Dark Blue */
+.desktop-badge.level-badge[data-level="3"] {
+  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+/* Level 4 - Light Blue */
+.desktop-badge.level-badge[data-level="4"] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#60a5fa, #3b82f6);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+/* Level 5 - Cyan/Aqua */
+.desktop-badge.level-badge[data-level="5"] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#22d3ee, #06b6d4);
+  color: light-dark(#164e63, #cffafe);
+}
+
+/* Level 6 - Green */
+.desktop-badge.level-badge[data-level="6"] {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+  border-color: light-dark(#4ade80, #22c55e);
+  color: light-dark(#14532d, #dcfce7);
+}
+
+/* Level 7 - Yellow/Gold */
+.desktop-badge.level-badge[data-level="7"] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#facc15, #eab308);
+  color: light-dark(#713f12, #fef9c3);
+}
+
+/* Level 8 - Orange */
+.desktop-badge.level-badge[data-level="8"] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#7c2d12, #fed7aa);
+}
+
+/* Level 9 - Red */
+.desktop-badge.level-badge[data-level="9"] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#7f1d1d, #fecaca);
+}
+
+/* School-specific colors for desktop school column (text only, no badge) */
+/* Abjuration - Light Blue */
+.school-col[data-school="abjuration" i] {
+  color: light-dark(#1e40af, #93c5fd);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+/* Conjuration - Aqua */
+.school-col[data-school="conjuration" i] {
+  color: light-dark(#0e7490, #67e8f9);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+/* Divination - Yellow/Gold */
+.school-col[data-school="divination" i] {
+  color: light-dark(#b45309, #fde047);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+/* Enchantment - Pink */
+.school-col[data-school="enchantment" i] {
+  color: light-dark(#be185d, #f9a8d4);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+/* Evocation - Red */
+.school-col[data-school="evocation" i] {
+  color: light-dark(#dc2626, #fca5a5);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+/* Illusion - Violet */
+.school-col[data-school="illusion" i] {
+  color: light-dark(#6d28d9, #c4b5fd);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+/* Necromancy - Yellow-Green */
+.school-col[data-school="necromancy" i] {
+  color: light-dark(#4d7c0f, #d9f99d);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+/* Transmutation - Orange */
+.school-col[data-school="transmutation" i] {
+  color: light-dark(#ea580c, #fdba74);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
 .spell-expanded-header h3 {
   margin: 0 0 var(--space-2) 0;
   color: var(--color-text-primary);
@@ -122,9 +267,166 @@
 }
 
 .spell-meta {
-  color: var(--color-text-secondary);
-  margin: 0 0 var(--space-4) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: 0 0 0.5rem 0;
   font-size: var(--font-size-base);
+}
+
+.spell-meta-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+}
+
+.spell-meta-badge.level-badge {
+  background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+  border: 1px solid light-dark(#64748b, #475569);
+  color: light-dark(#334155, #cbd5e1);
+}
+
+/* Level-specific colors for expansion level badges */
+/* Level 0 (Cantrip) - Gray/Slate */
+.spell-meta-badge.level-badge[data-level="0"] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
+}
+
+/* Level 1 - Violet */
+.spell-meta-badge.level-badge[data-level="1"] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #8b5cf6);
+  color: light-dark(#6d28d9, #ddd6fe);
+}
+
+/* Level 2 - Indigo */
+.spell-meta-badge.level-badge[data-level="2"] {
+  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
+  border-color: light-dark(#6366f1, #4f46e5);
+  color: light-dark(#3730a3, #c7d2fe);
+}
+
+/* Level 3 - Dark Blue */
+.spell-meta-badge.level-badge[data-level="3"] {
+  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+/* Level 4 - Light Blue */
+.spell-meta-badge.level-badge[data-level="4"] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#60a5fa, #3b82f6);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+/* Level 5 - Cyan/Aqua */
+.spell-meta-badge.level-badge[data-level="5"] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#22d3ee, #06b6d4);
+  color: light-dark(#164e63, #cffafe);
+}
+
+/* Level 6 - Green */
+.spell-meta-badge.level-badge[data-level="6"] {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+  border-color: light-dark(#4ade80, #22c55e);
+  color: light-dark(#14532d, #dcfce7);
+}
+
+/* Level 7 - Yellow/Gold */
+.spell-meta-badge.level-badge[data-level="7"] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#facc15, #eab308);
+  color: light-dark(#713f12, #fef9c3);
+}
+
+/* Level 8 - Orange */
+.spell-meta-badge.level-badge[data-level="8"] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#7c2d12, #fed7aa);
+}
+
+/* Level 9 - Red */
+.spell-meta-badge.level-badge[data-level="9"] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#7f1d1d, #fecaca);
+}
+
+.spell-meta-badge.school-badge {
+  background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+  border: 1px solid light-dark(#64748b, #475569);
+  color: light-dark(#334155, #cbd5e1);
+}
+
+/* School-specific colors for expansion school badges */
+/* Abjuration - Light Blue */
+.spell-meta-badge.school-badge[data-school="abjuration" i] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e40af, #93c5fd);
+}
+
+/* Conjuration - Aqua */
+.spell-meta-badge.school-badge[data-school="conjuration" i] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#06b6d4, #0891b2);
+  color: light-dark(#0e7490, #67e8f9);
+}
+
+/* Divination - Yellow/Gold */
+.spell-meta-badge.school-badge[data-school="divination" i] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#fbbf24, #eab308);
+  color: light-dark(#b45309, #fde047);
+}
+
+/* Enchantment - Pink */
+.spell-meta-badge.school-badge[data-school="enchantment" i] {
+  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15));
+  border-color: light-dark(#ec4899, #db2777);
+  color: light-dark(#be185d, #f9a8d4);
+}
+
+/* Evocation - Red */
+.spell-meta-badge.school-badge[data-school="evocation" i] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#dc2626, #fca5a5);
+}
+
+/* Illusion - Violet */
+.spell-meta-badge.school-badge[data-school="illusion" i] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #7c3aed);
+  color: light-dark(#6d28d9, #c4b5fd);
+}
+
+/* Necromancy - Yellow-Green */
+.spell-meta-badge.school-badge[data-school="necromancy" i] {
+  background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2));
+  border-color: light-dark(#a3e635, #84cc16);
+  color: light-dark(#4d7c0f, #d9f99d);
+}
+
+/* Transmutation - Orange */
+.spell-meta-badge.school-badge[data-school="transmutation" i] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#ea580c, #fdba74);
+}
+
+.spell-meta-separator {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
 }
 
 .spell-expanded-details {
@@ -450,17 +752,6 @@
     margin: var(--space-2) var(--space-4);
   }
 
-  .spell-inline-expansion .spell-meta {
-    font-size: 1rem;
-    margin-bottom: var(--space-4);
-    padding: 0.5rem;
-    background: var(--color-hover);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border-primary);
-    text-align: center;
-    color: var(--color-text-primary);
-    font-weight: var(--font-weight-bold);
-  }
 
   .spell-inline-expansion .spell-expanded-details {
     display: grid;

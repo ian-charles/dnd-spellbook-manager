@@ -168,6 +168,77 @@
     border: 1px solid light-dark(rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.3));
   }
 
+  /* Level-specific colors for mobile level badges */
+  /* Level 0 (Cantrip) - Gray/Slate */
+  .mobile-badge.level-col[data-level="0" i] {
+    background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15)) !important;
+    border-color: light-dark(#94a3b8, #64748b) !important;
+    color: light-dark(#475569, #cbd5e1) !important;
+  }
+
+  /* Level 1 - Violet */
+  .mobile-badge.level-col[data-level="1" i] {
+    background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15)) !important;
+    border-color: light-dark(#a78bfa, #8b5cf6) !important;
+    color: light-dark(#6d28d9, #ddd6fe) !important;
+  }
+
+  /* Level 2 - Indigo */
+  .mobile-badge.level-col[data-level="2" i] {
+    background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15)) !important;
+    border-color: light-dark(#6366f1, #4f46e5) !important;
+    color: light-dark(#3730a3, #c7d2fe) !important;
+  }
+
+  /* Level 3 - Dark Blue */
+  .mobile-badge.level-col[data-level="3" i] {
+    background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15)) !important;
+    border-color: light-dark(#3b82f6, #2563eb) !important;
+    color: light-dark(#1e3a8a, #bfdbfe) !important;
+  }
+
+  /* Level 4 - Light Blue */
+  .mobile-badge.level-col[data-level="4" i] {
+    background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15)) !important;
+    border-color: light-dark(#60a5fa, #3b82f6) !important;
+    color: light-dark(#1e3a8a, #bfdbfe) !important;
+  }
+
+  /* Level 5 - Cyan/Aqua */
+  .mobile-badge.level-col[data-level="5" i] {
+    background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15)) !important;
+    border-color: light-dark(#22d3ee, #06b6d4) !important;
+    color: light-dark(#164e63, #cffafe) !important;
+  }
+
+  /* Level 6 - Green */
+  .mobile-badge.level-col[data-level="6" i] {
+    background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15)) !important;
+    border-color: light-dark(#4ade80, #22c55e) !important;
+    color: light-dark(#14532d, #dcfce7) !important;
+  }
+
+  /* Level 7 - Yellow/Gold */
+  .mobile-badge.level-col[data-level="7" i] {
+    background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15)) !important;
+    border-color: light-dark(#facc15, #eab308) !important;
+    color: light-dark(#713f12, #fef9c3) !important;
+  }
+
+  /* Level 8 - Orange */
+  .mobile-badge.level-col[data-level="8" i] {
+    background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15)) !important;
+    border-color: light-dark(#fb923c, #f97316) !important;
+    color: light-dark(#7c2d12, #fed7aa) !important;
+  }
+
+  /* Level 9 - Red */
+  .mobile-badge.level-col[data-level="9" i] {
+    background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15)) !important;
+    border-color: light-dark(#ef4444, #dc2626) !important;
+    color: light-dark(#7f1d1d, #fecaca) !important;
+  }
+
   .mobile-badge.school-col {
     text-transform: uppercase;
     min-width: 3rem !important;
@@ -299,18 +370,6 @@
     color: light-dark(#1e293b, #e2e8f0);
   }
 
-  .spell-inline-expansion .spell-meta,
-  .spellbook-table .spell-inline-expansion .spell-meta {
-    font-size: 1rem;
-    margin-bottom: var(--space-4);
-    padding: 0.5rem;
-    background: light-dark(rgba(241, 245, 249, 0.6), rgba(15, 23, 42, 0.4));
-    border-radius: var(--radius-lg);
-    border: 1px solid light-dark(rgba(203, 213, 225, 0.6), rgba(100, 116, 139, 0.3));
-    text-align: center;
-    color: light-dark(#1e293b, #e2e8f0);
-    font-weight: var(--font-weight-bold);
-  }
 
   /* Large mobile: 2x2 grid (376px - 425px) */
   @media (min-width: 376px) {

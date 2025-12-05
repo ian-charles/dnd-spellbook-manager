@@ -172,10 +172,14 @@ export function SpellTable({
                   <div className="spell-name-header">
                     {formatSpellNameForWrapping(spell.name)}
                   </div>
-                  <span className="level-col mobile-badge">{getLevelTextMobile(spell.level)}</span>
+                  <span className="level-col mobile-badge" data-level={spell.level}>{getLevelTextMobile(spell.level)}</span>
                   <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
                 </td>
-                <td className="level-col desktop-only">{getLevelText(spell.level)}</td>
+                <td className="level-col desktop-only">
+                  <span className="desktop-badge level-badge" data-level={spell.level}>
+                    {getLevelText(spell.level)}
+                  </span>
+                </td>
                 <td className="time-col">
                   <span className="cell-content">
                     {truncateCastingTime(spell.castingTime)}
@@ -189,7 +193,9 @@ export function SpellTable({
                     {spell.concentration && <span className="badge badge-concentration">C</span>}
                   </span>
                 </td>
-                <td className="school-col desktop-only">{spell.school}</td>
+                <td className="school-col desktop-only" data-school={spell.school}>
+                  {spell.school}
+                </td>
                 <td className="components-col"><ComponentBadges spell={spell} /></td>
                 <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
                 <td className="source-col">{spell.source}</td>

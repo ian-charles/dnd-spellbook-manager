@@ -249,18 +249,18 @@
   }
 
   /* School-specific colors for mobile badges */
-  /* Abjuration - Light Blue */
+  /* Abjuration - Gray/White */
   .mobile-badge.school-col[data-school="abjuration" i] {
+    background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15)) !important;
+    border-color: light-dark(#94a3b8, #64748b) !important;
+    color: light-dark(#475569, #cbd5e1) !important;
+  }
+
+  /* Conjuration - Blue */
+  .mobile-badge.school-col[data-school="conjuration" i] {
     background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15)) !important;
     border-color: light-dark(#3b82f6, #2563eb) !important;
     color: light-dark(#1e40af, #93c5fd) !important;
-  }
-
-  /* Conjuration - Aqua */
-  .mobile-badge.school-col[data-school="conjuration" i] {
-    background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15)) !important;
-    border-color: light-dark(#06b6d4, #0891b2) !important;
-    color: light-dark(#0e7490, #67e8f9) !important;
   }
 
   /* Divination - Yellow/Gold */

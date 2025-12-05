@@ -85,28 +85,28 @@
 }
 
 /* School-specific colors for filter buttons */
-/* Abjuration - Light Blue */
+/* Abjuration - Gray/White */
 .filter-btn[data-school="abjuration" i] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
+}
+
+.filter-btn[data-school="abjuration" i]:hover,
+.filter-btn[data-school="abjuration" i].active {
+  background: light-dark(rgba(148, 163, 184, 0.35), rgba(148, 163, 184, 0.3));
+}
+
+/* Conjuration - Blue */
+.filter-btn[data-school="conjuration" i] {
   background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
   border-color: light-dark(#3b82f6, #2563eb);
   color: light-dark(#1e40af, #93c5fd);
 }
 
-.filter-btn[data-school="abjuration" i]:hover,
-.filter-btn[data-school="abjuration" i].active {
-  background: light-dark(rgba(96, 165, 250, 0.35), rgba(96, 165, 250, 0.3));
-}
-
-/* Conjuration - Aqua */
-.filter-btn[data-school="conjuration" i] {
-  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
-  border-color: light-dark(#06b6d4, #0891b2);
-  color: light-dark(#0e7490, #67e8f9);
-}
-
 .filter-btn[data-school="conjuration" i]:hover,
 .filter-btn[data-school="conjuration" i].active {
-  background: light-dark(rgba(103, 232, 249, 0.35), rgba(103, 232, 249, 0.3));
+  background: light-dark(rgba(96, 165, 250, 0.35), rgba(96, 165, 250, 0.3));
 }
 
 /* Divination - Yellow/Gold */

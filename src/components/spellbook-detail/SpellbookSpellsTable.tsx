@@ -5,7 +5,6 @@ import { useLongPress } from '../../hooks/useLongPress';
 import { SpellbookSpellRow } from './SpellbookSpellRow';
 
 import { useSpellbookDetail } from '../../contexts/SpellbookDetailContext';
-import { useSpellbooks } from '../../hooks/useSpellbooks';
 
 export function SpellbookSpellsTable() {
     const {
@@ -18,9 +17,9 @@ export function SpellbookSpellsTable() {
         onSort,
         onRowClick,
         onToggleSelected,
+        onTogglePrepared,
+        onRemoveSpell,
     } = useSpellbookDetail();
-
-    const { togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
 
     // Long-press handlers for mobile selection
     const pendingSpell = useRef<EnrichedSpell | null>(null);
@@ -104,8 +103,8 @@ export function SpellbookSpellsTable() {
                                 spellbookId={spellbook?.id || ''}
                                 onToggleSelected={onToggleSelected}
                                 onRowClick={onRowClick}
-                                onTogglePrepared={togglePrepared}
-                                onRemoveSpell={removeSpellFromSpellbook}
+                                onTogglePrepared={onTogglePrepared}
+                                onRemoveSpell={onRemoveSpell}
                                 onTouchStartLongPress={(e) => handleTouchStart(e, enrichedSpell)}
                                 onTouchMoveLongPress={onTouchMove}
                                 onTouchEndLongPress={onTouchEnd}

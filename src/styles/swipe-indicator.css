@@ -96,3 +96,24 @@
 .swipe-indicator-remove.committed {
   background: light-dark(rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 1));
 }
+
+/* Mobile-specific styles for flex-based table rows */
+@media (max-width: 425px) {
+  /* Ensure swipe indicator covers flex container properly */
+  .swipe-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto; /* Let it fill the container */
+    width: auto;
+    z-index: 15; /* Above everything */
+  }
+
+  /* Cells need lower z-index so indicator covers them */
+  .swipe-container > td {
+    position: relative;
+    z-index: 1;
+  }
+}

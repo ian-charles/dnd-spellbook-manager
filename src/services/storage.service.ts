@@ -152,17 +152,22 @@ export class StorageService {
    * Toggle prepared status of a spell
    */
   async toggleSpellPrepared(spellbookId: string, spellId: string): Promise<void> {
-    // Use Dexie's atomic update
-    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
-      spellbook.spells = spellbook.spells.map((s) =>
-        s.spellId === spellId ? { ...s, prepared: !s.prepared } : s
-      );
-      spellbook.updated = new Date().toISOString();
-    });
-
-    if (updateCount === 0) {
+    const spellbook = await db.spellbooks.get(spellbookId);
+    if (!spellbook) {
       throw new Error(`Spellbook ${spellbookId} not found`);
     }
+
+    const updatedSpells = spellbook.spells.map((s) => {
+      if (s.spellId === spellId) {
+        return { ...s, prepared: !s.prepared };
+      }
+      return s;
+    });
+
+    await db.spellbooks.update(spellbookId, {
+      spells: updatedSpells,
+      updated: new Date().toISOString(),
+    });
   }
 
   /**

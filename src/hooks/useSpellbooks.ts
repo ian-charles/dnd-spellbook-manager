@@ -14,7 +14,6 @@ export function useSpellbooks() {
     try {
       setLoading(true);
       const books = await storageService.getSpellbooks();
-
       setSpellbooks(books);
     } catch (err) {
       setError(err as Error);
@@ -70,10 +69,7 @@ export function useSpellbooks() {
   };
 
   const reloadSpellbook = async (id: string) => {
-    const updatedBook = await storageService.getSpellbook(id);
-    if (updatedBook) {
-      setSpellbooks(prev => prev.map(sb => sb.id === id ? updatedBook : sb));
-    }
+    await loadSpellbooks();
   };
 
   const addSpellToSpellbook = async (spellbookId: string, spellId: string) => {

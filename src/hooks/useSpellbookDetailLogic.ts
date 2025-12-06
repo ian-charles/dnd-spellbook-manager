@@ -53,6 +53,30 @@ export function useSpellbookDetailLogic({
         loadSpellbook();
     }, [spellbookId]);
 
+    // Watch for changes in spellbooks array and update local state
+    useEffect(() => {
+        const updatedBook = spellbooks.find(sb => sb.id === spellbookId);
+        if (updatedBook) {
+            setSpellbook(updatedBook);
+
+            // Enrich spells with full data
+            const enriched: EnrichedSpell[] = updatedBook.spells
+                .map((spellEntry) => {
+                    const spell = spellService.getSpellById(spellEntry.spellId);
+                    if (!spell) return null;
+
+                    return {
+                        spell,
+                        prepared: spellEntry.prepared,
+                        notes: spellEntry.notes || '',
+                    };
+                })
+                .filter((entry): entry is EnrichedSpell => entry !== null);
+
+            setEnrichedSpells(enriched);
+        }
+    }, [spellbooks, spellbookId]);
+
     const loadSpellbook = async () => {
         const sb = await getSpellbook(spellbookId);
         if (sb) {
@@ -206,6 +230,8 @@ export function useSpellbookDetailLogic({
         onEditSave: handleEditSave,
         onToggleShowPreparedOnly: () => setShowPreparedOnly(prev => !prev),
         onCopy: handleCopy,
+        onTogglePrepared: togglePrepared,
+        onRemoveSpell: removeSpellFromSpellbook,
         existingNames,
     };
 }

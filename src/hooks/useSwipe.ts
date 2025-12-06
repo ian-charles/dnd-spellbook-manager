@@ -28,6 +28,11 @@ export function useSwipe(config: SwipeConfig) {
   const touchStartX = useRef<number>(0);
   const touchStartY = useRef<number>(0);
   const elementWidth = useRef<number>(0);
+  const swipeStateRef = useRef<SwipeState>({
+    isSwiping: false,
+    swipeDistance: 0,
+    swipeProgress: 0,
+  });
   const [swipeState, setSwipeState] = useState<SwipeState>({
     isSwiping: false,
     swipeDistance: 0,
@@ -54,9 +59,6 @@ export function useSwipe(config: SwipeConfig) {
       return;
     }
 
-    // Prevent vertical scrolling while swiping horizontally
-    e.preventDefault();
-
     // Limit swipe distance to maxSwipe
     const limitedDelta = Math.max(-maxSwipe, Math.min(maxSwipe, deltaX));
 
@@ -66,43 +68,53 @@ export function useSwipe(config: SwipeConfig) {
     // Calculate progress (0-100%)
     const progress = Math.min(100, (Math.abs(limitedDelta) / thresholdPx) * 100);
 
-    setSwipeState({
+    const newState = {
       isSwiping: true,
       swipeDistance: limitedDelta,
       swipeProgress: progress,
-    });
+    };
+    swipeStateRef.current = newState;
+    setSwipeState(newState);
   }, [threshold, maxSwipe]);
 
   const handleTouchEnd = useCallback(() => {
-    if (!swipeState.isSwiping) return;
+    const currentState = swipeStateRef.current;
+
+    if (!currentState.isSwiping) {
+      return;
+    }
 
     // Calculate threshold in pixels
     const thresholdPx = (elementWidth.current * threshold) / 100;
 
     // Trigger action if past threshold
-    if (Math.abs(swipeState.swipeDistance) >= thresholdPx) {
-      if (swipeState.swipeDistance > 0 && onSwipeRight) {
+    if (Math.abs(currentState.swipeDistance) >= thresholdPx) {
+      if (currentState.swipeDistance > 0 && onSwipeRight) {
         onSwipeRight();
-      } else if (swipeState.swipeDistance < 0 && onSwipeLeft) {
+      } else if (currentState.swipeDistance < 0 && onSwipeLeft) {
         onSwipeLeft();
       }
     }
 
     // Reset state
-    setSwipeState({
+    const resetState = {
       isSwiping: false,
       swipeDistance: 0,
       swipeProgress: 0,
-    });
-  }, [swipeState, threshold, onSwipeLeft, onSwipeRight]);
+    };
+    swipeStateRef.current = resetState;
+    setSwipeState(resetState);
+  }, [threshold, onSwipeLeft, onSwipeRight]);
 
   const handleTouchCancel = useCallback(() => {
     // Reset on cancel
-    setSwipeState({
+    const resetState = {
       isSwiping: false,
       swipeDistance: 0,
       swipeProgress: 0,
-    });
+    };
+    swipeStateRef.current = resetState;
+    setSwipeState(resetState);
   }, []);
 
   return {

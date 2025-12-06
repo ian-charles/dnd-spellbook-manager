@@ -36,15 +36,17 @@ export function SpellbookSpellRow({
   const { spell, prepared } = enrichedSpell;
 
   // Swipe handlers for mobile
+  // NOTE: We use enrichedSpell.prepared instead of the destructured 'prepared' variable
+  // to avoid stale closure issues when the component re-renders
   const { swipeState, swipeHandlers } = useSwipe({
     onSwipeRight: () => {
       // Swipe right = Prep spell (only if unprepped)
-      if (!prepared) {
+      if (!enrichedSpell.prepared) {
         onTogglePrepared(spellbookId, spell.id);
       }
     },
     onSwipeLeft: () => {
-      if (prepared) {
+      if (enrichedSpell.prepared) {
         // If prepared, unprep
         onTogglePrepared(spellbookId, spell.id);
       } else {
@@ -65,11 +67,13 @@ export function SpellbookSpellRow({
     transform: swipeState.isSwiping ? `translateX(${swipeState.swipeDistance}px)` : 'translateX(0)',
   };
 
+  const className = `spell-row swipe-container ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''}`;
+
   return (
     <Fragment key={spell.id}>
       <tr
         onClick={() => onRowClick(spell.id)}
-        className={`spell-row swipe-container ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''}`}
+        className={className}
         style={rowStyle}
         data-testid={`spellbook-spell-${spell.id}`}
         onTouchStart={(e) => {
@@ -81,8 +85,8 @@ export function SpellbookSpellRow({
           swipeHandlers.onTouchMove(e);
         }}
         onTouchEnd={(e) => {
-          onTouchEndLongPress(e);
           swipeHandlers.onTouchEnd(e);
+          onTouchEndLongPress(e);
         }}
         onTouchCancel={(e) => {
           swipeHandlers.onTouchCancel(e);

@@ -19,6 +19,7 @@ export function SpellbookSpellsTable() {
         onToggleSelected,
         onTogglePrepared,
         onRemoveSpell,
+        onRequestRemoveSpell,
     } = useSpellbookDetail();
 
     // Long-press handlers for mobile selection
@@ -105,6 +106,7 @@ export function SpellbookSpellsTable() {
                                 onRowClick={onRowClick}
                                 onTogglePrepared={onTogglePrepared}
                                 onRemoveSpell={onRemoveSpell}
+                                onRequestRemoveSpell={onRequestRemoveSpell}
                                 onTouchStartLongPress={(e) => handleTouchStart(e, enrichedSpell)}
                                 onTouchMoveLongPress={onTouchMove}
                                 onTouchEndLongPress={onTouchEnd}

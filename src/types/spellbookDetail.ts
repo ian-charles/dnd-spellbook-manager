@@ -34,5 +34,6 @@ export interface SpellbookDetailContextType {
     onCopy: () => void;
     onTogglePrepared: (spellbookId: string, spellId: string) => Promise<void>;
     onRemoveSpell: (spellbookId: string, spellId: string) => Promise<void>;
+    onRequestRemoveSpell: (spellId: string) => void;
     existingNames: string[];
 }

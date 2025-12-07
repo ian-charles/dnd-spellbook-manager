@@ -159,6 +159,19 @@ export function useSpellbookDetailLogic({
         });
     };
 
+    const handleRequestRemoveSpell = (spellId: string) => {
+        const spell = enrichedSpells.find(s => s.spell.id === spellId);
+        if (!spell) return;
+
+        const message = `Are you sure you want to remove ${spell.spell.name}?`;
+
+        setConfirmDialog({
+            isOpen: true,
+            spellIds: [spellId],
+            message,
+        });
+    };
+
     const handleConfirmRemove = async () => {
         const promises: Promise<void>[] = [];
         for (const spellId of confirmDialog.spellIds) {
@@ -232,6 +245,7 @@ export function useSpellbookDetailLogic({
         onCopy: handleCopy,
         onTogglePrepared: togglePrepared,
         onRemoveSpell: removeSpellFromSpellbook,
+        onRequestRemoveSpell: handleRequestRemoveSpell,
         existingNames,
     };
 }

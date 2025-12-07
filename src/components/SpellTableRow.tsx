@@ -69,10 +69,10 @@ export function SpellTableRow({
         }}
         onTouchEnd={(e) => {
           onTouchEndLongPress(e);
-          swipeHandlers.onTouchEnd(e);
+          swipeHandlers.onTouchEnd();
         }}
-        onTouchCancel={(e) => {
-          swipeHandlers.onTouchCancel(e);
+        onTouchCancel={() => {
+          swipeHandlers.onTouchCancel();
         }}
       >
         {showLeftIndicator && onSelectionChange && (

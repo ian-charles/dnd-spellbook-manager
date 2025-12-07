@@ -15,6 +15,7 @@ interface SpellbookSpellRowProps {
   onRowClick: (spellId: string) => void;
   onTogglePrepared: (spellbookId: string, spellId: string) => void;
   onRemoveSpell: (spellbookId: string, spellId: string) => void;
+  onRequestRemoveSpell: (spellId: string) => void;
   onTouchStartLongPress: (e: React.TouchEvent) => void;
   onTouchMoveLongPress: (e: React.TouchEvent) => void;
   onTouchEndLongPress: (e: React.TouchEvent) => void;
@@ -29,6 +30,7 @@ export function SpellbookSpellRow({
   onRowClick,
   onTogglePrepared,
   onRemoveSpell,
+  onRequestRemoveSpell,
   onTouchStartLongPress,
   onTouchMoveLongPress,
   onTouchEndLongPress,
@@ -50,8 +52,8 @@ export function SpellbookSpellRow({
         // If prepared, unprep
         onTogglePrepared(spellbookId, spell.id);
       } else {
-        // If unprepped, remove
-        onRemoveSpell(spellbookId, spell.id);
+        // If unprepped, show confirmation dialog before removing
+        onRequestRemoveSpell(spell.id);
       }
     },
   });

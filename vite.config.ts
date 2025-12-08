@@ -4,6 +4,10 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   base: process.env.BASE_PATH || '/',
+  server: {
+    host: true, // Listen on all network interfaces
+    port: 5173,
+  },
   plugins: [
     react(),
     VitePWA({

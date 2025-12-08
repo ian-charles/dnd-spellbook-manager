@@ -27,22 +27,30 @@
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center; /* Center content */
   font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   pointer-events: none;
   z-index: 10; /* Above the cells */
   transition: opacity 0.1s ease;
   gap: 0.5rem;
+  padding: 0 1rem;
 }
 
 .swipe-indicator-icon {
-  font-size: 1.5rem;
+  /* Icon size controlled via component props */
+  display: inline-flex;
+  align-items: center;
 }
 
-/* No left/right positioning needed - always centered */
-.swipe-indicator-left,
+/* Position content opposite to swipe direction */
+.swipe-indicator-left {
+  justify-content: flex-end; /* Right side when swiping left */
+}
+
 .swipe-indicator-right {
-  justify-content: center;
+  justify-content: flex-start; /* Left side when swiping right */
 }
 
 /* Action-specific colors */
@@ -69,12 +77,12 @@
 
 /* PREP (Spellbook - swipe right) */
 .swipe-indicator-prep {
-  background: light-dark(rgba(34, 139, 34, 0.85), rgba(46, 125, 50, 0.9));
-  color: light-dark(rgb(21, 128, 61), rgb(134, 239, 172));
+  background: light-dark(rgba(6, 182, 212, 0.85), rgba(8, 145, 178, 0.9));
+  color: light-dark(rgb(14, 116, 144), rgb(165, 243, 252));
 }
 
 .swipe-indicator-prep.committed {
-  background: light-dark(rgba(34, 197, 94, 0.95), rgba(34, 197, 94, 1));
+  background: light-dark(rgba(6, 182, 212, 0.95), rgba(6, 182, 212, 1));
 }
 
 /* UNPREP (Spellbook - swipe left when prepared) */

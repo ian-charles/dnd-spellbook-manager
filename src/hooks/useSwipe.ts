@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, TouchEvent } from 'react';
+import { hapticLight, hapticMedium } from '../utils/haptics';
 
 export interface SwipeConfig {
   onSwipeLeft?: () => void;
@@ -28,6 +29,7 @@ export function useSwipe(config: SwipeConfig) {
   const touchStartX = useRef<number>(0);
   const touchStartY = useRef<number>(0);
   const elementWidth = useRef<number>(0);
+  const hasTriggeredHaptic = useRef<boolean>(false);
   const swipeStateRef = useRef<SwipeState>({
     isSwiping: false,
     swipeDistance: 0,
@@ -43,6 +45,7 @@ export function useSwipe(config: SwipeConfig) {
     const touch = e.touches[0];
     touchStartX.current = touch.clientX;
     touchStartY.current = touch.clientY;
+    hasTriggeredHaptic.current = false; // Reset haptic flag on new swipe
 
     // Get element width for calculating threshold
     const target = e.currentTarget;
@@ -68,6 +71,12 @@ export function useSwipe(config: SwipeConfig) {
     // Calculate progress (0-100%)
     const progress = Math.min(100, (Math.abs(limitedDelta) / thresholdPx) * 100);
 
+    // Trigger light haptic when crossing threshold (100%)
+    if (progress >= 100 && !hasTriggeredHaptic.current) {
+      hapticLight();
+      hasTriggeredHaptic.current = true;
+    }
+
     const newState = {
       isSwiping: true,
       swipeDistance: limitedDelta,
@@ -89,6 +98,7 @@ export function useSwipe(config: SwipeConfig) {
 
     // Trigger action if past threshold
     if (Math.abs(currentState.swipeDistance) >= thresholdPx) {
+      hapticMedium(); // Confirm action completion with medium haptic
       if (currentState.swipeDistance > 0 && onSwipeRight) {
         onSwipeRight();
       } else if (currentState.swipeDistance < 0 && onSwipeLeft) {

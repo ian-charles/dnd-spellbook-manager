@@ -1,3 +1,4 @@
+import { CircleCheck, CircleX, BookCheck, BookX, Trash2 } from 'lucide-react';
 import '../styles/swipe-indicator.css';
 
 export type SwipeAction =
@@ -16,30 +17,30 @@ interface SwipeIndicatorProps {
 
 const ACTION_CONFIG: Record<
   SwipeAction,
-  { icon: string; text: string; className: string }
+  { icon: React.ComponentType<{ size?: number; strokeWidth?: number }>; text: string; className: string }
 > = {
   select: {
-    icon: '✓',
+    icon: CircleCheck,
     text: 'Select',
     className: 'swipe-indicator-select',
   },
   deselect: {
-    icon: '✗',
+    icon: CircleX,
     text: 'Deselect',
     className: 'swipe-indicator-deselect',
   },
   prep: {
-    icon: '⭐',
+    icon: BookCheck,
     text: 'Prep',
     className: 'swipe-indicator-prep',
   },
   unprep: {
-    icon: '○',
+    icon: BookX,
     text: 'Unprep',
     className: 'swipe-indicator-unprep',
   },
   remove: {
-    icon: '🗑',
+    icon: Trash2,
     text: 'Remove',
     className: 'swipe-indicator-remove',
   },
@@ -63,13 +64,24 @@ export function SwipeIndicator({
 
   const commitClass = isCommitted ? 'committed' : '';
 
+  const Icon = config.icon;
+
   return (
     <div
       className={`swipe-indicator ${directionClass} ${config.className} ${commitClass}`}
       style={{ opacity }}
     >
-      <span className="swipe-indicator-icon">{config.icon}</span>
-      <span>{config.text}</span>
+      {direction === 'right' ? (
+        <>
+          <Icon className="swipe-indicator-icon" size={28} strokeWidth={2.5} />
+          <span>{config.text}</span>
+        </>
+      ) : (
+        <>
+          <span>{config.text}</span>
+          <Icon className="swipe-indicator-icon" size={28} strokeWidth={2.5} />
+        </>
+      )}
     </div>
   );
 }

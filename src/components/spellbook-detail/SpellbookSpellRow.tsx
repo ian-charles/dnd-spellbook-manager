@@ -14,11 +14,10 @@ interface SpellbookSpellRowProps {
   onToggleSelected: (spellId: string) => void;
   onRowClick: (spellId: string) => void;
   onTogglePrepared: (spellbookId: string, spellId: string) => void;
-  onRemoveSpell: (spellbookId: string, spellId: string) => void;
   onRequestRemoveSpell: (spellId: string) => void;
   onTouchStartLongPress: (e: React.TouchEvent) => void;
   onTouchMoveLongPress: (e: React.TouchEvent) => void;
-  onTouchEndLongPress: (e: React.TouchEvent) => void;
+  onTouchEndLongPress: () => void;
 }
 
 export function SpellbookSpellRow({
@@ -29,7 +28,6 @@ export function SpellbookSpellRow({
   onToggleSelected,
   onRowClick,
   onTogglePrepared,
-  onRemoveSpell,
   onRequestRemoveSpell,
   onTouchStartLongPress,
   onTouchMoveLongPress,
@@ -86,12 +84,13 @@ export function SpellbookSpellRow({
           onTouchMoveLongPress(e);
           swipeHandlers.onTouchMove(e);
         }}
-        onTouchEnd={(e) => {
-          swipeHandlers.onTouchEnd(e);
-          onTouchEndLongPress(e);
+        onTouchEnd={() => {
+          swipeHandlers.onTouchEnd();
+          onTouchEndLongPress();
         }}
-        onTouchCancel={(e) => {
-          swipeHandlers.onTouchCancel(e);
+        onTouchCancel={() => {
+          swipeHandlers.onTouchCancel();
+          onTouchEndLongPress();
         }}
       >
         {showLeftIndicator && (

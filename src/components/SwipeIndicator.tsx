@@ -1,4 +1,4 @@
-import { CircleCheck, CircleX, BookCheck, BookX, Trash2 } from 'lucide-react';
+import { CircleCheck, CircleX, BookCheck, BookX, Trash2, type LucideProps } from 'lucide-react';
 import '../styles/swipe-indicator.css';
 
 export type SwipeAction =
@@ -17,7 +17,7 @@ interface SwipeIndicatorProps {
 
 const ACTION_CONFIG: Record<
   SwipeAction,
-  { icon: React.ComponentType<{ size?: number; strokeWidth?: number }>; text: string; className: string }
+  { icon: React.ComponentType<LucideProps>; text: string; className: string }
 > = {
   select: {
     icon: CircleCheck,

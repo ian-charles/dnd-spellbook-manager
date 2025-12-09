@@ -177,14 +177,21 @@ describe('App Component', () => {
         // Select a spell
         fireEvent.click(screen.getByTestId('select-spell'));
 
-        // Select a spellbook from dropdown
-        const dropdown = screen.getByTestId('spellbook-dropdown');
-        fireEvent.change(dropdown, { target: { value: 'sb-1' } });
-
-        // Click Add button
+        // Click Add button to open modal
         const addButton = screen.getByTestId('btn-add-selected');
         expect(addButton).not.toBeDisabled();
         fireEvent.click(addButton);
+
+        // Modal should open - select a spellbook
+        await waitFor(() => {
+            expect(screen.getByTestId('select-spellbook-dialog')).toBeInTheDocument();
+        });
+
+        // Click on a spellbook option
+        fireEvent.click(screen.getByTestId('spellbook-option-sb-1'));
+
+        // Click Add button in modal
+        fireEvent.click(screen.getByTestId('add-button'));
 
         await waitFor(() => {
             expect(addSpellsToSpellbook).toHaveBeenCalledWith('sb-1', ['spell-1']);
@@ -200,8 +207,15 @@ describe('App Component', () => {
         render(<App />);
 
         fireEvent.click(screen.getByTestId('select-spell'));
-        fireEvent.change(screen.getByTestId('spellbook-dropdown'), { target: { value: 'sb-1' } });
         fireEvent.click(screen.getByTestId('btn-add-selected'));
+
+        // Wait for modal and select spellbook
+        await waitFor(() => {
+            expect(screen.getByTestId('select-spellbook-dialog')).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByTestId('spellbook-option-sb-1'));
+        fireEvent.click(screen.getByTestId('add-button'));
 
         await waitFor(() => {
             expect(screen.getByText(MESSAGES.ERROR.FAILED_TO_ADD_SPELL)).toBeInTheDocument();
@@ -209,15 +223,19 @@ describe('App Component', () => {
         });
     });
 
-    it('opens create modal when "Create New Spellbook" is selected and Add is clicked', () => {
+    it('opens create modal when "Create New Spellbook" is clicked in select modal', async () => {
         render(<App />);
 
         fireEvent.click(screen.getByTestId('select-spell'));
-        const dropdown = screen.getByTestId('spellbook-dropdown');
-        fireEvent.change(dropdown, { target: { value: 'new' } });
-
-        // Must click Add button to trigger modal
         fireEvent.click(screen.getByTestId('btn-add-selected'));
+
+        // Wait for select modal
+        await waitFor(() => {
+            expect(screen.getByTestId('select-spellbook-dialog')).toBeInTheDocument();
+        });
+
+        // Click "Create New Spellbook" button
+        fireEvent.click(screen.getByTestId('create-new-spellbook-button'));
 
         expect(screen.getByTestId('create-modal')).toBeInTheDocument();
     });
@@ -228,12 +246,15 @@ describe('App Component', () => {
 
         render(<App />);
 
-        // Select spell and choose "new"
+        // Select spell
         fireEvent.click(screen.getByTestId('select-spell'));
-        fireEvent.change(screen.getByTestId('spellbook-dropdown'), { target: { value: 'new' } });
-
-        // Click Add button to open modal
         fireEvent.click(screen.getByTestId('btn-add-selected'));
+
+        // Wait for select modal and click "Create New"
+        await waitFor(() => {
+            expect(screen.getByTestId('select-spellbook-dialog')).toBeInTheDocument();
+        });
+        fireEvent.click(screen.getByTestId('create-new-spellbook-button'));
 
         // Submit create modal
         fireEvent.click(screen.getByTestId('submit-modal'));
@@ -252,10 +273,15 @@ describe('App Component', () => {
 
         render(<App />);
 
-        // Select spell and choose "new"
+        // Select spell
         fireEvent.click(screen.getByTestId('select-spell'));
-        fireEvent.change(screen.getByTestId('spellbook-dropdown'), { target: { value: 'new' } });
         fireEvent.click(screen.getByTestId('btn-add-selected'));
+
+        // Wait for select modal and click "Create New"
+        await waitFor(() => {
+            expect(screen.getByTestId('select-spellbook-dialog')).toBeInTheDocument();
+        });
+        fireEvent.click(screen.getByTestId('create-new-spellbook-button'));
 
         // Submit create modal
         fireEvent.click(screen.getByTestId('submit-modal'));

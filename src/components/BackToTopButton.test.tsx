@@ -3,31 +3,38 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { BackToTopButton } from './BackToTopButton';
 
 describe('BackToTopButton', () => {
+  let mockSpellTable: HTMLElement;
+
   beforeEach(() => {
-    // Mock window.innerHeight
-    Object.defineProperty(window, 'innerHeight', {
-      writable: true,
-      configurable: true,
-      value: 1000,
-    });
-
-    // Mock window.scrollY
-    Object.defineProperty(window, 'scrollY', {
-      writable: true,
-      configurable: true,
-      value: 0,
-    });
-
     // Mock window.scrollTo
     window.scrollTo = vi.fn();
+
+    // Create a mock spell table element
+    mockSpellTable = document.createElement('div');
+    mockSpellTable.className = 'spell-table';
+    document.body.appendChild(mockSpellTable);
   });
 
   afterEach(() => {
     vi.clearAllMocks();
+    // Clean up mock spell table
+    mockSpellTable.remove();
   });
 
-  it('should not render when scrollY is less than 2 viewport heights', () => {
-    window.scrollY = 1000; // 1 viewport height
+  it('should not render when spell table is still visible', () => {
+    // Mock spell table being in viewport (top >= 0)
+    mockSpellTable.getBoundingClientRect = vi.fn(() => ({
+      top: 100,
+      bottom: 500,
+      left: 0,
+      right: 0,
+      width: 800,
+      height: 400,
+      x: 0,
+      y: 100,
+      toJSON: () => {},
+    }));
+
     const { container } = render(<BackToTopButton />);
 
     // Trigger scroll event
@@ -36,11 +43,23 @@ describe('BackToTopButton', () => {
     expect(container.querySelector('.back-to-top-container')).toBeNull();
   });
 
-  it('should render when scrollY exceeds 2 viewport heights', async () => {
+  it('should render when spell table scrolls off screen', async () => {
+    // Mock spell table scrolled off screen (top < 0)
+    mockSpellTable.getBoundingClientRect = vi.fn(() => ({
+      top: -50,
+      bottom: 350,
+      left: 0,
+      right: 0,
+      width: 800,
+      height: 400,
+      x: 0,
+      y: -50,
+      toJSON: () => {},
+    }));
+
     render(<BackToTopButton />);
 
-    // Scroll past 2 viewport heights
-    window.scrollY = 2001; // > 2 * 1000
+    // Trigger scroll event
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
@@ -50,9 +69,19 @@ describe('BackToTopButton', () => {
   });
 
   it('should have correct accessibility attributes', async () => {
-    render(<BackToTopButton />);
+    mockSpellTable.getBoundingClientRect = vi.fn(() => ({
+      top: -50,
+      bottom: 350,
+      left: 0,
+      right: 0,
+      width: 800,
+      height: 400,
+      x: 0,
+      y: -50,
+      toJSON: () => {},
+    }));
 
-    window.scrollY = 2001;
+    render(<BackToTopButton />);
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
@@ -62,9 +91,19 @@ describe('BackToTopButton', () => {
   });
 
   it('should scroll to top with smooth behavior when clicked', async () => {
-    render(<BackToTopButton />);
+    mockSpellTable.getBoundingClientRect = vi.fn(() => ({
+      top: -50,
+      bottom: 350,
+      left: 0,
+      right: 0,
+      width: 800,
+      height: 400,
+      x: 0,
+      y: -50,
+      toJSON: () => {},
+    }));
 
-    window.scrollY = 2001;
+    render(<BackToTopButton />);
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
@@ -81,27 +120,59 @@ describe('BackToTopButton', () => {
   it('should hide when scrolling back up', async () => {
     const { container } = render(<BackToTopButton />);
 
-    // Scroll down past threshold
-    window.scrollY = 2001;
+    // Scroll down - table off screen
+    mockSpellTable.getBoundingClientRect = vi.fn(() => ({
+      top: -50,
+      bottom: 350,
+      left: 0,
+      right: 0,
+      width: 800,
+      height: 400,
+      x: 0,
+      y: -50,
+      toJSON: () => {},
+    }));
+
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
       expect(container.querySelector('.back-to-top-container')).not.toBeNull();
     });
 
-    // Scroll back up
-    window.scrollY = 1000;
+    // Scroll back up - table visible again
+    mockSpellTable.getBoundingClientRect = vi.fn(() => ({
+      top: 100,
+      bottom: 500,
+      left: 0,
+      right: 0,
+      width: 800,
+      height: 400,
+      x: 0,
+      y: 100,
+      toJSON: () => {},
+    }));
+
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
       expect(container.querySelector('.back-to-top-container')).toBeNull();
-    });
+    }, { timeout: 500 }); // Wait for fade-out animation
   });
 
   it('should display label text in DOM', async () => {
-    const { container } = render(<BackToTopButton />);
+    mockSpellTable.getBoundingClientRect = vi.fn(() => ({
+      top: -50,
+      bottom: 350,
+      left: 0,
+      right: 0,
+      width: 800,
+      height: 400,
+      x: 0,
+      y: -50,
+      toJSON: () => {},
+    }));
 
-    window.scrollY = 2001;
+    const { container } = render(<BackToTopButton />);
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {

@@ -125,7 +125,7 @@ describe('useSpellbookMutations', () => {
             expect(mockAddSpellsToSpellbook).toHaveBeenCalledTimes(1);
             expect(mockAddSpellsToSpellbook).toHaveBeenCalledWith('sb1', ['spell1', 'spell2']);
             expect(mockRefreshSpellbooks).toHaveBeenCalled();
-            expect(mockOnSuccess).toHaveBeenCalledWith('2 spells added to spellbook');
+            expect(mockOnSuccess).toHaveBeenCalledWith('2 Spells added to Spellbook 1!');
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
         });
 

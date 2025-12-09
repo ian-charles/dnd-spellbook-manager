@@ -4,17 +4,33 @@ import '../styles/back-to-top.css';
 
 export function BackToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show button after scrolling 2 viewport heights
-      const scrollThreshold = window.innerHeight * 2;
-      setIsVisible(window.scrollY > scrollThreshold);
+      // Show button when the spell table scrolls off screen
+      const spellTable = document.querySelector('.spell-table');
+      if (spellTable) {
+        const rect = spellTable.getBoundingClientRect();
+        setIsVisible(rect.top < 0);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (isVisible) {
+      setShouldRender(true);
+    } else if (shouldRender) {
+      // Wait for fade-out animation to complete before unmounting
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 300); // Match animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, shouldRender]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -23,12 +39,12 @@ export function BackToTopButton() {
     });
   };
 
-  if (!isVisible) {
+  if (!shouldRender) {
     return null;
   }
 
   return (
-    <div className="back-to-top-container">
+    <div className={`back-to-top-container ${isVisible ? 'visible' : 'hidden'}`}>
       <button
         className="back-to-top-button"
         onClick={scrollToTop}

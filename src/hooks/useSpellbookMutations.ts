@@ -49,42 +49,53 @@ export function useSpellbookMutations({
     /**
      * Handles adding selected spells to a target spellbook.
      * Validates selection and target, then performs batch add.
+     *
+     * @param spellbookId - Optional spellbook ID to add to. If not provided, uses targetSpellbookId from state.
      */
-    const handleAddToSpellbook = async () => {
+    const handleAddToSpellbook = async (spellbookId?: string) => {
         if (selectedSpellIds.size === 0) {
             onInfo('No Spells Selected', 'Please select at least one spell to add to a spellbook.');
             return;
         }
 
-        if (!targetSpellbookId) {
+        const targetId = spellbookId || targetSpellbookId;
+
+        if (!targetId) {
             onInfo('No Spellbook Selected', 'Please select a spellbook from the dropdown menu.');
             return;
         }
 
         // If "new" is selected, open create spellbook modal with pending spells
-        if (targetSpellbookId === 'new') {
+        if (targetId === 'new') {
             setPendingSpellIds(new Set(selectedSpellIds));
             setCreateModalOpen(true);
             return;
         }
 
         // Validate spellbook exists
-        const targetExists = spellbooks.some(sb => sb.id === targetSpellbookId);
+        const targetExists = spellbooks.some(sb => sb.id === targetId);
         if (!targetExists) {
             onError('Spellbook Not Found', 'The selected spellbook no longer exists. Please select another spellbook.');
             return;
         }
 
+        // Get spellbook name before the operation
+        const targetSpellbook = spellbooks.find(sb => sb.id === targetId);
+        const spellbookName = targetSpellbook?.name || 'spellbook';
+        const count = selectedSpellIds.size;
+
         setIsAddingSpells(true);
         try {
             // Add all selected spells to the spellbook in a single batch
-            await addSpellsToSpellbook(targetSpellbookId, Array.from(selectedSpellIds));
+            await addSpellsToSpellbook(targetId, Array.from(selectedSpellIds));
 
             // Ensure spellbooks list is refreshed to show updated spell counts
             await refreshSpellbooks();
 
-            const count = selectedSpellIds.size;
-            onSuccess(count === 1 ? MESSAGES.SUCCESS.SPELL_ADDED : `${count} spells added to spellbook`);
+            const message = count === 1
+                ? `1 Spell added to ${spellbookName}!`
+                : `${count} Spells added to ${spellbookName}!`;
+            onSuccess(message);
 
             setSelectedSpellIds(new Set()); // Clear selection after adding
         } catch (error) {

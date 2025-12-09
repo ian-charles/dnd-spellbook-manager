@@ -52,7 +52,7 @@ function App() {
   } = useHashRouter();
 
   // Toast hook for success messages
-  const { isVisible: showToast, showToast: displayToast } = useToast();
+  const { isVisible: showToast, message: toastMessage, showToast: displayToast } = useToast();
 
   // Alert dialog state
   const [alertDialog, setAlertDialog] = useState<{
@@ -138,7 +138,7 @@ function App() {
       {/* Success Toast */}
       {showToast && (
         <div className="success-toast" data-testid="add-spell-success">
-          {MESSAGES.SUCCESS.SPELL_ADDED}
+          {toastMessage}
         </div>
       )}
 

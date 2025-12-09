@@ -34,7 +34,7 @@ export function BackToTopButton() {
         onClick={scrollToTop}
         aria-label="Back to top"
       >
-        <ArrowUpToLine className="back-to-top-arrow" size={32} strokeWidth={2.5} />
+        <ArrowUpToLine className="back-to-top-arrow" size={33} strokeWidth={2.5} />
       </button>
       <span className="back-to-top-label">Back to Top</span>
     </div>

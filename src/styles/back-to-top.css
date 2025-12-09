@@ -39,12 +39,17 @@
   color: var(--text-color);
   font-weight: 500;
   white-space: nowrap;
-  opacity: 0.8;
+  opacity: 0;
   transition: opacity 0.3s ease;
+  display: none;
 }
 
 /* Desktop hover effects */
 @media (hover: hover) {
+  .back-to-top-label {
+    display: block;
+  }
+
   .back-to-top-container:hover .back-to-top-button {
     background-color: #2563eb;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
@@ -84,10 +89,6 @@
   .back-to-top-button {
     width: 3rem;
     height: 3rem;
-  }
-
-  .back-to-top-label {
-    font-size: 0.7rem;
   }
 }
 

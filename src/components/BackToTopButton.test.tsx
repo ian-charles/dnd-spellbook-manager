@@ -98,14 +98,16 @@ describe('BackToTopButton', () => {
     });
   });
 
-  it('should display label text', async () => {
-    render(<BackToTopButton />);
+  it('should display label text in DOM', async () => {
+    const { container } = render(<BackToTopButton />);
 
     window.scrollY = 2001;
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
-      expect(screen.getByText('Back to Top')).toBeInTheDocument();
+      const label = container.querySelector('.back-to-top-label');
+      expect(label).toBeInTheDocument();
+      expect(label?.textContent).toBe('Back to Top');
     });
   });
 

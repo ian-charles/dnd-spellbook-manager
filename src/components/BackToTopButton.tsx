@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUpToLine } from 'lucide-react';
 import '../styles/back-to-top.css';
 
 export function BackToTopButton() {
@@ -34,7 +34,7 @@ export function BackToTopButton() {
         onClick={scrollToTop}
         aria-label="Back to top"
       >
-        <ArrowUp className="back-to-top-arrow" size={32} strokeWidth={2.5} />
+        <ArrowUpToLine className="back-to-top-arrow" size={32} strokeWidth={2.5} />
       </button>
       <span className="back-to-top-label">Back to Top</span>
     </div>

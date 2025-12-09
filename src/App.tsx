@@ -4,6 +4,7 @@ import { BrowseView } from './components/BrowseView';
 import { SpellbookList } from './components/SpellbookList';
 import { SpellbookDetail } from './components/SpellbookDetail';
 import { AlertDialog } from './components/AlertDialog';
+import { BackToTopButton } from './components/BackToTopButton';
 
 import LoadingSpinner from './components/LoadingSpinner';
 import { useSpells } from './hooks/useSpells';
@@ -149,6 +150,9 @@ function App() {
         variant={alertDialog.variant}
         onClose={() => setAlertDialog({ ...alertDialog, isOpen: false })}
       />
+
+      {/* Back to Top Button */}
+      <BackToTopButton />
     </Layout>
   );
 }

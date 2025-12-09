@@ -273,8 +273,10 @@ export function SpellFilters({
 
       {filteredCount !== undefined && totalCount !== undefined && (
         <p className="filter-results">
-          Showing {filteredCount} of {totalCount} spells
-          {selectedCount !== undefined && selectedCount > 0 && ` • ${selectedCount} selected`}
+          <i>
+            Showing {filteredCount} of {totalCount} spells
+            {selectedCount !== undefined && selectedCount > 0 && ` • ${selectedCount} selected`}
+          </i>
         </p>
       )}
     </div>

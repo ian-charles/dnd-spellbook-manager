@@ -953,3 +953,15 @@
   border: 1px solid light-dark(#a78bfa, #7c3aed);
   color: light-dark(#6d28d9, #c4b5fd);
 }
+
+/* Filter results summary */
+.filter-results {
+  margin-top: var(--space-4);
+  text-align: center;
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+.filter-results em {
+  font-style: italic;
+}

@@ -3,8 +3,8 @@ import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { SpellFilters } from './SpellFilters';
 import { SpellTable } from './SpellTable';
-import { LoadingButton } from './LoadingButton';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
+import { SelectSpellbookModal } from './SelectSpellbookModal';
 import { useSpellFiltering } from '../hooks/useSpellFiltering';
 import { useSpellSelection } from '../hooks/useSpellSelection';
 import { useSpellbookMutations } from '../hooks/useSpellbookMutations';
@@ -48,7 +48,8 @@ export function BrowseView({
         setTargetSpellbookId,
     } = useSpellSelection();
 
-    // Create spellbook modal state
+    // Modal state
+    const [selectModalOpen, setSelectModalOpen] = useState(false);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [pendingSpellIds, setPendingSpellIds] = useState<Set<string>>(new Set());
 
@@ -79,13 +80,10 @@ export function BrowseView({
                 {...filterReducer}
                 schools={schools}
                 classes={classes}
+                filteredCount={filteredSpells.length}
+                totalCount={spells.length}
+                selectedCount={selectedSpellIds.size}
             />
-            <div className="browse-header">
-                <p>
-                    Browsing {filteredSpells.length} of {spells.length} spells
-                    {selectedSpellIds.size > 0 && ` • ${selectedSpellIds.size} selected`}
-                </p>
-            </div>
             <div className="batch-add-container">
                 <button
                     className="btn-secondary"
@@ -95,35 +93,35 @@ export function BrowseView({
                 >
                     Unselect All
                 </button>
-                <select
-                    className="spellbook-dropdown"
-                    value={targetSpellbookId}
-                    onChange={(e) => setTargetSpellbookId(e.target.value)}
-                    data-testid="spellbook-dropdown"
-                >
-                    <option value="">Select a spellbook...</option>
-                    <option value="new">+ Create New Spellbook</option>
-                    {spellbooks.map((spellbook) => (
-                        <option key={spellbook.id} value={spellbook.id}>
-                            {spellbook.name} ({spellbook.spells.length} spells)
-                        </option>
-                    ))}
-                </select>
-                <LoadingButton
+                <button
                     className="btn-primary"
-                    onClick={handleAddToSpellbook}
+                    onClick={() => setSelectModalOpen(true)}
                     data-testid="btn-add-selected"
-                    disabled={selectedSpellIds.size === 0 || !targetSpellbookId}
-                    loading={isAddingSpells}
-                    loadingText="Adding..."
+                    disabled={selectedSpellIds.size === 0}
                 >
                     Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
-                </LoadingButton>
+                </button>
             </div>
             <SpellTable
                 spells={filteredSpells}
                 selectedSpellIds={selectedSpellIds}
                 onSelectionChange={setSelectedSpellIds}
+            />
+
+            {/* Select Spellbook Modal */}
+            <SelectSpellbookModal
+                isOpen={selectModalOpen}
+                onClose={() => setSelectModalOpen(false)}
+                onSelectExisting={(spellbookId) => {
+                    setSelectModalOpen(false);
+                    handleAddToSpellbook(spellbookId);
+                }}
+                onCreateNew={() => {
+                    setPendingSpellIds(new Set(selectedSpellIds));
+                    setCreateModalOpen(true);
+                }}
+                spellbooks={spellbooks}
+                spellCount={selectedSpellIds.size}
             />
 
             {/* Create Spellbook Modal */}

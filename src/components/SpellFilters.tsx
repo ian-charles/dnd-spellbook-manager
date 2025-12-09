@@ -29,6 +29,21 @@ interface SpellFiltersProps extends UseFilterReducerReturn {
    * List of available spell classes to filter by.
    */
   classes: string[];
+
+  /**
+   * Number of filtered spells (results count)
+   */
+  filteredCount?: number;
+
+  /**
+   * Total number of spells
+   */
+  totalCount?: number;
+
+  /**
+   * Number of selected spells
+   */
+  selectedCount?: number;
 }
 
 export function SpellFilters({
@@ -44,7 +59,10 @@ export function SpellFilters({
   toggleMaterial,
   clearFilters,
   schools,
-  classes
+  classes,
+  filteredCount,
+  totalCount,
+  selectedCount
 }: SpellFiltersProps) {
   const [localSearchText, setLocalSearchText] = useState(state.searchText);
 
@@ -251,6 +269,15 @@ export function SpellFilters({
         >
           Clear All Filters
         </button>
+      )}
+
+      {filteredCount !== undefined && totalCount !== undefined && (
+        <p className="filter-results">
+          <em>
+            Showing {filteredCount} of {totalCount} spells
+            {selectedCount !== undefined && selectedCount > 0 && ` • ${selectedCount} selected`}
+          </em>
+        </p>
       )}
     </div>
   );

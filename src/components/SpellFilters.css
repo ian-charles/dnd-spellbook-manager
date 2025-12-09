@@ -960,8 +960,5 @@
   text-align: center;
   font-size: var(--font-size-md);
   color: var(--color-text-secondary);
-}
-
-.filter-results em {
   font-style: italic;
 }

@@ -272,6 +272,11 @@
 }
 
 /* Spellbook-specific table styles */
+/* All rows have a transparent border to maintain consistent spacing */
+.spellbook-table tbody tr {
+  border-left: 4px solid transparent;
+}
+
 .spellbook-table .prepared-col {
   width: 60px;
   text-align: center;
@@ -295,7 +300,7 @@
 /* Selected unprepared spells - blue highlight matching Browse Spells table */
 .spellbook-table .selected-row {
   background: light-dark(rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.2));
-  border-left: 4px solid light-dark(#3b82f6, #60a5fa);
+  border-left-color: light-dark(#3b82f6, #60a5fa);
 }
 
 .spellbook-table .selected-row:hover {
@@ -305,7 +310,8 @@
 /* Selected prepared spells - cyan + higher contrast + border */
 .spellbook-table .prepared-row.selected-row {
   background: light-dark(rgba(6, 182, 212, 0.22), rgba(6, 182, 212, 0.3));
-  border-left: 3px solid light-dark(rgba(6, 182, 212, 0.5), rgba(6, 182, 212, 0.7));
+  border-left-width: 3px;
+  border-left-color: light-dark(rgba(6, 182, 212, 0.5), rgba(6, 182, 212, 0.7));
 }
 
 .spellbook-table .prepared-row.selected-row:hover {

@@ -232,7 +232,7 @@ describe('useSpellbookDetailLogic', () => {
         expect(mockGetSpellbook).toHaveBeenCalledTimes(2);
     });
 
-    it('should handle row expansion', () => {
+    it('should handle modal display', () => {
         const { result } = renderHook(() => useSpellbookDetailLogic({
             spellbookId: 'sb1',
             onBack: vi.fn(),
@@ -241,11 +241,11 @@ describe('useSpellbookDetailLogic', () => {
         act(() => {
             result.current.onRowClick('spell1');
         });
-        expect(result.current.expandedSpellId).toBe('spell1');
+        expect(result.current.modalSpellId).toBe('spell1');
 
         act(() => {
-            result.current.onRowClick('spell1');
+            result.current.onCloseModal();
         });
-        expect(result.current.expandedSpellId).toBe(null);
+        expect(result.current.modalSpellId).toBe(null);
     });
 });

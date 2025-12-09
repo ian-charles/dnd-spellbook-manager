@@ -75,17 +75,17 @@ export function BrowseView({
 
     return (
         <>
-            <div className="browse-header">
-                <p>
-                    Browse {spells.length} spells • {filteredSpells.length} results
-                    {selectedSpellIds.size > 0 && ` • ${selectedSpellIds.size} selected`}
-                </p>
-            </div>
             <SpellFilters
                 {...filterReducer}
                 schools={schools}
                 classes={classes}
             />
+            <div className="browse-header">
+                <p>
+                    Browsing {filteredSpells.length} of {spells.length} spells
+                    {selectedSpellIds.size > 0 && ` • ${selectedSpellIds.size} selected`}
+                </p>
+            </div>
             <div className="batch-add-container">
                 <button
                     className="btn-secondary"

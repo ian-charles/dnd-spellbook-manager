@@ -180,7 +180,6 @@
     padding-top: 0;
   }
 
-  /* On mobile, break the header apart so title can scroll and nav can stick */
   .app-header {
     position: static;
     display: block;
@@ -195,6 +194,7 @@
     align-items: center;
     text-align: center;
     padding: var(--space-3) var(--space-4);
+    margin-top: 56px; /* Space for fixed nav */
     background: var(--color-bg-primary);
     border-bottom: 1px solid var(--color-border-secondary);
     gap: var(--space-1);
@@ -208,11 +208,11 @@
     font-size: var(--font-size-xs);
   }
 
-  /* This makes the nav stick to the top when you scroll past the title */
   .app-nav {
-    position: -webkit-sticky;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     display: flex;
     flex-direction: row;

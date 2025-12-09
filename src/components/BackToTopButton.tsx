@@ -28,13 +28,15 @@ export function BackToTopButton() {
   }
 
   return (
-    <button
-      className="back-to-top-button"
-      onClick={scrollToTop}
-      aria-label="Back to top"
-      title="Back to top"
-    >
-      <ArrowUp size={24} strokeWidth={2.5} />
-    </button>
+    <div className="back-to-top-container">
+      <button
+        className="back-to-top-button"
+        onClick={scrollToTop}
+        aria-label="Back to top"
+      >
+        <ArrowUp className="back-to-top-arrow" size={32} strokeWidth={2.5} />
+      </button>
+      <span className="back-to-top-label">Back to Top</span>
+    </div>
   );
 }

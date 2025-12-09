@@ -1,0 +1,10 @@
+# Git mailmap - Maps display names without rewriting history
+# Format: Preferred Name <preferred@email> Actual Name <actual@email>
+
+# Map Ian Charles to a pseudonym
+YourPseudonym <noreply@github.com> Ian Charles <iancharles11@gmail.com>
+YourPseudonym <noreply@github.com> ian-charles <79114730+ian-charles@users.noreply.github.com>
+
+# Map Steven Jaconette
+StevenJ <noreply@github.com> Steven Jaconette <sjaconette@stevens.mac.mini.lan>
+StevenJ <noreply@github.com> Steven <Jaconette>

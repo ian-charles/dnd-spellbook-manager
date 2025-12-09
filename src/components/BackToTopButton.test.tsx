@@ -33,7 +33,7 @@ describe('BackToTopButton', () => {
     // Trigger scroll event
     window.dispatchEvent(new Event('scroll'));
 
-    expect(container.querySelector('.back-to-top-button')).toBeNull();
+    expect(container.querySelector('.back-to-top-container')).toBeNull();
   });
 
   it('should render when scrollY exceeds 2 viewport heights', async () => {
@@ -58,7 +58,6 @@ describe('BackToTopButton', () => {
     await waitFor(() => {
       const button = screen.getByRole('button', { name: /back to top/i });
       expect(button).toHaveAttribute('aria-label', 'Back to top');
-      expect(button).toHaveAttribute('title', 'Back to top');
     });
   });
 
@@ -87,7 +86,7 @@ describe('BackToTopButton', () => {
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
-      expect(container.querySelector('.back-to-top-button')).not.toBeNull();
+      expect(container.querySelector('.back-to-top-container')).not.toBeNull();
     });
 
     // Scroll back up
@@ -95,7 +94,18 @@ describe('BackToTopButton', () => {
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
-      expect(container.querySelector('.back-to-top-button')).toBeNull();
+      expect(container.querySelector('.back-to-top-container')).toBeNull();
+    });
+  });
+
+  it('should display label text', async () => {
+    render(<BackToTopButton />);
+
+    window.scrollY = 2001;
+    window.dispatchEvent(new Event('scroll'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Back to Top')).toBeInTheDocument();
     });
   });
 

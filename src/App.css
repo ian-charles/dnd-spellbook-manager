@@ -168,7 +168,8 @@
   color: var(--color-error);
 }
 
-@media (max-width: 768px) {
+/* Mobile only (phones) */
+@media (max-width: 767px) {
   body {
     overflow-x: hidden;
   }
@@ -176,18 +177,27 @@
   .app {
     max-width: 100vw;
     overflow-x: hidden;
+    padding-top: 0;
   }
 
+  /* On mobile, break the header apart so title can scroll and nav can stick */
   .app-header {
-    flex-direction: column;
-    align-items: stretch;
-    padding: var(--space-3) var(--space-4);
-    gap: var(--space-3);
+    position: static;
+    display: block;
+    padding: 0;
+    box-shadow: none;
+    border-bottom: none;
   }
 
   .app-title {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     text-align: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border-secondary);
+    gap: var(--space-1);
   }
 
   .app-header h1 {
@@ -198,9 +208,19 @@
     font-size: var(--font-size-xs);
   }
 
+  /* This makes the nav stick to the top when you scroll past the title */
   .app-nav {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
     flex-direction: row;
     gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border-secondary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .nav-link {
@@ -211,7 +231,7 @@
   }
 
   .app-main {
-    padding: calc(120px + var(--space-4)) var(--space-4) var(--space-4);
+    padding: var(--space-4);
     max-width: 100vw;
     overflow-x: hidden;
   }

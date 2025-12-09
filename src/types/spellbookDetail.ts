@@ -6,6 +6,7 @@ export interface SpellbookDetailContextType {
     enrichedSpells: EnrichedSpell[];
     sortedSpells: EnrichedSpell[];
     expandedSpellId: string | null;
+    modalSpellId: string | null;
     sortColumn: SortColumn;
     sortDirection: SortDirection;
     selectedSpellIds: Set<string>;
@@ -27,6 +28,7 @@ export interface SpellbookDetailContextType {
     onConfirmRemove: () => void;
     onCancelRemove: () => void;
     onRowClick: (spellId: string) => void;
+    onCloseModal: () => void;
     onEdit: () => void;
     onEditClose: () => void;
     onEditSave: (input: CreateSpellbookInput) => Promise<void>;

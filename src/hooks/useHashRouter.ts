@@ -15,28 +15,32 @@
 
 import { useState, useEffect } from 'react';
 
-export type View = 'browse' | 'spellbooks' | 'spellbook-detail';
+export type View = 'browse' | 'spellbooks' | 'spellbook-detail' | 'spell-detail';
 
 export interface RouteState {
   currentView: View;
   selectedSpellbookId: string | null;
+  selectedSpellId: string | null;
   queryParams: URLSearchParams;
 }
 
 interface HashRouterReturn {
   currentView: View;
   selectedSpellbookId: string | null;
+  selectedSpellId: string | null;
   queryParams: URLSearchParams;
   navigateToBrowse: () => void;
   navigateToSpellbooks: () => void;
   navigateToSpellbookDetail: (spellbookId: string) => void;
   navigateToCopySpellbook: (spellbookId: string) => void;
+  navigateToSpellDetail: (spellId: string) => void;
 }
 
 export function useHashRouter(): HashRouterReturn {
   const [route, setRoute] = useState<RouteState>({
     currentView: 'browse',
     selectedSpellbookId: null,
+    selectedSpellId: null,
     queryParams: new URLSearchParams(),
   });
 
@@ -48,12 +52,22 @@ export function useHashRouter(): HashRouterReturn {
         const [path, query] = rawHash.split('?');
         const queryParams = new URLSearchParams(query);
 
-        if (path.startsWith('/spellbooks/')) {
-          // Detail view: #/spellbooks/:id
+        if (path.startsWith('/spell/')) {
+          // Spell detail view: #/spell/:id
+          const id = path.split('/')[2];
+          setRoute({
+            currentView: 'spell-detail',
+            selectedSpellbookId: null,
+            selectedSpellId: id,
+            queryParams,
+          });
+        } else if (path.startsWith('/spellbooks/')) {
+          // Spellbook detail view: #/spellbooks/:id
           const id = path.split('/')[2];
           setRoute({
             currentView: 'spellbook-detail',
             selectedSpellbookId: id,
+            selectedSpellId: null,
             queryParams,
           });
         } else if (path === '/spellbooks') {
@@ -61,6 +75,7 @@ export function useHashRouter(): HashRouterReturn {
           setRoute({
             currentView: 'spellbooks',
             selectedSpellbookId: null,
+            selectedSpellId: null,
             queryParams,
           });
         } else {
@@ -68,6 +83,7 @@ export function useHashRouter(): HashRouterReturn {
           setRoute({
             currentView: 'browse',
             selectedSpellbookId: null,
+            selectedSpellId: null,
             queryParams,
           });
         }
@@ -77,6 +93,7 @@ export function useHashRouter(): HashRouterReturn {
         setRoute({
           currentView: 'browse',
           selectedSpellbookId: null,
+          selectedSpellId: null,
           queryParams: new URLSearchParams(),
         });
       }
@@ -108,13 +125,19 @@ export function useHashRouter(): HashRouterReturn {
     if (typeof window !== 'undefined') window.location.hash = `/spellbooks?copy=${spellbookId}`;
   };
 
+  const navigateToSpellDetail = (spellId: string) => {
+    if (typeof window !== 'undefined') window.location.hash = `/spell/${spellId}`;
+  };
+
   return {
     currentView: route.currentView,
     selectedSpellbookId: route.selectedSpellbookId,
+    selectedSpellId: route.selectedSpellId,
     queryParams: route.queryParams,
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
     navigateToCopySpellbook,
+    navigateToSpellDetail,
   };
 }

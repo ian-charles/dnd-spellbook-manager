@@ -319,22 +319,15 @@ describe('SpellbookDetailView', () => {
     });
   });
 
-  describe('Row Expansion', () => {
-    it('should not show expanded details by default', () => {
+  describe('Modal Display', () => {
+    it('should not show modal by default', () => {
       renderWithContext();
 
       expect(screen.queryByText(/A bright streak flashes/)).toBeNull();
     });
 
-    it('should apply expanded class when spell is expanded', () => {
-      renderWithContext({ expandedSpellId: 'spell-1' });
-
-      const row = screen.getByTestId('spellbook-spell-spell-1');
-      expect(row.className).toContain('expanded');
-    });
-
-    it('should show spell description when expanded', () => {
-      renderWithContext({ expandedSpellId: 'spell-1' });
+    it('should show modal when modalSpellId is set', () => {
+      renderWithContext({ modalSpellId: 'spell-1' });
 
       expect(screen.getByText(/A bright streak flashes/)).toBeTruthy();
     });
@@ -351,7 +344,7 @@ describe('SpellbookDetailView', () => {
       expect(onRowClick).toHaveBeenCalledWith('spell-1');
     });
 
-    it('should show higher levels text when expanded and available', () => {
+    it('should show higher levels text in modal when available', () => {
       const spellWithHigherLevels: Spell = {
         ...mockSpell1,
         higherLevels: 'When you cast this spell using a spell slot of 4th level or higher...',
@@ -360,7 +353,7 @@ describe('SpellbookDetailView', () => {
       renderWithContext({
         enrichedSpells: [{ spell: spellWithHigherLevels, prepared: true, notes: '' }],
         sortedSpells: [{ spell: spellWithHigherLevels, prepared: true, notes: '' }],
-        expandedSpellId: 'spell-1',
+        modalSpellId: 'spell-1',
       });
 
       expect(screen.getByText('At Higher Levels:')).toBeTruthy();

@@ -1,8 +1,6 @@
-import { Fragment } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
 import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../../utils/spellFormatters';
 import { useSwipe } from '../../hooks/useSwipe';
-import { SpellExpansionRow } from '../SpellExpansionRow';
 import { SwipeIndicator } from '../SwipeIndicator';
 import { ComponentBadges } from '../SpellBadges';
 
@@ -67,11 +65,10 @@ export function SpellbookSpellRow({
     transform: swipeState.isSwiping ? `translateX(${swipeState.swipeDistance}px)` : 'translateX(0)',
   };
 
-  const className = `spell-row swipe-container ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''}`;
+  const className = `spell-row swipe-container ${prepared ? 'prepared-row' : ''} ${isSelected ? 'selected-row' : ''}`;
 
   return (
-    <Fragment key={spell.id}>
-      <tr
+    <tr
         onClick={() => onRowClick(spell.id)}
         className={className}
         style={rowStyle}
@@ -149,13 +146,5 @@ export function SpellbookSpellRow({
         <td className="components-col"><ComponentBadges spell={spell} /></td>
         <td className="source-col">{spell.source}</td>
       </tr>
-      {isExpanded && (
-        <SpellExpansionRow
-          spell={spell}
-          colSpan={9}
-          variant="full"
-        />
-      )}
-    </Fragment>
   );
 }

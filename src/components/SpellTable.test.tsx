@@ -127,7 +127,7 @@ describe('SpellTable', () => {
         });
     });
 
-    it('should expand spell details on row click', () => {
+    it('should open modal with spell details on row click', () => {
         render(<SpellTable spells={mockSpells} />);
 
         const fireballRow = screen.getByText('Fireball').closest('tr');
@@ -135,18 +135,13 @@ describe('SpellTable', () => {
 
         fireEvent.click(fireballRow);
 
-        // Verify content is visible
+        // Verify modal is visible with spell content
         const description = screen.getByText('A bright streak flashes from your pointing finger...');
-        expect(description, 'Spell description should be visible').toBeTruthy();
+        expect(description, 'Spell description should be visible in modal').toBeTruthy();
 
-        // Verify expansion row structure (colspan)
-        const expansionRow = description.closest('tr');
-        // Check for expansion behavior/structure rather than specific class name
-        expect(expansionRow, 'Expansion row should be visible').toBeTruthy();
-        const cell = expansionRow?.querySelector('td');
-        // Colspan is 9 because checkbox column is not rendered (onSelectionChange not provided)
-        // Columns: Name, Level, Time, Range, Duration, Comp., School, Classes, Source
-        expect(cell?.getAttribute('colSpan'), 'Expansion row should span 9 columns').toBe('9');
+        // Verify modal structure
+        const modal = screen.getByRole('heading', { name: 'Fireball' }).closest('.spell-detail-modal');
+        expect(modal, 'Modal should be visible').toBeTruthy();
     });
 
     it('should handle empty spell list', () => {
@@ -161,7 +156,7 @@ describe('SpellTable', () => {
         expect(screen.queryByText('Magic Missile'), 'Magic Missile spell should not be rendered').toBeNull();
     });
 
-    it('should only expand one row at a time', () => {
+    it('should only show one modal at a time', () => {
         render(<SpellTable spells={mockSpells} />);
 
         const fireballRow = screen.getByText('Fireball').closest('tr');
@@ -173,7 +168,7 @@ describe('SpellTable', () => {
         fireEvent.click(fireballRow);
         expect(screen.getByText('A bright streak flashes from your pointing finger...')).toBeTruthy();
 
-        // Click Magic Missile
+        // Click Magic Missile - should replace Fireball modal
         fireEvent.click(missileRow);
         expect(screen.getByText('You create three glowing darts of magical force...')).toBeTruthy();
         expect(screen.queryByText('A bright streak flashes from your pointing finger...')).toBeNull();

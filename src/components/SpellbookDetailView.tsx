@@ -11,6 +11,7 @@
 
 import { ConfirmDialog } from './ConfirmDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
+import { SpellDetailModal } from './SpellDetailModal';
 import LoadingSpinner from './LoadingSpinner';
 import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
@@ -28,6 +29,7 @@ export function SpellbookDetailView() {
     editModalOpen,
     showPreparedOnly,
     allPrepared,
+    modalSpellId,
     onBack,
     onSelectAll,
     onDeselectAll,
@@ -35,6 +37,8 @@ export function SpellbookDetailView() {
     onRemoveSelected,
     onConfirmRemove,
     onCancelRemove,
+    onCloseModal,
+    onToggleSelected,
     onEdit,
     onEditClose,
     onEditSave,
@@ -42,6 +46,10 @@ export function SpellbookDetailView() {
     onCopy,
     existingNames,
   } = useSpellbookDetail();
+
+  const modalSpell = modalSpellId
+    ? enrichedSpells.find(es => es.spell.id === modalSpellId)?.spell
+    : null;
 
 
   // Loading state
@@ -177,6 +185,17 @@ export function SpellbookDetailView() {
             }}
             title="Edit Spellbook"
           />
+
+          {/* Spell Detail Modal */}
+          {modalSpell && (
+            <SpellDetailModal
+              spell={modalSpell}
+              isOpen={true}
+              onClose={onCloseModal}
+              isSelected={selectedSpellIds.has(modalSpell.id)}
+              onToggleSelected={onToggleSelected}
+            />
+          )}
         </>
       )}
     </div>

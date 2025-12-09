@@ -1,7 +1,5 @@
-import { Fragment } from 'react';
 import { Spell } from '../types/spell';
 import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../utils/spellFormatters';
-import { SpellExpansionRow } from './SpellExpansionRow';
 import { useSwipe } from '../hooks/useSwipe';
 import { SwipeIndicator } from './SwipeIndicator';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -54,10 +52,9 @@ export function SpellTableRow({
   };
 
   return (
-    <Fragment key={spell.id}>
-      <tr
+    <tr
         onClick={() => onRowClick(spell.id)}
-        className={`spell-row swipe-container ${isSelected ? 'selected-row' : ''} ${isExpanded ? 'expanded' : ''}`}
+        className={`spell-row swipe-container ${isSelected ? 'selected-row' : ''}`}
         style={rowStyle}
         onTouchStart={(e) => {
           onTouchStartLongPress(e);
@@ -133,13 +130,5 @@ export function SpellTableRow({
         <td className="classes-col"><ClassBadges classes={spell.classes} /></td>
         <td className="source-col">{spell.source}</td>
       </tr>
-      {isExpanded && (
-        <SpellExpansionRow
-          spell={spell}
-          colSpan={onSelectionChange ? 10 : 9}
-          variant="full"
-        />
-      )}
-    </Fragment>
   );
 }

@@ -62,6 +62,34 @@
     flex: 1;
   }
 
+  .spell-detail-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  .spell-detail-modal-external-link {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: var(--space-2);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    text-decoration: none;
+  }
+
+  .spell-detail-modal-external-link:hover {
+    background: var(--color-hover);
+    color: var(--color-text-primary);
+  }
+
   .spell-detail-modal-close {
     background: transparent;
     border: none;
@@ -165,6 +193,39 @@
     color: var(--color-text-heading);
     text-align: center;
     flex: 1;
+  }
+
+  .spell-detail-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-shrink: 0;
+  }
+
+  .spell-detail-modal-external-link {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: var(--space-1);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-base);
+    text-decoration: none;
+  }
+
+  .spell-detail-modal-external-link svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .spell-detail-modal-external-link:hover {
+    background: var(--color-hover);
+    color: var(--color-text-primary);
   }
 
   .spell-detail-modal-close {

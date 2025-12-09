@@ -1,0 +1,187 @@
+/**
+ * Spell Detail Page Styles
+ * Standalone page for displaying a single spell
+ */
+
+.spell-detail-page {
+  min-height: 100vh;
+  background: var(--color-bg-primary);
+  padding: var(--space-8) var(--space-4);
+}
+
+.spell-detail-page-content {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-primary);
+}
+
+.spell-detail-page-header {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid var(--color-border-primary);
+}
+
+.spell-detail-page-header h1 {
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--font-size-4xl);
+  color: var(--color-text-heading);
+  text-align: center;
+}
+
+.spell-detail-page-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-lg);
+}
+
+.spell-detail-page-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  background: var(--color-hover);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--color-border-primary);
+}
+
+.spell-detail-page-details strong {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.spell-detail-page-components strong {
+  margin-bottom: var(--space-2);
+}
+
+.detail-badges-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.spell-detail-page-description {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  margin: var(--space-6) 0;
+  color: var(--color-text-primary);
+}
+
+.spell-detail-page-higher-levels {
+  margin: var(--space-6) 0;
+  padding: var(--space-6);
+  background: var(--color-primary-lighter);
+  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--color-primary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+}
+
+.spell-detail-page-higher-levels strong {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-lg);
+  color: light-dark(#ca8a04, #fbbf24);
+  font-weight: var(--font-weight-semibold);
+}
+
+.spell-detail-page-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-secondary);
+  font-size: var(--font-size-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.spell-detail-page-classes {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.spell-detail-page-nav {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-secondary);
+  text-align: center;
+}
+
+.spell-detail-page-nav a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--transition-base);
+}
+
+.spell-detail-page-nav a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.spell-detail-page-loading,
+.spell-detail-page-error {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.spell-detail-page-error h1 {
+  color: var(--color-text-heading);
+  margin-bottom: var(--space-4);
+}
+
+.spell-detail-page-error p {
+  font-size: var(--font-size-lg);
+}
+
+.spell-detail-page-error a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+}
+
+.spell-detail-page-error a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .spell-detail-page {
+    padding: var(--space-4);
+  }
+
+  .spell-detail-page-content {
+    padding: var(--space-6);
+  }
+
+  .spell-detail-page-header h1 {
+    font-size: var(--font-size-3xl);
+  }
+
+  .spell-detail-page-details {
+    grid-template-columns: 1fr;
+  }
+}

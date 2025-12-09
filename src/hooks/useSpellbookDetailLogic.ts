@@ -19,7 +19,7 @@ export function useSpellbookDetailLogic({
     const { spellbooks, getSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
     const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
     const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
-    const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
+    const [modalSpellId, setModalSpellId] = useState<string | null>(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [showPreparedOnly, setShowPreparedOnly] = useState(false);
     const [selectedSpellIds, setSelectedSpellIds] = useState<Set<string>>(new Set());
@@ -189,12 +189,11 @@ export function useSpellbookDetailLogic({
     };
 
     const handleRowClick = (spellId: string) => {
-        // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell
-        if (expandedSpellId === spellId) {
-            setExpandedSpellId(null);
-        } else {
-            setExpandedSpellId(spellId);
-        }
+        setModalSpellId(spellId);
+    };
+
+    const handleCloseModal = () => {
+        setModalSpellId(null);
     };
 
     const handleEditSave = async (input: CreateSpellbookInput) => {
@@ -220,7 +219,8 @@ export function useSpellbookDetailLogic({
         spellbook,
         enrichedSpells,
         sortedSpells,
-        expandedSpellId,
+        expandedSpellId: null,
+        modalSpellId,
         sortColumn,
         sortDirection,
         selectedSpellIds,
@@ -238,6 +238,7 @@ export function useSpellbookDetailLogic({
         onConfirmRemove: handleConfirmRemove,
         onCancelRemove: handleCancelRemove,
         onRowClick: handleRowClick,
+        onCloseModal: handleCloseModal,
         onEdit: () => setEditModalOpen(true),
         onEditClose: () => setEditModalOpen(false),
         onEditSave: handleEditSave,

@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import { BrowseView } from './components/BrowseView';
 import { SpellbookList } from './components/SpellbookList';
 import { SpellbookDetail } from './components/SpellbookDetail';
+import { SpellDetailPage } from './components/SpellDetailPage';
 import { AlertDialog } from './components/AlertDialog';
 import { BackToTopButton } from './components/BackToTopButton';
 
@@ -45,6 +46,7 @@ function App() {
   const {
     currentView,
     selectedSpellbookId,
+    selectedSpellId,
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
@@ -133,6 +135,11 @@ function App() {
             navigateToCopySpellbook(selectedSpellbookId);
           }}
         />
+      )}
+
+      {/* Spell Detail View */}
+      {currentView === 'spell-detail' && selectedSpellId && (
+        <SpellDetailPage spellId={selectedSpellId} />
       )}
 
       {/* Success Toast */}

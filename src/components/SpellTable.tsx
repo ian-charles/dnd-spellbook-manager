@@ -5,6 +5,7 @@ import { SortIcon } from './SortIcon';
 import { useSpellSorting } from '../hooks/useSpellSorting';
 import { useLongPress } from '../hooks/useLongPress';
 import { SpellTableRow } from './SpellTableRow';
+import { SpellDetailModal } from './SpellDetailModal';
 import './SpellTable.css';
 
 interface SpellTableProps {
@@ -35,19 +36,24 @@ export function SpellTable({
   selectedSpellIds = new Set(),
   onSelectionChange
 }: SpellTableProps) {
-  const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
+  const [modalSpellId, setModalSpellId] = useState<string | null>(null);
   const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(spells);
 
   const handleRowClick = (spellId: string) => {
-    // Toggle expanded state: if clicking the same spell, collapse it; otherwise expand new spell
-    setExpandedSpellId(expandedSpellId === spellId ? null : spellId);
+    setModalSpellId(spellId);
   };
 
-  // Reset expanded state when spells list changes to prevent memory leaks/stale state
+  const handleCloseModal = () => {
+    setModalSpellId(null);
+  };
+
+  // Reset modal state when spells list changes to prevent memory leaks/stale state
   // This happens when filtering or searching changes the list
-  if (expandedSpellId && !spells.find(s => s.id === expandedSpellId)) {
-    setExpandedSpellId(null);
+  if (modalSpellId && !spells.find(s => s.id === modalSpellId)) {
+    setModalSpellId(null);
   }
+
+  const modalSpell = modalSpellId ? spells.find(s => s.id === modalSpellId) : null;
 
 
 
@@ -92,75 +98,86 @@ export function SpellTable({
   }
 
   return (
-    <div className="spell-table-container">
-      <table className="spell-table">
-        <thead>
-          <tr>
-            <th className="checkbox-col"></th>
-            <th className="sortable-header">
-              <button onClick={() => handleSort('name')} className="sort-button">
-                Name
-                <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </button>
-            </th>
-            <th className="sortable-header level-col">
-              <button onClick={() => handleSort('level')} className="sort-button">
-                Level
-                <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </button>
-            </th>
-            <th className="sortable-header time-col">
-              <button onClick={() => handleSort('castingTime')} className="sort-button">
-                Cast Time
-                <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </button>
-            </th>
-            <th className="sortable-header range-col">
-              <button onClick={() => handleSort('range')} className="sort-button">
-                Range
-                <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </button>
-            </th>
-            <th className="sortable-header duration-col">
-              <button onClick={() => handleSort('duration')} className="sort-button">
-                Duration
-                <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </button>
-            </th>
-            <th className="sortable-header school-col">
-              <button onClick={() => handleSort('school')} className="sort-button">
-                School
-                <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </button>
-            </th>
-            <th className="components-col">Comp.</th>
-            <th className="classes-col">Classes</th>
-            <th className="sortable-header source-col">
-              <button onClick={() => handleSort('source')} className="sort-button">
-                Source
-                <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
-              </button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedSpells.map((spell) => (
-            <SpellTableRow
-              key={spell.id}
-              spell={spell}
-              isSelected={selectedSpellIds.has(spell.id)}
-              isExpanded={expandedSpellId === spell.id}
-              onSelectionChange={onSelectionChange}
-              selectedSpellIds={selectedSpellIds}
-              onRowClick={handleRowClick}
-              onCheckboxToggle={handleCheckboxToggle}
-              onTouchStartLongPress={(e) => handleTouchStart(e, spell)}
-              onTouchMoveLongPress={onTouchMove}
-              onTouchEndLongPress={onTouchEnd}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className="spell-table-container">
+        <table className="spell-table">
+          <thead>
+            <tr>
+              <th className="checkbox-col"></th>
+              <th className="sortable-header">
+                <button onClick={() => handleSort('name')} className="sort-button">
+                  Name
+                  <SortIcon column="name" currentColumn={sortColumn} currentDirection={sortDirection} />
+                </button>
+              </th>
+              <th className="sortable-header level-col">
+                <button onClick={() => handleSort('level')} className="sort-button">
+                  Level
+                  <SortIcon column="level" currentColumn={sortColumn} currentDirection={sortDirection} />
+                </button>
+              </th>
+              <th className="sortable-header time-col">
+                <button onClick={() => handleSort('castingTime')} className="sort-button">
+                  Cast Time
+                  <SortIcon column="castingTime" currentColumn={sortColumn} currentDirection={sortDirection} />
+                </button>
+              </th>
+              <th className="sortable-header range-col">
+                <button onClick={() => handleSort('range')} className="sort-button">
+                  Range
+                  <SortIcon column="range" currentColumn={sortColumn} currentDirection={sortDirection} />
+                </button>
+              </th>
+              <th className="sortable-header duration-col">
+                <button onClick={() => handleSort('duration')} className="sort-button">
+                  Duration
+                  <SortIcon column="duration" currentColumn={sortColumn} currentDirection={sortDirection} />
+                </button>
+              </th>
+              <th className="sortable-header school-col">
+                <button onClick={() => handleSort('school')} className="sort-button">
+                  School
+                  <SortIcon column="school" currentColumn={sortColumn} currentDirection={sortDirection} />
+                </button>
+              </th>
+              <th className="components-col">Comp.</th>
+              <th className="classes-col">Classes</th>
+              <th className="sortable-header source-col">
+                <button onClick={() => handleSort('source')} className="sort-button">
+                  Source
+                  <SortIcon column="source" currentColumn={sortColumn} currentDirection={sortDirection} />
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedSpells.map((spell) => (
+              <SpellTableRow
+                key={spell.id}
+                spell={spell}
+                isSelected={selectedSpellIds.has(spell.id)}
+                isExpanded={false}
+                onSelectionChange={onSelectionChange}
+                selectedSpellIds={selectedSpellIds}
+                onRowClick={handleRowClick}
+                onCheckboxToggle={handleCheckboxToggle}
+                onTouchStartLongPress={(e) => handleTouchStart(e, spell)}
+                onTouchMoveLongPress={onTouchMove}
+                onTouchEndLongPress={onTouchEnd}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {modalSpell && (
+        <SpellDetailModal
+          spell={modalSpell}
+          isOpen={true}
+          onClose={handleCloseModal}
+          isSelected={selectedSpellIds.has(modalSpell.id)}
+          onToggleSelected={onSelectionChange ? handleCheckboxToggle : undefined}
+        />
+      )}
+    </>
   );
 }

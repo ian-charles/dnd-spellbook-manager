@@ -34,6 +34,11 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
         document.body.style.paddingRight = `${scrollbarWidth}px`;
       }
 
+      // Focus modal for keyboard accessibility
+      if (modalRef.current) {
+        modalRef.current.focus();
+      }
+
       return () => {
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
@@ -99,6 +104,10 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
         ref={modalRef}
         className="spell-detail-modal"
         style={modalStyle}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="spell-detail-title"
       >
         <div
           className="spell-detail-modal-header"
@@ -130,7 +139,7 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
                 {isPrepared ? <BookCheck size={20} /> : <BookX size={20} />}
               </button>
             )}
-            <h2>{spell.name}</h2>
+            <h2 id="spell-detail-title">{spell.name}</h2>
             <div className="spell-detail-modal-actions">
               <a
                 href={`#/spell/${spell.id}`}

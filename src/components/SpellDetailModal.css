@@ -32,6 +32,11 @@
     flex-direction: column;
     box-shadow: var(--shadow-2xl);
     border: 1px solid var(--color-border-primary);
+    outline: none; /* Remove default focus outline */
+  }
+
+  .spell-detail-modal:focus-visible {
+    box-shadow: var(--shadow-2xl), 0 0 0 3px light-dark(rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.3));
   }
 
   .spell-detail-modal-header {
@@ -165,6 +170,11 @@
     flex-direction: column;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.3s ease-out;
+    outline: none; /* Remove default focus outline */
+  }
+
+  .spell-detail-modal:focus-visible {
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3), 0 0 0 3px light-dark(rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.3));
   }
 
   @keyframes slideUp {

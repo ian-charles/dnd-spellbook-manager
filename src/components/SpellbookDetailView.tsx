@@ -44,12 +44,14 @@ export function SpellbookDetailView() {
     onEditSave,
     onToggleShowPreparedOnly,
     onCopy,
+    onTogglePrepared,
     existingNames,
   } = useSpellbookDetail();
 
-  const modalSpell = modalSpellId
-    ? enrichedSpells.find(es => es.spell.id === modalSpellId)?.spell
+  const modalEnrichedSpell = modalSpellId
+    ? enrichedSpells.find(es => es.spell.id === modalSpellId)
     : null;
+  const modalSpell = modalEnrichedSpell?.spell || null;
 
 
   // Loading state
@@ -187,13 +189,15 @@ export function SpellbookDetailView() {
           />
 
           {/* Spell Detail Modal */}
-          {modalSpell && (
+          {modalSpell && spellbook && (
             <SpellDetailModal
               spell={modalSpell}
               isOpen={true}
               onClose={onCloseModal}
               isSelected={selectedSpellIds.has(modalSpell.id)}
               onToggleSelected={onToggleSelected}
+              isPrepared={modalEnrichedSpell?.prepared || false}
+              onTogglePrepared={(spellId) => onTogglePrepared(spellbook.id, spellId)}
             />
           )}
         </>

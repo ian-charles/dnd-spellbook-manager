@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { BookCheck, BookX } from 'lucide-react';
 import { Spell } from '../types/spell';
 import { SpellDescription } from './SpellDescription';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -11,9 +12,11 @@ interface SpellDetailModalProps {
   onClose: () => void;
   isSelected?: boolean;
   onToggleSelected?: (spellId: string) => void;
+  isPrepared?: boolean;
+  onTogglePrepared?: (spellId: string) => void;
 }
 
-export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, onToggleSelected }: SpellDetailModalProps) {
+export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, onToggleSelected, isPrepared = false, onTogglePrepared }: SpellDetailModalProps) {
   const [dragDistance, setDragDistance] = useState(0);
   const startY = useRef(0);
   const isDragging = useRef(false);
@@ -113,6 +116,19 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
                 onClick={(e) => e.stopPropagation()}
                 aria-label={`Select ${spell.name}`}
               />
+            )}
+            {onTogglePrepared && (
+              <button
+                className={`spell-detail-modal-prep-toggle ${isPrepared ? 'prepped' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onTogglePrepared(spell.id);
+                }}
+                aria-label={isPrepared ? 'Unprep spell' : 'Prep spell'}
+                title={isPrepared ? 'Unprep spell' : 'Prep spell'}
+              >
+                {isPrepared ? <BookCheck size={20} /> : <BookX size={20} />}
+              </button>
             )}
             <h2>{spell.name}</h2>
             <div className="spell-detail-modal-actions">

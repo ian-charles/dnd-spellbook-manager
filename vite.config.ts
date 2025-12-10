@@ -1,14 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 export default defineConfig({
   base: process.env.BASE_PATH || '/',
   server: {
     host: true, // Listen on all network interfaces
     port: 5173,
+    https: true, // Enable HTTPS for mobile testing (IndexedDB requires HTTPS on network IPs)
   },
   plugins: [
+    basicSsl(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Spell } from '../types/spell';
-import { SpellService } from '../services/spell.service';
+import { spellService } from '../services/spell.service';
 import { SpellDescription } from './SpellDescription';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
 import { formatMaterialsWithCosts } from '../utils/spellFormatters';
-import { LoadingSpinner } from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 import './SpellDetailPage.css';
 
 interface SpellDetailPageProps {
@@ -21,8 +21,9 @@ export function SpellDetailPage({ spellId }: SpellDetailPageProps) {
       try {
         setLoading(true);
         setError(null);
-        const spells = await SpellService.loadSpells();
-        const foundSpell = spells.find(s => s.id === spellId);
+        await spellService.loadSpells();
+        const spells = spellService.getAllSpells();
+        const foundSpell = spells.find((s: Spell) => s.id === spellId);
 
         if (!foundSpell) {
           setError('Spell not found');

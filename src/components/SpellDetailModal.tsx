@@ -19,12 +19,21 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
   const isDragging = useRef(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Disable body scroll when modal is open
+  // Disable body scroll when modal is open and prevent layout shift
   useEffect(() => {
     if (isOpen) {
+      // Calculate scrollbar width before hiding it
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
       document.body.style.overflow = 'hidden';
+      // Add padding to compensate for scrollbar width
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+
       return () => {
         document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
       };
     }
   }, [isOpen]);

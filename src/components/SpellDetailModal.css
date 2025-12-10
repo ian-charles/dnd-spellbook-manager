@@ -228,21 +228,9 @@
     color: var(--color-text-primary);
   }
 
+  /* Hide close button on mobile - swipe down to dismiss */
   .spell-detail-modal-close {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    line-height: 1;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    padding: var(--space-2);
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-full);
-    flex-shrink: 0;
+    display: none;
   }
 
   .spell-detail-modal-body {

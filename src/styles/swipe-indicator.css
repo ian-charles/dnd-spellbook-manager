@@ -77,12 +77,12 @@
 
 /* PREP (Spellbook - swipe right) */
 .swipe-indicator-prep {
-  background: light-dark(rgba(6, 182, 212, 0.85), rgba(8, 145, 178, 0.9));
-  color: light-dark(rgb(14, 116, 144), rgb(165, 243, 252));
+  background: light-dark(rgba(202, 138, 4, 0.85), rgba(161, 98, 7, 0.9));
+  color: light-dark(rgb(161, 98, 7), rgb(254, 240, 138));
 }
 
 .swipe-indicator-prep.committed {
-  background: light-dark(rgba(6, 182, 212, 0.95), rgba(6, 182, 212, 1));
+  background: light-dark(rgba(202, 138, 4, 0.95), rgba(251, 191, 36, 1));
 }
 
 /* UNPREP (Spellbook - swipe left when prepared) */

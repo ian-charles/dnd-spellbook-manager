@@ -221,14 +221,14 @@
 }
 
 .spellbook-actions .btn-prep {
-  background: light-dark(rgb(8, 145, 178), rgb(6, 182, 212));
+  background: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
   color: white;
-  border-color: light-dark(rgb(8, 145, 178), rgb(6, 182, 212));
+  border-color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
   font-weight: 600;
 }
 
 .spellbook-actions .btn-prep:hover:not(:disabled) {
-  background: light-dark(rgb(14, 116, 144), rgb(8, 145, 178));
+  background: light-dark(rgb(161, 98, 7), rgb(202, 138, 4));
 }
 
 .spellbook-actions .btn-unprep {
@@ -262,7 +262,7 @@
 }
 
 .filter-checkbox-label .prepared-text {
-  color: light-dark(rgb(14, 116, 144), rgb(6, 182, 212));
+  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
   font-weight: var(--font-weight-semibold);
 }
 
@@ -286,15 +286,15 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: light-dark(rgb(6, 182, 212), rgb(6, 182, 212));
+  accent-color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
 }
 
 .spellbook-table .prepared-row {
-  background: light-dark(rgba(6, 182, 212, 0.18), rgba(6, 182, 212, 0.25));
+  background: light-dark(rgba(202, 138, 4, 0.18), rgba(251, 191, 36, 0.25));
 }
 
 .spellbook-table .prepared-row:hover {
-  background: light-dark(rgba(6, 182, 212, 0.22), rgba(6, 182, 212, 0.3));
+  background: light-dark(rgba(202, 138, 4, 0.22), rgba(251, 191, 36, 0.3));
 }
 
 /* Selected unprepared spells - blue highlight matching Browse Spells table */

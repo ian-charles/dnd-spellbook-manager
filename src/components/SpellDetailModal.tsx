@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { BookCheck, BookX } from 'lucide-react';
+import { BookCheck, BookX, BookDashed, Trash2 } from 'lucide-react';
 import { Spell } from '../types/spell';
 import { SpellDescription } from './SpellDescription';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -14,13 +14,18 @@ interface SpellDetailModalProps {
   onToggleSelected?: (spellId: string) => void;
   isPrepared?: boolean;
   onTogglePrepared?: (spellId: string) => void;
+  onRemove?: (spellId: string) => void;
 }
 
-export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, onToggleSelected, isPrepared = false, onTogglePrepared }: SpellDetailModalProps) {
+export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, onToggleSelected, isPrepared = false, onTogglePrepared, onRemove }: SpellDetailModalProps) {
   const [dragDistance, setDragDistance] = useState(0);
   const startY = useRef(0);
   const isDragging = useRef(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [prepAnimating, setPrepAnimating] = useState(false);
+  const [prepFeedback, setPrepFeedback] = useState('');
+  const [checkboxAnimating, setCheckboxAnimating] = useState(false);
+  const [checkboxFeedback, setCheckboxFeedback] = useState('');
 
   // Disable body scroll when modal is open and prevent layout shift
   useEffect(() => {
@@ -116,54 +121,19 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
           onTouchEnd={handleTouchEnd}
         >
           <div className="spell-detail-modal-header-content">
-            {onToggleSelected && (
-              <input
-                type="checkbox"
-                className="spell-detail-modal-header-checkbox"
-                checked={isSelected}
-                onChange={() => onToggleSelected(spell.id)}
-                onClick={(e) => e.stopPropagation()}
-                aria-label={`Select ${spell.name}`}
-              />
-            )}
             {onTogglePrepared && (
-              <button
-                className={`spell-detail-modal-prep-toggle ${isPrepared ? 'prepped' : ''}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onTogglePrepared(spell.id);
-                }}
-                aria-label={isPrepared ? 'Unprep spell' : 'Prep spell'}
-                title={isPrepared ? 'Unprep spell' : 'Prep spell'}
-              >
-                {isPrepared ? <BookCheck size={20} /> : <BookX size={20} />}
-              </button>
+              <div className={`spell-prep-status-icon ${isPrepared ? 'prepared' : 'unprepared'}`}>
+                {isPrepared ? <BookCheck size={24} /> : <BookDashed size={24} />}
+              </div>
             )}
             <h2 id="spell-detail-title">{spell.name}</h2>
-            <div className="spell-detail-modal-actions">
-              <a
-                href={`#/spell/${spell.id}`}
-                className="spell-detail-modal-external-link"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                aria-label="Open spell in new tab"
-                title="Open in new tab"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15 3 21 3 21 9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-              </a>
-              <button
-                className="spell-detail-modal-close"
-                onClick={onClose}
-                aria-label="Close spell details"
-              >
-                ×
-              </button>
-            </div>
+            <button
+              className="spell-detail-modal-close"
+              onClick={onClose}
+              aria-label="Close spell details"
+            >
+              ×
+            </button>
           </div>
         </div>
         <div className="spell-detail-modal-body">
@@ -219,6 +189,79 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
             </div>
             <div className="spell-source">{spell.source}</div>
           </div>
+        </div>
+        <div className="spell-detail-modal-footer">
+          {onToggleSelected && (
+            <div className={`spell-detail-modal-checkbox-wrapper ${checkboxAnimating ? 'animating' : ''}`}>
+              <input
+                type="checkbox"
+                className="spell-detail-modal-footer-checkbox"
+                checked={isSelected}
+                onChange={() => {
+                  setCheckboxFeedback(isSelected ? 'Deselected!' : 'Selected!');
+                  onToggleSelected(spell.id);
+                  setCheckboxAnimating(true);
+                  setTimeout(() => setCheckboxAnimating(false), 1000);
+                }}
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`Select ${spell.name}`}
+              />
+              <span className="feedback-text" aria-hidden="true">
+                {checkboxFeedback}
+              </span>
+            </div>
+          )}
+          <div className="spell-detail-modal-footer-center">
+            {onTogglePrepared && (
+              <div className={`spell-detail-modal-prep-wrapper ${prepAnimating ? 'animating' : ''}`}>
+                <button
+                  className={`spell-detail-modal-prep-toggle ${isPrepared ? '' : 'prep-action'}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPrepFeedback(isPrepared ? 'Unprepped!' : 'Prepped!');
+                    onTogglePrepared(spell.id);
+                    setPrepAnimating(true);
+                    setTimeout(() => setPrepAnimating(false), 1000);
+                  }}
+                  aria-label={isPrepared ? 'Unprep spell' : 'Prep spell'}
+                >
+                  {isPrepared ? <BookX size={20} /> : <BookCheck size={20} />}
+                  <span>{isPrepared ? 'Unprep' : 'Prep'}</span>
+                </button>
+                <span className="feedback-text" aria-hidden="true">
+                  {prepFeedback}
+                </span>
+              </div>
+            )}
+            {onRemove && (
+              <button
+                className="spell-detail-modal-remove"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemove(spell.id);
+                }}
+                aria-label="Remove spell from spellbook"
+              >
+                <Trash2 size={20} />
+                <span>Remove</span>
+              </button>
+            )}
+          </div>
+          <a
+            href={`#/spell/${spell.id}`}
+            className="spell-detail-modal-external-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            aria-label="Open spell in new tab"
+            title="Open in new tab"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
         </div>
       </div>
     </div>

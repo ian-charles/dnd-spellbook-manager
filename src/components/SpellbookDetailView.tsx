@@ -45,6 +45,7 @@ export function SpellbookDetailView() {
     onToggleShowPreparedOnly,
     onCopy,
     onTogglePrepared,
+    onRequestRemoveSpell,
     existingNames,
   } = useSpellbookDetail();
 
@@ -198,6 +199,7 @@ export function SpellbookDetailView() {
               onToggleSelected={onToggleSelected}
               isPrepared={modalEnrichedSpell?.prepared || false}
               onTogglePrepared={(spellId) => onTogglePrepared(spellbook.id, spellId)}
+              onRemove={onRequestRemoveSpell}
             />
           )}
         </>

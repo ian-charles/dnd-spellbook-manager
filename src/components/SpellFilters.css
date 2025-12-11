@@ -161,8 +161,8 @@
 }
 
 .filter-btn[data-school="abjuration" i].active {
-  background: light-dark(rgb(148, 163, 184), rgb(148, 163, 184));
-  color: light-dark(#475569, #cbd5e1);
+  background: light-dark(rgb(203, 213, 225), rgb(148, 163, 184));
+  color: light-dark(#0f172a, #0f172a);
   border-color: light-dark(#94a3b8, #64748b);
 }
 
@@ -182,8 +182,8 @@
 }
 
 .filter-btn[data-school="conjuration" i].active {
-  background: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
-  color: light-dark(#1e40af, #93c5fd);
+  background: light-dark(rgb(147, 197, 253), rgb(96, 165, 250));
+  color: light-dark(#0c2a5f, #0c2a5f);
   border-color: light-dark(#3b82f6, #2563eb);
 }
 
@@ -203,8 +203,8 @@
 }
 
 .filter-btn[data-school="divination" i].active {
-  background: light-dark(rgb(253, 224, 71), rgb(253, 224, 71));
-  color: light-dark(#b45309, #fde047);
+  background: light-dark(rgb(254, 240, 138), rgb(250, 204, 21));
+  color: light-dark(#422006, #422006);
   border-color: light-dark(#fbbf24, #eab308);
 }
 
@@ -224,8 +224,8 @@
 }
 
 .filter-btn[data-school="enchantment" i].active {
-  background: light-dark(rgb(236, 72, 153), rgb(236, 72, 153));
-  color: light-dark(#be185d, #f9a8d4);
+  background: light-dark(rgb(249, 168, 212), rgb(236, 72, 153));
+  color: light-dark(#500724, #500724);
   border-color: light-dark(#ec4899, #db2777);
 }
 
@@ -245,8 +245,8 @@
 }
 
 .filter-btn[data-school="evocation" i].active {
-  background: light-dark(rgb(239, 68, 68), rgb(239, 68, 68));
-  color: light-dark(#dc2626, #fca5a5);
+  background: light-dark(rgb(252, 165, 165), rgb(248, 113, 113));
+  color: light-dark(#450a0a, #450a0a);
   border-color: light-dark(#ef4444, #dc2626);
 }
 
@@ -266,8 +266,8 @@
 }
 
 .filter-btn[data-school="illusion" i].active {
-  background: light-dark(rgb(196, 181, 253), rgb(196, 181, 253));
-  color: light-dark(#6d28d9, #c4b5fd);
+  background: light-dark(rgb(221, 214, 254), rgb(167, 139, 250));
+  color: light-dark(#2e1065, #2e1065);
   border-color: light-dark(#a78bfa, #7c3aed);
 }
 
@@ -287,8 +287,8 @@
 }
 
 .filter-btn[data-school="necromancy" i].active {
-  background: light-dark(rgb(217, 249, 157), rgb(217, 249, 157));
-  color: light-dark(#4d7c0f, #d9f99d);
+  background: light-dark(rgb(236, 252, 203), rgb(190, 242, 100));
+  color: light-dark(#1a2e05, #1a2e05);
   border-color: light-dark(#a3e635, #84cc16);
 }
 
@@ -308,8 +308,8 @@
 }
 
 .filter-btn[data-school="transmutation" i].active {
-  background: light-dark(rgb(251, 146, 60), rgb(251, 146, 60));
-  color: light-dark(#ea580c, #fdba74);
+  background: light-dark(rgb(254, 215, 170), rgb(251, 146, 60));
+  color: light-dark(#431407, #431407);
   border-color: light-dark(#fb923c, #f97316);
 }
 
@@ -329,8 +329,8 @@
 }
 
 .filter-btn[data-class="bard"].active {
-  background: light-dark(rgb(196, 181, 253), rgb(196, 181, 253));
-  color: light-dark(#6d28d9, #c4b5fd);
+  background: light-dark(rgb(221, 214, 254), rgb(167, 139, 250));
+  color: light-dark(#2e1065, #2e1065);
   border-color: light-dark(#a78bfa, #7c3aed);
 }
 
@@ -349,8 +349,8 @@
 }
 
 .filter-btn[data-class="cleric"].active {
-  background: light-dark(rgb(253, 224, 71), rgb(253, 224, 71));
-  color: light-dark(#b45309, #fde047);
+  background: light-dark(rgb(254, 240, 138), rgb(250, 204, 21));
+  color: light-dark(#422006, #422006);
   border-color: light-dark(#fbbf24, #eab308);
 }
 
@@ -369,8 +369,8 @@
 }
 
 .filter-btn[data-class="druid"].active {
-  background: light-dark(rgb(134, 239, 172), rgb(134, 239, 172));
-  color: light-dark(#16a34a, #86efac);
+  background: light-dark(rgb(187, 247, 208), rgb(134, 239, 172));
+  color: light-dark(#052e16, #052e16);
   border-color: light-dark(#4ade80, #22c55e);
 }
 
@@ -389,8 +389,8 @@
 }
 
 .filter-btn[data-class="paladin"].active {
-  background: light-dark(rgb(148, 163, 184), rgb(148, 163, 184));
-  color: light-dark(#475569, #cbd5e1);
+  background: light-dark(rgb(203, 213, 225), rgb(148, 163, 184));
+  color: light-dark(#0f172a, #0f172a);
   border-color: light-dark(#94a3b8, #64748b);
 }
 
@@ -409,8 +409,8 @@
 }
 
 .filter-btn[data-class="ranger"].active {
-  background: light-dark(rgb(217, 119, 6), rgb(217, 119, 6));
-  color: light-dark(#92400e, #fdba74);
+  background: light-dark(rgb(254, 215, 170), rgb(251, 146, 60));
+  color: light-dark(#1c0a00, #1c0a00);
   border-color: light-dark(#d97706, #ea580c);
 }
 
@@ -429,8 +429,8 @@
 }
 
 .filter-btn[data-class="sorcerer"].active {
-  background: light-dark(rgb(248, 113, 113), rgb(248, 113, 113));
-  color: light-dark(#dc2626, #fca5a5);
+  background: light-dark(rgb(252, 165, 165), rgb(248, 113, 113));
+  color: light-dark(#450a0a, #450a0a);
   border-color: light-dark(#f87171, #ef4444);
 }
 
@@ -449,8 +449,8 @@
 }
 
 .filter-btn[data-class="warlock"].active {
-  background: light-dark(rgb(251, 146, 60), rgb(251, 146, 60));
-  color: light-dark(#ea580c, #fdba74);
+  background: light-dark(rgb(254, 215, 170), rgb(251, 146, 60));
+  color: light-dark(#431407, #431407);
   border-color: light-dark(#fb923c, #f97316);
 }
 
@@ -469,8 +469,8 @@
 }
 
 .filter-btn[data-class="wizard"].active {
-  background: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
-  color: light-dark(#1e40af, #93c5fd);
+  background: light-dark(rgb(147, 197, 253), rgb(96, 165, 250));
+  color: light-dark(#0c2a5f, #0c2a5f);
   border-color: light-dark(#3b82f6, #2563eb);
 }
 
@@ -542,97 +542,112 @@
   font-size: var(--font-size-sm);
   transition: all var(--transition-base);
   cursor: pointer;
-  background: transparent;
-  opacity: 0.6;
-}
-
-.checkbox-badge:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-  opacity: 0.8;
-}
-
-.checkbox-badge.active {
-  opacity: 1;
-  box-shadow: var(--shadow-lg);
-  transform: scale(1.08);
-  border-width: 2px;
-  font-weight: var(--font-weight-bold);
+  border: 1px solid transparent;
 }
 
 /* Verbal - Violet */
 .checkbox-badge-verbal {
-  background: rgba(196, 181, 253, 0.2);
-  border: 1px solid #a78bfa;
-  color: #6d28d9;
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #7c3aed);
+  color: light-dark(#6d28d9, #c4b5fd);
 }
 
-@media (prefers-color-scheme: dark) {
-  .checkbox-badge-verbal {
-    background: rgba(196, 181, 253, 0.15);
-    border-color: #7c3aed;
-    color: #c4b5fd;
-  }
+.checkbox-badge-verbal:hover {
+  background: light-dark(rgba(196, 181, 253, 0.35), rgba(196, 181, 253, 0.3));
+}
+
+.checkbox-badge-verbal.active {
+  background: light-dark(rgb(221, 214, 254), rgb(167, 139, 250));
+  color: light-dark(#2e1065, #2e1065);
+  border-color: light-dark(#a78bfa, #7c3aed);
+}
+
+.checkbox-badge-verbal.active:hover {
+  background: light-dark(rgba(196, 181, 253, 0.8), rgba(196, 181, 253, 0.8));
 }
 
 /* Somatic - Yellow */
 .checkbox-badge-somatic {
-  background: rgba(253, 224, 71, 0.2);
-  border: 1px solid #fbbf24;
-  color: #b45309;
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#fbbf24, #eab308);
+  color: light-dark(#b45309, #fde047);
 }
 
-@media (prefers-color-scheme: dark) {
-  .checkbox-badge-somatic {
-    background: rgba(253, 224, 71, 0.15);
-    border-color: #eab308;
-    color: #fde047;
-  }
+.checkbox-badge-somatic:hover {
+  background: light-dark(rgba(253, 224, 71, 0.35), rgba(253, 224, 71, 0.3));
+}
+
+.checkbox-badge-somatic.active {
+  background: light-dark(rgb(254, 240, 138), rgb(250, 204, 21));
+  color: light-dark(#422006, #422006);
+  border-color: light-dark(#fbbf24, #eab308);
+}
+
+.checkbox-badge-somatic.active:hover {
+  background: light-dark(rgba(253, 224, 71, 0.8), rgba(253, 224, 71, 0.8));
 }
 
 /* Material - Magenta */
 .checkbox-badge-material {
-  background: rgba(236, 72, 153, 0.2);
-  border: 1px solid #ec4899;
-  color: #be185d;
+  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15));
+  border-color: light-dark(#ec4899, #db2777);
+  color: light-dark(#be185d, #f9a8d4);
 }
 
-@media (prefers-color-scheme: dark) {
-  .checkbox-badge-material {
-    background: rgba(236, 72, 153, 0.15);
-    border-color: #db2777;
-    color: #f9a8d4;
-  }
+.checkbox-badge-material:hover {
+  background: light-dark(rgba(236, 72, 153, 0.35), rgba(236, 72, 153, 0.3));
+}
+
+.checkbox-badge-material.active {
+  background: light-dark(rgb(249, 168, 212), rgb(236, 72, 153));
+  color: light-dark(#500724, #500724);
+  border-color: light-dark(#ec4899, #db2777);
+}
+
+.checkbox-badge-material.active:hover {
+  background: light-dark(rgba(236, 72, 153, 0.8), rgba(236, 72, 153, 0.8));
 }
 
 /* Concentration - Cyan */
 .checkbox-badge-concentration {
-  background: rgba(103, 232, 249, 0.2);
-  border: 1px solid #06b6d4;
-  color: #0e7490;
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#06b6d4, #0891b2);
+  color: light-dark(#0e7490, #67e8f9);
 }
 
-@media (prefers-color-scheme: dark) {
-  .checkbox-badge-concentration {
-    background: rgba(103, 232, 249, 0.15);
-    border-color: #0891b2;
-    color: #67e8f9;
-  }
+.checkbox-badge-concentration:hover {
+  background: light-dark(rgba(103, 232, 249, 0.35), rgba(103, 232, 249, 0.3));
+}
+
+.checkbox-badge-concentration.active {
+  background: light-dark(rgb(165, 243, 252), rgb(103, 232, 249));
+  color: light-dark(#164e63, #164e63);
+  border-color: light-dark(#06b6d4, #0891b2);
+}
+
+.checkbox-badge-concentration.active:hover {
+  background: light-dark(rgba(103, 232, 249, 0.8), rgba(103, 232, 249, 0.8));
 }
 
 /* Ritual - Red */
 .checkbox-badge-ritual {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid #ef4444;
-  color: #dc2626;
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#dc2626, #fca5a5);
 }
 
-@media (prefers-color-scheme: dark) {
-  .checkbox-badge-ritual {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: #dc2626;
-    color: #fca5a5;
-  }
+.checkbox-badge-ritual:hover {
+  background: light-dark(rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.3));
+}
+
+.checkbox-badge-ritual.active {
+  background: light-dark(rgb(252, 165, 165), rgb(248, 113, 113));
+  color: light-dark(#450a0a, #450a0a);
+  border-color: light-dark(#ef4444, #dc2626);
+}
+
+.checkbox-badge-ritual.active:hover {
+  background: light-dark(rgba(239, 68, 68, 0.8), rgba(239, 68, 68, 0.8));
 }
 
 /* Filter footer with results and clear button */
@@ -643,6 +658,15 @@
   gap: var(--space-4);
   margin-top: var(--space-4);
   flex-wrap: wrap;
+}
+
+.filter-results {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  line-height: 1;
 }
 
 .btn-clear-filters {
@@ -1169,10 +1193,4 @@
   color: light-dark(#6d28d9, #c4b5fd);
 }
 
-/* Filter results summary */
-.filter-results {
-  margin-top: var(--space-4);
-  text-align: center;
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
-}
+/* Filter results summary - removed duplicate, styles are in filter-footer section above */

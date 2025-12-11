@@ -86,14 +86,6 @@ export function BrowseView({
             />
             <div className="batch-add-container">
                 <button
-                    className="btn-secondary"
-                    onClick={() => setSelectedSpellIds(new Set())}
-                    data-testid="btn-unselect-all"
-                    disabled={selectedSpellIds.size === 0}
-                >
-                    Unselect All
-                </button>
-                <button
                     className="btn-primary"
                     onClick={() => setSelectModalOpen(true)}
                     data-testid="btn-add-selected"

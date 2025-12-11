@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { useLongPress } from '../../hooks/useLongPress';
@@ -9,6 +9,7 @@ import { useSpellbookDetail } from '../../contexts/SpellbookDetailContext';
 export function SpellbookSpellsTable() {
     const {
         sortedSpells,
+        enrichedSpells,
         expandedSpellId,
         sortColumn,
         sortDirection,
@@ -19,7 +20,32 @@ export function SpellbookSpellsTable() {
         onToggleSelected,
         onTogglePrepared,
         onRequestRemoveSpell,
+        onSelectAll,
+        onDeselectAll,
     } = useSpellbookDetail();
+
+    const masterCheckboxRef = useRef<HTMLInputElement>(null);
+
+    // Calculate selection state for master checkbox
+    const selectedCount = selectedSpellIds.size;
+    const totalCount = enrichedSpells.length;
+    const allSelected = totalCount > 0 && selectedCount === totalCount;
+    const someSelected = selectedCount > 0 && selectedCount < totalCount;
+
+    // Update master checkbox indeterminate state
+    useEffect(() => {
+        if (masterCheckboxRef.current) {
+            masterCheckboxRef.current.indeterminate = someSelected;
+        }
+    }, [someSelected]);
+
+    const handleMasterCheckboxChange = () => {
+        if (allSelected) {
+            onDeselectAll();
+        } else {
+            onSelectAll();
+        }
+    };
 
     // Long-press handlers for mobile selection
     const pendingSpell = useRef<EnrichedSpell | null>(null);
@@ -47,7 +73,16 @@ export function SpellbookSpellsTable() {
                 <table className="spell-table spellbook-table">
                     <thead>
                         <tr>
-                            <th className="prepared-col">Select</th>
+                            <th className="prepared-col">
+                                <input
+                                    type="checkbox"
+                                    ref={masterCheckboxRef}
+                                    checked={allSelected}
+                                    onChange={handleMasterCheckboxChange}
+                                    aria-label={allSelected ? "Deselect all spells" : "Select all spells"}
+                                    title={allSelected ? "Deselect all spells" : "Select all spells"}
+                                />
+                            </th>
                             <th onClick={() => onSort('name')} className="sortable">
                                 <div className="th-content">
                                     Spell Name

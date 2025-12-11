@@ -1,5 +1,5 @@
 import { Spell } from '../types/spell';
-import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../utils/spellFormatters';
+import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping, formatDurationForWrapping } from '../utils/spellFormatters';
 import { useSwipe } from '../hooks/useSwipe';
 import { SwipeIndicator } from './SwipeIndicator';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -105,7 +105,7 @@ export function SpellTableRow({
           <span className="level-col mobile-badge" data-level={spell.level}>{getLevelTextMobile(spell.level)}</span>
           <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
         </td>
-        <td className="level-col desktop-only">
+        <td className="level-col">
           <span className="desktop-badge level-badge" data-level={spell.level}>
             {getLevelText(spell.level)}
           </span>
@@ -119,11 +119,11 @@ export function SpellTableRow({
         <td className="range-col">{spell.range}</td>
         <td className="duration-col">
           <span className="cell-content">
-            {spell.duration}
+            {formatDurationForWrapping(spell.duration)}
             {spell.concentration && <span className="badge badge-concentration">C</span>}
           </span>
         </td>
-        <td className="school-col desktop-only" data-school={spell.school}>
+        <td className="school-col" data-school={spell.school}>
           {spell.school}
         </td>
         <td className="components-col"><ComponentBadges spell={spell} /></td>

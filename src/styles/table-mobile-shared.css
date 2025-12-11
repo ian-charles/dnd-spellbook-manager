@@ -23,6 +23,11 @@
     display: none !important;
   }
 
+  /* Hide desktop badges on mobile */
+  .desktop-badge {
+    display: none !important;
+  }
+
   /* Container - remove desktop table styling */
   .spell-table-container,
   .spellbook-table-container {

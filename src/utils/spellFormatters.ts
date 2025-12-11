@@ -35,6 +35,16 @@ export function formatSpellNameForWrapping(name: string): string {
 }
 
 /**
+ * Formats duration text for better wrapping in narrow columns.
+ * Adds zero-width spaces after spaces to allow line breaks at word boundaries.
+ * Useful for long durations like "Until dispelled or triggered".
+ */
+export function formatDurationForWrapping(duration: string): string {
+  // Insert zero-width space (U+200B) after each space to allow breaks
+  return duration.replace(/ /g, ' \u200B');
+}
+
+/**
  * Formats spell components as a compact string (e.g., "V,S,M").
  */
 export function getComponentsText(spell: Spell): string {

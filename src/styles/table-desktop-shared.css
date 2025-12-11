@@ -653,6 +653,12 @@
   min-width: 95px;
 }
 
+/* Allow duration text to wrap */
+.duration-col .cell-content {
+  white-space: normal;
+  word-break: break-word;
+}
+
 .range-col {
   min-width: 70px;
 }

@@ -19,6 +19,7 @@ describe('Layout', () => {
         spellbookCount: 0,
         onNavigateToBrowse: vi.fn(),
         onNavigateToSpellbooks: vi.fn(),
+        onAboutClick: vi.fn(),
     };
 
     it('renders children correctly', () => {

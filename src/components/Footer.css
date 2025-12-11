@@ -1,0 +1,87 @@
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border-secondary);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+}
+
+/* Hide footer on desktop (≥1024px) - buttons will be in navbar */
+@media (min-width: 1024px) {
+  .app-footer {
+    display: none;
+  }
+}
+
+.footer-button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.footer-button:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+  transform: translateY(-2px);
+}
+
+.footer-button:active {
+  transform: translateY(0);
+}
+
+.footer-button-about svg {
+  flex-shrink: 0;
+}
+
+.footer-button-donate {
+  background: light-dark(rgb(255, 94, 91), rgb(239, 68, 68));
+  color: white;
+  border-color: light-dark(rgb(255, 94, 91), rgb(239, 68, 68));
+}
+
+.footer-button-donate:hover {
+  background: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
+  border-color: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
+  color: white;
+}
+
+.footer-button-donate svg {
+  flex-shrink: 0;
+}
+
+/* Mobile optimization */
+@media (max-width: 425px) {
+  .app-footer {
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .footer-button {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .footer-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}

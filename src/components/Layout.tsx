@@ -13,6 +13,7 @@
  */
 
 import { ReactNode } from 'react';
+import { Info, Heart } from 'lucide-react';
 import { View } from '../hooks/useHashRouter';
 
 interface LayoutProps {
@@ -20,6 +21,7 @@ interface LayoutProps {
   spellbookCount: number;
   onNavigateToBrowse: () => void;
   onNavigateToSpellbooks: () => void;
+  onAboutClick: () => void;
   children: ReactNode;
 }
 
@@ -28,6 +30,7 @@ export function Layout({
   spellbookCount,
   onNavigateToBrowse,
   onNavigateToSpellbooks,
+  onAboutClick,
   children,
 }: LayoutProps) {
   return (
@@ -60,6 +63,24 @@ export function Layout({
           >
             My Spellbooks ({spellbookCount})
           </button>
+          <button
+            className="nav-link nav-link-about desktop-only"
+            onClick={onAboutClick}
+            aria-label="About The Spellbookery"
+          >
+            <Info size={18} />
+            <span>About</span>
+          </button>
+          <a
+            href="https://ko-fi.com/iantheguy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-link nav-link-donate desktop-only"
+            aria-label="Support on Ko-fi"
+          >
+            <Heart size={18} />
+            <span>Donate</span>
+          </a>
         </nav>
       </header>
 

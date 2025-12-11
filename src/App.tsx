@@ -6,6 +6,8 @@ import { SpellbookDetail } from './components/SpellbookDetail';
 import { SpellDetailPage } from './components/SpellDetailPage';
 import { AlertDialog } from './components/AlertDialog';
 import { BackToTopButton } from './components/BackToTopButton';
+import { AboutModal } from './components/AboutModal';
+import { Footer } from './components/Footer';
 
 import LoadingSpinner from './components/LoadingSpinner';
 import { useSpells } from './hooks/useSpells';
@@ -69,6 +71,9 @@ function App() {
     variant: 'info',
   });
 
+  // About modal state
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+
   // Loading state
   if (loading) {
     return (
@@ -97,6 +102,7 @@ function App() {
       spellbookCount={spellbooks.length}
       onNavigateToBrowse={navigateToBrowse}
       onNavigateToSpellbooks={navigateToSpellbooks}
+      onAboutClick={() => setIsAboutModalOpen(true)}
     >
       {/* Browse View */}
       {currentView === 'browse' && (
@@ -160,6 +166,15 @@ function App() {
 
       {/* Back to Top Button */}
       <BackToTopButton />
+
+      {/* About Modal */}
+      <AboutModal
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
+      />
+
+      {/* Footer (visible on mobile/tablet only) */}
+      <Footer onAboutClick={() => setIsAboutModalOpen(true)} />
     </Layout>
   );
 }

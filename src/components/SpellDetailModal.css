@@ -82,9 +82,16 @@
 
   .spell-detail-modal-header-content {
     display: grid;
-    grid-template-columns: 40px 1fr 40px;
     align-items: center;
     gap: var(--space-4);
+  }
+
+  .spell-detail-modal-header-content.with-prep-icon {
+    grid-template-columns: 40px 1fr 40px;
+  }
+
+  .spell-detail-modal-header-content.no-prep-icon {
+    grid-template-columns: 1fr 40px;
   }
 
   .spell-prep-status-icon {
@@ -316,9 +323,16 @@
 
   .spell-detail-modal-header-content {
     display: grid;
-    grid-template-columns: 40px 1fr 40px;
     align-items: center;
     gap: var(--space-3);
+  }
+
+  .spell-detail-modal-header-content.with-prep-icon {
+    grid-template-columns: 40px 1fr 40px;
+  }
+
+  .spell-detail-modal-header-content.no-prep-icon {
+    grid-template-columns: 1fr 40px;
   }
 
   .spell-prep-status-icon {

@@ -120,7 +120,7 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="spell-detail-modal-header-content">
+          <div className={`spell-detail-modal-header-content ${onTogglePrepared ? 'with-prep-icon' : 'no-prep-icon'}`}>
             {onTogglePrepared && (
               <div className={`spell-prep-status-icon ${isPrepared ? 'prepared' : 'unprepared'}`}>
                 {isPrepared ? <BookCheck size={24} /> : <BookDashed size={24} />}

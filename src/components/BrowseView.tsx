@@ -45,7 +45,7 @@ export function BrowseView({
         selectedSpellIds,
         setSelectedSpellIds,
         targetSpellbookId,
-        setTargetSpellbookId,
+        setTargetSpellbookId: _setTargetSpellbookId,
     } = useSpellSelection();
 
     // Modal state
@@ -55,7 +55,7 @@ export function BrowseView({
 
     // Mutation hook
     const {
-        isAddingSpells,
+        isAddingSpells: _isAddingSpells,
         handleAddToSpellbook,
         handleCreateSpellbook,
     } = useSpellbookMutations({

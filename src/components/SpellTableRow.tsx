@@ -20,7 +20,7 @@ interface SpellTableRowProps {
 export function SpellTableRow({
   spell,
   isSelected,
-  isExpanded,
+  isExpanded: _isExpanded,
   onSelectionChange,
   selectedSpellIds,
   onRowClick,

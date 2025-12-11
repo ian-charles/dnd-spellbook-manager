@@ -30,7 +30,7 @@ export function SpellbookDetailView() {
     showPreparedOnly,
     allPrepared,
     modalSpellId,
-    onBack,
+    onBack: _onBack,
     onSelectAll,
     onDeselectAll,
     onPrepSelected,

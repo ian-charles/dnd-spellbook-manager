@@ -21,7 +21,7 @@ interface SpellbookSpellRowProps {
 export function SpellbookSpellRow({
   enrichedSpell,
   isSelected,
-  isExpanded,
+  isExpanded: _isExpanded,
   spellbookId,
   onToggleSelected,
   onRowClick,

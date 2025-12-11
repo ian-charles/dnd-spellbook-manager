@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { Spellbook } from '../types/spellbook';
 import './SelectSpellbookModal.css';

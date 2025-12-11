@@ -102,10 +102,17 @@
   }
 }
 
+/* Tablet adjustments - move up to avoid footer */
+@media (max-width: 1023px) {
+  .back-to-top-container {
+    bottom: 5rem;
+  }
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .back-to-top-container {
-    bottom: 1.5rem;
+    bottom: 5rem;
     right: 1.5rem;
   }
 

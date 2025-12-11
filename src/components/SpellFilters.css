@@ -29,7 +29,6 @@
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all var(--transition-base);
-  margin-bottom: var(--space-4);
 }
 
 .filters-toggle-btn:hover {
@@ -70,6 +69,7 @@
 .spell-filters-content.expanded {
   max-height: 5000px;
   opacity: 1;
+  margin-top: var(--space-4);
 }
 
 .spell-filters-content.collapsed {
@@ -78,7 +78,7 @@
 }
 
 .search-box {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
 }
 
 .search-input {

@@ -136,6 +136,18 @@ export function SpellFilters({
 
   return (
     <div className="spell-filters">
+      {/* Search Box - Always Visible */}
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="Search spells..."
+          value={localSearchText}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="search-input"
+          aria-label="Search spells"
+        />
+      </div>
+
       {/* Collapse/Expand Button */}
       <button
         className="filters-toggle-btn"
@@ -302,17 +314,6 @@ export function SpellFilters({
         </div>
       </div>
 
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="Search spells..."
-          value={localSearchText}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="search-input"
-          aria-label="Search spells"
-        />
-      </div>
-
       {hasActiveFilters && (
         <button
           className="btn-clear-filters"
@@ -322,7 +323,9 @@ export function SpellFilters({
           Clear All Filters
         </button>
       )}
+      </div>
 
+      {/* Filter Results - Always Visible */}
       {filteredCount !== undefined && totalCount !== undefined && (
         <p className="filter-results">
           <i>
@@ -331,7 +334,6 @@ export function SpellFilters({
           </i>
         </p>
       )}
-      </div>
     </div>
   );
 }

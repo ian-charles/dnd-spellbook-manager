@@ -49,6 +49,16 @@ interface SpellFiltersProps extends UseFilterReducerReturn {
    * Number of selected spells
    */
   selectedCount?: number;
+
+  /**
+   * If true, filters are always expanded (no collapse button)
+   */
+  alwaysExpanded?: boolean;
+
+  /**
+   * If true, hide search bar, filter results, and clear button (for use in modal)
+   */
+  hideExtras?: boolean;
 }
 
 export function SpellFilters({
@@ -69,12 +79,15 @@ export function SpellFilters({
   sources,
   filteredCount,
   totalCount,
-  selectedCount
+  selectedCount,
+  alwaysExpanded = false,
+  hideExtras = false
 }: SpellFiltersProps) {
   const [localSearchText, setLocalSearchText] = useState(state.searchText);
 
-  // Collapsed state with localStorage persistence
+  // Collapsed state with localStorage persistence (unless alwaysExpanded)
   const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (alwaysExpanded) return false;
     const saved = localStorage.getItem('spellFiltersCollapsed');
     if (saved !== null) {
       return saved === 'true';
@@ -83,15 +96,19 @@ export function SpellFilters({
     return window.innerWidth < 768;
   });
 
-  // Persist collapse state to localStorage
+  // Persist collapse state to localStorage (unless alwaysExpanded)
   useEffect(() => {
-    localStorage.setItem('spellFiltersCollapsed', String(isCollapsed));
-  }, [isCollapsed]);
+    if (!alwaysExpanded) {
+      localStorage.setItem('spellFiltersCollapsed', String(isCollapsed));
+    }
+  }, [isCollapsed, alwaysExpanded]);
 
   // Toggle collapse state
   const toggleCollapse = useCallback(() => {
-    setIsCollapsed(prev => !prev);
-  }, []);
+    if (!alwaysExpanded) {
+      setIsCollapsed(prev => !prev);
+    }
+  }, [alwaysExpanded]);
 
   // Sync local state with prop when prop changes (e.g. clear filters)
   useEffect(() => {
@@ -145,35 +162,39 @@ export function SpellFilters({
 
   return (
     <div className="spell-filters">
-      {/* Search Box - Always Visible */}
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="Search spells..."
-          value={localSearchText}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="search-input"
-          aria-label="Search spells"
-        />
-      </div>
+      {/* Search Box - Hidden when hideExtras */}
+      {!hideExtras && (
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Search spells..."
+            value={localSearchText}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="search-input"
+            aria-label="Search spells"
+          />
+        </div>
+      )}
 
-      {/* Collapse/Expand Button */}
-      <button
-        className="filters-toggle-btn"
-        onClick={toggleCollapse}
-        aria-expanded={!isCollapsed}
-        aria-label={isCollapsed ? 'Show filters' : 'Hide filters'}
-      >
-        <span className="filters-toggle-icon">
-          {isCollapsed ? '▼' : '▲'}
-        </span>
-        <span className="filters-toggle-text">
-          {isCollapsed ? 'Show Filters' : 'Hide Filters'}
-        </span>
-        {isCollapsed && activeFilterCount > 0 && (
-          <span className="filters-active-badge">{activeFilterCount}</span>
-        )}
-      </button>
+      {/* Collapse/Expand Button (hidden when alwaysExpanded) */}
+      {!alwaysExpanded && (
+        <button
+          className="filters-toggle-btn"
+          onClick={toggleCollapse}
+          aria-expanded={!isCollapsed}
+          aria-label={isCollapsed ? 'Show filters' : 'Hide filters'}
+        >
+          <span className="filters-toggle-icon">
+            {isCollapsed ? '▼' : '▲'}
+          </span>
+          <span className="filters-toggle-text">
+            {isCollapsed ? 'Show Filters' : 'Hide Filters'}
+          </span>
+          {isCollapsed && activeFilterCount > 0 && (
+            <span className="filters-active-badge">{activeFilterCount}</span>
+          )}
+        </button>
+      )}
 
       {/* Collapsible Content */}
       <div className={`spell-filters-content ${isCollapsed ? 'collapsed' : 'expanded'}`}>
@@ -337,26 +358,27 @@ export function SpellFilters({
       </div>
       </div>
 
-      {/* Filter Results and Clear Button - Always Visible */}
-      <div className="filter-footer">
-        {filteredCount !== undefined && totalCount !== undefined && (
-          <p className="filter-results">
-            <i>
-              Showing {filteredCount} of {totalCount} spells
-              {selectedCount !== undefined && selectedCount > 0 && ` • ${selectedCount} selected`}
-            </i>
-          </p>
-        )}
-        {hasActiveFilters && (
+      {/* Filter Results and Clear Button - Hidden when hideExtras */}
+      {!hideExtras && (
+        <div className="filter-footer">
+          {filteredCount !== undefined && totalCount !== undefined && (
+            <p className="filter-results">
+              <i>
+                Showing {filteredCount} of {totalCount} spells
+                {selectedCount !== undefined && selectedCount > 0 && ` • ${selectedCount} selected`}
+              </i>
+            </p>
+          )}
           <button
             className="btn-clear-filters"
             onClick={handleClearFilters}
+            disabled={!hasActiveFilters}
             aria-label="Clear all active filters"
           >
             Clear All Filters
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

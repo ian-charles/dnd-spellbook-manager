@@ -682,9 +682,14 @@
   white-space: nowrap;
 }
 
-.btn-clear-filters:hover {
+.btn-clear-filters:hover:not(:disabled) {
   background: light-dark(rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.2));
   border-color: var(--color-error);
+}
+
+.btn-clear-filters:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Mobile responsive */

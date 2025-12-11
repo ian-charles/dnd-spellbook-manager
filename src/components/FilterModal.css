@@ -1,0 +1,122 @@
+/**
+ * Filter Modal Styles
+ *
+ * Mobile: Full-screen modal
+ * Desktop/Tablet: Centered modal with max-width
+ */
+
+/* Backdrop */
+.filter-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 0;
+}
+
+/* Modal Container */
+.filter-modal {
+  background: var(--color-bg-primary);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  outline: none;
+}
+
+/* Modal Header */
+.filter-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+}
+
+.filter-modal-header h2 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.filter-modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.filter-modal-close:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* Modal Body */
+.filter-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+/* Modal Footer */
+.filter-modal-footer {
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* Mobile: buttons take half width each */
+.filter-modal-footer .btn-primary,
+.filter-modal-footer .btn-clear-filters {
+  flex: 1;
+  font-size: var(--font-size-md);
+}
+
+/* Desktop/Tablet: Right-aligned buttons with Clear to left of Apply */
+@media (min-width: 768px) {
+  .filter-modal-footer {
+    justify-content: flex-end;
+  }
+
+  .filter-modal-footer .btn-primary,
+  .filter-modal-footer .btn-clear-filters {
+    flex: 0 0 auto;
+    min-width: 120px;
+  }
+}
+
+/* Desktop/Tablet: Centered modal with max-width */
+@media (min-width: 768px) {
+  .filter-modal-backdrop {
+    padding: var(--space-4);
+  }
+
+  .filter-modal {
+    width: 90%;
+    max-width: 900px;
+    height: auto;
+    max-height: 90vh;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+  }
+}

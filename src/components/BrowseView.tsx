@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
-import { SpellFilters } from './SpellFilters';
+import { FilterModal } from './FilterModal';
 import { SpellTable } from './SpellTable';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 import { SelectSpellbookModal } from './SelectSpellbookModal';
@@ -52,6 +52,7 @@ export function BrowseView({
     // Modal state
     const [selectModalOpen, setSelectModalOpen] = useState(false);
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [filterModalOpen, setFilterModalOpen] = useState(false);
     const [pendingSpellIds, setPendingSpellIds] = useState<Set<string>>(new Set());
 
     // Mutation hook
@@ -101,17 +102,66 @@ export function BrowseView({
         filterStateRef.current = currState;
     }, [filterReducer.state, selectedSpellIds.size, setSelectedSpellIds]);
 
+    // Check if any filters are active
+    const hasActiveFilters =
+        filterReducer.state.searchText.length > 0 ||
+        (filterReducer.state.levelRange.min !== 0 || filterReducer.state.levelRange.max !== 9) ||
+        filterReducer.state.selectedSchools.length > 0 ||
+        filterReducer.state.selectedClasses.length > 0 ||
+        filterReducer.state.selectedSources.length > 0 ||
+        filterReducer.state.concentrationOnly ||
+        filterReducer.state.ritualOnly ||
+        filterReducer.state.verbalOnly ||
+        filterReducer.state.somaticOnly ||
+        filterReducer.state.materialOnly;
+
+    // Count active filters (excluding search text)
+    const activeFilterCount = [
+        filterReducer.state.selectedSchools.length > 0,
+        filterReducer.state.selectedClasses.length > 0,
+        filterReducer.state.selectedSources.length > 0,
+        filterReducer.state.levelRange.min !== 0 || filterReducer.state.levelRange.max !== 9,
+        filterReducer.state.concentrationOnly,
+        filterReducer.state.ritualOnly,
+        filterReducer.state.verbalOnly,
+        filterReducer.state.somaticOnly,
+        filterReducer.state.materialOnly,
+    ].filter(Boolean).length;
+
     return (
         <>
-            <SpellFilters
-                {...filterReducer}
-                schools={schools}
-                classes={classes}
-                sources={sources}
-                filteredCount={filteredSpells.length}
-                totalCount={spells.length}
-                selectedCount={selectedSpellIds.size}
-            />
+            {/* Search Box - Always Visible */}
+            <div className="search-box">
+                <input
+                    type="text"
+                    placeholder="Search spells..."
+                    value={filterReducer.state.searchText}
+                    onChange={(e) => filterReducer.setSearchText(e.target.value)}
+                    className="search-input"
+                    aria-label="Search spells"
+                />
+            </div>
+
+            <div className="browse-view-header">
+                <button
+                    className="btn-secondary"
+                    onClick={() => setFilterModalOpen(true)}
+                    aria-label="Open filters"
+                >
+                    Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+                </button>
+                <div className="filter-results-text">
+                    Showing {filteredSpells.length} of {spells.length} spells
+                </div>
+                <button
+                    className="btn-clear-filters"
+                    onClick={filterReducer.clearFilters}
+                    disabled={!hasActiveFilters}
+                    aria-label="Clear all active filters"
+                >
+                    Clear Filters
+                </button>
+            </div>
             <div className="batch-add-container">
                 <button
                     className="btn-secondary mobile-only-button"
@@ -169,6 +219,19 @@ export function BrowseView({
                 }}
                 onSubmit={handleCreateSpellbook}
                 existingNames={spellbooks.map(sb => sb.name)}
+            />
+
+            {/* Filter Modal */}
+            <FilterModal
+                isOpen={filterModalOpen}
+                onClose={() => setFilterModalOpen(false)}
+                {...filterReducer}
+                schools={schools}
+                classes={classes}
+                sources={sources}
+                filteredCount={filteredSpells.length}
+                totalCount={spells.length}
+                selectedCount={selectedSpellIds.size}
             />
         </>
     );

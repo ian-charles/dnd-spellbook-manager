@@ -255,85 +255,81 @@ export function SpellFilters({
       </div>
 
       <div className="filter-section">
-        <div className="filter-checkboxes-inline">
+        <div className="filter-badges-inline">
           <div>
             <h3>Components</h3>
-            <div className="checkbox-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={state.verbalOnly}
-                  onChange={toggleVerbal}
-                  aria-label="Filter by Verbal component"
-                />
-                <span className="checkbox-badge checkbox-badge-verbal">Verbal</span>
-              </label>
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={state.somaticOnly}
-                  onChange={toggleSomatic}
-                  aria-label="Filter by Somatic component"
-                />
-                <span className="checkbox-badge checkbox-badge-somatic">Somatic</span>
-              </label>
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={state.materialOnly}
-                  onChange={toggleMaterial}
-                  aria-label="Filter by Material component"
-                />
-                <span className="checkbox-badge checkbox-badge-material">Material</span>
-              </label>
+            <div className="badge-group">
+              <button
+                className={`checkbox-badge checkbox-badge-verbal ${state.verbalOnly ? 'active' : ''}`}
+                onClick={toggleVerbal}
+                aria-pressed={state.verbalOnly}
+                aria-label="Filter by Verbal component"
+              >
+                Verbal
+              </button>
+              <button
+                className={`checkbox-badge checkbox-badge-somatic ${state.somaticOnly ? 'active' : ''}`}
+                onClick={toggleSomatic}
+                aria-pressed={state.somaticOnly}
+                aria-label="Filter by Somatic component"
+              >
+                Somatic
+              </button>
+              <button
+                className={`checkbox-badge checkbox-badge-material ${state.materialOnly ? 'active' : ''}`}
+                onClick={toggleMaterial}
+                aria-pressed={state.materialOnly}
+                aria-label="Filter by Material component"
+              >
+                Material
+              </button>
             </div>
           </div>
           <div>
             <h3>Properties</h3>
-            <div className="checkbox-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={state.concentrationOnly}
-                  onChange={toggleConcentration}
-                  aria-label="Filter by Concentration"
-                />
-                <span className="checkbox-badge checkbox-badge-concentration">Concentration</span>
-              </label>
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={state.ritualOnly}
-                  onChange={toggleRitual}
-                  aria-label="Filter by Ritual"
-                />
-                <span className="checkbox-badge checkbox-badge-ritual">Ritual</span>
-              </label>
+            <div className="badge-group">
+              <button
+                className={`checkbox-badge checkbox-badge-concentration ${state.concentrationOnly ? 'active' : ''}`}
+                onClick={toggleConcentration}
+                aria-pressed={state.concentrationOnly}
+                aria-label="Filter by Concentration"
+              >
+                Concentration
+              </button>
+              <button
+                className={`checkbox-badge checkbox-badge-ritual ${state.ritualOnly ? 'active' : ''}`}
+                onClick={toggleRitual}
+                aria-pressed={state.ritualOnly}
+                aria-label="Filter by Ritual"
+              >
+                Ritual
+              </button>
             </div>
           </div>
         </div>
       </div>
-
-      {hasActiveFilters && (
-        <button
-          className="btn-clear-filters"
-          onClick={handleClearFilters}
-          aria-label="Clear all active filters"
-        >
-          Clear All Filters
-        </button>
-      )}
       </div>
 
-      {/* Filter Results - Always Visible */}
-      {filteredCount !== undefined && totalCount !== undefined && (
-        <p className="filter-results">
-          <i>
-            Showing {filteredCount} of {totalCount} spells
-            {selectedCount !== undefined && selectedCount > 0 && ` • ${selectedCount} selected`}
-          </i>
-        </p>
-      )}
+      {/* Filter Results and Clear Button - Always Visible */}
+      <div className={`filter-footer ${hasActiveFilters ? 'has-clear-button' : ''}`}>
+        {filteredCount !== undefined && totalCount !== undefined && (
+          <p className="filter-results">
+            <i>
+              Showing {filteredCount} of {totalCount} spells
+              {selectedCount !== undefined && selectedCount > 0 && ` • ${selectedCount} selected`}
+            </i>
+          </p>
+        )}
+        {hasActiveFilters && (
+          <button
+            className="btn-clear-filters"
+            onClick={handleClearFilters}
+            aria-label="Clear all active filters"
+          >
+            Clear All Filters
+          </button>
+        )}
+      </div>
     </div>
   );
 }

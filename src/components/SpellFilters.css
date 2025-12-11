@@ -340,13 +340,13 @@
   gap: var(--space-3);
 }
 
-.filter-checkboxes-inline {
+.filter-badges-inline {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
 }
 
-.filter-checkboxes-inline>div {
+.filter-badges-inline>div {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -355,17 +355,17 @@
   flex-wrap: wrap;
 }
 
-.filter-checkboxes-inline>div:not(:first-child) {
+.filter-badges-inline>div:not(:first-child) {
   border-left: 1px solid var(--color-border-secondary);
 }
 
-.filter-checkboxes-inline h3 {
+.filter-badges-inline h3 {
   margin-bottom: 0;
   flex-shrink: 0;
   align-self: center;
 }
 
-.filter-checkboxes-inline .checkbox-group {
+.filter-badges-inline .badge-group {
   display: flex;
   flex-wrap: nowrap;
   gap: var(--space-3);
@@ -375,48 +375,40 @@
 
 /* When content wraps, stack everything vertically with centered labels */
 @media (max-width: 1100px) {
-  .filter-checkboxes-inline>div {
+  .filter-badges-inline>div {
     flex-direction: column;
     align-items: center;
     gap: var(--space-3);
   }
 
-  .filter-checkboxes-inline h3 {
+  .filter-badges-inline h3 {
     text-align: center;
   }
 
-  .filter-checkboxes-inline .checkbox-group {
+  .filter-badges-inline .badge-group {
     flex-wrap: wrap;
   }
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text-heading);
-  font-size: var(--font-size-base);
-  cursor: pointer;
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: 1.125rem;
-  height: 1.125rem;
-  cursor: pointer;
-  accent-color: var(--color-accent);
-}
-
-.checkbox-label span {
-  user-select: none;
-}
-
-/* Checkbox badges */
+/* Checkbox badges - now clickable buttons */
 .checkbox-badge {
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-sm);
   transition: all var(--transition-base);
+  cursor: pointer;
+  background: transparent;
+}
+
+.checkbox-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.checkbox-badge.active {
+  box-shadow: var(--shadow-md);
+  transform: scale(1.05);
 }
 
 /* Verbal - Violet */
@@ -494,9 +486,22 @@
   }
 }
 
+/* Filter footer with results and clear button */
+.filter-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.filter-footer.has-clear-button {
+  justify-content: space-between;
+}
+
 .btn-clear-filters {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   background: var(--color-error-bg);
   border: 1px solid var(--color-error-border);
   border-radius: var(--radius-lg);
@@ -505,7 +510,7 @@
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--transition-base);
-  margin-top: var(--space-4);
+  white-space: nowrap;
 }
 
 .btn-clear-filters:hover {
@@ -546,17 +551,22 @@
     font-size: var(--font-size-sm);
   }
 
-  .checkbox-label {
-    font-size: var(--font-size-sm);
-  }
-
   .btn-clear-filters {
-    padding: var(--space-3);
+    padding: var(--space-2) var(--space-3);
     font-size: var(--font-size-sm);
   }
 
-  .filter-checkboxes-inline {
+  .filter-badges-inline {
     grid-template-columns: 1fr;
+  }
+
+  .filter-footer {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .filter-footer.has-clear-button {
+    justify-content: center;
   }
 
   /* Wrap level dropdowns on small screens */

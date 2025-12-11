@@ -156,9 +156,18 @@
   color: light-dark(#475569, #cbd5e1);
 }
 
-.filter-btn[data-school="abjuration" i]:hover,
-.filter-btn[data-school="abjuration" i].active {
+.filter-btn[data-school="abjuration" i]:hover {
   background: light-dark(rgba(148, 163, 184, 0.35), rgba(148, 163, 184, 0.3));
+}
+
+.filter-btn[data-school="abjuration" i].active {
+  background: light-dark(rgb(148, 163, 184), rgb(148, 163, 184));
+  color: light-dark(#475569, #cbd5e1);
+  border-color: light-dark(#94a3b8, #64748b);
+}
+
+.filter-btn[data-school="abjuration" i].active:hover {
+  background: light-dark(rgba(148, 163, 184, 0.8), rgba(148, 163, 184, 0.8));
 }
 
 /* Conjuration - Blue */
@@ -168,9 +177,18 @@
   color: light-dark(#1e40af, #93c5fd);
 }
 
-.filter-btn[data-school="conjuration" i]:hover,
-.filter-btn[data-school="conjuration" i].active {
+.filter-btn[data-school="conjuration" i]:hover {
   background: light-dark(rgba(96, 165, 250, 0.35), rgba(96, 165, 250, 0.3));
+}
+
+.filter-btn[data-school="conjuration" i].active {
+  background: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
+  color: light-dark(#1e40af, #93c5fd);
+  border-color: light-dark(#3b82f6, #2563eb);
+}
+
+.filter-btn[data-school="conjuration" i].active:hover {
+  background: light-dark(rgba(96, 165, 250, 0.8), rgba(96, 165, 250, 0.8));
 }
 
 /* Divination - Yellow/Gold */
@@ -180,9 +198,18 @@
   color: light-dark(#b45309, #fde047);
 }
 
-.filter-btn[data-school="divination" i]:hover,
-.filter-btn[data-school="divination" i].active {
+.filter-btn[data-school="divination" i]:hover {
   background: light-dark(rgba(253, 224, 71, 0.35), rgba(253, 224, 71, 0.3));
+}
+
+.filter-btn[data-school="divination" i].active {
+  background: light-dark(rgb(253, 224, 71), rgb(253, 224, 71));
+  color: light-dark(#b45309, #fde047);
+  border-color: light-dark(#fbbf24, #eab308);
+}
+
+.filter-btn[data-school="divination" i].active:hover {
+  background: light-dark(rgba(253, 224, 71, 0.8), rgba(253, 224, 71, 0.8));
 }
 
 /* Enchantment - Pink */
@@ -192,9 +219,18 @@
   color: light-dark(#be185d, #f9a8d4);
 }
 
-.filter-btn[data-school="enchantment" i]:hover,
-.filter-btn[data-school="enchantment" i].active {
+.filter-btn[data-school="enchantment" i]:hover {
   background: light-dark(rgba(236, 72, 153, 0.35), rgba(236, 72, 153, 0.3));
+}
+
+.filter-btn[data-school="enchantment" i].active {
+  background: light-dark(rgb(236, 72, 153), rgb(236, 72, 153));
+  color: light-dark(#be185d, #f9a8d4);
+  border-color: light-dark(#ec4899, #db2777);
+}
+
+.filter-btn[data-school="enchantment" i].active:hover {
+  background: light-dark(rgba(236, 72, 153, 0.8), rgba(236, 72, 153, 0.8));
 }
 
 /* Evocation - Red */
@@ -204,9 +240,18 @@
   color: light-dark(#dc2626, #fca5a5);
 }
 
-.filter-btn[data-school="evocation" i]:hover,
-.filter-btn[data-school="evocation" i].active {
+.filter-btn[data-school="evocation" i]:hover {
   background: light-dark(rgba(239, 68, 68, 0.35), rgba(239, 68, 68, 0.3));
+}
+
+.filter-btn[data-school="evocation" i].active {
+  background: light-dark(rgb(239, 68, 68), rgb(239, 68, 68));
+  color: light-dark(#dc2626, #fca5a5);
+  border-color: light-dark(#ef4444, #dc2626);
+}
+
+.filter-btn[data-school="evocation" i].active:hover {
+  background: light-dark(rgba(239, 68, 68, 0.8), rgba(239, 68, 68, 0.8));
 }
 
 /* Illusion - Violet */
@@ -216,9 +261,18 @@
   color: light-dark(#6d28d9, #c4b5fd);
 }
 
-.filter-btn[data-school="illusion" i]:hover,
-.filter-btn[data-school="illusion" i].active {
+.filter-btn[data-school="illusion" i]:hover {
   background: light-dark(rgba(196, 181, 253, 0.35), rgba(196, 181, 253, 0.3));
+}
+
+.filter-btn[data-school="illusion" i].active {
+  background: light-dark(rgb(196, 181, 253), rgb(196, 181, 253));
+  color: light-dark(#6d28d9, #c4b5fd);
+  border-color: light-dark(#a78bfa, #7c3aed);
+}
+
+.filter-btn[data-school="illusion" i].active:hover {
+  background: light-dark(rgba(196, 181, 253, 0.8), rgba(196, 181, 253, 0.8));
 }
 
 /* Necromancy - Yellow-Green */
@@ -228,9 +282,18 @@
   color: light-dark(#4d7c0f, #d9f99d);
 }
 
-.filter-btn[data-school="necromancy" i]:hover,
-.filter-btn[data-school="necromancy" i].active {
+.filter-btn[data-school="necromancy" i]:hover {
   background: light-dark(rgba(217, 249, 157, 0.45), rgba(217, 249, 157, 0.35));
+}
+
+.filter-btn[data-school="necromancy" i].active {
+  background: light-dark(rgb(217, 249, 157), rgb(217, 249, 157));
+  color: light-dark(#4d7c0f, #d9f99d);
+  border-color: light-dark(#a3e635, #84cc16);
+}
+
+.filter-btn[data-school="necromancy" i].active:hover {
+  background: light-dark(rgba(217, 249, 157, 0.8), rgba(217, 249, 157, 0.8));
 }
 
 /* Transmutation - Orange */
@@ -240,9 +303,18 @@
   color: light-dark(#ea580c, #fdba74);
 }
 
-.filter-btn[data-school="transmutation" i]:hover,
-.filter-btn[data-school="transmutation" i].active {
+.filter-btn[data-school="transmutation" i]:hover {
   background: light-dark(rgba(251, 146, 60, 0.35), rgba(251, 146, 60, 0.3));
+}
+
+.filter-btn[data-school="transmutation" i].active {
+  background: light-dark(rgb(251, 146, 60), rgb(251, 146, 60));
+  color: light-dark(#ea580c, #fdba74);
+  border-color: light-dark(#fb923c, #f97316);
+}
+
+.filter-btn[data-school="transmutation" i].active:hover {
+  background: light-dark(rgba(251, 146, 60, 0.8), rgba(251, 146, 60, 0.8));
 }
 
 /* Class-specific colors for filter buttons */
@@ -252,9 +324,18 @@
   color: light-dark(#6d28d9, #c4b5fd);
 }
 
-.filter-btn[data-class="bard"]:hover,
-.filter-btn[data-class="bard"].active {
+.filter-btn[data-class="bard"]:hover {
   background: light-dark(rgba(196, 181, 253, 0.35), rgba(196, 181, 253, 0.3));
+}
+
+.filter-btn[data-class="bard"].active {
+  background: light-dark(rgb(196, 181, 253), rgb(196, 181, 253));
+  color: light-dark(#6d28d9, #c4b5fd);
+  border-color: light-dark(#a78bfa, #7c3aed);
+}
+
+.filter-btn[data-class="bard"].active:hover {
+  background: light-dark(rgba(196, 181, 253, 0.8), rgba(196, 181, 253, 0.8));
 }
 
 .filter-btn[data-class="cleric"] {
@@ -263,9 +344,18 @@
   color: light-dark(#b45309, #fde047);
 }
 
-.filter-btn[data-class="cleric"]:hover,
-.filter-btn[data-class="cleric"].active {
+.filter-btn[data-class="cleric"]:hover {
   background: light-dark(rgba(253, 224, 71, 0.35), rgba(253, 224, 71, 0.3));
+}
+
+.filter-btn[data-class="cleric"].active {
+  background: light-dark(rgb(253, 224, 71), rgb(253, 224, 71));
+  color: light-dark(#b45309, #fde047);
+  border-color: light-dark(#fbbf24, #eab308);
+}
+
+.filter-btn[data-class="cleric"].active:hover {
+  background: light-dark(rgba(253, 224, 71, 0.8), rgba(253, 224, 71, 0.8));
 }
 
 .filter-btn[data-class="druid"] {
@@ -274,9 +364,18 @@
   color: light-dark(#16a34a, #86efac);
 }
 
-.filter-btn[data-class="druid"]:hover,
-.filter-btn[data-class="druid"].active {
+.filter-btn[data-class="druid"]:hover {
   background: light-dark(rgba(134, 239, 172, 0.35), rgba(134, 239, 172, 0.3));
+}
+
+.filter-btn[data-class="druid"].active {
+  background: light-dark(rgb(134, 239, 172), rgb(134, 239, 172));
+  color: light-dark(#16a34a, #86efac);
+  border-color: light-dark(#4ade80, #22c55e);
+}
+
+.filter-btn[data-class="druid"].active:hover {
+  background: light-dark(rgba(134, 239, 172, 0.8), rgba(134, 239, 172, 0.8));
 }
 
 .filter-btn[data-class="paladin"] {
@@ -285,9 +384,18 @@
   color: light-dark(#475569, #cbd5e1);
 }
 
-.filter-btn[data-class="paladin"]:hover,
-.filter-btn[data-class="paladin"].active {
+.filter-btn[data-class="paladin"]:hover {
   background: light-dark(rgba(148, 163, 184, 0.35), rgba(148, 163, 184, 0.3));
+}
+
+.filter-btn[data-class="paladin"].active {
+  background: light-dark(rgb(148, 163, 184), rgb(148, 163, 184));
+  color: light-dark(#475569, #cbd5e1);
+  border-color: light-dark(#94a3b8, #64748b);
+}
+
+.filter-btn[data-class="paladin"].active:hover {
+  background: light-dark(rgba(148, 163, 184, 0.8), rgba(148, 163, 184, 0.8));
 }
 
 .filter-btn[data-class="ranger"] {
@@ -296,9 +404,18 @@
   color: light-dark(#92400e, #fdba74);
 }
 
-.filter-btn[data-class="ranger"]:hover,
-.filter-btn[data-class="ranger"].active {
+.filter-btn[data-class="ranger"]:hover {
   background: light-dark(rgba(217, 119, 6, 0.3), rgba(217, 119, 6, 0.35));
+}
+
+.filter-btn[data-class="ranger"].active {
+  background: light-dark(rgb(217, 119, 6), rgb(217, 119, 6));
+  color: light-dark(#92400e, #fdba74);
+  border-color: light-dark(#d97706, #ea580c);
+}
+
+.filter-btn[data-class="ranger"].active:hover {
+  background: light-dark(rgba(217, 119, 6, 0.8), rgba(217, 119, 6, 0.8));
 }
 
 .filter-btn[data-class="sorcerer"] {
@@ -307,9 +424,18 @@
   color: light-dark(#dc2626, #fca5a5);
 }
 
-.filter-btn[data-class="sorcerer"]:hover,
-.filter-btn[data-class="sorcerer"].active {
+.filter-btn[data-class="sorcerer"]:hover {
   background: light-dark(rgba(248, 113, 113, 0.35), rgba(248, 113, 113, 0.3));
+}
+
+.filter-btn[data-class="sorcerer"].active {
+  background: light-dark(rgb(248, 113, 113), rgb(248, 113, 113));
+  color: light-dark(#dc2626, #fca5a5);
+  border-color: light-dark(#f87171, #ef4444);
+}
+
+.filter-btn[data-class="sorcerer"].active:hover {
+  background: light-dark(rgba(248, 113, 113, 0.8), rgba(248, 113, 113, 0.8));
 }
 
 .filter-btn[data-class="warlock"] {
@@ -318,9 +444,18 @@
   color: light-dark(#ea580c, #fdba74);
 }
 
-.filter-btn[data-class="warlock"]:hover,
-.filter-btn[data-class="warlock"].active {
+.filter-btn[data-class="warlock"]:hover {
   background: light-dark(rgba(251, 146, 60, 0.35), rgba(251, 146, 60, 0.3));
+}
+
+.filter-btn[data-class="warlock"].active {
+  background: light-dark(rgb(251, 146, 60), rgb(251, 146, 60));
+  color: light-dark(#ea580c, #fdba74);
+  border-color: light-dark(#fb923c, #f97316);
+}
+
+.filter-btn[data-class="warlock"].active:hover {
+  background: light-dark(rgba(251, 146, 60, 0.8), rgba(251, 146, 60, 0.8));
 }
 
 .filter-btn[data-class="wizard"] {
@@ -329,9 +464,18 @@
   color: light-dark(#1e40af, #93c5fd);
 }
 
-.filter-btn[data-class="wizard"]:hover,
-.filter-btn[data-class="wizard"].active {
+.filter-btn[data-class="wizard"]:hover {
   background: light-dark(rgba(96, 165, 250, 0.35), rgba(96, 165, 250, 0.3));
+}
+
+.filter-btn[data-class="wizard"].active {
+  background: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
+  color: light-dark(#1e40af, #93c5fd);
+  border-color: light-dark(#3b82f6, #2563eb);
+}
+
+.filter-btn[data-class="wizard"].active:hover {
+  background: light-dark(rgba(96, 165, 250, 0.8), rgba(96, 165, 250, 0.8));
 }
 
 .filter-checkboxes {

@@ -311,7 +311,7 @@ export function SpellFilters({
       </div>
 
       {/* Filter Results and Clear Button - Always Visible */}
-      <div className={`filter-footer ${hasActiveFilters ? 'has-clear-button' : ''}`}>
+      <div className="filter-footer">
         {filteredCount !== undefined && totalCount !== undefined && (
           <p className="filter-results">
             <i>

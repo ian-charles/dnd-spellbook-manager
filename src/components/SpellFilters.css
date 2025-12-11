@@ -399,16 +399,21 @@
   transition: all var(--transition-base);
   cursor: pointer;
   background: transparent;
+  opacity: 0.6;
 }
 
 .checkbox-badge:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
+  opacity: 0.8;
 }
 
 .checkbox-badge.active {
-  box-shadow: var(--shadow-md);
-  transform: scale(1.05);
+  opacity: 1;
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.08);
+  border-width: 2px;
+  font-weight: var(--font-weight-bold);
 }
 
 /* Verbal - Violet */
@@ -496,10 +501,6 @@
   flex-wrap: wrap;
 }
 
-.filter-footer.has-clear-button {
-  justify-content: space-between;
-}
-
 .btn-clear-filters {
   padding: var(--space-2) var(--space-4);
   background: var(--color-error-bg);
@@ -563,10 +564,6 @@
   .filter-footer {
     flex-direction: column;
     gap: var(--space-3);
-  }
-
-  .filter-footer.has-clear-button {
-    justify-content: center;
   }
 
   /* Wrap level dropdowns on small screens */

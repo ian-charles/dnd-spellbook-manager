@@ -71,9 +71,6 @@ export function SpellbookDetailView() {
   return (
     <div className="spellbook-detail" data-testid="spellbook-detail">
       <div className="spellbook-detail-header">
-        <button className="btn-back" onClick={onBack}>
-          {MESSAGES.DIALOG.BACK_TO_SPELLBOOKS}
-        </button>
         <div className="spellbook-header-content">
           <div className="spellbook-header-top">
             <h2 data-testid="spellbook-detail-name">{spellbook.name}</h2>

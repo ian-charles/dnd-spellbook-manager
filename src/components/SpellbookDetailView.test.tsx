@@ -193,23 +193,6 @@ describe('SpellbookDetailView', () => {
       expect(screen.getByTestId('spellbook-detail-name').textContent).toContain('My Spellbook');
     });
 
-    it('should render back button', () => {
-      renderWithContext();
-
-      expect(screen.getByText('← Back to Spellbooks')).toBeTruthy();
-    });
-
-    it('should call onBack when back button clicked', async () => {
-      const user = userEvent.setup();
-      const onBack = vi.fn();
-
-      renderWithContext({ onBack });
-
-      const backButton = screen.getByText('← Back to Spellbooks');
-      await user.click(backButton);
-
-      expect(onBack).toHaveBeenCalledTimes(1);
-    });
 
     it('should display spell count (plural)', () => {
       renderWithContext();

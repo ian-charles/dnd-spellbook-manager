@@ -8,7 +8,7 @@
  * This provides cleaner, more predictable state management.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MIN_SPELL_LEVEL, MAX_SPELL_LEVEL } from '../constants/gameRules';
 import { UseFilterReducerReturn } from '../hooks/useFilterReducer';
 import './SpellFilters.css';
@@ -66,6 +66,26 @@ export function SpellFilters({
 }: SpellFiltersProps) {
   const [localSearchText, setLocalSearchText] = useState(state.searchText);
 
+  // Collapsed state with localStorage persistence
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem('spellFiltersCollapsed');
+    if (saved !== null) {
+      return saved === 'true';
+    }
+    // Default: collapsed on mobile, expanded on desktop
+    return window.innerWidth < 768;
+  });
+
+  // Persist collapse state to localStorage
+  useEffect(() => {
+    localStorage.setItem('spellFiltersCollapsed', String(isCollapsed));
+  }, [isCollapsed]);
+
+  // Toggle collapse state
+  const toggleCollapse = useCallback(() => {
+    setIsCollapsed(prev => !prev);
+  }, []);
+
   // Sync local state with prop when prop changes (e.g. clear filters)
   useEffect(() => {
     setLocalSearchText(state.searchText);
@@ -102,8 +122,40 @@ export function SpellFilters({
     state.somaticOnly ||
     state.materialOnly;
 
+  // Count active filters (excluding search text)
+  const activeFilterCount = [
+    state.levelRange.min !== 0 || state.levelRange.max !== 9,
+    state.selectedSchools.length > 0,
+    state.selectedClasses.length > 0,
+    state.concentrationOnly,
+    state.ritualOnly,
+    state.verbalOnly,
+    state.somaticOnly,
+    state.materialOnly,
+  ].filter(Boolean).length;
+
   return (
     <div className="spell-filters">
+      {/* Collapse/Expand Button */}
+      <button
+        className="filters-toggle-btn"
+        onClick={toggleCollapse}
+        aria-expanded={!isCollapsed}
+        aria-label={isCollapsed ? 'Show filters' : 'Hide filters'}
+      >
+        <span className="filters-toggle-icon">
+          {isCollapsed ? '▼' : '▲'}
+        </span>
+        <span className="filters-toggle-text">
+          {isCollapsed ? 'Show Filters' : 'Hide Filters'}
+        </span>
+        {isCollapsed && activeFilterCount > 0 && (
+          <span className="filters-active-badge">{activeFilterCount}</span>
+        )}
+      </button>
+
+      {/* Collapsible Content */}
+      <div className={`spell-filters-content ${isCollapsed ? 'collapsed' : 'expanded'}`}>
       <div className="filter-section">
         <h3>Class</h3>
         <div className="filter-buttons">
@@ -279,6 +331,7 @@ export function SpellFilters({
           </i>
         </p>
       )}
+      </div>
     </div>
   );
 }

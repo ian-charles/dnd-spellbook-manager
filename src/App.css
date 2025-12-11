@@ -138,6 +138,17 @@
   cursor: not-allowed;
 }
 
+/* Hide mobile-only button on desktop (table header has master checkbox) */
+.mobile-only-button {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only-button {
+    display: block;
+  }
+}
+
 .app-main {
   flex: 1;
   padding: calc(80px + var(--space-4)) 0 var(--space-8);

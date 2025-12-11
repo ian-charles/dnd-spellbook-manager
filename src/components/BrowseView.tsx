@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { SpellFilters } from './SpellFilters';
@@ -74,6 +74,29 @@ export function BrowseView({
         targetSpellbookId,
     });
 
+    // Track filter state to clear selections on filter change
+    const filterStateRef = useRef(filterReducer.state);
+    useEffect(() => {
+        const prevState = filterStateRef.current;
+        const currState = filterReducer.state;
+
+        // Check if any filter has changed
+        const filtersChanged =
+            prevState.searchTerm !== currState.searchTerm ||
+            JSON.stringify(prevState.selectedLevels) !== JSON.stringify(currState.selectedLevels) ||
+            JSON.stringify(prevState.selectedSchools) !== JSON.stringify(currState.selectedSchools) ||
+            JSON.stringify(prevState.selectedClasses) !== JSON.stringify(currState.selectedClasses) ||
+            JSON.stringify(prevState.selectedComponents) !== JSON.stringify(currState.selectedComponents) ||
+            prevState.requiresConcentration !== currState.requiresConcentration ||
+            prevState.isRitual !== currState.isRitual;
+
+        if (filtersChanged && selectedSpellIds.size > 0) {
+            setSelectedSpellIds(new Set());
+        }
+
+        filterStateRef.current = currState;
+    }, [filterReducer.state, selectedSpellIds.size, setSelectedSpellIds]);
+
     return (
         <>
             <SpellFilters
@@ -85,6 +108,22 @@ export function BrowseView({
                 selectedCount={selectedSpellIds.size}
             />
             <div className="batch-add-container">
+                <button
+                    className="btn-secondary mobile-only-button"
+                    onClick={() => {
+                        if (selectedSpellIds.size === filteredSpells.length && filteredSpells.length > 0) {
+                            setSelectedSpellIds(new Set());
+                        } else {
+                            const allSpellIds = new Set(filteredSpells.map(spell => spell.id));
+                            setSelectedSpellIds(allSpellIds);
+                        }
+                    }}
+                    data-testid="btn-select-all-mobile"
+                >
+                    {selectedSpellIds.size === filteredSpells.length && filteredSpells.length > 0
+                        ? 'Deselect All'
+                        : 'Select All'}
+                </button>
                 <button
                     className="btn-primary"
                     onClick={() => setSelectModalOpen(true)}

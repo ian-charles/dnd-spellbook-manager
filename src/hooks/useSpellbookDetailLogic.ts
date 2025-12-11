@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSpellbooks } from './useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spellbook, CreateSpellbookInput, EnrichedSpell } from '../types/spellbook';
@@ -52,6 +52,15 @@ export function useSpellbookDetailLogic({
     useEffect(() => {
         loadSpellbook();
     }, [spellbookId]);
+
+    // Clear selections when showPreparedOnly filter changes
+    const prevShowPreparedOnlyRef = useRef(showPreparedOnly);
+    useEffect(() => {
+        if (prevShowPreparedOnlyRef.current !== showPreparedOnly && selectedSpellIds.size > 0) {
+            setSelectedSpellIds(new Set());
+        }
+        prevShowPreparedOnlyRef.current = showPreparedOnly;
+    }, [showPreparedOnly, selectedSpellIds.size]);
 
     // Watch for changes in spellbooks array and update local state
     useEffect(() => {

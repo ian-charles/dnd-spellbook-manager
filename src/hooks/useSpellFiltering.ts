@@ -9,12 +9,15 @@ export function useSpellFiltering(spells: Spell[], loading: boolean) {
     const [filteredSpells, setFilteredSpells] = useState<Spell[]>([]);
     const [schools, setSchools] = useState<string[]>([]);
     const [classes, setClasses] = useState<string[]>([]);
+    const [sources, setSources] = useState<string[]>([]);
 
-    // Initialize schools and classes when spells load
+    // Initialize schools, classes, and sources when spells load
     useEffect(() => {
         if (!loading && spells.length > 0) {
             setSchools(spellService.getSchools());
             setClasses(spellService.getClasses());
+            // For now, use dummy sources as requested
+            setSources(['5e Core Rules', 'Xanathar', 'Tasha']);
             setFilteredSpells(spells);
         }
     }, [spells, loading]);
@@ -27,6 +30,7 @@ export function useSpellFiltering(spells: Spell[], loading: boolean) {
                 levelRange: filterState.levelRange,
                 schools: filterState.selectedSchools.length > 0 ? filterState.selectedSchools : undefined,
                 classes: filterState.selectedClasses.length > 0 ? filterState.selectedClasses : undefined,
+                sources: filterState.selectedSources.length > 0 ? filterState.selectedSources : undefined,
                 concentration: filterState.concentrationOnly || undefined,
                 ritual: filterState.ritualOnly || undefined,
                 componentVerbal: filterState.verbalOnly || undefined,
@@ -43,5 +47,6 @@ export function useSpellFiltering(spells: Spell[], loading: boolean) {
         filteredSpells,
         schools,
         classes,
+        sources,
     };
 }

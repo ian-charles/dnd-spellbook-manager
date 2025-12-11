@@ -18,6 +18,7 @@ export interface FilterState {
   levelRange: { min: number; max: number };
   selectedSchools: string[];
   selectedClasses: string[];
+  selectedSources: string[];
   concentrationOnly: boolean;
   ritualOnly: boolean;
   verbalOnly: boolean;
@@ -30,6 +31,7 @@ type FilterAction =
   | { type: 'SET_LEVEL_RANGE'; payload: { min: number; max: number } }
   | { type: 'TOGGLE_SCHOOL'; payload: string }
   | { type: 'TOGGLE_CLASS'; payload: string }
+  | { type: 'TOGGLE_SOURCE'; payload: string }
   | { type: 'TOGGLE_CONCENTRATION' }
   | { type: 'TOGGLE_RITUAL' }
   | { type: 'TOGGLE_VERBAL' }
@@ -42,6 +44,7 @@ const initialState: FilterState = {
   levelRange: { min: 0, max: 9 },
   selectedSchools: [],
   selectedClasses: [],
+  selectedSources: [],
   concentrationOnly: false,
   ritualOnly: false,
   verbalOnly: false,
@@ -77,6 +80,14 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
         selectedClasses: state.selectedClasses.includes(action.payload)
           ? state.selectedClasses.filter((c) => c !== action.payload)
           : [...state.selectedClasses, action.payload],
+      };
+
+    case 'TOGGLE_SOURCE':
+      return {
+        ...state,
+        selectedSources: state.selectedSources.includes(action.payload)
+          ? state.selectedSources.filter((s) => s !== action.payload)
+          : [...state.selectedSources, action.payload],
       };
 
     case 'TOGGLE_CONCENTRATION':
@@ -123,6 +134,7 @@ export interface UseFilterReducerReturn {
   setLevelRange: (range: { min: number; max: number }) => void;
   toggleSchool: (school: string) => void;
   toggleClass: (className: string) => void;
+  toggleSource: (source: string) => void;
   toggleConcentration: () => void;
   toggleRitual: () => void;
   toggleVerbal: () => void;
@@ -140,6 +152,7 @@ export function useFilterReducer(): UseFilterReducerReturn {
     setLevelRange: (range: { min: number; max: number }) => dispatch({ type: 'SET_LEVEL_RANGE', payload: range }),
     toggleSchool: (school: string) => dispatch({ type: 'TOGGLE_SCHOOL', payload: school }),
     toggleClass: (className: string) => dispatch({ type: 'TOGGLE_CLASS', payload: className }),
+    toggleSource: (source: string) => dispatch({ type: 'TOGGLE_SOURCE', payload: source }),
     toggleConcentration: () => dispatch({ type: 'TOGGLE_CONCENTRATION' }),
     toggleRitual: () => dispatch({ type: 'TOGGLE_RITUAL' }),
     toggleVerbal: () => dispatch({ type: 'TOGGLE_VERBAL' }),

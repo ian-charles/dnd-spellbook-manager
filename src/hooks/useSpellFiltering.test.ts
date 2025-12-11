@@ -16,9 +16,10 @@ describe('useSpellFiltering', () => {
 
     const mockFilterState = {
         searchText: '',
-        levelRange: [0, 9],
+        levelRange: { min: 0, max: 9 },
         selectedSchools: [],
         selectedClasses: [],
+        selectedSources: [],
         concentrationOnly: false,
         ritualOnly: false,
         verbalOnly: false,
@@ -101,9 +102,10 @@ describe('useSpellFiltering', () => {
         await waitFor(() => {
             expect(spellService.searchSpells).toHaveBeenCalledWith({
                 searchText: '',
-                levelRange: [0, 9],
+                levelRange: { min: 0, max: 9 },
                 schools: ['Evocation'],
                 classes: ['Wizard'],
+                sources: undefined,
                 concentration: true,
                 ritual: true,
                 componentVerbal: true,

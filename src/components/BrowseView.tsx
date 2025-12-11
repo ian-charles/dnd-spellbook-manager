@@ -38,6 +38,7 @@ export function BrowseView({
         filteredSpells,
         schools,
         classes,
+        sources,
     } = useSpellFiltering(spells, loading);
 
     // Selected spells state
@@ -82,13 +83,16 @@ export function BrowseView({
 
         // Check if any filter has changed
         const filtersChanged =
-            prevState.searchTerm !== currState.searchTerm ||
-            JSON.stringify(prevState.selectedLevels) !== JSON.stringify(currState.selectedLevels) ||
+            prevState.searchText !== currState.searchText ||
+            JSON.stringify(prevState.levelRange) !== JSON.stringify(currState.levelRange) ||
             JSON.stringify(prevState.selectedSchools) !== JSON.stringify(currState.selectedSchools) ||
             JSON.stringify(prevState.selectedClasses) !== JSON.stringify(currState.selectedClasses) ||
-            JSON.stringify(prevState.selectedComponents) !== JSON.stringify(currState.selectedComponents) ||
-            prevState.requiresConcentration !== currState.requiresConcentration ||
-            prevState.isRitual !== currState.isRitual;
+            JSON.stringify(prevState.selectedSources) !== JSON.stringify(currState.selectedSources) ||
+            prevState.concentrationOnly !== currState.concentrationOnly ||
+            prevState.ritualOnly !== currState.ritualOnly ||
+            prevState.verbalOnly !== currState.verbalOnly ||
+            prevState.somaticOnly !== currState.somaticOnly ||
+            prevState.materialOnly !== currState.materialOnly;
 
         if (filtersChanged && selectedSpellIds.size > 0) {
             setSelectedSpellIds(new Set());
@@ -103,6 +107,7 @@ export function BrowseView({
                 {...filterReducer}
                 schools={schools}
                 classes={classes}
+                sources={sources}
                 filteredCount={filteredSpells.length}
                 totalCount={spells.length}
                 selectedCount={selectedSpellIds.size}

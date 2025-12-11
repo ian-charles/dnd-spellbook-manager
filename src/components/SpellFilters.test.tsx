@@ -8,6 +8,7 @@ const defaultState: FilterState = {
     levelRange: { min: 0, max: 9 },
     selectedSchools: [],
     selectedClasses: [],
+    selectedSources: [],
     concentrationOnly: false,
     ritualOnly: false,
     verbalOnly: false,
@@ -20,6 +21,7 @@ describe('SpellFilters', () => {
     const mockSetLevelRange = vi.fn();
     const mockToggleSchool = vi.fn();
     const mockToggleClass = vi.fn();
+    const mockToggleSource = vi.fn();
     const mockToggleConcentration = vi.fn();
     const mockToggleRitual = vi.fn();
     const mockToggleVerbal = vi.fn();
@@ -29,6 +31,7 @@ describe('SpellFilters', () => {
 
     const schools = ['Evocation', 'Necromancy', 'Divination'];
     const classes = ['Wizard', 'Sorcerer', 'Cleric'];
+    const sources = ['5e Core Rules', 'Xanathar', 'Tasha'];
 
     const defaultProps = {
         state: defaultState,
@@ -36,6 +39,7 @@ describe('SpellFilters', () => {
         setLevelRange: mockSetLevelRange,
         toggleSchool: mockToggleSchool,
         toggleClass: mockToggleClass,
+        toggleSource: mockToggleSource,
         toggleConcentration: mockToggleConcentration,
         toggleRitual: mockToggleRitual,
         toggleVerbal: mockToggleVerbal,
@@ -44,6 +48,7 @@ describe('SpellFilters', () => {
         clearFilters: mockClearFilters,
         schools,
         classes,
+        sources,
     };
 
     beforeEach(() => {

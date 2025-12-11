@@ -31,6 +31,11 @@ interface SpellFiltersProps extends UseFilterReducerReturn {
   classes: string[];
 
   /**
+   * List of available spell sources to filter by.
+   */
+  sources: string[];
+
+  /**
    * Number of filtered spells (results count)
    */
   filteredCount?: number;
@@ -52,6 +57,7 @@ export function SpellFilters({
   setLevelRange,
   toggleSchool,
   toggleClass,
+  toggleSource,
   toggleConcentration,
   toggleRitual,
   toggleVerbal,
@@ -60,6 +66,7 @@ export function SpellFilters({
   clearFilters,
   schools,
   classes,
+  sources,
   filteredCount,
   totalCount,
   selectedCount
@@ -116,6 +123,7 @@ export function SpellFilters({
     (state.levelRange.min !== 0 || state.levelRange.max !== 9) ||
     state.selectedSchools.length > 0 ||
     state.selectedClasses.length > 0 ||
+    state.selectedSources.length > 0 ||
     state.concentrationOnly ||
     state.ritualOnly ||
     state.verbalOnly ||
@@ -127,6 +135,7 @@ export function SpellFilters({
     state.levelRange.min !== 0 || state.levelRange.max !== 9,
     state.selectedSchools.length > 0,
     state.selectedClasses.length > 0,
+    state.selectedSources.length > 0,
     state.concentrationOnly,
     state.ritualOnly,
     state.verbalOnly,
@@ -249,6 +258,24 @@ export function SpellFilters({
               data-school={school}
             >
               {school}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="filter-section">
+        <h3>Source</h3>
+        <div className="filter-buttons">
+          {sources.map((source) => (
+            <button
+              key={source}
+              className={`filter-btn ${state.selectedSources.includes(source) ? 'active' : ''}`}
+              onClick={() => toggleSource(source)}
+              aria-pressed={state.selectedSources.includes(source)}
+              aria-label={`Filter by source ${source}`}
+              data-source={source}
+            >
+              {source}
             </button>
           ))}
         </div>

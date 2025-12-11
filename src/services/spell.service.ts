@@ -87,6 +87,13 @@ export class SpellService {
       );
     }
 
+    // Filter by sources
+    if (filters.sources && filters.sources.length > 0) {
+      results = results.filter((spell) =>
+        filters.sources!.some(s => s.toLowerCase() === spell.source.toLowerCase())
+      );
+    }
+
     // Filter by concentration
     if (filters.concentration !== undefined) {
       results = results.filter(

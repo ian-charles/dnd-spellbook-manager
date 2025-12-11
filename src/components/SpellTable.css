@@ -70,11 +70,6 @@
   .spell-table td {
     padding: var(--space-2) var(--space-3);
   }
-
-  /* Hide less important columns on tablets */
-  .source-col {
-    display: none;
-  }
 }
 
 /* Mobile responsive - component-specific overrides */

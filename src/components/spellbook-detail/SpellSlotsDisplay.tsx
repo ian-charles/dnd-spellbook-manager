@@ -9,8 +9,8 @@ export function SpellSlotsDisplay({ slots }: SpellSlotsDisplayProps) {
     // Filter out spell levels with 0 slots
     const activeSlots = Object.entries(slots)
         .filter(([_, count]) => count > 0)
-        .map(([level, count]) => ({
-            level: parseInt(level),
+        .map(([key, count]) => ({
+            level: parseInt(key.replace('level', '')),
             count
         }))
         .sort((a, b) => a.level - b.level);

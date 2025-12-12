@@ -75,6 +75,13 @@ export function SpellbookDetailView() {
     <div className="spellbook-detail" data-testid="spellbook-detail">
       <div className="spellbook-detail-header">
         <div className="spellbook-header-content">
+          <button
+            className="back-link"
+            onClick={_onBack}
+            data-testid="back-to-spellbooks"
+          >
+            ← Back to Spellbooks
+          </button>
           <div className="spellbook-header-top">
             <h2 data-testid="spellbook-detail-name">{spellbook.name}</h2>
             <div className="header-actions">

@@ -165,6 +165,11 @@
   justify-content: flex-end;
 }
 
+.spellbook-actions button {
+  min-width: 0;
+  flex-shrink: 0;
+}
+
 .btn-primary {
   padding: var(--btn-padding-md);
   background: var(--color-primary);

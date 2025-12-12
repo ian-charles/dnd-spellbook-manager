@@ -28,7 +28,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   white-space: nowrap;
   background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
   border: 1px solid light-dark(#64748b, #475569);
@@ -188,7 +188,7 @@ input.spell-slot-input.zero-value {
   }
 
   .spell-slot-item label {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     min-width: 24px;
     order: -1;
     margin: 0 !important;
@@ -249,7 +249,7 @@ input.spell-slot-input.zero-value {
   }
 
   .spell-slot-item label {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     min-width: 24px;
     order: -1;
     margin: 0 !important;
@@ -308,7 +308,7 @@ input.spell-slot-input.zero-value {
   }
 
   .spell-slot-item label {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     min-width: 24px;
     order: -1;
     margin: 0 !important;

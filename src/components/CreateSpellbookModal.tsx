@@ -11,6 +11,7 @@ import {
   STRICT_NUMERIC_REGEX
 } from '../constants/gameRules';
 import { SpellSlotsInput } from './SpellSlotsInput';
+import { lockScroll, unlockScroll } from '../utils/modalScrollLock';
 import './CreateSpellbookModal.css';
 
 interface CreateSpellbookModalProps {
@@ -65,13 +66,13 @@ export function CreateSpellbookModal({
   // Prevent background scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+      lockScroll();
     }
 
     return () => {
-      document.body.style.overflow = '';
+      if (isOpen) {
+        unlockScroll();
+      }
     };
   }, [isOpen]);
 
@@ -181,10 +182,7 @@ export function CreateSpellbookModal({
           </div>
 
           <div className="form-group">
-            <label>Maximum Spell Slots (Optional)</label>
-            <p className="form-help-text">
-              How many spells of each level you can cast before a long rest
-            </p>
+            <label>Spell Slots</label>
             <SpellSlotsInput value={maxSpellSlots} onChange={setMaxSpellSlots} />
           </div>
 

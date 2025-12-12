@@ -455,6 +455,10 @@
   }
 
   /* Keep actions visible, inline, and compact */
+  .spellbooks-table td.spellbook-actions {
+    display: block !important;
+  }
+
   .spellbook-actions {
     display: inline-flex !important;
     justify-content: flex-end !important;

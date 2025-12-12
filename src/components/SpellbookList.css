@@ -243,6 +243,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
+  min-width: 0;
   padding: 0;
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
@@ -262,6 +263,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
+  min-width: 0;
   padding: 0;
   background: var(--color-error);
   color: white;

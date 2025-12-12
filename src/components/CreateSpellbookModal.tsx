@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { useCreateSpellbookForm } from '../hooks/useCreateSpellbookForm';
 import { CreateSpellbookInput, SpellSlots } from '../types/spellbook';
@@ -60,6 +61,19 @@ export function CreateSpellbookModal({
 
   // Focus trap
   const modalRef = useFocusTrap(isOpen);
+
+  // Prevent background scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { Spellbook } from '../types/spellbook';
 import './SelectSpellbookModal.css';
@@ -23,6 +23,19 @@ export function SelectSpellbookModal({
   const [selectedSpellbookId, setSelectedSpellbookId] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const modalRef = useFocusTrap(isOpen);
+
+  // Prevent background scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

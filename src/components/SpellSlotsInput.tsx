@@ -66,8 +66,8 @@ export function SpellSlotsInput({ value, onChange }: SpellSlotsInputProps) {
       <div className="spell-slots-grid">
         {SPELL_LEVELS.map(level => (
           <div key={level} className="spell-slot-item">
-            <label htmlFor={`slot-level-${level}`}>
-              L{level}
+            <label htmlFor={`slot-level-${level}`} className="level-badge" data-level={level}>
+              {level}
             </label>
             <div className="spell-slot-controls">
               <button
@@ -86,7 +86,7 @@ export function SpellSlotsInput({ value, onChange }: SpellSlotsInputProps) {
                 onChange={(e) => handleSlotChange(level, e.target.value)}
                 min={MIN_SPELL_SLOTS}
                 max={MAX_SPELL_SLOTS}
-                className="spell-slot-input"
+                className={`spell-slot-input ${getSlotValue(level) === 0 ? 'zero-value' : ''}`}
                 data-testid={`spell-slot-${level}`}
               />
               <button

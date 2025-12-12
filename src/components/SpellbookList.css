@@ -248,6 +248,8 @@
   align-items: center;
   justify-content: center;
   z-index: var(--z-modal);
+  overflow-y: auto;
+  padding: var(--space-4);
 }
 
 .dialog {
@@ -256,7 +258,10 @@
   border-radius: var(--radius-xl);
   min-width: 400px;
   max-width: 90vw;
+  max-height: calc(100vh - var(--space-8));
+  overflow-y: auto;
   box-shadow: var(--shadow-xl);
+  margin: auto;
 }
 
 .dialog h3 {
@@ -344,7 +349,7 @@
 }
 
 /* Mobile responsive */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .spellbook-list {
     padding: var(--space-4);
   }

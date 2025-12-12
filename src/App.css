@@ -98,10 +98,21 @@
   color: white;
 }
 
-/* Hide desktop-only elements on mobile and tablet */
-@media (max-width: 1023px) {
+/* Priority+ Navigation: Responsive visibility classes */
+
+/* Desktop (> 1279px): Show utility items directly, hide "More" menu */
+.tablet-only {
+  display: none;
+}
+
+/* Tablet/Laptop/Mobile (≤ 1279px): Hide utility items, show "More" menu */
+@media (max-width: 1279px) {
   .desktop-only {
     display: none !important;
+  }
+
+  .tablet-only {
+    display: block;
   }
 }
 

@@ -2,7 +2,7 @@
  * Layout Component
  *
  * Provides consistent app layout with header, navigation, and main content area.
- * Handles the visual structure but delegates navigation logic to parent.
+ * Uses Priority+ navigation pattern: utility items overflow into "More" menu on smaller screens.
  *
  * Props:
  * - currentView: Current active view for navigation highlighting
@@ -13,8 +13,10 @@
  */
 
 import { ReactNode } from 'react';
-import { Info, Heart } from 'lucide-react';
+import { Info, Heart, MessageCircleMore } from 'lucide-react';
 import { View } from '../hooks/useHashRouter';
+import { NavMoreMenu } from './NavMoreMenu';
+import { NavItem } from '../hooks/usePriorityNav';
 
 interface LayoutProps {
   currentView: View;
@@ -33,6 +35,38 @@ export function Layout({
   onAboutClick,
   children,
 }: LayoutProps) {
+  // Define utility navigation items that can overflow into "More" menu
+  const utilityNavItems: NavItem[] = [
+    {
+      id: 'feedback',
+      label: 'Feedback',
+      icon: <MessageCircleMore size={18} />,
+      href: 'https://forms.gle/9Lx1Ghq2iCha7e5P8',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      className: 'nav-link-feedback',
+      ariaLabel: 'Provide feedback',
+    },
+    {
+      id: 'about',
+      label: 'About',
+      icon: <Info size={18} />,
+      onClick: onAboutClick,
+      className: 'nav-link-about',
+      ariaLabel: 'About The Spellbookery',
+    },
+    {
+      id: 'donate',
+      label: 'Donate',
+      icon: <Heart size={18} />,
+      href: 'https://ko-fi.com/iantheguy',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      className: 'nav-link-donate',
+      ariaLabel: 'Support on Ko-fi',
+    },
+  ];
+
   return (
     <div className="app">
       <header className="app-header">
@@ -41,24 +75,38 @@ export function Layout({
           <p className="app-subtitle">A D&D Magic Manager</p>
         </div>
         <nav className="app-nav">
-          <button
-            className="nav-link nav-link-about desktop-only"
-            onClick={onAboutClick}
-            aria-label="About The Spellbookery"
-          >
-            <Info size={18} />
-            <span>About</span>
-          </button>
-          <a
-            href="https://ko-fi.com/iantheguy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-link nav-link-donate desktop-only"
-            aria-label="Support on Ko-fi"
-          >
-            <Heart size={18} />
-            <span>Donate</span>
-          </a>
+          {/* Utility nav items - visible on desktop, in "More" menu on laptop/tablet */}
+          {utilityNavItems.map((item) => {
+            if (item.href) {
+              return (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  target={item.target}
+                  rel={item.rel}
+                  className={`nav-link ${item.className} desktop-only`}
+                  aria-label={item.ariaLabel}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </a>
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                className={`nav-link ${item.className} desktop-only`}
+                onClick={item.onClick}
+                aria-label={item.ariaLabel}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+
+          {/* Primary navigation - always visible */}
           <button
             className={`nav-link ${currentView === 'browse' ? 'active' : ''}`}
             onClick={onNavigateToBrowse}
@@ -81,6 +129,11 @@ export function Layout({
           >
             My Spellbooks ({spellbookCount})
           </button>
+
+          {/* "More" menu - rightmost button on smaller screens */}
+          <div className="tablet-only">
+            <NavMoreMenu items={utilityNavItems} />
+          </div>
         </nav>
       </header>
 

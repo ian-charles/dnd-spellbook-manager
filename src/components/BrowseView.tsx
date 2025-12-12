@@ -142,7 +142,7 @@ export function BrowseView({
                 />
             </div>
 
-            <div className="browse-view-header">
+            <div className="browse-view-header" data-testid="spell-filters">
                 <button
                     className="btn-secondary"
                     onClick={() => setFilterModalOpen(true)}

@@ -438,6 +438,7 @@
   .spellbooks-table td {
     padding: 0;
     border-bottom: none;
+    display: block;
   }
 
   /* Hide all columns except name, spell count, updated, and actions */
@@ -447,12 +448,14 @@
     display: none !important;
   }
 
-  /* Keep actions visible but compact */
+  /* Keep actions visible, inline, and compact */
   .spellbook-actions {
-    display: flex !important;
+    display: inline-flex !important;
     justify-content: flex-end !important;
     gap: var(--space-2) !important;
     flex-wrap: nowrap !important;
+    width: auto !important;
+    margin-top: var(--space-3);
   }
 
   /* Prominent spellbook name */

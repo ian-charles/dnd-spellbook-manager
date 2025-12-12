@@ -247,7 +247,7 @@
   align-items: center;
   justify-content: center;
   flex: 1 1 0;
-  min-width: 32px;
+  min-width: 32px !important;
   height: 32px;
   padding: 0;
   background: var(--color-bg-secondary);
@@ -267,7 +267,7 @@
   align-items: center;
   justify-content: center;
   flex: 1 1 0;
-  min-width: 32px;
+  min-width: 32px !important;
   height: 32px;
   padding: 0;
   background: var(--color-error);

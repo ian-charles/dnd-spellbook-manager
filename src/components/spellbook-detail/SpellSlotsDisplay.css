@@ -1,0 +1,107 @@
+/**
+ * SpellSlotsDisplay Component Styles
+ *
+ * Compact grid display for spell slots with color-coded badges
+ */
+
+.spell-slots-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.spell-slots-display .spell-slot-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+}
+
+.spell-slots-display .spell-slot-item .level-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+  background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+  border: 1px solid light-dark(#64748b, #475569);
+  color: light-dark(#334155, #cbd5e1);
+}
+
+/* Level-specific badge colors */
+.spell-slots-display .spell-slot-item .level-badge[data-level="1"] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #8b5cf6);
+  color: light-dark(#6d28d9, #ddd6fe);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="2"] {
+  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
+  border-color: light-dark(#6366f1, #4f46e5);
+  color: light-dark(#3730a3, #c7d2fe);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="3"] {
+  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="4"] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#60a5fa, #3b82f6);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="5"] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#22d3ee, #06b6d4);
+  color: light-dark(#164e63, #cffafe);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="6"] {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+  border-color: light-dark(#4ade80, #22c55e);
+  color: light-dark(#14532d, #dcfce7);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="7"] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#facc15, #eab308);
+  color: light-dark(#713f12, #fef9c3);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="8"] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#7c2d12, #fed7aa);
+}
+
+.spell-slots-display .spell-slot-item .level-badge[data-level="9"] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#7f1d1d, #fecaca);
+}
+
+.spell-slot-count {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-left: auto;
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .spell-slots-display {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .spell-slots-display .spell-slot-item {
+    padding: var(--space-2);
+  }
+}

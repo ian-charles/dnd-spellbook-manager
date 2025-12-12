@@ -15,6 +15,7 @@ import { SpellDetailModal } from './SpellDetailModal';
 import LoadingSpinner from './LoadingSpinner';
 import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
+import { SpellSlotsDisplay } from './spellbook-detail/SpellSlotsDisplay';
 import './SpellbookDetail.css';
 
 
@@ -118,6 +119,9 @@ export function SpellbookDetailView() {
               <span>{spellbook.spellSaveDC !== undefined ? spellbook.spellSaveDC : 'N/A'}</span>
             </span>
           </div>
+          {spellbook.maxSpellSlots && (
+            <SpellSlotsDisplay slots={spellbook.maxSpellSlots} />
+          )}
         </div>
       </div>
 

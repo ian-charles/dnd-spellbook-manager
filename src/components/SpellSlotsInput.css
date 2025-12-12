@@ -1,7 +1,8 @@
 /**
  * SpellSlotsInput Component Styles
  *
- * Grid layout for entering spell slots for levels 1-9
+ * Single-line layout for entering spell slots for levels 1-9 on tablet+
+ * Multi-row grid on mobile
  */
 
 .spell-slots-input {
@@ -10,31 +11,80 @@
 
 .spell-slots-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
+  grid-template-columns: repeat(9, auto);
+  gap: var(--space-2);
 }
 
 .spell-slot-item {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 2px;
+  align-items: center;
 }
 
 .spell-slot-item label {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
 }
 
-.spell-slot-input {
-  padding: var(--space-2) var(--space-3);
+.spell-slot-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.spell-slot-btn {
+  width: 40px;
+  height: 14px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--color-bg-input);
   border: var(--input-border);
-  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.spell-slot-btn:hover:not(:disabled) {
+  background: var(--color-hover);
   color: var(--color-text-primary);
-  font-size: var(--font-size-md);
+  border-color: var(--color-border-focus);
+}
+
+.spell-slot-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.spell-slot-btn-up {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.spell-slot-btn-down {
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+input.spell-slot-input {
+  padding: 0 2px !important;
+  background: var(--color-bg-input);
+  border: var(--input-border);
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  line-height: 24px;
   transition: border-color var(--transition-base);
-  width: 100%;
+  width: 32px;
+  max-width: 32px;
+  min-width: 32px;
+  text-align: center;
+  height: 24px;
+  box-sizing: border-box;
 }
 
 .spell-slot-input:focus {
@@ -42,14 +92,66 @@
   border-color: var(--color-border-focus);
 }
 
+/* Hide native spinners since we have custom buttons */
 .spell-slot-input::-webkit-inner-spin-button,
 .spell-slot-input::-webkit-outer-spin-button {
-  opacity: 1;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* Mobile: 2 columns */
-@media (max-width: 480px) {
+.spell-slot-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Mobile: horizontal layout with labels on left */
+@media (max-width: 767px) {
   .spell-slots-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .spell-slot-item {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .spell-slot-item label {
+    font-size: var(--font-size-sm);
+    min-width: 24px;
+  }
+
+  .spell-slot-controls {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .spell-slot-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .spell-slot-btn-down {
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    order: -1;
+  }
+
+  .spell-slot-btn-up {
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    order: 1;
+  }
+
+  .spell-slot-input {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    font-size: var(--font-size-md);
+    border: var(--input-border);
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
   }
 }

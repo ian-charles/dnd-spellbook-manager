@@ -1,6 +1,7 @@
 import { Spellbook } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { SortDirection } from '../../hooks/useSpellSorting';
+import { Copy, Trash2 } from 'lucide-react';
 
 export type SortColumn = 'name' | 'spells' | 'ability' | 'attack' | 'saveDC' | 'updated';
 
@@ -118,7 +119,7 @@ export function SpellbookListTable({
                         </td>
                         <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
                             <button
-                                className="btn-secondary-small"
+                                className="btn-icon-secondary"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onCopy(spellbook.id);
@@ -127,10 +128,10 @@ export function SpellbookListTable({
                                 title="Copy Spellbook"
                                 aria-label={`Copy spellbook ${spellbook.name}`}
                             >
-                                Copy
+                                <Copy size={16} />
                             </button>
                             <button
-                                className="btn-danger-small"
+                                className="btn-icon-danger"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onDelete(spellbook.id, spellbook.name);
@@ -139,7 +140,7 @@ export function SpellbookListTable({
                                 title="Delete Spellbook"
                                 aria-label={`Delete spellbook ${spellbook.name}`}
                             >
-                                Delete
+                                <Trash2 size={16} />
                             </button>
                         </td>
                     </tr>

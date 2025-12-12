@@ -171,21 +171,6 @@ export function SpellbookDetailView() {
             onCancel={onCancelRemove}
           />
 
-          {/* Edit Spellbook Modal */}
-          <CreateSpellbookModal
-            isOpen={editModalOpen}
-            onClose={onEditClose}
-            onSubmit={onEditSave}
-            existingNames={existingNames.filter(name => name !== spellbook.name)}
-            initialData={{
-              name: spellbook.name,
-              spellcastingAbility: spellbook.spellcastingAbility,
-              spellAttackModifier: spellbook.spellAttackModifier,
-              spellSaveDC: spellbook.spellSaveDC,
-            }}
-            title="Edit Spellbook"
-          />
-
           {/* Spell Detail Modal */}
           {modalSpell && spellbook && (
             <SpellDetailModal
@@ -201,6 +186,22 @@ export function SpellbookDetailView() {
           )}
         </>
       )}
+
+      {/* Edit Spellbook Modal - outside conditional so it works for empty spellbooks */}
+      <CreateSpellbookModal
+        isOpen={editModalOpen}
+        onClose={onEditClose}
+        onSubmit={onEditSave}
+        existingNames={existingNames.filter(name => name !== spellbook.name)}
+        initialData={{
+          name: spellbook.name,
+          castingAbility: spellbook.spellcastingAbility,
+          spellAttackModifier: spellbook.spellAttackModifier,
+          spellSaveDC: spellbook.spellSaveDC,
+          maxSpellSlots: spellbook.maxSpellSlots,
+        }}
+        title="Edit Spellbook"
+      />
     </div>
   );
 }

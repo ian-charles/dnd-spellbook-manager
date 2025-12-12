@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { Spellbook } from '../types/spellbook';
+import { lockScroll, unlockScroll } from '../utils/modalScrollLock';
 import './SelectSpellbookModal.css';
 
 interface SelectSpellbookModalProps {
@@ -27,13 +28,13 @@ export function SelectSpellbookModal({
   // Prevent background scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+      lockScroll();
     }
 
     return () => {
-      document.body.style.overflow = '';
+      if (isOpen) {
+        unlockScroll();
+      }
     };
   }, [isOpen]);
 

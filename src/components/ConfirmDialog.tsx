@@ -12,6 +12,7 @@
  */
 
 import { useEffect } from 'react';
+import { lockScroll, unlockScroll } from '../utils/modalScrollLock';
 import './ConfirmDialog.css';
 
 export interface ConfirmDialogProps {
@@ -38,13 +39,13 @@ export function ConfirmDialog({
   // Prevent background scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+      lockScroll();
     }
 
     return () => {
-      document.body.style.overflow = '';
+      if (isOpen) {
+        unlockScroll();
+      }
     };
   }, [isOpen]);
 

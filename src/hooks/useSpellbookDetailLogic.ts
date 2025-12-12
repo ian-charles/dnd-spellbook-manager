@@ -211,6 +211,7 @@ export function useSpellbookDetailLogic({
             spellcastingAbility: input.spellcastingAbility,
             spellAttackModifier: input.spellAttackModifier,
             spellSaveDC: input.spellSaveDC,
+            maxSpellSlots: input.maxSpellSlots,
         });
         setEditModalOpen(false);
         await loadSpellbook();

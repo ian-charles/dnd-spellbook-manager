@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
+import { Spellbook, CreateSpellbookInput, SpellSlots } from '../types/spellbook';
 import { exportImportService } from '../services/exportImport.service';
 import { MESSAGES } from '../constants/messages';
 import { MAX_IMPORT_FILE_SIZE } from '../constants/gameRules';
@@ -59,6 +59,7 @@ export function useSpellbookOperations({
         spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
         spellAttackModifier?: number;
         spellSaveDC?: number;
+        maxSpellSlots?: SpellSlots;
         sourceSpellbookId?: string;
     } | undefined>(undefined);
     const [copyProgress, setCopyProgress] = useState<string>('');
@@ -174,6 +175,7 @@ export function useSpellbookOperations({
             spellcastingAbility: spellbook.spellcastingAbility,
             spellAttackModifier: spellbook.spellAttackModifier,
             spellSaveDC: spellbook.spellSaveDC,
+            maxSpellSlots: spellbook.maxSpellSlots,
             sourceSpellbookId: id,
         });
         setCreateModalOpen(true);

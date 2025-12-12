@@ -30,6 +30,7 @@ export class StorageService {
       spellcastingAbility: input.spellcastingAbility,
       spellAttackModifier: input.spellAttackModifier,
       spellSaveDC: input.spellSaveDC,
+      maxSpellSlots: input.maxSpellSlots,
     };
 
     await db.spellbooks.add(spellbook);

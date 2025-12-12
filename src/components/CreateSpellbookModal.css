@@ -88,9 +88,8 @@
 
   .form-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 var(--space-3);
-    row-gap: var(--space-2);
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-2) var(--space-3);
     margin-bottom: var(--space-4);
   }
 
@@ -100,8 +99,9 @@
   }
 
   .form-row .form-group label {
-    align-self: end;
-    margin-bottom: var(--space-1);
+    align-self: center;
+    text-align: left;
+    margin-bottom: 0;
   }
 
   .form-row .form-group:nth-child(1) label {
@@ -110,13 +110,13 @@
   }
 
   .form-row .form-group:nth-child(1) input {
-    grid-column: 1;
-    grid-row: 2;
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .form-row .form-group:nth-child(2) label {
-    grid-column: 2;
-    grid-row: 1;
+    grid-column: 1;
+    grid-row: 2;
   }
 
   .form-row .form-group:nth-child(2) input {

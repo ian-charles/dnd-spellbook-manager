@@ -246,10 +246,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  flex: 1 1 0;
+  min-width: 32px;
   height: 32px;
-  min-width: 0 !important;
-  max-width: 32px !important;
   padding: 0;
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
@@ -267,10 +266,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  flex: 1 1 0;
+  min-width: 32px;
   height: 32px;
-  min-width: 0 !important;
-  max-width: 32px !important;
   padding: 0;
   background: var(--color-error);
   color: white;

@@ -211,7 +211,7 @@ describe('SpellbookList', () => {
 
   it('should render delete button in actions column', () => {
     render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
-    const deleteButtons = screen.getAllByText('Delete');
+    const deleteButtons = screen.getAllByTestId(/^btn-delete-spellbook-/);
     expect(deleteButtons.length).toBe(2);
   });
 

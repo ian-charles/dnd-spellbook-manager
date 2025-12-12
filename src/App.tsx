@@ -52,7 +52,6 @@ function App() {
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
-    navigateToCopySpellbook,
   } = useHashRouter();
 
   // Toast hook for success messages
@@ -137,9 +136,7 @@ function App() {
         <SpellbookDetail
           spellbookId={selectedSpellbookId}
           onBack={navigateToSpellbooks}
-          onCopySpellbook={() => {
-            navigateToCopySpellbook(selectedSpellbookId);
-          }}
+          onCopySpellbook={navigateToSpellbookDetail}
         />
       )}
 

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
@@ -13,7 +13,6 @@ import { useDialogs } from '../hooks/useDialogs';
 import { useSpellbookListState } from '../hooks/useSpellbookListState';
 import { useSpellbookOperations } from '../hooks/useSpellbookOperations';
 import { useContextMenu } from '../hooks/useContextMenu';
-import { useHashRouter } from '../hooks/useHashRouter';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -85,17 +84,6 @@ export function SpellbookList({
     spellbookName: string;
   }>();
 
-  const { queryParams, navigateToSpellbooks } = useHashRouter();
-
-  // Handle copy from URL parameter
-  useEffect(() => {
-    const copyId = queryParams.get('copy');
-    if (copyId && spellbooks.length > 0) {
-      handleCopy(copyId);
-      // Clear the parameter from URL by navigating to base spellbooks route
-      navigateToSpellbooks();
-    }
-  }, [spellbooks, queryParams, navigateToSpellbooks]);
 
   // Long-press handlers for mobile context menu
   const pendingSpellbook = useRef<Spellbook | null>(null);

@@ -16,11 +16,12 @@ export function useSpellbookDetailLogic({
     onBack,
     onCopySpellbook,
 }: UseSpellbookDetailLogicProps): SpellbookDetailContextType {
-    const { spellbooks, getSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook } = useSpellbooks();
+    const { spellbooks, getSpellbook, createSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook, addSpellsToSpellbook } = useSpellbooks();
     const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
     const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
     const [modalSpellId, setModalSpellId] = useState<string | null>(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [copyModalOpen, setCopyModalOpen] = useState(false);
     const [showPreparedOnly, setShowPreparedOnly] = useState(false);
     const [selectedSpellIds, setSelectedSpellIds] = useState<Set<string>>(new Set());
     const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; spellIds: string[]; message: string }>({
@@ -218,8 +219,24 @@ export function useSpellbookDetailLogic({
     };
 
     const handleCopy = () => {
+        setCopyModalOpen(true);
+    };
+
+    const handleCopySave = async (input: CreateSpellbookInput) => {
+        // Create the new spellbook
+        const newSpellbook = await createSpellbook(input);
+
+        // Copy all spells from the current spellbook to the new one
+        if (spellbook && spellbook.spells.length > 0) {
+            const spellIds = spellbook.spells.map(s => s.spellId);
+            await addSpellsToSpellbook(newSpellbook.id, spellIds);
+        }
+
+        setCopyModalOpen(false);
+
+        // Navigate to the newly copied spellbook
         if (onCopySpellbook) {
-            onCopySpellbook(spellbookId);
+            onCopySpellbook(newSpellbook.id);
         }
     };
 
@@ -236,6 +253,7 @@ export function useSpellbookDetailLogic({
         selectedSpellIds,
         confirmDialog,
         editModalOpen,
+        copyModalOpen,
         showPreparedOnly,
         allPrepared,
         onBack,
@@ -254,6 +272,8 @@ export function useSpellbookDetailLogic({
         onEditSave: handleEditSave,
         onToggleShowPreparedOnly: () => setShowPreparedOnly(prev => !prev),
         onCopy: handleCopy,
+        onCopyClose: () => setCopyModalOpen(false),
+        onCopySave: handleCopySave,
         onTogglePrepared: togglePrepared,
         onRemoveSpell: removeSpellFromSpellbook,
         onRequestRemoveSpell: handleRequestRemoveSpell,

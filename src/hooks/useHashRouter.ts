@@ -32,7 +32,6 @@ interface HashRouterReturn {
   navigateToBrowse: () => void;
   navigateToSpellbooks: () => void;
   navigateToSpellbookDetail: (spellbookId: string) => void;
-  navigateToCopySpellbook: (spellbookId: string) => void;
   navigateToSpellDetail: (spellId: string) => void;
 }
 
@@ -121,10 +120,6 @@ export function useHashRouter(): HashRouterReturn {
     if (typeof window !== 'undefined') window.location.hash = `/spellbooks/${spellbookId}`;
   };
 
-  const navigateToCopySpellbook = (spellbookId: string) => {
-    if (typeof window !== 'undefined') window.location.hash = `/spellbooks?copy=${spellbookId}`;
-  };
-
   const navigateToSpellDetail = (spellId: string) => {
     if (typeof window !== 'undefined') window.location.hash = `/spell/${spellId}`;
   };
@@ -137,7 +132,6 @@ export function useHashRouter(): HashRouterReturn {
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
-    navigateToCopySpellbook,
     navigateToSpellDetail,
   };
 }

@@ -16,6 +16,7 @@ export interface SpellbookDetailContextType {
         message: string;
     };
     editModalOpen: boolean;
+    copyModalOpen: boolean;
     showPreparedOnly: boolean;
     allPrepared: boolean;
     onBack: () => void;
@@ -34,6 +35,8 @@ export interface SpellbookDetailContextType {
     onEditSave: (input: CreateSpellbookInput) => Promise<void>;
     onToggleShowPreparedOnly: () => void;
     onCopy: () => void;
+    onCopyClose: () => void;
+    onCopySave: (input: CreateSpellbookInput) => Promise<void>;
     onTogglePrepared: (spellbookId: string, spellId: string) => Promise<void>;
     onRemoveSpell: (spellbookId: string, spellId: string) => Promise<void>;
     onRequestRemoveSpell: (spellId: string) => void;

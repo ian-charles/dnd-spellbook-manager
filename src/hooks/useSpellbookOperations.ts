@@ -61,6 +61,7 @@ export function useSpellbookOperations({
         spellSaveDC?: number;
         maxSpellSlots?: SpellSlots;
         sourceSpellbookId?: string;
+        onSuccess?: (newSpellbookId: string) => void;
     } | undefined>(undefined);
     const [copyProgress, setCopyProgress] = useState<string>('');
     const [importing, setImporting] = useState(false);
@@ -149,6 +150,10 @@ export function useSpellbookOperations({
             }
 
             if (mountedRef.current && !signal.aborted) {
+                // Call success callback if provided (e.g., for navigation after copy)
+                if (copyData?.onSuccess) {
+                    copyData.onSuccess(newSpellbook.id);
+                }
                 setCreateModalOpen(false);
                 setCopyData(undefined);
                 setCopyProgress('');
@@ -163,10 +168,11 @@ export function useSpellbookOperations({
     /**
      * Initiates the copy process for a spellbook.
      * Opens the create modal pre-filled with the source spellbook's data.
-     * 
+     *
      * @param id - ID of the spellbook to copy
+     * @param onSuccess - Optional callback to call with the new spellbook ID after successful copy
      */
-    const handleCopy = (id: string) => {
+    const handleCopy = (id: string, onSuccess?: (newSpellbookId: string) => void) => {
         const spellbook = spellbooks.find(sb => sb.id === id);
         if (!spellbook) return;
 
@@ -177,6 +183,7 @@ export function useSpellbookOperations({
             spellSaveDC: spellbook.spellSaveDC,
             maxSpellSlots: spellbook.maxSpellSlots,
             sourceSpellbookId: id,
+            onSuccess,
         });
         setCreateModalOpen(true);
     };

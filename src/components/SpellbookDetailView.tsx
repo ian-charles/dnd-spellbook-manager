@@ -27,6 +27,7 @@ export function SpellbookDetailView() {
     selectedSpellIds,
     confirmDialog,
     editModalOpen,
+    copyModalOpen,
     showPreparedOnly,
     allPrepared,
     modalSpellId,
@@ -44,6 +45,8 @@ export function SpellbookDetailView() {
     onEditSave,
     onToggleShowPreparedOnly,
     onCopy,
+    onCopyClose,
+    onCopySave,
     onTogglePrepared,
     onRequestRemoveSpell,
     existingNames,
@@ -195,12 +198,29 @@ export function SpellbookDetailView() {
         existingNames={existingNames.filter(name => name !== spellbook.name)}
         initialData={{
           name: spellbook.name,
-          castingAbility: spellbook.spellcastingAbility,
+          spellcastingAbility: spellbook.spellcastingAbility,
           spellAttackModifier: spellbook.spellAttackModifier,
           spellSaveDC: spellbook.spellSaveDC,
           maxSpellSlots: spellbook.maxSpellSlots,
         }}
         title="Edit Spellbook"
+      />
+
+      {/* Copy Spellbook Modal */}
+      <CreateSpellbookModal
+        isOpen={copyModalOpen}
+        onClose={onCopyClose}
+        onSubmit={onCopySave}
+        existingNames={existingNames}
+        initialData={{
+          name: `${spellbook.name}${MESSAGES.GENERATED.COPY_SUFFIX}`,
+          spellcastingAbility: spellbook.spellcastingAbility,
+          spellAttackModifier: spellbook.spellAttackModifier,
+          spellSaveDC: spellbook.spellSaveDC,
+          maxSpellSlots: spellbook.maxSpellSlots,
+        }}
+        title="Copy Spellbook"
+        loadingText="Copying..."
       />
     </div>
   );

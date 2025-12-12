@@ -77,6 +77,12 @@
   gap: var(--space-4);
 }
 
+.form-help-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: var(--space-1) 0 var(--space-3) 0;
+}
+
 .error-message {
   padding: var(--space-3) var(--space-4);
   background: var(--color-error-bg);

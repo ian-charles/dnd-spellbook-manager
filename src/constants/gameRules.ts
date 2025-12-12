@@ -51,3 +51,13 @@ export const MAX_IMPORT_FILE_SIZE = 5 * 1024 * 1024;
  * Regex for strict numeric validation (positive integers only).
  */
 export const STRICT_NUMERIC_REGEX = /^\d+$/;
+
+/**
+ * Minimum spell slots per level (can be 0 = no slots for that level).
+ */
+export const MIN_SPELL_SLOTS = 0;
+
+/**
+ * Maximum spell slots per level (D&D 5e limit).
+ */
+export const MAX_SPELL_SLOTS = 10;

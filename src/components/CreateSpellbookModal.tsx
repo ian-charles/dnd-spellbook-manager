@@ -1,6 +1,6 @@
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { useCreateSpellbookForm } from '../hooks/useCreateSpellbookForm';
-import { CreateSpellbookInput } from '../types/spellbook';
+import { CreateSpellbookInput, SpellSlots } from '../types/spellbook';
 import {
   MIN_ATTACK_MODIFIER,
   MAX_ATTACK_MODIFIER,
@@ -9,6 +9,7 @@ import {
   MAX_SPELLBOOK_NAME_LENGTH,
   STRICT_NUMERIC_REGEX
 } from '../constants/gameRules';
+import { SpellSlotsInput } from './SpellSlotsInput';
 import './CreateSpellbookModal.css';
 
 interface CreateSpellbookModalProps {
@@ -21,6 +22,7 @@ interface CreateSpellbookModalProps {
     spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
     spellAttackModifier?: number;
     spellSaveDC?: number;
+    maxSpellSlots?: SpellSlots;
   };
   title?: string;
   loadingText?: string;
@@ -44,6 +46,8 @@ export function CreateSpellbookModal({
     setSpellAttackModifier,
     spellSaveDC,
     setSpellSaveDC,
+    maxSpellSlots,
+    setMaxSpellSlots,
     error,
     loading,
     handleSubmit,
@@ -160,6 +164,14 @@ export function CreateSpellbookModal({
                 data-testid="save-dc-input"
               />
             </div>
+          </div>
+
+          <div className="form-group">
+            <label>Maximum Spell Slots (Optional)</label>
+            <p className="form-help-text">
+              How many spells of each level you can cast before a long rest
+            </p>
+            <SpellSlotsInput value={maxSpellSlots} onChange={setMaxSpellSlots} />
           </div>
 
           {error && <div className="error-message">{error}</div>}

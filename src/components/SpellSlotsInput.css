@@ -1,0 +1,55 @@
+/**
+ * SpellSlotsInput Component Styles
+ *
+ * Grid layout for entering spell slots for levels 1-9
+ */
+
+.spell-slots-input {
+  width: 100%;
+}
+
+.spell-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.spell-slot-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.spell-slot-item label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.spell-slot-input {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-input);
+  border: var(--input-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  transition: border-color var(--transition-base);
+  width: 100%;
+}
+
+.spell-slot-input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+}
+
+.spell-slot-input::-webkit-inner-spin-button,
+.spell-slot-input::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+/* Mobile: 2 columns */
+@media (max-width: 480px) {
+  .spell-slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

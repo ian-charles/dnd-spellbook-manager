@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CreateSpellbookInput } from '../types/spellbook';
+import { CreateSpellbookInput, SpellSlots } from '../types/spellbook';
 import {
     MIN_ATTACK_MODIFIER,
     MAX_ATTACK_MODIFIER,
@@ -16,6 +16,7 @@ interface UseCreateSpellbookFormProps {
         spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
         spellAttackModifier?: number;
         spellSaveDC?: number;
+        maxSpellSlots?: SpellSlots;
     };
 }
 
@@ -29,6 +30,7 @@ export function useCreateSpellbookForm({
     const [spellcastingAbility, setSpellcastingAbility] = useState<'INT' | 'WIS' | 'CHA' | ''>('');
     const [spellAttackModifier, setSpellAttackModifier] = useState('');
     const [spellSaveDC, setSpellSaveDC] = useState('');
+    const [maxSpellSlots, setMaxSpellSlots] = useState<SpellSlots | undefined>(undefined);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -38,6 +40,7 @@ export function useCreateSpellbookForm({
             setSpellcastingAbility(initialData.spellcastingAbility || '');
             setSpellAttackModifier(initialData.spellAttackModifier !== undefined ? String(initialData.spellAttackModifier) : '');
             setSpellSaveDC(initialData.spellSaveDC !== undefined ? String(initialData.spellSaveDC) : '');
+            setMaxSpellSlots(initialData.maxSpellSlots);
             setError('');
             setLoading(false);
         } else if (!isOpen) {
@@ -45,6 +48,7 @@ export function useCreateSpellbookForm({
             setSpellcastingAbility('');
             setSpellAttackModifier('');
             setSpellSaveDC('');
+            setMaxSpellSlots(undefined);
             setError('');
             setLoading(false);
         }
@@ -94,6 +98,7 @@ export function useCreateSpellbookForm({
             spellcastingAbility: spellcastingAbility || undefined,
             spellAttackModifier: spellAttackModifier ? parseInt(spellAttackModifier) : undefined,
             spellSaveDC: spellSaveDC ? parseInt(spellSaveDC) : undefined,
+            maxSpellSlots: maxSpellSlots,
         };
 
         try {
@@ -102,6 +107,7 @@ export function useCreateSpellbookForm({
             setSpellcastingAbility('');
             setSpellAttackModifier('');
             setSpellSaveDC('');
+            setMaxSpellSlots(undefined);
             setError('');
             setLoading(false);
         } catch (err) {
@@ -119,6 +125,8 @@ export function useCreateSpellbookForm({
         setSpellAttackModifier,
         spellSaveDC,
         setSpellSaveDC,
+        maxSpellSlots,
+        setMaxSpellSlots,
         error,
         loading,
         handleSubmit,

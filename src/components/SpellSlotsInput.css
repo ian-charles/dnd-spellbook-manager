@@ -169,27 +169,28 @@ input.spell-slot-input.zero-value {
   -moz-appearance: textfield;
 }
 
-/* Mobile L & M (425-767px): 2-column grid layout */
-@media (max-width: 767px) and (min-width: 375px) {
+/* Mobile L (425-767px): 5x2 grid, values flow down columns, centered */
+@media (max-width: 767px) and (min-width: 425px) {
   .spell-slots-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(5, auto);
     grid-auto-flow: column;
     gap: var(--space-2);
-    justify-items: center;
+    justify-content: center;
   }
 
   .spell-slot-item {
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     gap: var(--space-2);
-    width: 100%;
   }
 
   .spell-slot-item label {
     font-size: var(--font-size-sm);
     min-width: 24px;
+    order: -1;
   }
 
   .spell-slot-controls {
@@ -212,10 +213,10 @@ input.spell-slot-input.zero-value {
     order: 1;
   }
 
-  .spell-slot-input {
-    width: 32px;
+  input.spell-slot-input {
+    width: 32px !important;
     height: 32px;
-    padding: 4px;
+    padding: 4px !important;
     font-size: var(--font-size-md);
     border: var(--input-border);
     border-left: none;
@@ -224,7 +225,63 @@ input.spell-slot-input.zero-value {
   }
 }
 
-/* Mobile S (<375px): single column layout */
+/* Mobile M (375-424px): same 5x2 grid as Mobile L */
+@media (max-width: 424px) and (min-width: 375px) {
+  .spell-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(5, auto);
+    grid-auto-flow: column;
+    gap: var(--space-2);
+    justify-content: center;
+  }
+
+  .spell-slot-item {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .spell-slot-item label {
+    font-size: var(--font-size-sm);
+    min-width: 24px;
+    order: -1;
+  }
+
+  .spell-slot-controls {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .spell-slot-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .spell-slot-btn-down {
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    order: -1;
+  }
+
+  .spell-slot-btn-up {
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    order: 1;
+  }
+
+  input.spell-slot-input {
+    width: 32px !important;
+    height: 32px;
+    padding: 4px !important;
+    font-size: var(--font-size-md);
+    border: var(--input-border);
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+}
+
+/* Mobile S (<375px): single column, labels to the left, centered */
 @media (max-width: 374px) {
   .spell-slots-grid {
     display: flex;
@@ -243,6 +300,7 @@ input.spell-slot-input.zero-value {
   .spell-slot-item label {
     font-size: var(--font-size-sm);
     min-width: 24px;
+    order: -1;
   }
 
   .spell-slot-controls {
@@ -265,10 +323,10 @@ input.spell-slot-input.zero-value {
     order: 1;
   }
 
-  .spell-slot-input {
-    width: 32px;
+  input.spell-slot-input {
+    width: 32px !important;
     height: 32px;
-    padding: 4px;
+    padding: 4px !important;
     font-size: var(--font-size-md);
     border: var(--input-border);
     border-left: none;

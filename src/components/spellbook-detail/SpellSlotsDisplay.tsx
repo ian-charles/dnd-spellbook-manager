@@ -21,14 +21,18 @@ export function SpellSlotsDisplay({ slots }: SpellSlotsDisplayProps) {
 
     return (
         <div className="spell-slots-display">
-            {activeSlots.map(({ level, count }) => (
-                <div key={level} className="spell-slot-item">
-                    <span className="level-badge" data-level={level}>
+            <div className="spell-slots-grid">
+                <span className="header-label">Spell Lvl</span>
+                {activeSlots.map(({ level }) => (
+                    <span key={`badge-${level}`} className="level-badge" data-level={level}>
                         {level}
                     </span>
-                    <span className="spell-slot-count">{count}</span>
-                </div>
-            ))}
+                ))}
+                <span className="header-label">Slots</span>
+                {activeSlots.map(({ level, count }) => (
+                    <span key={`count-${level}`} className="spell-slot-count">{count}</span>
+                ))}
+            </div>
         </div>
     );
 }

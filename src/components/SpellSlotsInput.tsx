@@ -64,13 +64,11 @@ export function SpellSlotsInput({ value, onChange }: SpellSlotsInputProps) {
   return (
     <div className="spell-slots-input">
       <div className="spell-slots-grid">
-        <span className="header-label">Spell Lvl</span>
         {SPELL_LEVELS.map(level => (
           <label key={`badge-${level}`} htmlFor={`slot-level-${level}`} className="level-badge" data-level={level}>
             <span>{level}</span>
           </label>
         ))}
-        <span className="header-label">Slots</span>
         {SPELL_LEVELS.map(level => (
           <div key={`controls-${level}`} className="spell-slot-controls">
             <button

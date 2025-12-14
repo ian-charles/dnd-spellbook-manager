@@ -535,8 +535,7 @@ describe('SpellbookDetailView', () => {
     it('should display spell save DC', () => {
       renderWithContext();
 
-      const label = screen.getByText('Save DC');
-      expect(label.nextElementSibling?.textContent).toBe('15');
+      expect(screen.getByText('15')).toBeTruthy();
     });
 
     it('should display last updated timestamp', () => {

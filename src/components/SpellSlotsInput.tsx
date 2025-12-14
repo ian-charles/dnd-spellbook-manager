@@ -64,41 +64,43 @@ export function SpellSlotsInput({ value, onChange }: SpellSlotsInputProps) {
   return (
     <div className="spell-slots-input">
       <div className="spell-slots-grid">
+        <span className="header-label">Spell Lvl</span>
         {SPELL_LEVELS.map(level => (
-          <div key={level} className="spell-slot-item">
-            <label htmlFor={`slot-level-${level}`} className="level-badge" data-level={level}>
-              {level}
-            </label>
-            <div className="spell-slot-controls">
-              <button
-                type="button"
-                className="spell-slot-btn spell-slot-btn-up"
-                onClick={() => increment(level)}
-                disabled={getSlotValue(level) >= MAX_SPELL_SLOTS}
-                aria-label={`Increment level ${level} slots`}
-              >
-                <ChevronUp size={12} />
-              </button>
-              <input
-                type="number"
-                id={`slot-level-${level}`}
-                value={getSlotValue(level)}
-                onChange={(e) => handleSlotChange(level, e.target.value)}
-                min={MIN_SPELL_SLOTS}
-                max={MAX_SPELL_SLOTS}
-                className={`spell-slot-input ${getSlotValue(level) === 0 ? 'zero-value' : ''}`}
-                data-testid={`spell-slot-${level}`}
-              />
-              <button
-                type="button"
-                className="spell-slot-btn spell-slot-btn-down"
-                onClick={() => decrement(level)}
-                disabled={getSlotValue(level) <= MIN_SPELL_SLOTS}
-                aria-label={`Decrement level ${level} slots`}
-              >
-                <ChevronDown size={12} />
-              </button>
-            </div>
+          <label key={`badge-${level}`} htmlFor={`slot-level-${level}`} className="level-badge" data-level={level}>
+            <span>{level}</span>
+          </label>
+        ))}
+        <span className="header-label">Slots</span>
+        {SPELL_LEVELS.map(level => (
+          <div key={`controls-${level}`} className="spell-slot-controls">
+            <button
+              type="button"
+              className="spell-slot-btn spell-slot-btn-up"
+              onClick={() => increment(level)}
+              disabled={getSlotValue(level) >= MAX_SPELL_SLOTS}
+              aria-label={`Increment level ${level} slots`}
+            >
+              <ChevronUp size={12} />
+            </button>
+            <input
+              type="number"
+              id={`slot-level-${level}`}
+              value={getSlotValue(level)}
+              onChange={(e) => handleSlotChange(level, e.target.value)}
+              min={MIN_SPELL_SLOTS}
+              max={MAX_SPELL_SLOTS}
+              className={`spell-slot-input ${getSlotValue(level) === 0 ? 'zero-value' : ''}`}
+              data-testid={`spell-slot-${level}`}
+            />
+            <button
+              type="button"
+              className="spell-slot-btn spell-slot-btn-down"
+              onClick={() => decrement(level)}
+              disabled={getSlotValue(level) <= MIN_SPELL_SLOTS}
+              aria-label={`Decrement level ${level} slots`}
+            >
+              <ChevronDown size={12} />
+            </button>
           </div>
         ))}
       </div>

@@ -188,43 +188,117 @@ input.spell-slot-input.zero-value {
 }
 
 
-/* Mobile M (375-424px): same 5x2 grid as Mobile L */
-@media (max-width: 424px) and (min-width: 375px) {
+/* Mobile M-L (below 475px): two 5x2 grids side by side */
+@media (max-width: 475px) {
   .spell-slots-input .spell-slots-grid {
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: repeat(4, min-content);
     grid-template-rows: repeat(5, auto);
-    grid-auto-flow: column;
-    gap: var(--space-2);
+    gap: var(--space-2) var(--space-4);
     justify-content: center;
   }
 
-  .spell-slot-item {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-2);
+  /* First grid (levels 1-5): columns 1-2 */
+  /* Level 1 */
+  .spell-slots-input .level-badge:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(10) {
+    grid-column: 2;
+    grid-row: 1;
   }
 
-  .spell-slot-item label {
-    font-size: var(--font-size-base);
-    min-width: 24px;
-    order: -1;
-    margin: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
+  /* Level 2 */
+  .spell-slots-input .level-badge:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(11) {
+    grid-column: 2;
+    grid-row: 2;
   }
 
-  .spell-slot-controls {
+  /* Level 3 */
+  .spell-slots-input .level-badge:nth-child(3) {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(12) {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  /* Level 4 */
+  .spell-slots-input .level-badge:nth-child(4) {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(13) {
+    grid-column: 2;
+    grid-row: 4;
+  }
+
+  /* Level 5 */
+  .spell-slots-input .level-badge:nth-child(5) {
+    grid-column: 1;
+    grid-row: 5;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(14) {
+    grid-column: 2;
+    grid-row: 5;
+  }
+
+  /* Second grid (levels 6-9): columns 3-4 */
+  /* Level 6 */
+  .spell-slots-input .level-badge:nth-child(6) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(15) {
+    grid-column: 4;
+    grid-row: 1;
+  }
+
+  /* Level 7 */
+  .spell-slots-input .level-badge:nth-child(7) {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(16) {
+    grid-column: 4;
+    grid-row: 2;
+  }
+
+  /* Level 8 */
+  .spell-slots-input .level-badge:nth-child(8) {
+    grid-column: 3;
+    grid-row: 3;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(17) {
+    grid-column: 4;
+    grid-row: 3;
+  }
+
+  /* Level 9 */
+  .spell-slots-input .level-badge:nth-child(9) {
+    grid-column: 3;
+    grid-row: 4;
+  }
+  .spell-slots-input .spell-slot-controls:nth-child(18) {
+    grid-column: 4;
+    grid-row: 4;
+  }
+
+  /* Horizontal button layout */
+  .spell-slots-input .spell-slot-controls {
     flex-direction: row;
     gap: 0;
   }
 
   .spell-slot-btn {
-    width: 32px;
-    height: 32px;
+    width: 14px;
+    height: 30px;
   }
 
   .spell-slot-btn-down {
@@ -238,8 +312,8 @@ input.spell-slot-input.zero-value {
   }
 
   input.spell-slot-input {
-    width: 32px !important;
-    height: 32px;
+    width: 30px !important;
+    height: 30px;
     padding: 4px !important;
     font-size: var(--font-size-md);
     border: var(--input-border);
@@ -249,7 +323,7 @@ input.spell-slot-input.zero-value {
   }
 }
 
-/* Mobile S (<375px): single column, labels to the left, centered */
+/* DISABLED - Mobile S (<375px): single column, labels to the left, centered
 @media (max-width: 374px) {
   .spell-slots-input .spell-slots-grid {
     display: flex;
@@ -307,3 +381,4 @@ input.spell-slot-input.zero-value {
     border-radius: 0;
   }
 }
+*/

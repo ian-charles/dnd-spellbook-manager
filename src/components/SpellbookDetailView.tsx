@@ -106,22 +106,18 @@ export function SpellbookDetailView() {
             {enrichedSpells.length} spell{enrichedSpells.length !== 1 ? 's' : ''} · {preparedCount} prepared · {new Date(spellbook.updated).toLocaleDateString()}
           </p>
           <div className="spellbook-attributes">
-            <span>
+            <div className="attributes-group">
               <strong>Ability</strong>
-              <span>{spellbook.spellcastingAbility || 'N/A'}</span>
-            </span>
-            <span>
               <strong>Attack</strong>
-              <span>{spellbook.spellAttackModifier !== undefined ? `+${spellbook.spellAttackModifier}` : 'N/A'}</span>
-            </span>
-            <span>
               <strong>Save DC</strong>
+              <span>{spellbook.spellcastingAbility || 'N/A'}</span>
+              <span>{spellbook.spellAttackModifier !== undefined ? `+${spellbook.spellAttackModifier}` : 'N/A'}</span>
               <span>{spellbook.spellSaveDC !== undefined ? spellbook.spellSaveDC : 'N/A'}</span>
-            </span>
+            </div>
+            {spellbook.maxSpellSlots && (
+              <SpellSlotsDisplay slots={spellbook.maxSpellSlots} />
+            )}
           </div>
-          {spellbook.maxSpellSlots && (
-            <SpellSlotsDisplay slots={spellbook.maxSpellSlots} />
-          )}
         </div>
       </div>
 

@@ -11,9 +11,22 @@
   justify-content: center;
 }
 
-.spell-slots-input .spell-slots-grid {
+/* Desktop: Single 2x9 grid - visible by default */
+.spell-slots-input .spell-slots-grid-desktop {
   display: grid;
   grid-template-columns: repeat(9, min-content);
+  grid-template-rows: auto auto;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+}
+
+/* Mobile: Two separate grids - hidden by default */
+.spell-slots-input .spell-slots-grid-mobile {
+  display: none;
+}
+
+.spell-slots-input .spell-slots-grid {
+  display: grid;
   grid-template-rows: auto auto;
   gap: var(--space-2);
   border-radius: var(--radius-md);
@@ -188,138 +201,29 @@ input.spell-slot-input.zero-value {
 }
 
 
-/* Mobile M-L (below 475px): two 5x2 grids side by side */
+/* Mobile M-L (below 475px): two stacked 2-row grids - 2x5 for levels 1-5, then 2x4 for levels 6-9 */
 @media (max-width: 475px) {
-  .spell-slots-input .spell-slots-grid {
-    display: grid;
+  /* Hide desktop grid */
+  .spell-slots-input .spell-slots-grid-desktop {
+    display: none;
+  }
+
+  /* Show mobile grids */
+  .spell-slots-input .spell-slots-grid-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  /* First grid: 2x5 for levels 1-5 */
+  .spell-slots-input .spell-slots-grid-1 {
+    grid-template-columns: repeat(5, min-content);
+  }
+
+  /* Second grid: 2x4 for levels 6-9 */
+  .spell-slots-input .spell-slots-grid-2 {
     grid-template-columns: repeat(4, min-content);
-    grid-template-rows: repeat(5, auto);
-    gap: var(--space-2) var(--space-4);
-    justify-content: center;
-  }
-
-  /* First grid (levels 1-5): columns 1-2 */
-  /* Level 1 */
-  .spell-slots-input .level-badge:nth-child(1) {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(10) {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  /* Level 2 */
-  .spell-slots-input .level-badge:nth-child(2) {
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(11) {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  /* Level 3 */
-  .spell-slots-input .level-badge:nth-child(3) {
-    grid-column: 1;
-    grid-row: 3;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(12) {
-    grid-column: 2;
-    grid-row: 3;
-  }
-
-  /* Level 4 */
-  .spell-slots-input .level-badge:nth-child(4) {
-    grid-column: 1;
-    grid-row: 4;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(13) {
-    grid-column: 2;
-    grid-row: 4;
-  }
-
-  /* Level 5 */
-  .spell-slots-input .level-badge:nth-child(5) {
-    grid-column: 1;
-    grid-row: 5;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(14) {
-    grid-column: 2;
-    grid-row: 5;
-  }
-
-  /* Second grid (levels 6-9): columns 3-4 */
-  /* Level 6 */
-  .spell-slots-input .level-badge:nth-child(6) {
-    grid-column: 3;
-    grid-row: 1;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(15) {
-    grid-column: 4;
-    grid-row: 1;
-  }
-
-  /* Level 7 */
-  .spell-slots-input .level-badge:nth-child(7) {
-    grid-column: 3;
-    grid-row: 2;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(16) {
-    grid-column: 4;
-    grid-row: 2;
-  }
-
-  /* Level 8 */
-  .spell-slots-input .level-badge:nth-child(8) {
-    grid-column: 3;
-    grid-row: 3;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(17) {
-    grid-column: 4;
-    grid-row: 3;
-  }
-
-  /* Level 9 */
-  .spell-slots-input .level-badge:nth-child(9) {
-    grid-column: 3;
-    grid-row: 4;
-  }
-  .spell-slots-input .spell-slot-controls:nth-child(18) {
-    grid-column: 4;
-    grid-row: 4;
-  }
-
-  /* Horizontal button layout */
-  .spell-slots-input .spell-slot-controls {
-    flex-direction: row;
-    gap: 0;
-  }
-
-  .spell-slot-btn {
-    width: 14px;
-    height: 30px;
-  }
-
-  .spell-slot-btn-down {
-    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-    order: -1;
-  }
-
-  .spell-slot-btn-up {
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    order: 1;
-  }
-
-  input.spell-slot-input {
-    width: 30px !important;
-    height: 30px;
-    padding: 4px !important;
-    font-size: var(--font-size-md);
-    border: var(--input-border);
-    border-left: none;
-    border-right: none;
-    border-radius: 0;
   }
 }
 

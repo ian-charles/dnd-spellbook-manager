@@ -110,7 +110,7 @@
 }
 
 /* Mobile adjustments */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .back-to-top-container {
     bottom: 5rem;
     right: 1.5rem;

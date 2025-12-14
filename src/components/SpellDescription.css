@@ -37,7 +37,7 @@
 }
 
 /* Override mobile table hiding for spell description tables */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 
     .spell-table-rendered thead,
     .spell-table-rendered th {

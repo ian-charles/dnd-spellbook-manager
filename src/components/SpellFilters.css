@@ -693,7 +693,7 @@
 }
 
 /* Mobile responsive */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .spell-filters {
     padding: var(--space-4);
     margin-bottom: var(--space-4);

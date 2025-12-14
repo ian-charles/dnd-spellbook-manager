@@ -159,7 +159,7 @@
 }
 
 /* Mobile responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .confirm-dialog {
     max-width: 100%;
     margin: var(--space-4);

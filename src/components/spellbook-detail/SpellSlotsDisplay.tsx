@@ -20,6 +20,7 @@ export function SpellSlotsDisplay({ slots }: SpellSlotsDisplayProps) {
     }
 
     // Dynamic grid columns: N for active slots (no label column)
+    // Grid has 3 rows: header label, level badges, slot counts
     const gridStyle = {
         gridTemplateColumns: `repeat(${activeSlots.length}, min-content)`
     };
@@ -27,6 +28,7 @@ export function SpellSlotsDisplay({ slots }: SpellSlotsDisplayProps) {
     return (
         <div className="spell-slots-display">
             <div className="spell-slots-grid" style={gridStyle}>
+                <strong className="spell-slots-header">Spell Slots</strong>
                 {activeSlots.map(({ level }) => (
                     <span key={`badge-${level}`} className="level-badge" data-level={level}>
                         {level}

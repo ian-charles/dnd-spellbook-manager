@@ -13,7 +13,7 @@
 .spell-slots-grid {
   display: grid;
   grid-template-columns: auto repeat(9, min-content);
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   gap: var(--space-2);
   border-radius: var(--radius-md);
 }
@@ -24,6 +24,19 @@
   justify-content: center;
   padding: 0;
   background: var(--color-bg-secondary);
+}
+
+.spell-slots-header {
+  grid-column: 1 / -1;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .header-label {
@@ -106,7 +119,15 @@
 }
 
 .spell-slot-count {
+  width: 30px;
+  height: 30px;
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
+  background: var(--color-bg-input);
+  border: var(--input-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

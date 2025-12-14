@@ -89,6 +89,33 @@ git diff --cached | grep -i "console.log\|debugger\|TODO"
 
 ## Code Style
 
+### CSS and Design Tokens
+
+**CRITICAL**: When writing or modifying CSS, ALWAYS use design token variables instead of hard-coded values, even if the user specifies a literal value.
+
+**Design token file**: `src/styles/design-tokens.css`
+
+**Common mappings**:
+- **Spacing**: `1rem` = `var(--space-4)`, `0.5rem` = `var(--space-2)`, `2rem` = `var(--space-8)`
+- **Font sizes**: `16px` = `var(--font-size-base)`, `14px` = `var(--font-size-sm)`, `18px` = `var(--font-size-lg)`
+- **Font weights**: `400` = `var(--font-weight-normal)`, `500` = `var(--font-weight-medium)`, `600` = `var(--font-weight-semibold)`
+- **Border radius**: `4px` = `var(--radius-sm)`, `8px` = `var(--radius-md)`, `12px` = `var(--radius-lg)`
+- **Colors**: Always use semantic tokens like `var(--color-text-primary)`, `var(--color-bg-secondary)`, `var(--input-border)`, etc.
+
+**Examples**:
+```css
+/* User says: "padding should be 1rem" */
+/* ❌ DON'T write: */
+padding: 1rem;
+
+/* ✅ DO write: */
+padding: var(--space-4);
+```
+
+**Why**: Design tokens ensure consistency, enable theming, and make global changes easier. When a user provides a literal value, translate it to the equivalent token.
+
+**When to check**: Before writing any CSS property, check if a design token exists for that value in `src/styles/design-tokens.css`.
+
 ### Self-Documenting Code
 - **Names reveal intent**: `getUserByEmail()` not `getUser()` or `gube()`
 - **Functions do one obvious thing**: No surprises, no side effects

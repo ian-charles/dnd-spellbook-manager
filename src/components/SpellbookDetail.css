@@ -333,8 +333,8 @@
 }
 
 
-/* Mobile and Tablet - stack attributes and spell slots (≤768px) */
-@media (max-width: 768px) {
+/* Mobile and Tablet - stack attributes and spell slots (≤767px) */
+@media (max-width: 767px) {
   .spellbook-attributes {
     flex-direction: column;
     align-items: center;

@@ -6,41 +6,34 @@
 
 .spell-slots-display {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
   flex-shrink: 0;
-}
-
-@media (min-width: 425px) {
-  .spell-slots-display {
-    justify-content: center;
-  }
 }
 
 .spell-slots-grid {
   display: grid;
-  grid-template-columns: auto repeat(9, min-content);
-  grid-template-rows: auto auto auto;
+  grid-template-columns: repeat(auto-fit, min-content);
+  grid-auto-flow: column;
   gap: var(--space-2);
   border-radius: var(--radius-md);
 }
 
-.spell-slots-grid > * {
+.spell-slot-item {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: var(--color-bg-secondary);
 }
 
 .spell-slots-header {
-  grid-column: 1 / -1;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 
 .header-label {

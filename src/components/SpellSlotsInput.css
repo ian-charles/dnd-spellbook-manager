@@ -1,42 +1,39 @@
 /**
  * SpellSlotsInput Component Styles
  *
- * Single-line layout for entering spell slots for levels 1-9 on tablet+
- * Multi-row grid on mobile
+ * Compact single-line display for spell slots with color-coded badges
  */
 
 .spell-slots-input {
-  width: 100%;
   display: flex;
-  justify-content: center;
-}
-
-/* Desktop: Single 2x9 grid - visible by default */
-.spell-slots-input .spell-slots-grid-desktop {
-  display: grid;
-  grid-template-columns: repeat(9, min-content);
-  grid-template-rows: auto auto;
+  flex-direction: column;
+  align-items: center;
   gap: var(--space-2);
-  border-radius: var(--radius-md);
-}
-
-/* Mobile: Two separate grids - hidden by default */
-.spell-slots-input .spell-slots-grid-mobile {
-  display: none;
+  flex-shrink: 0;
 }
 
 .spell-slots-input .spell-slots-grid {
   display: grid;
-  grid-template-rows: auto auto;
+  grid-template-columns: repeat(auto-fit, min-content);
+  grid-auto-flow: column;
   gap: var(--space-2);
   border-radius: var(--radius-md);
 }
 
-.spell-slots-input .spell-slots-grid > * {
+.spell-slots-input .spell-slot-item {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   align-items: center;
-  justify-content: center;
-  padding: 0;
+}
+
+.spell-slots-input .spell-slots-header {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
 }
 
 .spell-slots-input .level-badge {
@@ -199,90 +196,3 @@ input.spell-slot-input.zero-value {
 .spell-slot-input[type="number"] {
   -moz-appearance: textfield;
 }
-
-
-/* Mobile M-L (below 475px): two stacked 2-row grids - 2x5 for levels 1-5, then 2x4 for levels 6-9 */
-@media (max-width: 475px) {
-  /* Hide desktop grid */
-  .spell-slots-input .spell-slots-grid-desktop {
-    display: none;
-  }
-
-  /* Show mobile grids */
-  .spell-slots-input .spell-slots-grid-mobile {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    align-items: center;
-  }
-
-  /* First grid: 2x5 for levels 1-5 */
-  .spell-slots-input .spell-slots-grid-1 {
-    grid-template-columns: repeat(5, min-content);
-  }
-
-  /* Second grid: 2x4 for levels 6-9 */
-  .spell-slots-input .spell-slots-grid-2 {
-    grid-template-columns: repeat(4, min-content);
-  }
-}
-
-/* DISABLED - Mobile S (<375px): single column, labels to the left, centered
-@media (max-width: 374px) {
-  .spell-slots-input .spell-slots-grid {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    align-items: center;
-  }
-
-  .spell-slot-item {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .spell-slot-item label {
-    font-size: var(--font-size-base);
-    min-width: 24px;
-    order: -1;
-    margin: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
-  }
-
-  .spell-slot-controls {
-    flex-direction: row;
-    gap: 0;
-  }
-
-  .spell-slot-btn {
-    width: 32px;
-    height: 32px;
-  }
-
-  .spell-slot-btn-down {
-    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-    order: -1;
-  }
-
-  .spell-slot-btn-up {
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    order: 1;
-  }
-
-  input.spell-slot-input {
-    width: 32px !important;
-    height: 32px;
-    padding: 4px !important;
-    font-size: var(--font-size-md);
-    border: var(--input-border);
-    border-left: none;
-    border-right: none;
-    border-radius: 0;
-  }
-}
-*/

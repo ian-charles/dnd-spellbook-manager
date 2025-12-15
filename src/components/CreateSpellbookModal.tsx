@@ -182,7 +182,6 @@ export function CreateSpellbookModal({
           </div>
 
           <div className="form-group">
-            <label>Spell Slots</label>
             <SpellSlotsInput value={maxSpellSlots} onChange={setMaxSpellSlots} />
           </div>
 

@@ -61,69 +61,48 @@ export function SpellSlotsInput({ value, onChange }: SpellSlotsInputProps) {
     return value?.[`level${level}` as keyof SpellSlots] ?? 0;
   };
 
-  const renderControl = (level: number) => (
-    <div key={`controls-${level}`} className="spell-slot-controls">
-      <button
-        type="button"
-        className="spell-slot-btn spell-slot-btn-up"
-        onClick={() => increment(level)}
-        disabled={getSlotValue(level) >= MAX_SPELL_SLOTS}
-        aria-label={`Increment level ${level} slots`}
-      >
-        <ChevronUp size={12} />
-      </button>
-      <input
-        type="number"
-        id={`slot-level-${level}`}
-        value={getSlotValue(level)}
-        onChange={(e) => handleSlotChange(level, e.target.value)}
-        min={MIN_SPELL_SLOTS}
-        max={MAX_SPELL_SLOTS}
-        className={`spell-slot-input ${getSlotValue(level) === 0 ? 'zero-value' : ''}`}
-        data-testid={`spell-slot-${level}`}
-      />
-      <button
-        type="button"
-        className="spell-slot-btn spell-slot-btn-down"
-        onClick={() => decrement(level)}
-        disabled={getSlotValue(level) <= MIN_SPELL_SLOTS}
-        aria-label={`Decrement level ${level} slots`}
-      >
-        <ChevronDown size={12} />
-      </button>
-    </div>
-  );
-
   return (
-    <div className="spell-slots-input">
-      {/* Desktop: Single 2x9 grid */}
-      <div className="spell-slots-grid spell-slots-grid-desktop">
+    <div className="spell-slots-input" role="group" aria-labelledby="spell-slots-heading">
+      <strong id="spell-slots-heading" className="spell-slots-header">Spell Slots</strong>
+      <div className="spell-slots-grid">
         {SPELL_LEVELS.map(level => (
-          <label key={`badge-${level}`} htmlFor={`slot-level-${level}`} className="level-badge" data-level={level}>
-            <span>{level}</span>
-          </label>
+          <div key={level} className="spell-slot-item">
+            <span className="level-badge" data-level={level}>
+              {level}
+            </span>
+            <div className="spell-slot-controls">
+              <button
+                type="button"
+                className="spell-slot-btn spell-slot-btn-up"
+                onClick={() => increment(level)}
+                disabled={getSlotValue(level) >= MAX_SPELL_SLOTS}
+                aria-label={`Increment level ${level} slots`}
+              >
+                <ChevronUp size={12} />
+              </button>
+              <input
+                type="number"
+                id={`slot-level-${level}`}
+                value={getSlotValue(level)}
+                onChange={(e) => handleSlotChange(level, e.target.value)}
+                min={MIN_SPELL_SLOTS}
+                max={MAX_SPELL_SLOTS}
+                className={`spell-slot-input ${getSlotValue(level) === 0 ? 'zero-value' : ''}`}
+                data-testid={`spell-slot-${level}`}
+                aria-label={`Level ${level} spell slots`}
+              />
+              <button
+                type="button"
+                className="spell-slot-btn spell-slot-btn-down"
+                onClick={() => decrement(level)}
+                disabled={getSlotValue(level) <= MIN_SPELL_SLOTS}
+                aria-label={`Decrement level ${level} slots`}
+              >
+                <ChevronDown size={12} />
+              </button>
+            </div>
+          </div>
         ))}
-        {SPELL_LEVELS.map(level => renderControl(level))}
-      </div>
-
-      {/* Mobile: Two separate grids */}
-      <div className="spell-slots-grid-mobile">
-        <div className="spell-slots-grid spell-slots-grid-1">
-          {[1, 2, 3, 4, 5].map(level => (
-            <label key={`badge-${level}-mobile`} htmlFor={`slot-level-${level}`} className="level-badge" data-level={level}>
-              <span>{level}</span>
-            </label>
-          ))}
-          {[1, 2, 3, 4, 5].map(level => renderControl(level))}
-        </div>
-        <div className="spell-slots-grid spell-slots-grid-2">
-          {[6, 7, 8, 9].map(level => (
-            <label key={`badge-${level}-mobile`} htmlFor={`slot-level-${level}`} className="level-badge" data-level={level}>
-              <span>{level}</span>
-            </label>
-          ))}
-          {[6, 7, 8, 9].map(level => renderControl(level))}
-        </div>
       </div>
     </div>
   );

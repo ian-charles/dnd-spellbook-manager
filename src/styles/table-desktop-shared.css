@@ -692,16 +692,19 @@
   text-align: center;
 }
 
-/* Progressive column hiding for responsive design (Mobile-First)
+/* Progressive column hiding for responsive design (Container Queries)
+   Uses container queries to show/hide columns based on actual available space,
+   not viewport width. This provides better UX for split screens, sidebars, zoom, etc.
+
    Priority (high to low): Name, Level, Time, Range, Duration, School, Comp., Classes, Source
 
-   Base (768px): Show essential columns (Name, Level, Time, Range)
-   Breakpoints (progressive enhancement):
-   - 801px: Show Duration
-   - 901px: Show School
-   - 1025px: Show Components
-   - 1201px: Show Classes
-   - 1401px: Show Source (lowest priority)
+   Base (768px container): Show essential columns (Name, Level, Time, Range)
+   Container breakpoints (progressive enhancement):
+   - 800px: Show Duration
+   - 900px: Show School
+   - 1000px: Show Components
+   - 1200px: Show Classes
+   - 1400px: Show Source (lowest priority)
 */
 
 /* Base styles (tablet 768px+): Hide lower-priority columns */
@@ -715,36 +718,36 @@
   }
 }
 
-/* Show Duration column at 801px+ */
-@media (min-width: 801px) {
+/* Show Duration column when container is 800px+ */
+@container table-container (min-width: 800px) {
   .spell-table .duration-col {
     display: table-cell;
   }
 }
 
-/* Show School column at 901px+ */
-@media (min-width: 901px) {
+/* Show School column when container is 900px+ */
+@container table-container (min-width: 900px) {
   .spell-table .school-col {
     display: table-cell;
   }
 }
 
-/* Show Components column at 1025px+ */
-@media (min-width: 1025px) {
+/* Show Components column when container is 1000px+ */
+@container table-container (min-width: 1000px) {
   .spell-table .components-col {
     display: table-cell;
   }
 }
 
-/* Show Classes column at 1201px+ */
-@media (min-width: 1201px) {
+/* Show Classes column when container is 1200px+ */
+@container table-container (min-width: 1200px) {
   .spell-table .classes-col {
     display: table-cell;
   }
 }
 
-/* Show Source column at 1401px+ */
-@media (min-width: 1401px) {
+/* Show Source column when container is 1400px+ */
+@container table-container (min-width: 1400px) {
   .spell-table .source-col {
     display: table-cell;
   }

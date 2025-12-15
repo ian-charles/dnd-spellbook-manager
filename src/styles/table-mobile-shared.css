@@ -524,6 +524,10 @@
     border: 1px solid var(--color-border-primary);
     border-radius: var(--radius-xl);
     overflow-x: auto;
+
+    /* Enable container queries for responsive column hiding */
+    container-type: inline-size;
+    container-name: table-container;
   }
 
   /* Show table headers */

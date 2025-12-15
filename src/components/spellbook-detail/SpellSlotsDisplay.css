@@ -6,8 +6,13 @@
 
 .spell-slots-display {
   display: flex;
-  justify-content: center;
   flex-shrink: 0;
+}
+
+@media (min-width: 425px) {
+  .spell-slots-display {
+    justify-content: center;
+  }
 }
 
 .spell-slots-grid {

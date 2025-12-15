@@ -141,6 +141,8 @@
 @media (min-width: 768px) {
   .attributes-group {
     gap: var(--space-2);
+    grid-template-rows: auto 1fr;
+    height: 100%;
   }
 
   .attributes-group span {
@@ -348,7 +350,7 @@
   .spellbook-attributes {
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .attributes-group {

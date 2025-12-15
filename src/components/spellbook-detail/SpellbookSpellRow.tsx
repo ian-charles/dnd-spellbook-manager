@@ -106,7 +106,7 @@ export function SpellbookSpellRow({
             isCommitted={isCommitted}
           />
         )}
-        <td className="prepared-col" onClick={(e) => e.stopPropagation()}>
+        <td className="checkbox-col" onClick={(e) => e.stopPropagation()}>
           <input
             type="checkbox"
             checked={isSelected}
@@ -122,7 +122,7 @@ export function SpellbookSpellRow({
           <span className="level-col mobile-badge" data-level={spell.level}>{getLevelTextMobile(spell.level)}</span>
           <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
         </td>
-        <td className="level-col desktop-only">
+        <td className="level-col">
           <span className="desktop-badge level-badge" data-level={spell.level}>
             {getLevelText(spell.level)}
           </span>
@@ -140,7 +140,7 @@ export function SpellbookSpellRow({
             {spell.concentration && <span className="badge badge-concentration">C</span>}
           </span>
         </td>
-        <td className="school-col desktop-only" data-school={spell.school}>
+        <td className="school-col" data-school={spell.school}>
           {spell.school}
         </td>
         <td className="components-col"><ComponentBadges spell={spell} /></td>

@@ -692,50 +692,61 @@
   text-align: center;
 }
 
-/* Progressive column hiding for responsive design
+/* Progressive column hiding for responsive design (Mobile-First)
    Priority (high to low): Name, Level, Time, Range, Duration, School, Comp., Classes, Source
 
-   Breakpoints:
-   - 1400px: Hide Source (lowest priority)
-   - 1200px: Hide Classes
-   - 1024px: Hide Components
-   - 900px: Hide School
-   - 800px: Hide Duration
-   - 769px: Switch to mobile card layout
+   Base (768px): Show essential columns (Name, Level, Time, Range)
+   Breakpoints (progressive enhancement):
+   - 801px: Show Duration
+   - 901px: Show School
+   - 1025px: Show Components
+   - 1201px: Show Classes
+   - 1401px: Show Source (lowest priority)
 */
 
-/* Hide Source column at 1400px */
-@media (max-width: 1400px) {
+/* Base styles (tablet 768px+): Hide lower-priority columns */
+@media (min-width: 768px) {
+  .spell-table .duration-col,
+  .spell-table .school-col,
+  .spell-table .components-col,
+  .spell-table .classes-col,
   .spell-table .source-col {
     display: none;
   }
 }
 
-/* Hide Classes column at 1200px */
-@media (max-width: 1200px) {
-  .spell-table .classes-col {
-    display: none;
-  }
-}
-
-/* Hide Components column at 1024px */
-@media (max-width: 1024px) {
-  .spell-table .components-col {
-    display: none;
-  }
-}
-
-/* Hide School column at 900px */
-@media (max-width: 900px) {
-  .spell-table .school-col {
-    display: none;
-  }
-}
-
-/* Hide Duration column at 800px */
-@media (max-width: 800px) {
+/* Show Duration column at 801px+ */
+@media (min-width: 801px) {
   .spell-table .duration-col {
-    display: none;
+    display: table-cell;
+  }
+}
+
+/* Show School column at 901px+ */
+@media (min-width: 901px) {
+  .spell-table .school-col {
+    display: table-cell;
+  }
+}
+
+/* Show Components column at 1025px+ */
+@media (min-width: 1025px) {
+  .spell-table .components-col {
+    display: table-cell;
+  }
+}
+
+/* Show Classes column at 1201px+ */
+@media (min-width: 1201px) {
+  .spell-table .classes-col {
+    display: table-cell;
+  }
+}
+
+/* Show Source column at 1401px+ */
+@media (min-width: 1401px) {
+  .spell-table .source-col {
+    display: table-cell;
   }
 }
 
@@ -865,27 +876,27 @@
   }
 }
 
-/* Responsive breakpoints for spell details expansion */
-/* Desktop: 1 row x 4 columns (above 768px) */
-@media (min-width: 769px) {
+/* Responsive breakpoints for spell details expansion (Mobile-First) */
+/* Base (426px+): 1 column, 4 rows */
+@media (min-width: 426px) {
   .spell-inline-expansion .spell-expanded-details {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
   }
 }
 
-/* Tablet: 2x2 grid (426px - 767px) */
-@media (max-width: 767px) and (min-width: 426px) {
+/* Tablet: 2x2 grid (768px+) */
+@media (min-width: 768px) {
   .spell-inline-expansion .spell-expanded-details {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
   }
 }
 
-/* Mobile: 1 column, 4 rows (below 425px) */
-@media (max-width: 425px) {
+/* Desktop: 1 row x 4 columns (769px+) */
+@media (min-width: 769px) {
   .spell-inline-expansion .spell-expanded-details {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto;
   }
 }

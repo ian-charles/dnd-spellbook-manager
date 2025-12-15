@@ -73,7 +73,7 @@ export function SpellbookSpellsTable() {
                 <table className="spell-table spellbook-table">
                     <thead>
                         <tr>
-                            <th className="prepared-col">
+                            <th className="checkbox-col">
                                 <input
                                     type="checkbox"
                                     ref={masterCheckboxRef}

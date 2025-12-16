@@ -556,28 +556,28 @@ describe('SpellbookDetailView', () => {
       expect(screen.getByText(/1\/15\/2025/)).toBeTruthy();
     });
 
-    it('should display N/A when spellcasting ability is not set', () => {
+    it('should display -- when spellcasting ability is not set', () => {
       const spellbookWithoutAbility = { ...mockSpellbook, spellcastingAbility: undefined };
       renderWithContext({ spellbook: spellbookWithoutAbility });
 
       const label = screen.getByText('Ability');
-      expect(label.parentElement?.textContent).toContain('N/A');
+      expect(label.parentElement?.textContent).toContain('--');
     });
 
-    it('should display N/A when spell attack modifier is not set', () => {
+    it('should display -- when spell attack modifier is not set', () => {
       const spellbookWithoutModifier = { ...mockSpellbook, spellAttackModifier: undefined };
       renderWithContext({ spellbook: spellbookWithoutModifier });
 
       const label = screen.getByText('Attack');
-      expect(label.parentElement?.textContent).toContain('N/A');
+      expect(label.parentElement?.textContent).toContain('--');
     });
 
-    it('should display N/A when spell save DC is not set', () => {
+    it('should display -- when spell save DC is not set', () => {
       const spellbookWithoutDC = { ...mockSpellbook, spellSaveDC: undefined };
       renderWithContext({ spellbook: spellbookWithoutDC });
 
       const label = screen.getByText('Save DC');
-      expect(label.parentElement?.textContent).toContain('N/A');
+      expect(label.parentElement?.textContent).toContain('--');
     });
   });
 

@@ -90,6 +90,7 @@ export function SpellSlotsInput({ value, onChange }: SpellSlotsInputProps) {
                 className={`spell-slot-input ${getSlotValue(level) === 0 ? 'zero-value' : ''}`}
                 data-testid={`spell-slot-${level}`}
                 aria-label={`Level ${level} spell slots`}
+                autoComplete="off"
               />
               <button
                 type="button"

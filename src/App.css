@@ -85,6 +85,8 @@
 .nav-link-about svg,
 .nav-link-donate svg {
   flex-shrink: 0;
+  margin-right: 0.25rem;
+  align-self: center;
 }
 
 .nav-link-donate {

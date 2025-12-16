@@ -125,9 +125,9 @@ export function SpellbookDetailView() {
               <strong>Ability</strong>
               <strong>Attack</strong>
               <strong>Save DC</strong>
-              <span>{spellbook.spellcastingAbility || 'N/A'}</span>
-              <span>{spellbook.spellAttackModifier !== undefined ? `+${spellbook.spellAttackModifier}` : 'N/A'}</span>
-              <span>{spellbook.spellSaveDC !== undefined ? spellbook.spellSaveDC : 'N/A'}</span>
+              <span>{spellbook.spellcastingAbility || '--'}</span>
+              <span>{spellbook.spellAttackModifier !== undefined ? `+${spellbook.spellAttackModifier}` : '--'}</span>
+              <span>{spellbook.spellSaveDC !== undefined ? spellbook.spellSaveDC : '--'}</span>
             </div>
             {spellbook.maxSpellSlots && (
               <SpellSlotsDisplay slots={spellbook.maxSpellSlots} />

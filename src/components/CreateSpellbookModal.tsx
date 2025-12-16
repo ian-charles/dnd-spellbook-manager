@@ -102,6 +102,7 @@ export function CreateSpellbookModal({
               placeholder="My Spellbook"
               autoFocus
               maxLength={MAX_SPELLBOOK_NAME_LENGTH}
+              autoComplete="off"
             />
           </div>
 
@@ -155,6 +156,7 @@ export function CreateSpellbookModal({
                 min={MIN_ATTACK_MODIFIER}
                 max={MAX_ATTACK_MODIFIER}
                 data-testid="attack-modifier-input"
+                autoComplete="off"
               />
             </div>
 
@@ -177,6 +179,7 @@ export function CreateSpellbookModal({
                 min={MIN_SAVE_DC}
                 max={MAX_SAVE_DC}
                 data-testid="save-dc-input"
+                autoComplete="off"
               />
             </div>
           </div>

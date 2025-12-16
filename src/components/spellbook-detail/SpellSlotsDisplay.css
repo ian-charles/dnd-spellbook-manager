@@ -50,7 +50,7 @@
   height: 30px;
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   line-height: 1;
   background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
   border: 1px solid light-dark(#64748b, #475569);

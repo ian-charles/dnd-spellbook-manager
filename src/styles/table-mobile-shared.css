@@ -163,7 +163,7 @@
   min-width: 30px !important;
   width: 30px !important;
   height: 30px !important;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
   color: light-dark(#6d28d9, #a78bfa);
   border: 1px solid light-dark(rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.3));

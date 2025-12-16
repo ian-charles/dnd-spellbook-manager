@@ -55,16 +55,20 @@
 }
 
 .nav-link {
-  padding: var(--space-3);
+  /* Mobile: Flexbox for icon + text alignment */
+  padding: var(--space-2) var(--space-3);
   background: transparent;
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--transition-base);
   display: flex;
+  flex: 1;
+  text-align: center;
+  justify-content: center;
   align-items: center;
   gap: var(--space-2);
   text-decoration: none;
@@ -271,7 +275,8 @@ body {
   align-items: center;
   text-align: center;
   padding: var(--space-3) var(--space-4);
-  margin-top: 56px; /* Space for fixed nav */
+  margin-top: 56px;
+  /* Space for fixed nav */
   background: var(--color-bg-primary);
   border-bottom: 1px solid var(--color-border-secondary);
   gap: var(--space-1);
@@ -300,19 +305,9 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.nav-link {
-  /* Mobile: Flexbox for icon + text alignment */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: var(--space-2) var(--space-3);
-  text-align: center;
-  font-size: var(--font-size-sm);
-}
-
 /* Hide desktop-only items on mobile/tablet (< 1024px) */
-.desktop-only {
+a.nav-link.desktop-only,
+button.nav-link.desktop-only {
   display: none;
 }
 
@@ -413,7 +408,8 @@ body {
   }
 
   /* Ensure desktop-only items stay hidden on tablet (768-1023px) */
-  .nav-link.desktop-only {
+  a.nav-link.desktop-only,
+  button.nav-link.desktop-only {
     display: none;
   }
 
@@ -462,8 +458,10 @@ body {
 
 /* Desktop (≥ 1024px) */
 @media (min-width: 1024px) {
+
   /* Priority+ Navigation: Show utility items, hide "More" menu */
-  .desktop-only {
+  a.nav-link.desktop-only,
+  button.nav-link.desktop-only {
     display: flex;
   }
 
@@ -538,6 +536,7 @@ body {
     transform: translateY(100px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

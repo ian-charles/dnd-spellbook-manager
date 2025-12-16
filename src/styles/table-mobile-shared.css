@@ -16,8 +16,9 @@
    These are the default styles for all viewports
    ========================================== */
 
-/* Hide desktop-only columns on mobile */
-.desktop-only {
+/* Hide desktop-only columns on mobile (table cells only) */
+.spell-table .desktop-only,
+.spellbook-table .desktop-only {
   display: none !important;
 }
 
@@ -515,8 +516,9 @@
     display: inline-block !important;
   }
 
-  /* Restore desktop-only columns */
-  .desktop-only {
+  /* Restore desktop-only columns (table cells only) */
+  .spell-table .desktop-only,
+  .spellbook-table .desktop-only {
     display: table-cell !important;
   }
 

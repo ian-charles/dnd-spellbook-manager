@@ -97,7 +97,7 @@ export function SpellbookDetailView() {
                 data-testid="btn-edit-spellbook"
               >
                 <SquarePen size={16} />
-                Edit
+                <span className="btn-text">Edit</span>
               </button>
               <button
                 className="btn-secondary"
@@ -105,7 +105,7 @@ export function SpellbookDetailView() {
                 data-testid="btn-copy-spellbook"
               >
                 <Copy size={16} />
-                Copy
+                <span className="btn-text">Copy</span>
               </button>
               <button
                 className="btn-secondary btn-danger"
@@ -113,7 +113,7 @@ export function SpellbookDetailView() {
                 data-testid="btn-delete-spellbook"
               >
                 <Trash2 size={16} />
-                Delete
+                <span className="btn-text">Delete</span>
               </button>
             </div>
           </div>

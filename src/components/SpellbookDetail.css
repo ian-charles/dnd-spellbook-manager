@@ -81,24 +81,16 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--transition-base);
   flex: 1;
-}
-
-.spellbook-header-top .btn-secondary .btn-text {
-  display: none;
-}
-
-.spellbook-header-top .btn-secondary svg {
-  margin: 0;
 }
 
 .spellbook-header-top .btn-secondary:hover {
@@ -364,14 +356,11 @@
 }
 
 
-/* Small mobile (375px+) - Show button text */
+/* Small mobile (375px+) - Increase font size and padding */
 @media (min-width: 375px) {
   .spellbook-header-top .btn-secondary {
     padding: var(--space-2) var(--space-4);
-  }
-
-  .spellbook-header-top .btn-secondary .btn-text {
-    display: inline;
+    font-size: var(--font-size-md);
   }
 }
 

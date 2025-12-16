@@ -252,9 +252,13 @@ export function useSpellbookDetailLogic({
     const handleConfirmDelete = async () => {
         await deleteSpellbook(spellbookId);
         setDeleteSpellbookDialog({ isOpen: false });
-        if (onDeleteSpellbook) {
-            onDeleteSpellbook();
-        }
+        // Wait for React to process the state updates before navigating
+        // This ensures the spellbooks list is updated when we navigate back
+        setTimeout(() => {
+            if (onDeleteSpellbook) {
+                onDeleteSpellbook();
+            }
+        }, 0);
     };
 
     const handleCancelDelete = () => {

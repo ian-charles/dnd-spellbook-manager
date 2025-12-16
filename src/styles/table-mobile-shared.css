@@ -314,9 +314,11 @@
 
 /* Hide columns in mobile card layout */
 .checkbox-col,
+.level-col,
 .time-col,
 .range-col,
 .duration-col,
+.school-col,
 .components-col,
 .classes-col,
 .source-col {
@@ -623,17 +625,30 @@
     word-break: normal;
   }
 
-  /* Restore hidden columns */
+  /* Restore hidden columns - needs !important to override base mobile display: none !important */
   .checkbox-col,
+  .level-col,
   .time-col,
-  .range-col,
-  .components-col,
-  .duration-col,
-  .classes-col,
-  .source-col {
+  .range-col {
     display: table-cell !important;
     width: auto !important;
-    min-width: auto !important;
+    /* Don't override min-width - let table-desktop-shared.css values apply */
+    flex: none;
+    order: 0;
+    white-space: nowrap !important;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* These columns are hidden by default at 768px, shown via container queries */
+  .components-col,
+  .duration-col,
+  .school-col,
+  .classes-col,
+  .source-col {
+    display: table-cell;
+    width: auto !important;
     flex: none;
     order: 0;
     white-space: nowrap !important;

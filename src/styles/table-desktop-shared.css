@@ -634,6 +634,8 @@
 .school-col {
   text-transform: capitalize;
   min-width: 85px;
+  width: 1%;
+  white-space: nowrap;
 }
 
 .components-col {
@@ -647,10 +649,13 @@
 
 .time-col {
   min-width: 75px;
+  width: 1%;
+  white-space: nowrap;
 }
 
 .duration-col {
   min-width: 95px;
+  width: 1%;
 }
 
 /* Allow duration text to wrap */
@@ -661,6 +666,8 @@
 
 .range-col {
   min-width: 70px;
+  width: 1%;
+  white-space: nowrap;
 }
 
 /* Prevent orphaned badges - keep content together */
@@ -676,7 +683,8 @@
 .classes-col {
   text-transform: capitalize;
   color: var(--color-text-secondary);
-  min-width: 120px;
+  min-width: 135px;
+  width: 1%;
 }
 
 .source-col {
@@ -698,13 +706,16 @@
 
    Priority (high to low): Name, Level, Time, Range, Duration, School, Comp., Classes, Source
 
-   Base (768px container): Show essential columns (Name, Level, Time, Range)
-   Container breakpoints (progressive enhancement):
-   - 800px: Show Duration
-   - 900px: Show School
-   - 1000px: Show Components
-   - 1200px: Show Classes
-   - 1400px: Show Source (lowest priority)
+   Base (768px container): Show essential columns (Checkbox, Name, Level, Time, Range)
+   Container breakpoints (progressive enhancement) - empirically tested to prevent overflow:
+   - 700px: Show Duration (~630px content + padding)
+   - 850px: Show School (~740px content + padding)
+   - 950px: Show Components (~820px content + padding)
+   - 1150px: Show Classes (~970px content + padding)
+   - 1300px: Show Source (~1070px content + padding)
+
+   Note: Breakpoints include ~70-100px buffer for cell padding and container padding.
+   To recalculate: measure actual column widths + (28px × num_columns) + 32px container padding
 */
 
 /* Base styles (tablet 768px+): Hide lower-priority columns */
@@ -714,42 +725,42 @@
   .spell-table .components-col,
   .spell-table .classes-col,
   .spell-table .source-col {
-    display: none;
+    display: none !important;
   }
 }
 
-/* Show Duration column when container is 800px+ */
-@container table-container (min-width: 800px) {
+/* Show Duration column when container is 700px+ */
+@container table-container (min-width: 700px) {
   .spell-table .duration-col {
-    display: table-cell;
+    display: table-cell !important;
   }
 }
 
-/* Show School column when container is 900px+ */
-@container table-container (min-width: 900px) {
+/* Show School column when container is 850px+ */
+@container table-container (min-width: 850px) {
   .spell-table .school-col {
-    display: table-cell;
+    display: table-cell !important;
+  }
+}
+
+/* Show Classes column when container is 950px+ */
+@container table-container (min-width: 950px) {
+  .spell-table .classes-col {
+    display: table-cell !important;
   }
 }
 
 /* Show Components column when container is 1000px+ */
 @container table-container (min-width: 1000px) {
   .spell-table .components-col {
-    display: table-cell;
+    display: table-cell !important;
   }
 }
 
-/* Show Classes column when container is 1200px+ */
-@container table-container (min-width: 1200px) {
-  .spell-table .classes-col {
-    display: table-cell;
-  }
-}
-
-/* Show Source column when container is 1400px+ */
-@container table-container (min-width: 1400px) {
+/* Show Source column when container is 1050px+ */
+@container table-container (min-width: 1050px) {
   .spell-table .source-col {
-    display: table-cell;
+    display: table-cell !important;
   }
 }
 

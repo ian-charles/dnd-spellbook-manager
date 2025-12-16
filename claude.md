@@ -116,6 +116,61 @@ padding: var(--space-4);
 
 **When to check**: Before writing any CSS property, check if a design token exists for that value in `src/styles/design-tokens.css`.
 
+### CSS Media Queries (Mobile-First)
+
+**ALWAYS use mobile-first approach with `min-width` media queries:**
+- Base styles apply to mobile (< 768px) - no media query needed
+- Use `@media (min-width: 768px)` for tablet+
+- Use `@media (min-width: 1024px)` for desktop+
+
+**ALWAYS consolidate media queries:**
+- **ONE media query per breakpoint** - never split the same breakpoint into multiple blocks
+- **Order ascending** - 768px before 1024px before 1440px
+- **Group all related rules together** - easier to find and maintain
+
+**Why consolidate?**
+- ✅ Easy to find all styles for a breakpoint
+- ✅ Predictable cascade order
+- ✅ Fewer bytes sent to browser
+- ✅ Prevents accidental overrides
+
+**Examples**:
+
+❌ **DON'T split into multiple blocks:**
+```css
+@media (min-width: 1024px) {
+  .foo { display: flex; }
+}
+
+/* 100 lines later */
+@media (min-width: 1024px) {
+  .bar { padding: 2rem; }  /* BAD - same breakpoint split */
+}
+```
+
+✅ **DO consolidate:**
+```css
+/* Base mobile styles (< 768px) */
+.foo { display: block; }
+.bar { padding: 1rem; }
+
+/* Tablet+ (≥ 768px) */
+@media (min-width: 768px) {
+  .foo { padding: 1.5rem; }
+}
+
+/* Desktop+ (≥ 1024px) */
+@media (min-width: 1024px) {
+  .foo { display: flex; }
+  .bar { padding: 2rem; }
+}
+```
+
+**Utility classes vs. media queries:**
+- Use utility classes (`.desktop-only`, `.mobile-only`) for visibility toggles
+- Rely on CSS cascade order, not `!important`
+- Later media queries naturally override earlier ones
+
 ### Self-Documenting Code
 - **Names reveal intent**: `getUserByEmail()` not `getUser()` or `gube()`
 - **Functions do one obvious thing**: No surprises, no side effects

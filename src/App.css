@@ -102,21 +102,10 @@
 }
 
 /* Priority+ Navigation: Responsive visibility classes */
+/* Mobile-first approach: Start with mobile/tablet defaults */
 
-/* Desktop (> 1279px): Show utility items directly, hide "More" menu */
 .tablet-only {
-  display: none;
-}
-
-/* Tablet/Laptop/Mobile (≤ 1279px): Hide utility items, show "More" menu */
-@media (max-width: 1279px) {
-  .desktop-only {
-    display: none !important;
-  }
-
-  .tablet-only {
-    display: block;
-  }
+  display: block;
 }
 
 .browse-header {
@@ -217,30 +206,17 @@
   cursor: not-allowed;
 }
 
-/* Hide mobile-only button on desktop (table header has master checkbox) */
+/* Mobile-only button (visible on phones/tablets, hidden on desktop) */
 .mobile-only-button {
-  display: none;
-}
-
-@media (max-width: 767px) {
-  .mobile-only-button {
-    display: block;
-  }
+  display: block;
 }
 
 .app-main {
   flex: 1;
-  padding: calc(80px + var(--space-4)) 0 var(--space-8);
+  padding: var(--space-4) 0;
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
-}
-
-/* Add bottom padding on mobile/tablet for footer */
-@media (max-width: 1023px) {
-  .app-main {
-    padding-bottom: calc(60px + var(--space-8));
-  }
 }
 
 .loading,
@@ -270,117 +246,186 @@
   color: var(--color-error);
 }
 
-/* Mobile only (phones) */
-@media (max-width: 767px) {
+/* Mobile-first: Base styles for phones (< 768px) */
+body {
+  overflow-x: hidden;
+}
+
+.app {
+  max-width: 100vw;
+  overflow-x: hidden;
+  padding-top: 0;
+}
+
+.app-header {
+  position: static;
+  display: block;
+  padding: 0;
+  box-shadow: none;
+  border-bottom: none;
+}
+
+.app-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-3) var(--space-4);
+  margin-top: 56px; /* Space for fixed nav */
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-secondary);
+  gap: var(--space-1);
+}
+
+.app-header h1 {
+  font-size: var(--font-size-xl);
+}
+
+.app-subtitle {
+  font-size: var(--font-size-xs);
+}
+
+.app-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-secondary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+  /* Mobile: Flexbox for icon + text alignment */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  text-align: center;
+  font-size: var(--font-size-sm);
+}
+
+/* Hide desktop-only items on mobile/tablet (< 1024px) */
+.desktop-only {
+  display: none;
+}
+
+.browse-view-header {
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Mobile: Filters and Clear Filters take half width each */
+.browse-view-header .btn-secondary,
+.browse-view-header .btn-clear-filters {
+  flex: 1 1 calc(50% - var(--space-1));
+}
+
+/* Mobile: Results text on its own line, centered */
+.filter-results-text {
+  flex: 1 1 100%;
+  text-align: center;
+  order: 3;
+}
+
+.batch-add-container {
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: stretch;
+}
+
+.batch-add-container .btn-primary,
+.batch-add-container .btn-secondary {
+  width: 100%;
+}
+
+.success-toast {
+  bottom: var(--space-4);
+  right: var(--space-4);
+  left: var(--space-4);
+  font-size: var(--font-size-base);
+}
+
+/* Tablet (≥ 768px, < 1024px) */
+@media (min-width: 768px) {
   body {
-    overflow-x: hidden;
+    overflow-x: visible;
   }
 
   .app {
-    max-width: 100vw;
-    overflow-x: hidden;
-    padding-top: 0;
+    max-width: none;
+    overflow-x: visible;
   }
 
   .app-header {
-    position: static;
-    display: block;
-    padding: 0;
-    box-shadow: none;
-    border-bottom: none;
-  }
-
-  .app-title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: var(--space-3) var(--space-4);
-    margin-top: 56px; /* Space for fixed nav */
-    background: var(--color-bg-primary);
-    border-bottom: 1px solid var(--color-border-secondary);
-    gap: var(--space-1);
-  }
-
-  .app-header h1 {
-    font-size: var(--font-size-xl);
-  }
-
-  .app-subtitle {
-    font-size: var(--font-size-xs);
-  }
-
-  .app-nav {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 100;
     display: flex;
-    flex-direction: row;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-4);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
     background: var(--color-bg-primary);
     border-bottom: 1px solid var(--color-border-secondary);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    gap: var(--space-6);
+  }
+
+  .app-title {
+    align-items: flex-start;
+    text-align: left;
+    padding: 0;
+    margin-top: 0;
+    background: transparent;
+    border-bottom: none;
+  }
+
+  .app-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .app-subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .app-nav {
+    position: static;
+    display: flex;
+    gap: var(--space-3);
+    padding: 0;
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
   }
 
   .nav-link {
-    flex: 1;
-    padding: var(--space-2) var(--space-3);
-    text-align: center;
-    font-size: var(--font-size-sm);
-    justify-content: center;
+    flex: 0 0 auto;
+    padding: var(--space-3);
+    font-size: var(--font-size-md);
+  }
+
+  /* Ensure desktop-only items stay hidden on tablet (768-1023px) */
+  .nav-link.desktop-only {
+    display: none;
   }
 
   .app-main {
-    padding: var(--space-4);
-    max-width: 100vw;
-    overflow-x: hidden;
+    padding: var(--space-4) 0;
+    max-width: 1400px;
   }
 
-  .browse-view-header {
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  /* Mobile: Filters and Clear Filters take half width each */
-  .browse-view-header .btn-secondary,
-  .browse-view-header .btn-clear-filters {
-    flex: 1 1 calc(50% - var(--space-1));
-  }
-
-  /* Mobile: Results text on its own line, centered */
-  .filter-results-text {
-    flex: 1 1 100%;
-    text-align: center;
-    order: 3;
-  }
-
-  .batch-add-container {
-    flex-direction: column;
-    gap: var(--space-3);
-    align-items: stretch;
-  }
-
-  .batch-add-container .btn-primary,
-  .batch-add-container .btn-secondary {
-    width: 100%;
-  }
-
-  .success-toast {
-    bottom: var(--space-4);
-    right: var(--space-4);
-    left: var(--space-4);
-    font-size: var(--font-size-base);
-  }
-}
-
-/* Tablet and Desktop */
-@media (min-width: 768px) {
   .browse-view-header {
     flex-wrap: nowrap;
     justify-content: flex-start;
+    gap: var(--space-3);
   }
 
   /* Tablet+: Filters and Clear Filters side-by-side on left, flex-grow disabled */
@@ -392,9 +437,47 @@
 
   /* Tablet+: Results text on right side */
   .filter-results-text {
+    flex: 1;
     order: 3;
     text-align: right;
     margin-left: auto;
+  }
+
+  .batch-add-container {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .batch-add-container .btn-primary,
+  .batch-add-container .btn-secondary {
+    width: auto;
+  }
+
+  .success-toast {
+    bottom: var(--space-8);
+    right: var(--space-8);
+    left: auto;
+  }
+}
+
+/* Desktop (≥ 1024px) */
+@media (min-width: 1024px) {
+  /* Priority+ Navigation: Show utility items, hide "More" menu */
+  .desktop-only {
+    display: flex;
+  }
+
+  .tablet-only {
+    display: none;
+  }
+
+  /* Hide mobile-only button */
+  .mobile-only-button {
+    display: none;
+  }
+
+  .app-main {
+    padding: var(--space-4) 0;
   }
 }
 

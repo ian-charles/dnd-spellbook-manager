@@ -196,18 +196,6 @@ export function SpellbookDetailView() {
             onCancel={onCancelRemove}
           />
 
-          {/* Confirm Delete Spellbook Dialog */}
-          <ConfirmDialog
-            isOpen={deleteSpellbookDialog.isOpen}
-            title="Delete Spellbook"
-            message={`Delete spellbook "${spellbook?.name}"?`}
-            confirmLabel="Delete"
-            cancelLabel="Cancel"
-            variant="danger"
-            onConfirm={onConfirmDelete}
-            onCancel={onCancelDelete}
-          />
-
           {/* Spell Detail Modal */}
           {modalSpell && spellbook && (
             <SpellDetailModal
@@ -223,6 +211,18 @@ export function SpellbookDetailView() {
           )}
         </>
       )}
+
+      {/* Confirm Delete Spellbook Dialog - outside conditional so it works for empty spellbooks */}
+      <ConfirmDialog
+        isOpen={deleteSpellbookDialog.isOpen}
+        title="Delete Spellbook"
+        message={`Delete spellbook "${spellbook?.name}"?`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={onConfirmDelete}
+        onCancel={onCancelDelete}
+      />
 
       {/* Edit Spellbook Modal - outside conditional so it works for empty spellbooks */}
       <CreateSpellbookModal

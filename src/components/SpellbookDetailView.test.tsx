@@ -638,4 +638,88 @@ describe('SpellbookDetailView', () => {
       );
     });
   });
+
+  describe('Delete Button', () => {
+    it('should render delete button', () => {
+      renderWithContext();
+
+      expect(screen.getByTestId('btn-delete-spellbook')).toBeTruthy();
+    });
+
+    it('should call onDelete when delete button clicked', async () => {
+      const user = userEvent.setup();
+      const onDelete = vi.fn();
+
+      renderWithContext({ onDelete });
+
+      const deleteButton = screen.getByTestId('btn-delete-spellbook');
+      await user.click(deleteButton);
+
+      expect(onDelete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onDelete when delete button clicked on empty spellbook', async () => {
+      const user = userEvent.setup();
+      const onDelete = vi.fn();
+
+      renderWithContext({
+        onDelete,
+        enrichedSpells: [],
+        sortedSpells: [],
+      });
+
+      const deleteButton = screen.getByTestId('btn-delete-spellbook');
+      await user.click(deleteButton);
+
+      expect(onDelete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render delete confirmation dialog when deleteSpellbookDialog.isOpen is true', () => {
+      renderWithContext({ deleteSpellbookDialog: { isOpen: true } });
+
+      expect(screen.getByText('Delete Spellbook')).toBeTruthy();
+      expect(screen.getByText(/Delete spellbook "My Spellbook"\?/)).toBeTruthy();
+    });
+
+    it('should render delete confirmation dialog for empty spellbook', () => {
+      renderWithContext({
+        enrichedSpells: [],
+        sortedSpells: [],
+        deleteSpellbookDialog: { isOpen: true },
+      });
+
+      expect(screen.getByText('Delete Spellbook')).toBeTruthy();
+      expect(screen.getByText(/Delete spellbook "My Spellbook"\?/)).toBeTruthy();
+    });
+
+    it('should call onConfirmDelete when confirm clicked', async () => {
+      const user = userEvent.setup();
+      const onConfirmDelete = vi.fn();
+
+      renderWithContext({
+        deleteSpellbookDialog: { isOpen: true },
+        onConfirmDelete,
+      });
+
+      const confirmButton = screen.getByTestId('confirm-dialog-confirm');
+      await user.click(confirmButton);
+
+      expect(onConfirmDelete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onCancelDelete when cancel clicked', async () => {
+      const user = userEvent.setup();
+      const onCancelDelete = vi.fn();
+
+      renderWithContext({
+        deleteSpellbookDialog: { isOpen: true },
+        onCancelDelete,
+      });
+
+      const cancelButton = screen.getByTestId('confirm-dialog-cancel');
+      await user.click(cancelButton);
+
+      expect(onCancelDelete).toHaveBeenCalledTimes(1);
+    });
+  });
 });

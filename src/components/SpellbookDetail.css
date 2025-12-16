@@ -74,6 +74,9 @@
 }
 
 .spellbook-header-top .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
@@ -87,6 +90,21 @@
 
 .spellbook-header-top .btn-secondary:hover {
   background: var(--color-hover-strong);
+}
+
+.spellbook-header-top .btn-secondary svg {
+  flex-shrink: 0;
+}
+
+.spellbook-header-top .btn-danger {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.spellbook-header-top .btn-danger:hover {
+  background: var(--color-error);
+  color: white;
 }
 
 .spellbook-stats {

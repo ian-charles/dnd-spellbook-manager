@@ -55,7 +55,7 @@
 }
 
 .nav-link {
-  padding: var(--space-3) var(--space-6);
+  padding: var(--space-3);
   background: transparent;
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border-primary);
@@ -81,6 +81,7 @@
   border-color: var(--color-primary);
 }
 
+.nav-link-feedback svg,
 .nav-link-about svg,
 .nav-link-donate svg {
   flex-shrink: 0;

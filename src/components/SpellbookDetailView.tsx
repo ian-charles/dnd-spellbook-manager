@@ -16,6 +16,7 @@ import LoadingSpinner from './LoadingSpinner';
 import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
 import { SpellSlotsDisplay } from './spellbook-detail/SpellSlotsDisplay';
+import { SquarePen, Copy, Trash2 } from 'lucide-react';
 import './SpellbookDetail.css';
 
 
@@ -27,6 +28,7 @@ export function SpellbookDetailView() {
     enrichedSpells,
     selectedSpellIds,
     confirmDialog,
+    deleteSpellbookDialog,
     editModalOpen,
     copyModalOpen,
     showPreparedOnly,
@@ -50,6 +52,9 @@ export function SpellbookDetailView() {
     onCopySave,
     onTogglePrepared,
     onRequestRemoveSpell,
+    onDelete,
+    onConfirmDelete,
+    onCancelDelete,
     existingNames,
   } = useSpellbookDetail();
 
@@ -88,17 +93,27 @@ export function SpellbookDetailView() {
             <div className="header-actions">
               <button
                 className="btn-secondary"
-                onClick={onCopy}
-                data-testid="btn-copy-spellbook"
-              >
-                Copy
-              </button>
-              <button
-                className="btn-secondary"
                 onClick={onEdit}
                 data-testid="btn-edit-spellbook"
               >
+                <SquarePen size={16} />
                 Edit
+              </button>
+              <button
+                className="btn-secondary"
+                onClick={onCopy}
+                data-testid="btn-copy-spellbook"
+              >
+                <Copy size={16} />
+                Copy
+              </button>
+              <button
+                className="btn-secondary btn-danger"
+                onClick={onDelete}
+                data-testid="btn-delete-spellbook"
+              >
+                <Trash2 size={16} />
+                Delete
               </button>
             </div>
           </div>
@@ -169,7 +184,7 @@ export function SpellbookDetailView() {
 
           <SpellbookSpellsTable />
 
-          {/* Confirm Remove Dialog */}
+          {/* Confirm Remove Spell Dialog */}
           <ConfirmDialog
             isOpen={confirmDialog.isOpen}
             title={MESSAGES.DIALOG.REMOVE_SPELL}
@@ -179,6 +194,18 @@ export function SpellbookDetailView() {
             variant="danger"
             onConfirm={onConfirmRemove}
             onCancel={onCancelRemove}
+          />
+
+          {/* Confirm Delete Spellbook Dialog */}
+          <ConfirmDialog
+            isOpen={deleteSpellbookDialog.isOpen}
+            title="Delete Spellbook"
+            message={`Delete spellbook "${spellbook?.name}"?`}
+            confirmLabel="Delete"
+            cancelLabel="Cancel"
+            variant="danger"
+            onConfirm={onConfirmDelete}
+            onCancel={onCancelDelete}
           />
 
           {/* Spell Detail Modal */}

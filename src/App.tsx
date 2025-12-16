@@ -137,6 +137,7 @@ function App() {
           spellbookId={selectedSpellbookId}
           onBack={navigateToSpellbooks}
           onCopySpellbook={navigateToSpellbookDetail}
+          onDeleteSpellbook={navigateToSpellbooks}
         />
       )}
 

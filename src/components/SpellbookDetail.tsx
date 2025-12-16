@@ -19,13 +19,15 @@ interface SpellbookDetailProps {
   spellbookId: string;
   onBack: () => void;
   onCopySpellbook?: (id: string) => void;
+  onDeleteSpellbook?: () => void;
 }
 
-export function SpellbookDetail({ spellbookId, onBack, onCopySpellbook }: SpellbookDetailProps) {
+export function SpellbookDetail({ spellbookId, onBack, onCopySpellbook, onDeleteSpellbook }: SpellbookDetailProps) {
   const contextValue = useSpellbookDetailLogic({
     spellbookId,
     onBack,
     onCopySpellbook,
+    onDeleteSpellbook,
   });
 
   return (

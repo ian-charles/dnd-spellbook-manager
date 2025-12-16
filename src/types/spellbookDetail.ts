@@ -15,6 +15,9 @@ export interface SpellbookDetailContextType {
         spellIds: string[];
         message: string;
     };
+    deleteSpellbookDialog: {
+        isOpen: boolean;
+    };
     editModalOpen: boolean;
     copyModalOpen: boolean;
     showPreparedOnly: boolean;
@@ -40,5 +43,8 @@ export interface SpellbookDetailContextType {
     onTogglePrepared: (spellbookId: string, spellId: string) => Promise<void>;
     onRemoveSpell: (spellbookId: string, spellId: string) => Promise<void>;
     onRequestRemoveSpell: (spellId: string) => void;
+    onDelete: () => void;
+    onConfirmDelete: () => Promise<void>;
+    onCancelDelete: () => void;
     existingNames: string[];
 }

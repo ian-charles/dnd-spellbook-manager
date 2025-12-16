@@ -9,14 +9,16 @@ interface UseSpellbookDetailLogicProps {
     spellbookId: string;
     onBack: () => void;
     onCopySpellbook?: (id: string) => void;
+    onDeleteSpellbook?: () => void;
 }
 
 export function useSpellbookDetailLogic({
     spellbookId,
     onBack,
     onCopySpellbook,
+    onDeleteSpellbook,
 }: UseSpellbookDetailLogicProps): SpellbookDetailContextType {
-    const { spellbooks, getSpellbook, createSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook, addSpellsToSpellbook } = useSpellbooks();
+    const { spellbooks, getSpellbook, createSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook, addSpellsToSpellbook, deleteSpellbook } = useSpellbooks();
     const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
     const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
     const [modalSpellId, setModalSpellId] = useState<string | null>(null);
@@ -28,6 +30,9 @@ export function useSpellbookDetailLogic({
         isOpen: false,
         spellIds: [],
         message: '',
+    });
+    const [deleteSpellbookDialog, setDeleteSpellbookDialog] = useState<{ isOpen: boolean }>({
+        isOpen: false,
     });
 
     // Filter spells based on prepared status
@@ -240,6 +245,22 @@ export function useSpellbookDetailLogic({
         }
     };
 
+    const handleRequestDelete = () => {
+        setDeleteSpellbookDialog({ isOpen: true });
+    };
+
+    const handleConfirmDelete = async () => {
+        await deleteSpellbook(spellbookId);
+        setDeleteSpellbookDialog({ isOpen: false });
+        if (onDeleteSpellbook) {
+            onDeleteSpellbook();
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setDeleteSpellbookDialog({ isOpen: false });
+    };
+
     const existingNames = spellbooks.map(sb => sb.name);
 
     return {
@@ -252,6 +273,7 @@ export function useSpellbookDetailLogic({
         sortDirection,
         selectedSpellIds,
         confirmDialog,
+        deleteSpellbookDialog,
         editModalOpen,
         copyModalOpen,
         showPreparedOnly,
@@ -277,6 +299,9 @@ export function useSpellbookDetailLogic({
         onTogglePrepared: togglePrepared,
         onRemoveSpell: removeSpellFromSpellbook,
         onRequestRemoveSpell: handleRequestRemoveSpell,
+        onDelete: handleRequestDelete,
+        onConfirmDelete: handleConfirmDelete,
+        onCancelDelete: handleCancelDelete,
         existingNames,
     };
 }

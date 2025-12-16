@@ -384,10 +384,6 @@
     gap: 0;
   }
 
-  .spellbook-header-top h2 {
-    font-size: inherit;
-  }
-
   .spellbook-header-top .header-actions {
     gap: var(--space-3);
   }

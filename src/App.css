@@ -414,7 +414,7 @@ button.nav-link.desktop-only {
   }
 
   .app-main {
-    padding: var(--space-4) 0;
+    padding: var(--space-16) 0 var(--space-4);
     max-width: 1400px;
   }
 
@@ -475,7 +475,7 @@ button.nav-link.desktop-only {
   }
 
   .app-main {
-    padding: var(--space-4) 0;
+    padding: var(--space-16) 0 var(--space-4);
   }
 }
 

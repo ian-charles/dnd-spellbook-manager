@@ -73,6 +73,13 @@ function App() {
   // About modal state
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
+  // Handler for navigating back after spellbook deletion
+  // Refreshes the spellbooks list to ensure deleted book is removed from UI
+  const handleSpellbookDeleted = async () => {
+    await refreshSpellbooks();
+    navigateToSpellbooks();
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -137,7 +144,7 @@ function App() {
           spellbookId={selectedSpellbookId}
           onBack={navigateToSpellbooks}
           onCopySpellbook={navigateToSpellbookDetail}
-          onDeleteSpellbook={navigateToSpellbooks}
+          onDeleteSpellbook={handleSpellbookDeleted}
         />
       )}
 

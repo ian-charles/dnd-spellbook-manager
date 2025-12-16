@@ -1,5 +1,6 @@
 /**
  * CreateSpellbookModal Component Styles
+ * Mobile-first responsive design
  */
 
 .create-spellbook-modal {
@@ -11,6 +12,7 @@
   margin-bottom: var(--space-4);
 }
 
+/* Mobile-first: Base styles for small screens */
 .form-group label {
   display: block;
   margin-bottom: var(--space-2);
@@ -19,6 +21,7 @@
   font-size: var(--font-size-sm);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  text-align: center;
 }
 
 .required {
@@ -73,58 +76,43 @@
   font-weight: var(--font-weight-bold);
 }
 
+/* Mobile: Compact 2-column grid (label | input) */
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
-/* Mobile: 2x2 grid with labels in row 1, inputs in row 2 */
-@media (max-width: 424px) {
-  /* Consistent label styling across all form sections */
-  .form-group label {
-    text-align: center;
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-  }
+.form-row .form-group {
+  margin-bottom: 0;
+  display: contents;
+}
 
-  .form-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: var(--space-2) var(--space-3);
-    margin-bottom: var(--space-4);
-  }
+.form-row .form-group label {
+  align-self: center;
+  text-align: left;
+  margin-bottom: 0;
+}
 
-  .form-row .form-group {
-    margin-bottom: 0;
-    display: contents;
-  }
+.form-row .form-group:nth-child(1) label {
+  grid-column: 1;
+  grid-row: 1;
+}
 
-  .form-row .form-group label {
-    align-self: center;
-    text-align: left;
-    margin-bottom: 0;
-  }
+.form-row .form-group:nth-child(1) input {
+  grid-column: 2;
+  grid-row: 1;
+}
 
-  .form-row .form-group:nth-child(1) label {
-    grid-column: 1;
-    grid-row: 1;
-  }
+.form-row .form-group:nth-child(2) label {
+  grid-column: 1;
+  grid-row: 2;
+}
 
-  .form-row .form-group:nth-child(1) input {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .form-row .form-group:nth-child(2) label {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .form-row .form-group:nth-child(2) input {
-    grid-column: 2;
-    grid-row: 2;
-  }
+.form-row .form-group:nth-child(2) input {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .form-help-text {
@@ -143,3 +131,37 @@
   margin-bottom: var(--space-4);
 }
 
+/* Tablet and up (425px+): Side-by-side layout */
+@media (min-width: 425px) {
+  .form-group label {
+    text-align: left;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-bottom: 0;
+  }
+
+  .form-row .form-group {
+    display: block;
+  }
+
+  .form-row .form-group label {
+    text-align: left;
+    margin-bottom: var(--space-2);
+  }
+
+  .form-row .form-group:nth-child(1) label,
+  .form-row .form-group:nth-child(1) input {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .form-row .form-group:nth-child(2) label,
+  .form-row .form-group:nth-child(2) input {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}

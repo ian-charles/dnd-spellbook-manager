@@ -1,5 +1,5 @@
 import { Spell } from '../types/spell';
-import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping, formatDurationForWrapping } from '../utils/spellFormatters';
+import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping, formatDurationWithNonBreakingSpaces } from '../utils/spellFormatters';
 import { useSwipe } from '../hooks/useSwipe';
 import { SwipeIndicator } from './SwipeIndicator';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -119,8 +119,8 @@ export function SpellTableRow({
         <td className="range-col">{spell.range}</td>
         <td className="duration-col">
           <span className="cell-content">
-            {formatDurationForWrapping(spell.duration)}
             {spell.concentration && <span className="badge badge-concentration">C</span>}
+            {formatDurationWithNonBreakingSpaces(spell.duration)}
           </span>
         </td>
         <td className="school-col" data-school={spell.school}>

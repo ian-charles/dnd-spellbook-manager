@@ -498,7 +498,7 @@
 .badge {
   display: inline-block;
   padding: 0.125rem var(--space-1);
-  margin-left: var(--space-2);
+  margin: 0;
   border-radius: var(--radius-sm);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
@@ -509,12 +509,14 @@
   background: var(--color-badge-concentration-bg);
   color: var(--color-badge-concentration-text);
   border: 1px solid var(--color-badge-concentration-border);
+  margin: 0 var(--space-1) 0 0;
 }
 
 .badge-ritual {
   background: var(--color-badge-ritual-bg);
   color: var(--color-badge-ritual-text);
   border: 1px solid var(--color-badge-ritual-border);
+  margin: 0 0 0 var(--space-1);
 }
 
 /* Component badges */
@@ -658,10 +660,9 @@
   width: 1%;
 }
 
-/* Allow duration text to wrap */
+/* Allow duration to wrap, but formatDurationWithNonBreakingSpaces() keeps number+unit together */
 .duration-col .cell-content {
   white-space: normal;
-  word-break: break-word;
 }
 
 .range-col {
@@ -692,7 +693,6 @@
   font-size: var(--font-size-sm);
   min-width: 80px;
   width: 1%;
-  white-space: nowrap;
 }
 
 .action-col {
@@ -729,36 +729,36 @@
   }
 }
 
-/* Show Duration column when container is 700px+ */
-@container table-container (min-width: 700px) {
+/* Show Duration column when container is 650px+ */
+@container table-container (min-width: 650px) {
   .spell-table .duration-col {
     display: table-cell !important;
   }
 }
 
-/* Show School column when container is 850px+ */
-@container table-container (min-width: 850px) {
+/* Show School column when container is 750px+ */
+@container table-container (min-width: 750px) {
   .spell-table .school-col {
     display: table-cell !important;
   }
 }
 
-/* Show Classes column when container is 950px+ */
-@container table-container (min-width: 950px) {
+/* Show Classes column when container is 900px+ */
+@container table-container (min-width: 900px) {
   .spell-table .classes-col {
     display: table-cell !important;
   }
 }
 
-/* Show Components column when container is 1000px+ */
-@container table-container (min-width: 1000px) {
+/* Show Components column when container is 975px+ */
+@container table-container (min-width: 975px) {
   .spell-table .components-col {
     display: table-cell !important;
   }
 }
 
-/* Show Source column when container is 1050px+ */
-@container table-container (min-width: 1050px) {
+/* Show Source column when container is 1075px+ */
+@container table-container (min-width: 1075px) {
   .spell-table .source-col {
     display: table-cell !important;
   }

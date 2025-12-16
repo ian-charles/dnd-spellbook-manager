@@ -1,5 +1,5 @@
 import { EnrichedSpell } from '../../types/spellbook';
-import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping } from '../../utils/spellFormatters';
+import { getLevelText, getLevelTextMobile, getSchoolAbbreviation, truncateCastingTime, formatSpellNameForWrapping, formatDurationWithNonBreakingSpaces } from '../../utils/spellFormatters';
 import { useSwipe } from '../../hooks/useSwipe';
 import { SwipeIndicator } from '../SwipeIndicator';
 import { ComponentBadges } from '../SpellBadges';
@@ -136,8 +136,8 @@ export function SpellbookSpellRow({
         <td className="range-col">{spell.range}</td>
         <td className="duration-col">
           <span className="cell-content">
-            {spell.duration}
             {spell.concentration && <span className="badge badge-concentration">C</span>}
+            {formatDurationWithNonBreakingSpaces(spell.duration)}
           </span>
         </td>
         <td className="school-col" data-school={spell.school}>

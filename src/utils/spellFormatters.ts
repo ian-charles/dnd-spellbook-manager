@@ -45,6 +45,16 @@ export function formatDurationForWrapping(duration: string): string {
 }
 
 /**
+ * Formats duration text with non-breaking spaces after numerals.
+ * Prevents line breaks between numbers and their units (e.g., "10 minutes" stays together).
+ * Examples: "10 minutes" -> "10\u00A0minutes", "1 hour" -> "1\u00A0hour"
+ */
+export function formatDurationWithNonBreakingSpaces(duration: string): string {
+  // Replace space after digits with non-breaking space (U+00A0)
+  return duration.replace(/(\d+)\s+/g, '$1\u00A0');
+}
+
+/**
  * Formats spell components as a compact string (e.g., "V,S,M").
  */
 export function getComponentsText(spell: Spell): string {

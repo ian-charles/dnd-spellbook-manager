@@ -96,11 +96,11 @@
 
 /* Prepared row styling (spellbook only) */
 .spellbook-table .prepared-row {
-  background: light-dark(rgba(207, 250, 254, 0.35), rgba(6, 182, 212, 0.25));
+  background: light-dark(rgba(202, 138, 4, 0.18), rgba(251, 191, 36, 0.25));
 }
 
 .spellbook-table .prepared-row:hover {
-  background: light-dark(rgba(207, 250, 254, 0.45), rgba(6, 182, 212, 0.3));
+  background: light-dark(rgba(202, 138, 4, 0.25), rgba(251, 191, 36, 0.35));
 }
 
 /* Remove default cell padding and borders */
@@ -663,6 +663,7 @@
     font-style: normal;
     color: var(--color-text-tertiary);
     font-size: var(--font-size-sm);
+    white-space: normal !important;
   }
 
   .components-col {
@@ -672,8 +673,16 @@
   /* Reset badges */
   .badge {
     display: inline-block;
-    margin: 0 0 0 var(--space-2);
+    margin: 0;
     padding: 0.125rem var(--space-1);
+  }
+
+  .badge-concentration {
+    margin: 0 var(--space-1) 0 0;
+  }
+
+  .badge-ritual {
+    margin: 0 0 0 var(--space-1);
   }
 
   /* Expansion cell */

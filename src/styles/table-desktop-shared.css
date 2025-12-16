@@ -121,15 +121,19 @@
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   white-space: nowrap;
   text-transform: capitalize;
+  text-align: center;
 }
 
 .desktop-badge.level-badge {
   background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
   border: 1px solid light-dark(#64748b, #475569);
   color: light-dark(#334155, #cbd5e1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Level-specific colors for desktop level badges */

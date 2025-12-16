@@ -3,7 +3,7 @@
  */
 
 .create-spellbook-modal {
-  max-width: 500px;
+  max-width: 600px !important;
   width: 90%;
 }
 

@@ -76,43 +76,23 @@
   font-weight: var(--font-weight-bold);
 }
 
-/* Mobile: Compact 2-column grid (label | input) */
+/* Mobile: Side-by-side layout with centered labels */
 .form-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--space-2) var(--space-3);
-  margin-bottom: var(--space-4);
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: 0;
+  align-items: end;
 }
 
 .form-row .form-group {
   margin-bottom: 0;
-  display: contents;
+  display: block;
 }
 
 .form-row .form-group label {
-  align-self: center;
-  text-align: left;
-  margin-bottom: 0;
-}
-
-.form-row .form-group:nth-child(1) label {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.form-row .form-group:nth-child(1) input {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.form-row .form-group:nth-child(2) label {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.form-row .form-group:nth-child(2) input {
-  grid-column: 2;
-  grid-row: 2;
+  text-align: center;
+  margin-bottom: var(--space-2);
 }
 
 .form-help-text {
@@ -131,37 +111,13 @@
   margin-bottom: var(--space-4);
 }
 
-/* Tablet and up (425px+): Side-by-side layout */
+/* Tablet and up (425px+): Left-aligned labels */
 @media (min-width: 425px) {
   .form-group label {
     text-align: left;
   }
 
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
-    margin-bottom: 0;
-  }
-
-  .form-row .form-group {
-    display: block;
-  }
-
   .form-row .form-group label {
     text-align: left;
-    margin-bottom: var(--space-2);
-  }
-
-  .form-row .form-group:nth-child(1) label,
-  .form-row .form-group:nth-child(1) input {
-    grid-column: auto;
-    grid-row: auto;
-  }
-
-  .form-row .form-group:nth-child(2) label,
-  .form-row .form-group:nth-child(2) input {
-    grid-column: auto;
-    grid-row: auto;
   }
 }

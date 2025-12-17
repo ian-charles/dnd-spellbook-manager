@@ -1,7 +1,7 @@
 import { Spellbook } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { SortDirection } from '../../hooks/useSpellSorting';
-import { Copy, Trash2 } from 'lucide-react';
+import { BookOpenText, CalendarSync, Copy, Dices, Sword, Trash2, WandSparkles } from 'lucide-react';
 
 export type SortColumn = 'name' | 'spells' | 'ability' | 'attack' | 'saveDC' | 'updated';
 
@@ -101,20 +101,25 @@ export function SpellbookListTable({
                             {spellbook.name}
                         </td>
                         <td className="spellbook-spell-count" data-label="Spells">
+                            <BookOpenText size={14} className="mobile-stat-icon" />
                             {spellbook.spells.length}
                         </td>
                         <td className="spellbook-ability" data-label="Ability">
+                            <WandSparkles size={14} className="mobile-stat-icon" />
                             {spellbook.spellcastingAbility || 'N/A'}
                         </td>
                         <td className="spellbook-attack" data-label="Attack">
+                            <Sword size={14} className="mobile-stat-icon" />
                             {spellbook.spellAttackModifier !== undefined
                                 ? `+${spellbook.spellAttackModifier}`
                                 : 'N/A'}
                         </td>
                         <td className="spellbook-save-dc" data-label="Save DC">
+                            <Dices size={14} className="mobile-stat-icon" />
                             {spellbook.spellSaveDC ?? 'N/A'}
                         </td>
                         <td className="spellbook-updated" data-label="Last Updated">
+                            <CalendarSync size={14} className="mobile-stat-icon" />
                             {new Date(spellbook.updated).toLocaleDateString()}
                         </td>
                         <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>

@@ -322,7 +322,7 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  accent-color: var(--color-accent);
 }
 
 .spellbook-table .prepared-row {
@@ -343,15 +343,15 @@
   background: light-dark(rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.3));
 }
 
-/* Selected prepared spells - cyan + higher contrast + border */
+/* Selected prepared spells - higher contrast gold + border */
 .spellbook-table .prepared-row.selected-row {
-  background: light-dark(rgba(6, 182, 212, 0.22), rgba(6, 182, 212, 0.3));
-  border-left-width: 3px;
-  border-left-color: light-dark(rgba(6, 182, 212, 0.5), rgba(6, 182, 212, 0.7));
+  background: light-dark(rgba(202, 138, 4, 0.35), rgba(251, 191, 36, 0.45));
+  border-left-width: 4px;
+  border-left-color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
 }
 
 .spellbook-table .prepared-row.selected-row:hover {
-  background: light-dark(rgba(6, 182, 212, 0.28), rgba(6, 182, 212, 0.38));
+  background: light-dark(rgba(202, 138, 4, 0.45), rgba(251, 191, 36, 0.55));
 }
 
 

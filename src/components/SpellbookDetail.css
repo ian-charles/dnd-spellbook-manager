@@ -223,13 +223,11 @@
   flex-wrap: wrap;
 }
 
-.spellbook-filter-header .btn-secondary {
-  min-width: 120px;
-  white-space: nowrap;
-}
-
+.spellbook-filter-header .btn-secondary,
 .spellbook-filter-header .btn-clear-filters {
   min-width: 120px;
+  white-space: nowrap;
+  padding: var(--space-2) var(--space-4);
 }
 
 /* Mobile: Buttons take 50% width, results text on own line, checkbox below */

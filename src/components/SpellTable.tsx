@@ -73,12 +73,15 @@ export function SpellTable({
     if (!onSelectionChange) return;
 
     if (allSelected) {
-      // Deselect all
-      onSelectionChange(new Set());
+      // Deselect all visible spells (preserve hidden selections)
+      const newSelection = new Set(selectedSpellIds);
+      spells.forEach(spell => newSelection.delete(spell.id));
+      onSelectionChange(newSelection);
     } else {
-      // Select all visible spells
-      const allSpellIds = new Set(spells.map(spell => spell.id));
-      onSelectionChange(allSpellIds);
+      // Select all visible spells (preserve hidden selections)
+      const newSelection = new Set(selectedSpellIds);
+      spells.forEach(spell => newSelection.add(spell.id));
+      onSelectionChange(newSelection);
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { FilterModal } from './FilterModal';
@@ -76,31 +76,6 @@ export function BrowseView({
         targetSpellbookId,
     });
 
-    // Track filter state to clear selections on filter change
-    const filterStateRef = useRef(filterReducer.state);
-    useEffect(() => {
-        const prevState = filterStateRef.current;
-        const currState = filterReducer.state;
-
-        // Check if any filter has changed
-        const filtersChanged =
-            prevState.searchText !== currState.searchText ||
-            JSON.stringify(prevState.levelRange) !== JSON.stringify(currState.levelRange) ||
-            JSON.stringify(prevState.selectedSchools) !== JSON.stringify(currState.selectedSchools) ||
-            JSON.stringify(prevState.selectedClasses) !== JSON.stringify(currState.selectedClasses) ||
-            JSON.stringify(prevState.selectedSources) !== JSON.stringify(currState.selectedSources) ||
-            prevState.concentrationOnly !== currState.concentrationOnly ||
-            prevState.ritualOnly !== currState.ritualOnly ||
-            prevState.verbalOnly !== currState.verbalOnly ||
-            prevState.somaticOnly !== currState.somaticOnly ||
-            prevState.materialOnly !== currState.materialOnly;
-
-        if (filtersChanged && selectedSpellIds.size > 0) {
-            setSelectedSpellIds(new Set());
-        }
-
-        filterStateRef.current = currState;
-    }, [filterReducer.state, selectedSpellIds.size, setSelectedSpellIds]);
 
     // Check if any filters are active
     const hasActiveFilters =
@@ -166,18 +141,28 @@ export function BrowseView({
                 <button
                     className="btn-secondary mobile-only-button"
                     onClick={() => {
-                        if (selectedSpellIds.size === filteredSpells.length && filteredSpells.length > 0) {
-                            setSelectedSpellIds(new Set());
+                        const visibleSelectedCount = filteredSpells.filter(spell => selectedSpellIds.has(spell.id)).length;
+                        const allVisibleSelected = visibleSelectedCount === filteredSpells.length && filteredSpells.length > 0;
+
+                        if (allVisibleSelected) {
+                            // Deselect all visible spells
+                            const newSelection = new Set(selectedSpellIds);
+                            filteredSpells.forEach(spell => newSelection.delete(spell.id));
+                            setSelectedSpellIds(newSelection);
                         } else {
-                            const allSpellIds = new Set(filteredSpells.map(spell => spell.id));
-                            setSelectedSpellIds(allSpellIds);
+                            // Select all visible spells (preserve hidden selections)
+                            const newSelection = new Set(selectedSpellIds);
+                            filteredSpells.forEach(spell => newSelection.add(spell.id));
+                            setSelectedSpellIds(newSelection);
                         }
                     }}
                     data-testid="btn-select-all-mobile"
                 >
-                    {selectedSpellIds.size === filteredSpells.length && filteredSpells.length > 0
-                        ? 'Deselect All'
-                        : 'Select All'}
+                    {(() => {
+                        const visibleSelectedCount = filteredSpells.filter(spell => selectedSpellIds.has(spell.id)).length;
+                        const allVisibleSelected = visibleSelectedCount === filteredSpells.length && filteredSpells.length > 0;
+                        return allVisibleSelected ? 'Deselect All' : 'Select All';
+                    })()}
                 </button>
                 <button
                     className="btn-primary"

@@ -53,16 +53,22 @@ async function fetchAllSpells() {
  * Transform Open5e spell data to our optimized format
  */
 function transformSpell(spell) {
+  // Parse classes and filter out "ritual caster" (it's a feat, not a class)
+  let classes = Array.isArray(spell.dnd_class)
+    ? spell.dnd_class.split(',').map(c => c.trim().toLowerCase())
+    : typeof spell.dnd_class === 'string'
+    ? spell.dnd_class.split(',').map(c => c.trim().toLowerCase())
+    : [];
+
+  // Remove "ritual caster" - it's a feat, not a class
+  classes = classes.filter(c => c !== 'ritual caster');
+
   return {
     id: spell.slug,
     name: spell.name,
     level: spell.level_int || 0,
     school: spell.school?.toLowerCase() || 'unknown',
-    classes: Array.isArray(spell.dnd_class)
-      ? spell.dnd_class.split(',').map(c => c.trim().toLowerCase())
-      : typeof spell.dnd_class === 'string'
-      ? spell.dnd_class.split(',').map(c => c.trim().toLowerCase())
-      : [],
+    classes,
     castingTime: spell.casting_time || 'Unknown',
     range: spell.range || 'Unknown',
     components: {

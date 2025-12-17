@@ -473,7 +473,7 @@
    ========================================== */
 @media (min-width: 768px) {
   .spellbook-list {
-    padding: var(--space-8);
+    padding: 0;
   }
 
   .spellbook-list-header {
@@ -502,6 +502,8 @@
   /* Restore table layout */
   .spellbooks-table {
     display: table;
+    width: 100%;
+    max-width: 100%;
     background: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -514,12 +516,13 @@
   }
 
   .spellbooks-table th {
-    padding: var(--space-4);
+    padding: var(--space-2);
     text-align: left;
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-base);
     color: var(--color-text-heading);
   }
+
 
   .spellbooks-table th.sortable-header {
     padding: 0;
@@ -530,7 +533,7 @@
     height: 100%;
     background: none;
     border: none;
-    padding: var(--space-4);
+    padding: var(--space-2);
     text-align: left;
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-base);
@@ -584,6 +587,8 @@
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: none;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   /* Reset spell count and updated */
@@ -645,5 +650,15 @@
 
   .dialog-actions button {
     width: auto;
+  }
+}
+
+/* ==========================================
+   DESKTOP (1024px+) - Prevent header wrapping
+   ========================================== */
+@media (min-width: 1024px) {
+  .spellbooks-table th,
+  .sort-button {
+    white-space: nowrap;
   }
 }

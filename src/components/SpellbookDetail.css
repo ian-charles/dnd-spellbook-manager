@@ -213,6 +213,58 @@
   margin: var(--space-2) 0;
 }
 
+/* Filter header - search and filter controls */
+.spellbook-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.spellbook-filter-header .btn-secondary {
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.spellbook-filter-header .btn-clear-filters {
+  min-width: 120px;
+}
+
+/* Mobile: Buttons take 50% width, results text on own line */
+@media (max-width: 767px) {
+  .spellbook-filter-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--space-3);
+  }
+
+  .spellbook-filter-header .btn-secondary {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .spellbook-filter-header .btn-clear-filters {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .spellbook-filter-header .filter-results-text {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    text-align: center;
+  }
+}
+
+/* Tablet+ (768px+): Horizontal layout */
+@media (min-width: 768px) {
+  .spellbook-filter-header .filter-results-text {
+    margin-left: auto;
+  }
+}
+
 .spellbook-controls {
   display: flex;
   justify-content: space-between;

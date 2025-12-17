@@ -3,6 +3,7 @@ import { useSpellbooks } from './useSpellbooks';
 import { spellService } from '../services/spell.service';
 import { Spellbook, CreateSpellbookInput, EnrichedSpell } from '../types/spellbook';
 import { useSpellSorting } from './useSpellSorting';
+import { useSpellbookFiltering } from './useSpellbookFiltering';
 import { SpellbookDetailContextType } from '../types/spellbookDetail';
 
 interface UseSpellbookDetailLogicProps {
@@ -35,13 +36,16 @@ export function useSpellbookDetailLogic({
         isOpen: false,
     });
 
-    // Filter spells based on prepared status
+    // Apply search and advanced filters first
+    const { filterReducer, filteredEnrichedSpells, schools, classes, sources } = useSpellbookFiltering(enrichedSpells);
+
+    // Then apply prepared-only filter
     const filteredSpells = useMemo(() => {
         if (showPreparedOnly) {
-            return enrichedSpells.filter(s => s.prepared);
+            return filteredEnrichedSpells.filter(s => s.prepared);
         }
-        return enrichedSpells;
-    }, [enrichedSpells, showPreparedOnly]);
+        return filteredEnrichedSpells;
+    }, [filteredEnrichedSpells, showPreparedOnly]);
 
     const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(
         filteredSpells,
@@ -59,14 +63,35 @@ export function useSpellbookDetailLogic({
         loadSpellbook();
     }, [spellbookId]);
 
-    // Clear selections when showPreparedOnly filter changes
+    // Clear selections when filters change
     const prevShowPreparedOnlyRef = useRef(showPreparedOnly);
+    const prevFilterStateRef = useRef(filterReducer.state);
     useEffect(() => {
-        if (prevShowPreparedOnlyRef.current !== showPreparedOnly && selectedSpellIds.size > 0) {
+        // Check if showPreparedOnly changed
+        const preparedChanged = prevShowPreparedOnlyRef.current !== showPreparedOnly;
+
+        // Check if any search/filter changed
+        const prevState = prevFilterStateRef.current;
+        const currState = filterReducer.state;
+        const filtersChanged =
+            prevState.searchText !== currState.searchText ||
+            JSON.stringify(prevState.levelRange) !== JSON.stringify(currState.levelRange) ||
+            JSON.stringify(prevState.selectedSchools) !== JSON.stringify(currState.selectedSchools) ||
+            JSON.stringify(prevState.selectedClasses) !== JSON.stringify(currState.selectedClasses) ||
+            JSON.stringify(prevState.selectedSources) !== JSON.stringify(currState.selectedSources) ||
+            prevState.concentrationOnly !== currState.concentrationOnly ||
+            prevState.ritualOnly !== currState.ritualOnly ||
+            prevState.verbalOnly !== currState.verbalOnly ||
+            prevState.somaticOnly !== currState.somaticOnly ||
+            prevState.materialOnly !== currState.materialOnly;
+
+        if ((preparedChanged || filtersChanged) && selectedSpellIds.size > 0) {
             setSelectedSpellIds(new Set());
         }
+
         prevShowPreparedOnlyRef.current = showPreparedOnly;
-    }, [showPreparedOnly, selectedSpellIds.size]);
+        prevFilterStateRef.current = currState;
+    }, [showPreparedOnly, filterReducer.state, selectedSpellIds.size]);
 
     // Watch for changes in spellbooks array and update local state
     useEffect(() => {
@@ -278,6 +303,10 @@ export function useSpellbookDetailLogic({
         copyModalOpen,
         showPreparedOnly,
         allPrepared,
+        filterReducer,
+        schools,
+        classes,
+        sources,
         onBack,
         onSort: handleSort,
         onToggleSelected: handleToggleSelected,

@@ -116,6 +116,34 @@ const defaultProps: SpellbookDetailContextType = {
   copyModalOpen: false,
   showPreparedOnly: false,
   allPrepared: false,
+  filterReducer: {
+    state: {
+      searchText: '',
+      levelRange: { min: 0, max: 9 },
+      selectedSchools: [],
+      selectedClasses: [],
+      selectedSources: [],
+      concentrationOnly: false,
+      ritualOnly: false,
+      verbalOnly: false,
+      somaticOnly: false,
+      materialOnly: false,
+    },
+    setSearchText: vi.fn(),
+    setLevelRange: vi.fn(),
+    toggleSchool: vi.fn(),
+    toggleClass: vi.fn(),
+    toggleSource: vi.fn(),
+    setConcentrationOnly: vi.fn(),
+    setRitualOnly: vi.fn(),
+    setVerbalOnly: vi.fn(),
+    setSomaticOnly: vi.fn(),
+    setMaterialOnly: vi.fn(),
+    clearFilters: vi.fn(),
+  },
+  schools: ['Evocation', 'Abjuration', 'Divination'],
+  classes: ['Wizard', 'Sorcerer', 'Cleric', 'Bard'],
+  sources: ['PHB'],
   onBack: vi.fn(),
   onSort: vi.fn(),
   onToggleSelected: vi.fn(),
@@ -209,7 +237,7 @@ describe('SpellbookDetailView', () => {
     it('should display spell count (plural)', () => {
       renderWithContext();
 
-      expect(screen.getByText(/3 spells/)).toBeTruthy();
+      expect(screen.getByText(/3 spells · 2 prepared/)).toBeTruthy();
     });
 
     it('should display spell count (singular)', () => {
@@ -218,7 +246,7 @@ describe('SpellbookDetailView', () => {
         sortedSpells: [mockEnrichedSpells[0]],
       });
 
-      expect(screen.getByText(/1 spell(?!s)/)).toBeTruthy();
+      expect(screen.getByText(/1 spell · 1 prepared/)).toBeTruthy();
     });
 
     it('should display prepared count', () => {

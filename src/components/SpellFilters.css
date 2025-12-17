@@ -9,8 +9,8 @@
   background: var(--color-bg-overlay);
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-xl);
-  padding: var(--space-4) var(--space-6);
-  margin-bottom: 1rem;
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 /* Collapse/Expand Toggle Button */
@@ -109,7 +109,7 @@
 
 .filter-section h3 {
   color: var(--color-text-heading);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-wide);
@@ -120,17 +120,17 @@
 .filter-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: var(--space-1);
   justify-content: center;
 }
 
 .filter-btn {
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-3);
   background: var(--color-bg-input);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-md);
   color: var(--color-text-secondary);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   text-transform: capitalize;
   cursor: pointer;
@@ -486,15 +486,16 @@
 
 .filter-badges-inline {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0;
 }
 
 .filter-badges-inline>div {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding: var(--space-3);
   flex-wrap: wrap;
 }
@@ -507,32 +508,18 @@
   margin-bottom: 0;
   flex-shrink: 0;
   align-self: center;
+  text-align: center;
 }
 
 .filter-badges-inline .badge-group {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: var(--space-3);
   align-items: center;
   justify-content: center;
 }
 
-/* When content wraps, stack everything vertically with centered labels */
-@media (max-width: 1100px) {
-  .filter-badges-inline>div {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .filter-badges-inline h3 {
-    text-align: center;
-  }
-
-  .filter-badges-inline .badge-group {
-    flex-wrap: wrap;
-  }
-}
+/* Mobile-first: Start stacked, then horizontal on large screens */
 
 /* Checkbox badges - now clickable buttons */
 .checkbox-badge {
@@ -653,9 +640,10 @@
 /* Filter footer with results and clear button */
 .filter-footer {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   margin-top: var(--space-4);
   flex-wrap: wrap;
 }
@@ -670,12 +658,12 @@
 }
 
 .btn-clear-filters {
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-3);
   background: var(--color-error-bg);
   border: 1px solid var(--color-error-border);
   border-radius: var(--radius-lg);
   color: var(--color-error-text);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--transition-base);
@@ -692,106 +680,20 @@
   cursor: not-allowed;
 }
 
-/* Mobile responsive */
-@media (max-width: 767px) {
-  .spell-filters {
-    padding: var(--space-4);
-    margin-bottom: var(--space-4);
-  }
-
-  .search-box {
-    margin-bottom: var(--space-4);
-  }
-
-  .search-input {
-    font-size: var(--font-size-md);
-    /* Prevent zoom on iOS */
-  }
-
-  .filter-section {
-    margin-bottom: var(--space-4);
-  }
-
-  .filter-section h3 {
-    font-size: var(--font-size-sm);
-  }
-
-  .filter-buttons {
-    gap: var(--space-1);
-  }
-
-  .filter-btn {
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--font-size-sm);
-  }
-
-  .btn-clear-filters {
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--font-size-sm);
-  }
-
-  .filter-badges-inline {
-    grid-template-columns: 1fr;
-  }
-
-  .filter-footer {
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  /* Wrap level dropdowns on small screens */
-  .level-dropdown-container {
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    justify-content: center;
-  }
-
-  .level-dropdown-container label {
-    flex: 0 1 auto;
-    min-width: fit-content;
-  }
-
-  /* Shrink tick badges on mobile */
-  .range-ticks {
-    padding: 0 5px;
-    gap: 2px;
-  }
-
-  .range-tick {
-    font-size: var(--font-size-xs);
-    min-width: 0;
-    padding: 1px 2px;
-  }
-
-  /* Match slider container padding to tick padding */
-  .range-slider-container {
-    padding: 0 5px;
-  }
-
-  .range-track {
-    left: 5px;
-    right: 5px;
-  }
-}
-
-/* Extra small mobile devices */
-@media (max-width: 360px) {
-  .range-tick {
-    font-size: 10px;
-    padding: 1px;
-  }
-}
 
 /* Level Dropdown Styles */
 .level-dropdown-container {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .level-dropdown-container label {
   display: flex;
+  flex: 0 1 auto;
+  min-width: fit-content;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--font-size-md);
@@ -832,27 +734,11 @@
   color: #475569 !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-0 {
-    background: rgba(148, 163, 184, 0.15) !important;
-    border-color: #64748b !important;
-    color: #cbd5e1 !important;
-  }
-}
-
 /* Level 1 (Violet) */
 .level-dropdown-container .level-select-1 {
   background: rgba(196, 181, 253, 0.2) !important;
   border-color: #a78bfa !important;
   color: #6d28d9 !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-1 {
-    background: rgba(196, 181, 253, 0.15) !important;
-    border-color: #7c3aed !important;
-    color: #c4b5fd !important;
-  }
 }
 
 /* Level 2 (Indigo) */
@@ -862,27 +748,11 @@
   color: #3730a3 !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-2 {
-    background: rgba(129, 140, 248, 0.15) !important;
-    border-color: #4f46e5 !important;
-    color: #a5b4fc !important;
-  }
-}
-
 /* Level 3 (Dark Blue) */
 .level-dropdown-container .level-select-3 {
   background: rgba(59, 130, 246, 0.25) !important;
   border-color: #2563eb !important;
   color: #1e3a8a !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-3 {
-    background: rgba(37, 99, 235, 0.2) !important;
-    border-color: #1d4ed8 !important;
-    color: #60a5fa !important;
-  }
 }
 
 /* Level 4 (Light Blue) */
@@ -892,27 +762,11 @@
   color: #1e40af !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-4 {
-    background: rgba(96, 165, 250, 0.15) !important;
-    border-color: #2563eb !important;
-    color: #93c5fd !important;
-  }
-}
-
 /* Level 5 (Cyan) */
 .level-dropdown-container .level-select-5 {
   background: rgba(103, 232, 249, 0.2) !important;
   border-color: #06b6d4 !important;
   color: #0e7490 !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-5 {
-    background: rgba(103, 232, 249, 0.15) !important;
-    border-color: #0891b2 !important;
-    color: #67e8f9 !important;
-  }
 }
 
 /* Level 6 (Green) */
@@ -922,27 +776,11 @@
   color: #16a34a !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-6 {
-    background: rgba(134, 239, 172, 0.15) !important;
-    border-color: #22c55e !important;
-    color: #86efac !important;
-  }
-}
-
 /* Level 7 (Yellow) */
 .level-dropdown-container .level-select-7 {
   background: rgba(253, 224, 71, 0.2) !important;
   border-color: #fbbf24 !important;
   color: #b45309 !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-7 {
-    background: rgba(253, 224, 71, 0.15) !important;
-    border-color: #eab308 !important;
-    color: #fde047 !important;
-  }
 }
 
 /* Level 8 (Orange) */
@@ -952,14 +790,6 @@
   color: #ea580c !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-8 {
-    background: rgba(251, 146, 60, 0.15) !important;
-    border-color: #f97316 !important;
-    color: #fdba74 !important;
-  }
-}
-
 /* Level 9 (Red) */
 .level-dropdown-container .level-select-9 {
   background: rgba(239, 68, 68, 0.2) !important;
@@ -967,25 +797,10 @@
   color: #dc2626 !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .level-dropdown-container .level-select-9 {
-    background: rgba(239, 68, 68, 0.15) !important;
-    border-color: #dc2626 !important;
-    color: #fca5a5 !important;
-  }
-}
-
 /* Level Range Slider Styles */
 .level-range-container {
   width: min(400px, 100%);
   margin: 0 auto;
-}
-
-/* Desktop: align left */
-@media (min-width: 769px) {
-  .level-range-container {
-    margin: 0;
-  }
 }
 
 .range-labels {
@@ -1001,15 +816,15 @@
   position: relative;
   height: 40px;
   margin-bottom: var(--space-2);
-  padding: 0 10px;
+  padding: 0 5px;
 }
 
 /* Visible track element */
 .range-track {
   position: absolute;
   top: 16px;
-  left: 10px;
-  right: 10px;
+  left: 5px;
+  right: 5px;
   height: 8px;
   background: #94a3b8;
   border: 2px solid #cbd5e1;
@@ -1110,17 +925,17 @@
 .range-ticks {
   display: flex;
   justify-content: space-between;
-  padding: 0 10px;
-  gap: var(--space-1);
+  padding: 0 5px;
+  gap: 2px;
   margin-bottom: var(--space-2);
 }
 
 .range-tick {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   text-align: center;
-  min-width: 20px;
-  padding: 2px 4px;
+  min-width: 0;
+  padding: 1px 2px;
   border-radius: var(--radius-sm);
   transition: all var(--transition-base);
   flex: 1 1 0;
@@ -1198,4 +1013,162 @@
   color: light-dark(#6d28d9, #c4b5fd);
 }
 
-/* Filter results summary - removed duplicate, styles are in filter-footer section above */
+/* ==========================================
+   RESPONSIVE BREAKPOINTS (Mobile-First)
+   ========================================== */
+
+/* Tablet+ (≥ 768px) */
+@media (min-width: 768px) {
+  .spell-filters {
+    padding: var(--space-4) var(--space-6);
+    margin-bottom: 1rem;
+  }
+
+  .filter-section h3 {
+    font-size: var(--font-size-base);
+  }
+
+  .filter-buttons {
+    gap: var(--space-2);
+  }
+
+  .filter-btn {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-base);
+  }
+
+  .btn-clear-filters {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-base);
+  }
+
+  .filter-footer {
+    flex-direction: row;
+    gap: var(--space-4);
+  }
+
+  .level-dropdown-container {
+    gap: var(--space-4);
+  }
+
+  .level-range-container {
+    margin: 0;
+  }
+
+  .range-ticks {
+    padding: 0 10px;
+    gap: var(--space-1);
+  }
+
+  .range-tick {
+    font-size: var(--font-size-base);
+    min-width: 20px;
+    padding: 2px 4px;
+  }
+
+  .range-slider-container {
+    padding: 0 10px;
+  }
+
+  .range-track {
+    left: 10px;
+    right: 10px;
+  }
+}
+
+/* Large screens (≥ 1100px) */
+@media (min-width: 1100px) {
+  .filter-badges-inline {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-badges-inline>div {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .filter-badges-inline h3 {
+    text-align: left;
+  }
+
+  .filter-badges-inline .badge-group {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ==========================================
+   DARK MODE (Consolidated)
+   ========================================== */
+
+@media (prefers-color-scheme: dark) {
+  /* Level 0 - Cantrip (Grey) */
+  .level-dropdown-container .level-select-0 {
+    background: rgba(148, 163, 184, 0.15) !important;
+    border-color: #64748b !important;
+    color: #cbd5e1 !important;
+  }
+
+  /* Level 1 (Violet) */
+  .level-dropdown-container .level-select-1 {
+    background: rgba(196, 181, 253, 0.15) !important;
+    border-color: #7c3aed !important;
+    color: #c4b5fd !important;
+  }
+
+  /* Level 2 (Indigo) */
+  .level-dropdown-container .level-select-2 {
+    background: rgba(129, 140, 248, 0.15) !important;
+    border-color: #4f46e5 !important;
+    color: #a5b4fc !important;
+  }
+
+  /* Level 3 (Dark Blue) */
+  .level-dropdown-container .level-select-3 {
+    background: rgba(37, 99, 235, 0.2) !important;
+    border-color: #1d4ed8 !important;
+    color: #60a5fa !important;
+  }
+
+  /* Level 4 (Light Blue) */
+  .level-dropdown-container .level-select-4 {
+    background: rgba(96, 165, 250, 0.15) !important;
+    border-color: #2563eb !important;
+    color: #93c5fd !important;
+  }
+
+  /* Level 5 (Cyan) */
+  .level-dropdown-container .level-select-5 {
+    background: rgba(103, 232, 249, 0.15) !important;
+    border-color: #0891b2 !important;
+    color: #67e8f9 !important;
+  }
+
+  /* Level 6 (Green) */
+  .level-dropdown-container .level-select-6 {
+    background: rgba(134, 239, 172, 0.15) !important;
+    border-color: #22c55e !important;
+    color: #86efac !important;
+  }
+
+  /* Level 7 (Yellow) */
+  .level-dropdown-container .level-select-7 {
+    background: rgba(253, 224, 71, 0.15) !important;
+    border-color: #eab308 !important;
+    color: #fde047 !important;
+  }
+
+  /* Level 8 (Orange) */
+  .level-dropdown-container .level-select-8 {
+    background: rgba(251, 146, 60, 0.15) !important;
+    border-color: #f97316 !important;
+    color: #fdba74 !important;
+  }
+
+  /* Level 9 (Red) */
+  .level-dropdown-container .level-select-9 {
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: #dc2626 !important;
+    color: #fca5a5 !important;
+  }
+}

@@ -8,11 +8,8 @@ interface SpellbookSpellRowProps {
   enrichedSpell: EnrichedSpell;
   isSelected: boolean;
   isExpanded: boolean;
-  spellbookId: string;
   onToggleSelected: (spellId: string) => void;
   onRowClick: (spellId: string) => void;
-  onTogglePrepared: (spellbookId: string, spellId: string) => void;
-  onRequestRemoveSpell: (spellId: string) => void;
   onTouchStartLongPress: (e: React.TouchEvent) => void;
   onTouchMoveLongPress: (e: React.TouchEvent) => void;
   onTouchEndLongPress: () => void;
@@ -22,44 +19,29 @@ export function SpellbookSpellRow({
   enrichedSpell,
   isSelected,
   isExpanded: _isExpanded,
-  spellbookId,
   onToggleSelected,
   onRowClick,
-  onTogglePrepared,
-  onRequestRemoveSpell,
   onTouchStartLongPress,
   onTouchMoveLongPress,
   onTouchEndLongPress,
 }: SpellbookSpellRowProps) {
   const { spell, prepared } = enrichedSpell;
 
-  // Swipe handlers for mobile
-  // NOTE: We use enrichedSpell.prepared instead of the destructured 'prepared' variable
-  // to avoid stale closure issues when the component re-renders
+  // Swipe handlers for mobile - either direction toggles selection
   const { swipeState, swipeHandlers } = useSwipe({
     onSwipeRight: () => {
-      // Swipe right = Prep spell (only if unprepped)
-      if (!enrichedSpell.prepared) {
-        onTogglePrepared(spellbookId, spell.id);
-      }
+      onToggleSelected(spell.id);
     },
     onSwipeLeft: () => {
-      if (enrichedSpell.prepared) {
-        // If prepared, unprep
-        onTogglePrepared(spellbookId, spell.id);
-      } else {
-        // If unprepped, show confirmation dialog before removing
-        onRequestRemoveSpell(spell.id);
-      }
+      onToggleSelected(spell.id);
     },
   });
 
   const isCommitted = swipeState.swipeProgress >= 100;
   const showLeftIndicator = swipeState.isSwiping && swipeState.swipeDistance < 0;
   const showRightIndicator = swipeState.isSwiping && swipeState.swipeDistance > 0;
-
-  // Determine which action to show for left swipe
-  const leftSwipeAction = prepared ? 'unprep' : 'remove';
+  // Action depends on current selection state, not swipe direction
+  const swipeAction = isSelected ? 'deselect' : 'select';
 
   const rowStyle = {
     transform: swipeState.isSwiping ? `translateX(${swipeState.swipeDistance}px)` : 'translateX(0)',
@@ -92,15 +74,15 @@ export function SpellbookSpellRow({
       >
         {showLeftIndicator && (
           <SwipeIndicator
-            action={leftSwipeAction}
+            action={swipeAction}
             direction="left"
             progress={swipeState.swipeProgress}
             isCommitted={isCommitted}
           />
         )}
-        {showRightIndicator && !prepared && (
+        {showRightIndicator && (
           <SwipeIndicator
-            action="prep"
+            action={swipeAction}
             direction="right"
             progress={swipeState.swipeProgress}
             isCommitted={isCommitted}

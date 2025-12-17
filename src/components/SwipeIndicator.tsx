@@ -1,12 +1,7 @@
-import { CircleCheck, CircleX, BookCheck, BookX, Trash2, type LucideProps } from 'lucide-react';
+import { CircleCheck, CircleX, type LucideProps } from 'lucide-react';
 import '../styles/swipe-indicator.css';
 
-export type SwipeAction =
-  | 'select'
-  | 'deselect'
-  | 'prep'
-  | 'unprep'
-  | 'remove';
+export type SwipeAction = 'select' | 'deselect';
 
 interface SwipeIndicatorProps {
   action: SwipeAction;
@@ -28,21 +23,6 @@ const ACTION_CONFIG: Record<
     icon: CircleX,
     text: 'Deselect',
     className: 'swipe-indicator-deselect',
-  },
-  prep: {
-    icon: BookCheck,
-    text: 'Prep',
-    className: 'swipe-indicator-prep',
-  },
-  unprep: {
-    icon: BookX,
-    text: 'Unprep',
-    className: 'swipe-indicator-unprep',
-  },
-  remove: {
-    icon: Trash2,
-    text: 'Remove',
-    className: 'swipe-indicator-remove',
   },
 };
 

@@ -2,7 +2,9 @@ import { useRef, useEffect } from 'react';
 import { EnrichedSpell } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { useLongPress } from '../../hooks/useLongPress';
+import { useContextMenu } from '../../hooks/useContextMenu';
 import { SpellbookSpellRow } from './SpellbookSpellRow';
+import { SpellContextMenu } from './SpellContextMenu';
 
 import { useSpellbookDetail } from '../../contexts/SpellbookDetailContext';
 
@@ -47,8 +49,12 @@ export function SpellbookSpellsTable() {
         }
     };
 
-    // Long-press handlers for mobile selection
+    // Context menu state for long-press
+    const { contextMenu, openContextMenu, closeContextMenu } = useContextMenu<EnrichedSpell>();
+
+    // Long-press handlers for mobile context menu
     const pendingSpell = useRef<EnrichedSpell | null>(null);
+    const touchStartEvent = useRef<React.TouchEvent | null>(null);
 
     const {
         onTouchStart: onTouchStartHook,
@@ -56,14 +62,15 @@ export function SpellbookSpellsTable() {
         onTouchEnd
     } = useLongPress({
         onLongPress: () => {
-            if (pendingSpell.current) {
-                onToggleSelected(pendingSpell.current.spell.id);
+            if (pendingSpell.current && touchStartEvent.current) {
+                openContextMenu(touchStartEvent.current, pendingSpell.current);
             }
         }
     });
 
     const handleTouchStart = (e: React.TouchEvent, spell: EnrichedSpell) => {
         pendingSpell.current = spell;
+        touchStartEvent.current = e;
         onTouchStartHook(e);
     };
 
@@ -135,11 +142,8 @@ export function SpellbookSpellsTable() {
                                 enrichedSpell={enrichedSpell}
                                 isSelected={selectedSpellIds.has(enrichedSpell.spell.id)}
                                 isExpanded={expandedSpellId === enrichedSpell.spell.id}
-                                spellbookId={spellbook?.id || ''}
                                 onToggleSelected={onToggleSelected}
                                 onRowClick={onRowClick}
-                                onTogglePrepared={onTogglePrepared}
-                                onRequestRemoveSpell={onRequestRemoveSpell}
                                 onTouchStartLongPress={(e) => handleTouchStart(e, enrichedSpell)}
                                 onTouchMoveLongPress={onTouchMove}
                                 onTouchEndLongPress={onTouchEnd}
@@ -148,6 +152,18 @@ export function SpellbookSpellsTable() {
                     </tbody>
                 </table>
             </div>
+            {contextMenu && spellbook && (
+                <SpellContextMenu
+                    spell={contextMenu.data}
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    isSelected={selectedSpellIds.has(contextMenu.data.spell.id)}
+                    onToggleSelected={() => onToggleSelected(contextMenu.data.spell.id)}
+                    onTogglePrepared={() => onTogglePrepared(spellbook.id, contextMenu.data.spell.id)}
+                    onRemove={() => onRequestRemoveSpell(contextMenu.data.spell.id)}
+                    onClose={closeContextMenu}
+                />
+            )}
         </>
     );
 }

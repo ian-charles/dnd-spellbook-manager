@@ -55,7 +55,7 @@
 
 /* Action-specific colors */
 
-/* SELECT (Browse Spells - swipe right) */
+/* SELECT (either direction on unselected spell) */
 .swipe-indicator-select {
   background: light-dark(rgba(34, 197, 94, 0.85), rgba(34, 197, 94, 0.9));
   color: light-dark(rgb(21, 128, 61), rgb(134, 239, 172));
@@ -65,7 +65,7 @@
   background: light-dark(rgba(34, 197, 94, 0.95), rgba(34, 197, 94, 1));
 }
 
-/* DESELECT (Browse Spells - swipe left) */
+/* DESELECT (either direction on selected spell) */
 .swipe-indicator-deselect {
   background: light-dark(rgba(148, 163, 184, 0.85), rgba(148, 163, 184, 0.9));
   color: light-dark(rgb(71, 85, 105), rgb(203, 213, 225));
@@ -73,36 +73,6 @@
 
 .swipe-indicator-deselect.committed {
   background: light-dark(rgba(148, 163, 184, 0.95), rgba(148, 163, 184, 1));
-}
-
-/* PREP (Spellbook - swipe right) */
-.swipe-indicator-prep {
-  background: light-dark(rgba(202, 138, 4, 0.85), rgba(161, 98, 7, 0.9));
-  color: light-dark(rgb(161, 98, 7), rgb(254, 240, 138));
-}
-
-.swipe-indicator-prep.committed {
-  background: light-dark(rgba(202, 138, 4, 0.95), rgba(251, 191, 36, 1));
-}
-
-/* UNPREP (Spellbook - swipe left when prepared) */
-.swipe-indicator-unprep {
-  background: light-dark(rgba(100, 100, 100, 0.85), rgba(115, 115, 115, 0.9));
-  color: light-dark(rgb(71, 85, 105), rgb(203, 213, 225));
-}
-
-.swipe-indicator-unprep.committed {
-  background: light-dark(rgba(100, 100, 100, 0.95), rgba(115, 115, 115, 1));
-}
-
-/* REMOVE (Spellbook - swipe left when unprepared) */
-.swipe-indicator-remove {
-  background: light-dark(rgba(239, 68, 68, 0.85), rgba(220, 38, 38, 0.9));
-  color: light-dark(rgb(185, 28, 28), rgb(252, 165, 165));
-}
-
-.swipe-indicator-remove.committed {
-  background: light-dark(rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 1));
 }
 
 /* Mobile-specific styles for flex-based table rows */

@@ -29,15 +29,15 @@ export function SpellTableRow({
   onTouchMoveLongPress,
   onTouchEndLongPress,
 }: SpellTableRowProps) {
-  // Swipe handlers for mobile
+  // Swipe handlers for mobile - either direction toggles selection
   const { swipeState, swipeHandlers } = useSwipe({
     onSwipeRight: () => {
-      if (onSelectionChange && !isSelected) {
+      if (onSelectionChange) {
         onCheckboxToggle(spell.id);
       }
     },
     onSwipeLeft: () => {
-      if (onSelectionChange && isSelected) {
+      if (onSelectionChange) {
         onCheckboxToggle(spell.id);
       }
     },
@@ -46,6 +46,8 @@ export function SpellTableRow({
   const isCommitted = swipeState.swipeProgress >= 100;
   const showLeftIndicator = swipeState.isSwiping && swipeState.swipeDistance < 0;
   const showRightIndicator = swipeState.isSwiping && swipeState.swipeDistance > 0;
+  // Action depends on current selection state, not swipe direction
+  const swipeAction = isSelected ? 'deselect' : 'select';
 
   const rowStyle = {
     transform: swipeState.isSwiping ? `translateX(${swipeState.swipeDistance}px)` : 'translateX(0)',
@@ -74,7 +76,7 @@ export function SpellTableRow({
       >
         {showLeftIndicator && onSelectionChange && (
           <SwipeIndicator
-            action="deselect"
+            action={swipeAction}
             direction="left"
             progress={swipeState.swipeProgress}
             isCommitted={isCommitted}
@@ -82,7 +84,7 @@ export function SpellTableRow({
         )}
         {showRightIndicator && onSelectionChange && (
           <SwipeIndicator
-            action="select"
+            action={swipeAction}
             direction="right"
             progress={swipeState.swipeProgress}
             isCommitted={isCommitted}

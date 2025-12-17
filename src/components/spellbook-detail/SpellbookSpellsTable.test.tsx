@@ -72,8 +72,10 @@ const defaultContextValue = {
     onSort: vi.fn(),
     onRowClick: vi.fn(),
     onToggleSelected: vi.fn(),
+    onTogglePrepared: vi.fn(),
+    onRequestRemoveSpell: vi.fn(),
     // Other unused values
-    spellbook: null,
+    spellbook: { id: 'spellbook-1', name: 'Test Spellbook', spells: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
     enrichedSpells: mockSpells,
     confirmDialog: { isOpen: false, spellIds: [], message: '' },
     editModalOpen: false,
@@ -171,15 +173,84 @@ describe('SpellbookSpellsTable', () => {
     });
 
     describe('Mobile Interactions', () => {
-        it('triggers onToggleSelected on long press', () => {
+        it('shows context menu on long press', () => {
             render(<SpellbookSpellsTable />);
 
             const row = screen.getByTestId('spellbook-spell-spell-1');
 
-            // Simulate touch start which triggers mocked useLongPress -> onLongPress -> onToggleSelected
+            // Simulate touch start which triggers mocked useLongPress -> onLongPress -> opens context menu
             fireEvent.touchStart(row, { touches: [{ clientX: 100, clientY: 100 }] });
 
+            // Context menu should appear with the spell name as header
+            const contextMenuHeader = document.querySelector('.spell-context-menu-header');
+            expect(contextMenuHeader).toBeInTheDocument();
+            expect(contextMenuHeader).toHaveTextContent('Fireball');
+            // Context menu should have Select, Unprep (since spell is prepared), and Remove options
+            expect(screen.getByText('Select')).toBeInTheDocument();
+            expect(screen.getByText('Unprep')).toBeInTheDocument();
+            expect(screen.getByText('Remove from Spellbook')).toBeInTheDocument();
+        });
+
+        it('calls onToggleSelected when Select is clicked in context menu', () => {
+            render(<SpellbookSpellsTable />);
+
+            const row = screen.getByTestId('spellbook-spell-spell-1');
+            fireEvent.touchStart(row, { touches: [{ clientX: 100, clientY: 100 }] });
+
+            const selectButton = screen.getByText('Select');
+            fireEvent.click(selectButton);
+
             expect(defaultContextValue.onToggleSelected).toHaveBeenCalledWith('spell-1');
+        });
+
+        it('calls onTogglePrepared when Unprep is clicked in context menu', () => {
+            render(<SpellbookSpellsTable />);
+
+            const row = screen.getByTestId('spellbook-spell-spell-1');
+            fireEvent.touchStart(row, { touches: [{ clientX: 100, clientY: 100 }] });
+
+            const unprepButton = screen.getByText('Unprep');
+            fireEvent.click(unprepButton);
+
+            expect(defaultContextValue.onTogglePrepared).toHaveBeenCalledWith('spellbook-1', 'spell-1');
+        });
+
+        it('calls onRequestRemoveSpell when Remove is clicked in context menu', () => {
+            render(<SpellbookSpellsTable />);
+
+            const row = screen.getByTestId('spellbook-spell-spell-1');
+            fireEvent.touchStart(row, { touches: [{ clientX: 100, clientY: 100 }] });
+
+            const removeButton = screen.getByText('Remove from Spellbook');
+            fireEvent.click(removeButton);
+
+            expect(defaultContextValue.onRequestRemoveSpell).toHaveBeenCalledWith('spell-1');
+        });
+
+        it('shows Prep option for unprepared spells in context menu', () => {
+            render(<SpellbookSpellsTable />);
+
+            // Long press on unprepared spell (spell-2)
+            const row = screen.getByTestId('spellbook-spell-spell-2');
+            fireEvent.touchStart(row, { touches: [{ clientX: 100, clientY: 100 }] });
+
+            // Context menu should show "Prep" instead of "Unprep"
+            expect(screen.getByText('Prep')).toBeInTheDocument();
+        });
+
+        it('shows Deselect option for selected spells in context menu', () => {
+            useSpellbookDetailMock.mockReturnValue({
+                ...defaultContextValue,
+                selectedSpellIds: new Set(['spell-1']),
+            });
+
+            render(<SpellbookSpellsTable />);
+
+            const row = screen.getByTestId('spellbook-spell-spell-1');
+            fireEvent.touchStart(row, { touches: [{ clientX: 100, clientY: 100 }] });
+
+            // Context menu should show "Deselect" instead of "Select"
+            expect(screen.getByText('Deselect')).toBeInTheDocument();
         });
     });
 });

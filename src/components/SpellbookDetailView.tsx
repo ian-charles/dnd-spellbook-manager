@@ -207,10 +207,6 @@ export function SpellbookDetailView() {
             >
               Clear Filters
             </button>
-          </div>
-
-          {/* Filter and Selection Controls */}
-          <div className="spellbook-controls">
             <label className="filter-checkbox-label">
               <input
                 type="checkbox"
@@ -220,6 +216,10 @@ export function SpellbookDetailView() {
               />
               <span>Show <span className="prepared-text">Prepared</span> Only</span>
             </label>
+          </div>
+
+          {/* Selection Controls */}
+          <div className="spellbook-controls">
             <div className="spellbook-actions">
               <button
                 className="btn-secondary"

@@ -232,12 +232,12 @@
   min-width: 120px;
 }
 
-/* Mobile: Buttons take 50% width, results text on own line */
+/* Mobile: Buttons take 50% width, results text on own line, checkbox below */
 @media (max-width: 767px) {
   .spellbook-filter-header {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
     gap: var(--space-3);
   }
 
@@ -255,6 +255,12 @@
     grid-column: 1 / -1;
     grid-row: 2;
     text-align: center;
+  }
+
+  .spellbook-filter-header .filter-checkbox-label {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-content: center;
   }
 }
 

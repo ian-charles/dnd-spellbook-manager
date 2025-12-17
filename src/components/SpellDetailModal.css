@@ -1,26 +1,15 @@
 /**
- * Spell Detail Modal Styles
+ * Spell Detail Modal Styles (Mobile-First)
  *
- * Desktop/Tablet: Full modal overlay
- * Mobile: Bottom sheet that slides up
+ * Base: Mobile bottom sheet that slides up from bottom
+ * 425px+: Desktop/Tablet centered modal overlay
  */
 
-/* Backdrop */
-.spell-detail-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1100;
-  padding: var(--space-4);
-}
+/* ==========================================
+   SHARED STYLES (ALL VIEWPORTS)
+   ========================================== */
 
-/* Feedback animation - shared across all viewports */
+/* Feedback animation */
 @keyframes rise-and-fade {
   0% {
     transform: translate(-50%, -50%) scale(1);
@@ -55,68 +44,331 @@
   animation: rise-and-fade 1s ease-out;
 }
 
-/* Desktop/Tablet Modal */
-@media (min-width: 426px) {
+/* ==========================================
+   BASE MOBILE STYLES (< 425px)
+   Bottom sheet that slides up from bottom
+   ========================================== */
+
+/* Backdrop - mobile: align to bottom, no padding */
+.spell-detail-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1100;
+  padding: 0;
+}
+
+/* Mobile bottom sheet animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Modal - mobile: bottom sheet */
+.spell-detail-modal {
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  outline: none;
+}
+
+.spell-detail-modal:focus-visible {
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3), 0 0 0 3px light-dark(rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.3));
+}
+
+/* Header - mobile: draggable with handle */
+.spell-detail-modal-header {
+  border-bottom: 2px solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  padding: 1rem;
+}
+
+.spell-detail-modal-header:active {
+  cursor: grabbing;
+}
+
+/* Swipe handle (mobile drag indicator) */
+.spell-detail-modal-header::before {
+  content: '';
+  position: absolute;
+  top: var(--space-2);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: var(--color-border-primary);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+}
+
+.spell-detail-modal-header-content {
+  display: grid;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.spell-detail-modal-header-content.with-prep-icon {
+  grid-template-columns: 40px 1fr 40px;
+}
+
+.spell-detail-modal-header-content.no-prep-icon {
+  grid-template-columns: 1fr 40px;
+}
+
+.spell-prep-status-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.spell-prep-status-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.spell-prep-status-icon.unprepared {
+  color: var(--color-text-secondary);
+}
+
+.spell-prep-status-icon.prepared {
+  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+}
+
+.spell-detail-modal-header h2 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-heading);
+  text-align: center;
+  flex: 1;
+}
+
+/* Close button - mobile: hidden (swipe to dismiss) */
+.spell-detail-modal-close {
+  display: none;
+}
+
+/* Body - mobile */
+.spell-detail-modal-body {
+  overflow-y: auto;
+  padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+  flex: 1;
+}
+
+/* Footer - mobile */
+.spell-detail-modal-footer {
+  padding: var(--space-3);
+  border-top: 2px solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.spell-detail-modal-checkbox-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  justify-self: start;
+}
+
+.spell-detail-modal-footer-checkbox {
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  accent-color: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
+  flex-shrink: 0;
+}
+
+.spell-detail-modal-footer-center {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  justify-self: center;
+}
+
+.spell-detail-modal-external-link {
+  justify-self: end;
+}
+
+.spell-detail-modal-prep-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Buttons - mobile: smaller */
+.spell-detail-modal-prep-toggle {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  height: 32px;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+}
+
+.spell-detail-modal-prep-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.spell-detail-modal-prep-toggle:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+.spell-detail-modal-prep-toggle.prep-action {
+  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+}
+
+.spell-detail-modal-prep-toggle.prep-action:hover {
+  background: var(--color-hover);
+  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+}
+
+.spell-detail-modal-remove {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+}
+
+.spell-detail-modal-remove svg {
+  width: 18px;
+  height: 18px;
+}
+
+.spell-detail-modal-remove:hover {
+  background: var(--color-hover);
+  color: light-dark(rgb(220, 38, 38), rgb(248, 113, 113));
+}
+
+.spell-detail-modal-external-link {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-1);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.spell-detail-modal-external-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+.spell-detail-modal-external-link:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+/* ==========================================
+   DESKTOP/TABLET (425px+)
+   Centered modal overlay
+   ========================================== */
+
+@media (min-width: 425px) {
+  /* Backdrop - desktop: centered, with padding */
+  .spell-detail-modal-backdrop {
+    align-items: center;
+    padding: var(--space-4);
+  }
+
+  /* Modal - desktop: centered with max-width */
   .spell-detail-modal {
-    background: var(--color-bg-primary);
     border-radius: var(--radius-xl);
     max-width: 700px;
     width: 100%;
     max-height: 85vh;
-    display: flex;
-    flex-direction: column;
+    height: auto;
     box-shadow: var(--shadow-2xl);
     border: 1px solid var(--color-border-primary);
-    outline: none; /* Remove default focus outline */
+    animation: none;
   }
 
   .spell-detail-modal:focus-visible {
     box-shadow: var(--shadow-2xl), 0 0 0 3px light-dark(rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.3));
   }
 
+  /* Header - desktop: not draggable, no handle */
   .spell-detail-modal-header {
     padding: 1rem var(--space-6);
-    border-bottom: 2px solid var(--color-border-primary);
-    background: var(--color-bg-secondary);
+    cursor: default;
+    touch-action: auto;
+  }
+
+  .spell-detail-modal-header:active {
+    cursor: default;
+  }
+
+  /* Hide swipe handle on desktop */
+  .spell-detail-modal-header::before {
+    display: none;
   }
 
   .spell-detail-modal-header-content {
-    display: grid;
-    align-items: center;
     gap: var(--space-4);
   }
 
-  .spell-detail-modal-header-content.with-prep-icon {
-    grid-template-columns: 40px 1fr 40px;
-  }
-
-  .spell-detail-modal-header-content.no-prep-icon {
-    grid-template-columns: 1fr 40px;
-  }
-
-  .spell-prep-status-icon {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
-  .spell-prep-status-icon.unprepared {
-    color: var(--color-text-secondary);
-  }
-
-  .spell-prep-status-icon.prepared {
-    color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  .spell-prep-status-icon svg {
+    width: 24px;
+    height: 24px;
   }
 
   .spell-detail-modal-header h2 {
-    margin: 0;
     font-size: var(--font-size-2xl);
-    color: var(--color-text-heading);
-    text-align: center;
-    flex: 1;
   }
 
+  /* Show close button on desktop */
   .spell-detail-modal-close {
+    display: flex;
     background: transparent;
     border: none;
     font-size: 2rem;
@@ -126,7 +378,6 @@
     padding: var(--space-2);
     width: 40px;
     height: 40px;
-    display: flex;
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-md);
@@ -139,382 +390,66 @@
     color: var(--color-text-primary);
   }
 
+  /* Body - desktop */
   .spell-detail-modal-body {
-    overflow-y: auto;
-    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+    flex: 0 1 auto;
   }
 
+  /* Footer - desktop */
   .spell-detail-modal-footer {
     padding: var(--space-4);
-    border-top: 2px solid var(--color-border-primary);
-    background: var(--color-bg-secondary);
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
     gap: var(--space-4);
-  }
-
-  .spell-detail-modal-checkbox-wrapper {
-    position: relative;
-    flex-shrink: 0;
-    justify-self: start;
-  }
-
-  .spell-detail-modal-footer-checkbox {
-    width: 26px;
-    height: 26px;
-    cursor: pointer;
-    accent-color: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
-    flex-shrink: 0;
   }
 
   .spell-detail-modal-footer-center {
-    display: flex;
-    align-items: center;
     gap: var(--space-4);
-    justify-self: center;
   }
 
-  .spell-detail-modal-external-link {
-    justify-self: end;
-  }
-
-  .spell-detail-modal-prep-wrapper {
-    position: relative;
-    flex-shrink: 0;
-  }
-
+  /* Buttons - desktop: larger */
   .spell-detail-modal-prep-toggle {
-    position: relative;
-    background: transparent;
-    border: 1px solid var(--color-border-primary);
-    color: var(--color-text-secondary);
-    cursor: pointer;
     padding: var(--space-2) var(--space-3);
     height: 40px;
     min-width: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: var(--space-2);
     border-radius: var(--radius-md);
-    transition: all var(--transition-base);
-    flex-shrink: 0;
-    white-space: nowrap;
+    font-size: var(--font-size-base);
   }
 
-  .spell-detail-modal-prep-toggle:hover {
-    background: var(--color-hover);
-    color: var(--color-text-primary);
-  }
-
-  .spell-detail-modal-prep-toggle.prep-action {
-    color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
-  }
-
-  .spell-detail-modal-prep-toggle.prep-action:hover {
-    background: var(--color-hover);
-    color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
-  }
-
-  .spell-detail-modal-remove {
-    position: relative;
-    background: transparent;
-    border: 1px solid var(--color-border-primary);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    padding: var(--space-2) var(--space-3);
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-base);
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-
-  .spell-detail-modal-remove:hover {
-    background: var(--color-hover);
-    color: light-dark(rgb(220, 38, 38), rgb(248, 113, 113));
-  }
-
-  .spell-detail-modal-external-link {
-    background: transparent;
-    border: none;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    padding: var(--space-2);
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-base);
-    text-decoration: none;
-    flex-shrink: 0;
-  }
-
-  .spell-detail-modal-external-link:hover {
-    background: var(--color-hover);
-    color: var(--color-text-primary);
-  }
-}
-
-/* Mobile Bottom Sheet */
-@media (max-width: 425px) {
-  .spell-detail-modal-backdrop {
-    align-items: flex-end;
-    padding: 0;
-  }
-
-  .spell-detail-modal {
-    background: var(--color-bg-primary);
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    width: 100%;
-    height: 90vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s ease-out;
-    outline: none; /* Remove default focus outline */
-  }
-
-  .spell-detail-modal:focus-visible {
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3), 0 0 0 3px light-dark(rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.3));
-  }
-
-  @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  .spell-detail-modal-header {
-    border-bottom: 2px solid var(--color-border-primary);
-    background: var(--color-bg-secondary);
-    position: relative;
-    cursor: grab;
-    touch-action: none;
-    padding: 1rem;
-  }
-
-  .spell-detail-modal-header:active {
-    cursor: grabbing;
-  }
-
-  .spell-detail-modal-header::before {
-    content: '';
-    position: absolute;
-    top: var(--space-2);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 4px;
-    background: var(--color-border-primary);
-    border-radius: var(--radius-full);
-    pointer-events: none;
-  }
-
-  .spell-detail-modal-header-content {
-    display: grid;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .spell-detail-modal-header-content.with-prep-icon {
-    grid-template-columns: 40px 1fr 40px;
-  }
-
-  .spell-detail-modal-header-content.no-prep-icon {
-    grid-template-columns: 1fr 40px;
-  }
-
-  .spell-prep-status-icon {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
-  .spell-prep-status-icon svg {
+  .spell-detail-modal-prep-toggle svg {
     width: 20px;
     height: 20px;
   }
 
-  .spell-prep-status-icon.unprepared {
-    color: var(--color-text-secondary);
-  }
-
-  .spell-prep-status-icon.prepared {
-    color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
-  }
-
-  .spell-detail-modal-header h2 {
-    margin: 0;
-    font-size: var(--font-size-xl);
-    color: var(--color-text-heading);
-    text-align: center;
-    flex: 1;
-  }
-
-  /* Hide close button on mobile - swipe down to dismiss */
-  .spell-detail-modal-close {
-    display: none;
-  }
-
-  .spell-detail-modal-body {
-    overflow-y: auto;
-    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
-    flex: 1;
-  }
-
-  .spell-detail-modal-footer {
-    padding: var(--space-3);
-    border-top: 2px solid var(--color-border-primary);
-    background: var(--color-bg-secondary);
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .spell-detail-modal-checkbox-wrapper {
-    position: relative;
-    flex-shrink: 0;
-    justify-self: start;
-  }
-
-  .spell-detail-modal-footer-checkbox {
-    width: 26px;
-    height: 26px;
-    cursor: pointer;
-    accent-color: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
-    flex-shrink: 0;
-  }
-
-  .spell-detail-modal-checkbox-wrapper.animating .feedback-text {
-    animation: rise-and-fade 1s ease-out;
-  }
-
-  .spell-detail-modal-footer-center {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    justify-self: center;
-  }
-
-  .spell-detail-modal-external-link {
-    justify-self: end;
-  }
-
-  .spell-detail-modal-prep-wrapper {
-    position: relative;
-    flex-shrink: 0;
-  }
-
-  .spell-detail-modal-prep-toggle {
-    position: relative;
-    background: transparent;
-    border: 1px solid var(--color-border-primary);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    padding: var(--space-1) var(--space-2);
-    height: 32px;
-    min-width: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-1);
-    border-radius: var(--radius-full);
-    transition: all var(--transition-base);
-    flex-shrink: 0;
-    white-space: nowrap;
-    font-size: var(--font-size-sm);
-  }
-
-  .spell-detail-modal-prep-toggle svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .spell-detail-modal-prep-toggle:hover {
-    background: var(--color-hover);
-    color: var(--color-text-primary);
-  }
-
-  .spell-detail-modal-prep-toggle.prep-action {
-    color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
-  }
-
-  .spell-detail-modal-prep-toggle.prep-action:hover {
-    background: var(--color-hover);
-    color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
-  }
-
   .spell-detail-modal-remove {
-    position: relative;
-    background: transparent;
-    border: 1px solid var(--color-border-primary);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    padding: var(--space-1) var(--space-2);
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-1);
-    border-radius: var(--radius-full);
-    transition: all var(--transition-base);
-    flex-shrink: 0;
-    white-space: nowrap;
-    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+    height: 40px;
+    gap: var(--space-2);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
   }
 
   .spell-detail-modal-remove svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .spell-detail-modal-remove:hover {
-    background: var(--color-hover);
-    color: light-dark(rgb(220, 38, 38), rgb(248, 113, 113));
+    width: 20px;
+    height: 20px;
   }
 
   .spell-detail-modal-external-link {
-    background: transparent;
-    border: none;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    padding: var(--space-1);
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-full);
-    transition: all var(--transition-base);
-    text-decoration: none;
-    flex-shrink: 0;
+    padding: var(--space-2);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
   }
 
   .spell-detail-modal-external-link svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
-
-  .spell-detail-modal-external-link:hover {
-    background: var(--color-hover);
-    color: var(--color-text-primary);
-  }
-
 }
 
-/* Shared content styles */
+/* ==========================================
+   SHARED CONTENT STYLES (ALL VIEWPORTS)
+   ========================================== */
+
 .spell-meta {
   display: flex;
   align-items: center;

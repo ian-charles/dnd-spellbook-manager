@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Spellbook, CreateSpellbookInput, SpellSlots } from '../types/spellbook';
+import { Spellbook, CreateSpellbookInput, UpdateSpellbookInput, SpellSlots } from '../types/spellbook';
 import { exportImportService } from '../services/exportImport.service';
 import { MESSAGES } from '../constants/messages';
 import { MAX_IMPORT_FILE_SIZE } from '../constants/gameRules';
@@ -8,6 +8,7 @@ import { AlertDialogState } from './useDialogs';
 interface UseSpellbookOperationsProps {
     spellbooks: Spellbook[];
     onCreateSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
+    onUpdateSpellbook: (id: string, input: UpdateSpellbookInput) => Promise<void>;
     onDeleteSpellbook: (id: string) => Promise<void>;
     onRefreshSpellbooks: () => Promise<void>;
     onAddSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
@@ -47,6 +48,7 @@ interface UseSpellbookOperationsProps {
 export function useSpellbookOperations({
     spellbooks,
     onCreateSpellbook,
+    onUpdateSpellbook,
     onDeleteSpellbook,
     onRefreshSpellbooks,
     onAddSpellsToSpellbook,
@@ -54,6 +56,7 @@ export function useSpellbookOperations({
     closeConfirm,
 }: UseSpellbookOperationsProps) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [editSpellbookId, setEditSpellbookId] = useState<string | null>(null);
     const [copyData, setCopyData] = useState<{
         name: string;
         spellcastingAbility?: 'INT' | 'WIS' | 'CHA';
@@ -97,17 +100,28 @@ export function useSpellbookOperations({
     };
 
     /**
-     * Handles spellbook creation.
-     * 
+     * Handles spellbook creation or update.
+     *
      * Error Handling Strategy:
-     * - Creation errors are propagated to the caller (modal form) to be displayed inline.
+     * - Creation/update errors are propagated to the caller (modal form) to be displayed inline.
      * - Copy errors (partial or total) are handled via AlertDialog since the creation itself succeeded.
      */
-    const handleCreateSpellbook = async (input: CreateSpellbookInput) => {
+    const handleCreateOrUpdateSpellbook = async (input: CreateSpellbookInput) => {
         abortControllerRef.current = new AbortController();
         const signal = abortControllerRef.current.signal;
 
         try {
+            // If editing an existing spellbook, update it
+            if (editSpellbookId) {
+                await onUpdateSpellbook(editSpellbookId, input);
+                if (mountedRef.current && !signal.aborted) {
+                    setCreateModalOpen(false);
+                    setEditSpellbookId(null);
+                }
+                return;
+            }
+
+            // Otherwise, create a new spellbook
             const newSpellbook = await onCreateSpellbook(input);
 
             // If this is a copy operation, copy all spells from the source spellbook
@@ -160,9 +174,29 @@ export function useSpellbookOperations({
             }
         } finally {
             abortControllerRef.current = null;
-            // Ensure spellbooks list is refreshed after creation (and potential copying)
+            // Ensure spellbooks list is refreshed after creation/update (and potential copying)
             await onRefreshSpellbooks();
         }
+    };
+
+    /**
+     * Opens the edit modal for a spellbook's stats.
+     *
+     * @param id - ID of the spellbook to edit
+     */
+    const handleEditStats = (id: string) => {
+        const spellbook = spellbooks.find(sb => sb.id === id);
+        if (!spellbook) return;
+
+        setEditSpellbookId(id);
+        setCopyData({
+            name: spellbook.name,
+            spellcastingAbility: spellbook.spellcastingAbility,
+            spellAttackModifier: spellbook.spellAttackModifier,
+            spellSaveDC: spellbook.spellSaveDC,
+            maxSpellSlots: spellbook.maxSpellSlots,
+        });
+        setCreateModalOpen(true);
     };
 
     /**
@@ -316,12 +350,15 @@ export function useSpellbookOperations({
     return {
         createModalOpen,
         setCreateModalOpen,
+        editSpellbookId,
+        setEditSpellbookId,
         copyData,
         setCopyData,
         copyProgress,
         importing,
         fileInputRef,
-        handleCreateSpellbook,
+        handleCreateOrUpdateSpellbook,
+        handleEditStats,
         handleCopy,
         handleConfirmDelete,
         handleExport,

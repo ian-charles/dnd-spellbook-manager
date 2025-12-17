@@ -107,7 +107,7 @@
 .spellbooks-table tbody tr {
   display: grid;
   grid-template-columns: auto auto auto;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto;
   margin-bottom: var(--space-4);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-lg);
@@ -183,17 +183,9 @@
   display: none;
 }
 
-/* Row 3: Actions - spans all columns */
-.spellbook-actions {
-  grid-row: 3;
-  grid-column: 1 / -1;
-  display: flex;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-
-.spellbook-actions button {
-  flex: 1;
+/* Actions cell - hidden on mobile, visible on desktop */
+.spellbook-list-actions {
+  display: none;
 }
 
 /* ==========================================
@@ -450,6 +442,14 @@
   cursor: pointer;
   transition: background var(--transition-base);
   border-bottom: 1px solid var(--color-border-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.context-menu-item svg {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
 }
 
 .context-menu-item:last-child {
@@ -461,6 +461,10 @@
 }
 
 .context-menu-item-danger {
+  color: var(--color-error);
+}
+
+.context-menu-item-danger svg {
   color: var(--color-error);
 }
 
@@ -616,13 +620,11 @@
     color: var(--color-text-secondary);
   }
 
-  /* Reset actions to flex row */
-  .spellbook-actions {
-    display: flex !important;
-    text-align: right;
-    gap: var(--space-2);
-    justify-content: flex-end;
-    margin-top: 0;
+  /* Show actions column on desktop - centered both ways */
+  .spellbook-list-actions {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
   }
 
   /* Button padding adjustments */

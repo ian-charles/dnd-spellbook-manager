@@ -1,7 +1,8 @@
 import { Spellbook } from '../../types/spellbook';
 import { SortIcon } from '../SortIcon';
 import { SortDirection } from '../../hooks/useSpellSorting';
-import { BookOpenText, CalendarSync, Copy, Dices, Sword, Trash2, WandSparkles } from 'lucide-react';
+import { BookOpenText, CalendarSync, Dices, Sword, WandSparkles } from 'lucide-react';
+import { SpellbookActionsMenu } from './SpellbookActionsMenu';
 
 export type SortColumn = 'name' | 'spells' | 'ability' | 'attack' | 'saveDC' | 'updated';
 
@@ -17,8 +18,10 @@ export interface SpellbookListTableProps {
     sortDirection: SortDirection;
     /** Callback to update sort column */
     onSort: (column: SortColumn) => void;
-    /** Callback when a spellbook is clicked */
+    /** Callback when a spellbook is clicked (navigates to spellbook) */
     onSpellbookClick: (id: string) => void;
+    /** Callback when Edit Stats is clicked (navigates to spellbook and opens edit dialog) */
+    onEditStats: (id: string) => void;
     /** Callback when the copy button is clicked */
     onCopy: (id: string) => void;
     /** Callback when the delete button is clicked */
@@ -37,6 +40,7 @@ export function SpellbookListTable({
     sortDirection,
     onSort,
     onSpellbookClick,
+    onEditStats,
     onCopy,
     onDelete,
     onTouchStart,
@@ -122,31 +126,15 @@ export function SpellbookListTable({
                             <CalendarSync size={14} className="mobile-stat-icon" />
                             {new Date(spellbook.updated).toLocaleDateString()}
                         </td>
-                        <td className="spellbook-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
-                            <button
-                                className="btn-icon-secondary"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onCopy(spellbook.id);
-                                }}
-                                data-testid={`btn-copy-spellbook-${spellbook.id}`}
-                                title="Copy Spellbook"
-                                aria-label={`Copy spellbook ${spellbook.name}`}
-                            >
-                                <Copy size={16} />
-                            </button>
-                            <button
-                                className="btn-icon-danger"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onDelete(spellbook.id, spellbook.name);
-                                }}
-                                data-testid={`btn-delete-spellbook-${spellbook.id}`}
-                                title="Delete Spellbook"
-                                aria-label={`Delete spellbook ${spellbook.name}`}
-                            >
-                                <Trash2 size={16} />
-                            </button>
+                        <td className="spellbook-list-actions" data-label="Actions" onClick={(e) => e.stopPropagation()}>
+                            <SpellbookActionsMenu
+                                spellbookId={spellbook.id}
+                                spellbookName={spellbook.name}
+                                onEditSpells={() => onSpellbookClick(spellbook.id)}
+                                onEditStats={() => onEditStats(spellbook.id)}
+                                onCopy={() => onCopy(spellbook.id)}
+                                onDelete={() => onDelete(spellbook.id, spellbook.name)}
+                            />
                         </td>
                     </tr>
                 ))}

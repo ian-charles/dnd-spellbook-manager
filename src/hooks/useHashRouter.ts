@@ -24,6 +24,10 @@ export interface RouteState {
   queryParams: URLSearchParams;
 }
 
+interface NavigateToSpellbookDetailOptions {
+  openEdit?: boolean;
+}
+
 interface HashRouterReturn {
   currentView: View;
   selectedSpellbookId: string | null;
@@ -31,7 +35,7 @@ interface HashRouterReturn {
   queryParams: URLSearchParams;
   navigateToBrowse: () => void;
   navigateToSpellbooks: () => void;
-  navigateToSpellbookDetail: (spellbookId: string) => void;
+  navigateToSpellbookDetail: (spellbookId: string, options?: NavigateToSpellbookDetailOptions) => void;
   navigateToSpellDetail: (spellId: string) => void;
 }
 
@@ -116,8 +120,10 @@ export function useHashRouter(): HashRouterReturn {
     if (typeof window !== 'undefined') window.location.hash = '/spellbooks';
   };
 
-  const navigateToSpellbookDetail = (spellbookId: string) => {
-    if (typeof window !== 'undefined') window.location.hash = `/spellbooks/${spellbookId}`;
+  const navigateToSpellbookDetail = (spellbookId: string, options?: NavigateToSpellbookDetailOptions) => {
+    if (typeof window === 'undefined') return;
+    const hash = `/spellbooks/${spellbookId}${options?.openEdit ? '?edit=true' : ''}`;
+    window.location.hash = hash;
   };
 
   const navigateToSpellDetail = (spellId: string) => {

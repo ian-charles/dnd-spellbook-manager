@@ -17,14 +17,16 @@ import { useSpellbookDetailLogic } from '../hooks/useSpellbookDetailLogic';
 
 interface SpellbookDetailProps {
   spellbookId: string;
+  openEditModal?: boolean;
   onBack: () => void;
   onCopySpellbook?: (id: string) => void;
   onDeleteSpellbook?: () => void;
 }
 
-export function SpellbookDetail({ spellbookId, onBack, onCopySpellbook, onDeleteSpellbook }: SpellbookDetailProps) {
+export function SpellbookDetail({ spellbookId, openEditModal, onBack, onCopySpellbook, onDeleteSpellbook }: SpellbookDetailProps) {
   const contextValue = useSpellbookDetailLogic({
     spellbookId,
+    openEditModal,
     onBack,
     onCopySpellbook,
     onDeleteSpellbook,

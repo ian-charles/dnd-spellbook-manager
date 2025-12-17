@@ -17,11 +17,18 @@ export function useContextMenu<T>() {
     const [contextMenu, setContextMenu] = useState<ContextMenuState<T> | null>(null);
 
     useEffect(() => {
+        if (!contextMenu) return;
+
         const handleClickOutside = () => setContextMenu(null);
-        if (contextMenu) {
-            document.addEventListener('click', handleClickOutside);
-            return () => document.removeEventListener('click', handleClickOutside);
-        }
+        const handleScroll = () => setContextMenu(null);
+
+        document.addEventListener('click', handleClickOutside);
+        window.addEventListener('scroll', handleScroll, true); // capture phase to catch all scroll events
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+            window.removeEventListener('scroll', handleScroll, true);
+        };
     }, [contextMenu]);
 
     const openContextMenu = useCallback((e: React.TouchEvent | React.MouseEvent, data: T) => {

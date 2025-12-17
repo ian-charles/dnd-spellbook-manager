@@ -2,11 +2,12 @@ import { useRef } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
+import { WandSparkles, SquarePen, Copy, Trash2 } from 'lucide-react';
 
 import LoadingSpinner from './LoadingSpinner';
 import { SpellbookListHeader } from './spellbook-list/SpellbookListHeader';
 import { SpellbookListTable } from './spellbook-list/SpellbookListTable';
-import { CreateSpellbookInput, Spellbook } from '../types/spellbook';
+import { CreateSpellbookInput, UpdateSpellbookInput, Spellbook } from '../types/spellbook';
 import { MESSAGES } from '../constants/messages';
 import { useLongPress } from '../hooks/useLongPress';
 import { useDialogs } from '../hooks/useDialogs';
@@ -20,6 +21,7 @@ interface SpellbookListProps {
   loading: boolean;
   onSpellbookClick: (spellbookId: string) => void;
   onCreateSpellbook: (input: CreateSpellbookInput) => Promise<Spellbook>;
+  onUpdateSpellbook: (id: string, input: UpdateSpellbookInput) => Promise<void>;
   onDeleteSpellbook: (id: string) => Promise<void>;
   onRefreshSpellbooks: () => Promise<void>;
   onAddSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
@@ -30,6 +32,7 @@ export function SpellbookList({
   loading,
   onSpellbookClick,
   onCreateSpellbook,
+  onUpdateSpellbook,
   onDeleteSpellbook,
   onRefreshSpellbooks,
   onAddSpellsToSpellbook,
@@ -56,12 +59,15 @@ export function SpellbookList({
   const {
     createModalOpen,
     setCreateModalOpen,
+    editSpellbookId,
+    setEditSpellbookId,
     copyData,
     setCopyData,
     copyProgress,
     importing,
     fileInputRef,
-    handleCreateSpellbook,
+    handleCreateOrUpdateSpellbook,
+    handleEditStats,
     handleCopy,
     handleConfirmDelete,
     handleExport,
@@ -71,6 +77,7 @@ export function SpellbookList({
   } = useSpellbookOperations({
     spellbooks,
     onCreateSpellbook,
+    onUpdateSpellbook,
     onDeleteSpellbook,
     onRefreshSpellbooks,
     onAddSpellsToSpellbook,
@@ -108,12 +115,21 @@ export function SpellbookList({
     onTouchStartHook(e);
   };
 
-  const handleContextMenuAction = (action: 'copy' | 'delete', spellbookId: string, spellbookName: string) => {
+  const handleContextMenuAction = (action: 'editSpells' | 'editStats' | 'copy' | 'delete', spellbookId: string, spellbookName: string) => {
     closeContextMenu();
-    if (action === 'copy') {
-      handleCopy(spellbookId);
-    } else {
-      showConfirm(spellbookId, spellbookName);
+    switch (action) {
+      case 'editSpells':
+        onSpellbookClick(spellbookId);
+        break;
+      case 'editStats':
+        handleEditStats(spellbookId);
+        break;
+      case 'copy':
+        handleCopy(spellbookId);
+        break;
+      case 'delete':
+        showConfirm(spellbookId, spellbookName);
+        break;
     }
   };
 
@@ -185,6 +201,7 @@ export function SpellbookList({
             sortDirection={sortDirection}
             onSort={handleSort}
             onSpellbookClick={onSpellbookClick}
+            onEditStats={handleEditStats}
             onCopy={handleCopy}
             onDelete={handleDelete}
             onTouchStart={handleTouchStart}
@@ -194,18 +211,21 @@ export function SpellbookList({
         </>
       )}
 
-      {/* Create Spellbook Modal */}
+      {/* Create/Edit Spellbook Modal */}
       <CreateSpellbookModal
         isOpen={createModalOpen}
         onClose={() => {
           cancelOperation();
           setCreateModalOpen(false);
+          setEditSpellbookId(null);
           setCopyData(undefined);
         }}
-        onSubmit={handleCreateSpellbook}
-        existingNames={spellbooks.map(sb => sb.name)}
+        onSubmit={handleCreateOrUpdateSpellbook}
+        existingNames={editSpellbookId
+          ? spellbooks.filter(sb => sb.id !== editSpellbookId).map(sb => sb.name)
+          : spellbooks.map(sb => sb.name)}
         initialData={copyData}
-        title={copyData ? 'Copy Spellbook' : 'Create New Spellbook'}
+        title={editSpellbookId ? 'Edit Spellbook' : copyData?.sourceSpellbookId ? 'Copy Spellbook' : 'Create New Spellbook'}
         loadingText={copyProgress}
       />
 
@@ -242,15 +262,31 @@ export function SpellbookList({
         >
           <button
             className="context-menu-item"
+            onClick={() => handleContextMenuAction('editSpells', contextMenu.data.spellbookId, contextMenu.data.spellbookName)}
+          >
+            <WandSparkles size={16} />
+            Edit Spells
+          </button>
+          <button
+            className="context-menu-item"
+            onClick={() => handleContextMenuAction('editStats', contextMenu.data.spellbookId, contextMenu.data.spellbookName)}
+          >
+            <SquarePen size={16} />
+            Edit Stats
+          </button>
+          <button
+            className="context-menu-item"
             onClick={() => handleContextMenuAction('copy', contextMenu.data.spellbookId, contextMenu.data.spellbookName)}
           >
-            Copy Spellbook
+            <Copy size={16} />
+            Copy
           </button>
           <button
             className="context-menu-item context-menu-item-danger"
             onClick={() => handleContextMenuAction('delete', contextMenu.data.spellbookId, contextMenu.data.spellbookName)}
           >
-            Delete Spellbook
+            <Trash2 size={16} />
+            Delete
           </button>
         </div>
       )}

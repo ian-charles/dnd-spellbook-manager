@@ -17,6 +17,7 @@ describe('useSpellbookOperations', () => {
     ];
 
     const mockOnCreateSpellbook = vi.fn();
+    const mockOnUpdateSpellbook = vi.fn();
     const mockOnDeleteSpellbook = vi.fn();
     const mockOnRefreshSpellbooks = vi.fn();
     const mockOnAddSpellsToSpellbook = vi.fn();
@@ -26,6 +27,7 @@ describe('useSpellbookOperations', () => {
     const defaultProps = {
         spellbooks: mockSpellbooks,
         onCreateSpellbook: mockOnCreateSpellbook,
+        onUpdateSpellbook: mockOnUpdateSpellbook,
         onDeleteSpellbook: mockOnDeleteSpellbook,
         onRefreshSpellbooks: mockOnRefreshSpellbooks,
         onAddSpellsToSpellbook: mockOnAddSpellsToSpellbook,
@@ -47,7 +49,7 @@ describe('useSpellbookOperations', () => {
         const { result } = renderHook(() => useSpellbookOperations(defaultProps));
 
         await act(async () => {
-            await result.current.handleCreateSpellbook({ name: 'New Spellbook' });
+            await result.current.handleCreateOrUpdateSpellbook({ name: 'New Spellbook' });
         });
 
         expect(mockOnCreateSpellbook).toHaveBeenCalledWith({ name: 'New Spellbook' });
@@ -70,19 +72,20 @@ describe('useSpellbookOperations', () => {
 
         // Execute create (which triggers copy logic)
         await act(async () => {
-            await result.current.handleCreateSpellbook({ name: 'Copy' });
+            await result.current.handleCreateOrUpdateSpellbook({ name: 'Copy' });
         });
 
         expect(mockOnCreateSpellbook).toHaveBeenCalled();
         expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('2', ['fireball']);
         expect(mockOnRefreshSpellbooks).toHaveBeenCalled();
     });
+
     it('should handle create spellbook failure', async () => {
         const error = new Error('Create failed');
         mockOnCreateSpellbook.mockRejectedValue(error);
         const { result } = renderHook(() => useSpellbookOperations(defaultProps));
 
-        await expect(result.current.handleCreateSpellbook({ name: 'Fail' }))
+        await expect(result.current.handleCreateOrUpdateSpellbook({ name: 'Fail' }))
             .rejects.toThrow('Create failed');
     });
 
@@ -159,7 +162,7 @@ describe('useSpellbookOperations', () => {
         mockOnAddSpellsToSpellbook.mockRejectedValue(new Error('Failed to add spells'));
 
         await act(async () => {
-            await result.current.handleCreateSpellbook({ name: 'Copy' });
+            await result.current.handleCreateOrUpdateSpellbook({ name: 'Copy' });
         });
 
         expect(mockSetAlertDialog).toHaveBeenCalledWith(expect.objectContaining({

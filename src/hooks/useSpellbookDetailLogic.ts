@@ -7,6 +7,7 @@ import { SpellbookDetailContextType } from '../types/spellbookDetail';
 
 interface UseSpellbookDetailLogicProps {
     spellbookId: string;
+    openEditModal?: boolean;
     onBack: () => void;
     onCopySpellbook?: (id: string) => void;
     onDeleteSpellbook?: () => void;
@@ -14,6 +15,7 @@ interface UseSpellbookDetailLogicProps {
 
 export function useSpellbookDetailLogic({
     spellbookId,
+    openEditModal,
     onBack,
     onCopySpellbook,
     onDeleteSpellbook,
@@ -91,6 +93,22 @@ export function useSpellbookDetailLogic({
             setEnrichedSpells(enriched);
         }
     }, [spellbooks, spellbookId]);
+
+    // Open edit modal on mount if requested via URL query param
+    const openEditModalHandledRef = useRef(false);
+    useEffect(() => {
+        if (openEditModal && !openEditModalHandledRef.current) {
+            openEditModalHandledRef.current = true;
+            setEditModalOpen(true);
+            // Clear the query param from URL to avoid re-opening on navigation
+            if (typeof window !== 'undefined') {
+                const hash = window.location.hash;
+                if (hash.includes('?edit=true')) {
+                    window.location.hash = hash.replace('?edit=true', '');
+                }
+            }
+        }
+    }, [openEditModal]);
 
     const loadSpellbook = async () => {
         const sb = await getSpellbook(spellbookId);

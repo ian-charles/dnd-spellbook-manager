@@ -33,6 +33,7 @@ describe('SpellbookListTable', () => {
         sortDirection: 'asc' as const,
         onSort: vi.fn(),
         onSpellbookClick: vi.fn(),
+        onEditStats: vi.fn(),
         onCopy: vi.fn(),
         onDelete: vi.fn(),
         onTouchStart: vi.fn(),
@@ -80,16 +81,30 @@ describe('SpellbookListTable', () => {
         expect(defaultProps.onSpellbookClick).toHaveBeenCalledWith('1');
     });
 
-    it('should handle action buttons', () => {
+    it('should render actions menu', () => {
         render(<SpellbookListTable {...defaultProps} />);
 
-        const copyButtons = screen.getAllByTitle('Copy Spellbook');
-        fireEvent.click(copyButtons[0]);
-        expect(defaultProps.onCopy).toHaveBeenCalledWith('1');
+        // Check that Actions menu buttons are rendered
+        const actionsButtons = screen.getAllByTitle('Actions');
+        expect(actionsButtons.length).toBe(2);
+    });
 
-        const deleteButtons = screen.getAllByTitle('Delete Spellbook');
-        fireEvent.click(deleteButtons[0]);
-        expect(defaultProps.onDelete).toHaveBeenCalledWith('1', 'Spellbook 1');
+    it('should handle actions menu interactions', () => {
+        render(<SpellbookListTable {...defaultProps} />);
+
+        // Open the first actions menu
+        const actionsButtons = screen.getAllByTitle('Actions');
+        fireEvent.click(actionsButtons[0]);
+
+        // Check all menu options are present
+        expect(screen.getByText('Edit Spells')).toBeInTheDocument();
+        expect(screen.getByText('Edit Stats')).toBeInTheDocument();
+        expect(screen.getByText('Copy')).toBeInTheDocument();
+        expect(screen.getByText('Delete')).toBeInTheDocument();
+
+        // Test Copy action
+        fireEvent.click(screen.getByText('Copy'));
+        expect(defaultProps.onCopy).toHaveBeenCalledWith('1');
     });
 
     it('should handle touch events', () => {

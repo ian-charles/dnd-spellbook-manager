@@ -40,6 +40,7 @@ function App() {
     loading: spellbooksLoading,
     addSpellsToSpellbook,
     createSpellbook,
+    updateSpellbook,
     deleteSpellbook,
     refreshSpellbooks,
   } = useSpellbooks();
@@ -49,6 +50,7 @@ function App() {
     currentView,
     selectedSpellbookId,
     selectedSpellId,
+    queryParams,
     navigateToBrowse,
     navigateToSpellbooks,
     navigateToSpellbookDetail,
@@ -132,6 +134,7 @@ function App() {
           loading={spellbooksLoading}
           onSpellbookClick={navigateToSpellbookDetail}
           onCreateSpellbook={createSpellbook}
+          onUpdateSpellbook={updateSpellbook}
           onDeleteSpellbook={deleteSpellbook}
           onRefreshSpellbooks={refreshSpellbooks}
           onAddSpellsToSpellbook={addSpellsToSpellbook}
@@ -142,6 +145,7 @@ function App() {
       {currentView === 'spellbook-detail' && selectedSpellbookId && (
         <SpellbookDetail
           spellbookId={selectedSpellbookId}
+          openEditModal={queryParams?.get('edit') === 'true'}
           onBack={navigateToSpellbooks}
           onCopySpellbook={navigateToSpellbookDetail}
           onDeleteSpellbook={handleSpellbookDeleted}

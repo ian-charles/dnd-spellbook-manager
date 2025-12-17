@@ -112,6 +112,7 @@ describe('SpellbookList', () => {
   ];
 
   const mockOnSpellbookClick = vi.fn();
+  const mockOnEditStats = vi.fn();
   const mockOnCreateSpellbook = vi.fn();
   const mockOnDeleteSpellbook = vi.fn();
   const mockOnRefreshSpellbooks = vi.fn();
@@ -121,6 +122,7 @@ describe('SpellbookList', () => {
     spellbooks: [],
     loading: false,
     onSpellbookClick: mockOnSpellbookClick,
+    onEditStats: mockOnEditStats,
     onCreateSpellbook: mockOnCreateSpellbook,
     onDeleteSpellbook: mockOnDeleteSpellbook,
     onRefreshSpellbooks: mockOnRefreshSpellbooks,
@@ -209,10 +211,10 @@ describe('SpellbookList', () => {
     expect(mockOnSpellbookClick).toHaveBeenCalledWith('spellbook-1');
   });
 
-  it('should render delete button in actions column', () => {
+  it('should render actions menu in actions column', () => {
     render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
-    const deleteButtons = screen.getAllByTestId(/^btn-delete-spellbook-/);
-    expect(deleteButtons.length).toBe(2);
+    const actionsButtons = screen.getAllByTitle('Actions');
+    expect(actionsButtons.length).toBe(2);
   });
 
   it('should sort spellbooks by name', async () => {
@@ -243,7 +245,7 @@ describe('SpellbookList', () => {
       expect(rows[1].textContent).toContain('My First Spellbook');
     });
   });
-  it('should copy spellbook with all spells', async () => {
+  it('should copy spellbook with all spells via actions menu', async () => {
     // Mock the create response
     mockOnCreateSpellbook.mockResolvedValue({
       id: 'new-spellbook-id',
@@ -258,10 +260,14 @@ describe('SpellbookList', () => {
 
     render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
-    // Find the copy button for the first spellbook
-    const copyButtons = screen.getAllByTitle('Copy Spellbook');
-    expect(copyButtons.length).toBeGreaterThan(0);
-    fireEvent.click(copyButtons[0]);
+    // Find the actions menu button for the first spellbook and open it
+    const actionsButtons = screen.getAllByTitle('Actions');
+    expect(actionsButtons.length).toBeGreaterThan(0);
+    fireEvent.click(actionsButtons[0]);
+
+    // Find and click the Copy option in the dropdown
+    const copyOption = screen.getByText('Copy');
+    fireEvent.click(copyOption);
 
     // Check if create modal is opened
     expect(screen.getByTestId('create-spellbook-modal')).toBeTruthy();
@@ -289,7 +295,7 @@ describe('SpellbookList', () => {
     });
   });
 
-  it('should show progress feedback during copy', async () => {
+  it('should show progress feedback during copy via actions menu', async () => {
     // Mock create response
     mockOnCreateSpellbook.mockResolvedValue({
       id: 'new-spellbook-id',
@@ -304,9 +310,11 @@ describe('SpellbookList', () => {
 
     render(<SpellbookList {...defaultProps} spellbooks={mockSpellbooks} />);
 
-    // Start copy
-    const copyButtons = screen.getAllByTitle('Copy Spellbook');
-    fireEvent.click(copyButtons[0]);
+    // Open actions menu and start copy
+    const actionsButtons = screen.getAllByTitle('Actions');
+    fireEvent.click(actionsButtons[0]);
+    const copyOption = screen.getByText('Copy');
+    fireEvent.click(copyOption);
 
     // Click Create
     const createButton = screen.getByText('Create');

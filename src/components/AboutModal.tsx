@@ -70,9 +70,6 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
           </button>
         </div>
         <div className="about-modal-body">
-          <div className="about-modal-watermark">
-            <img src="/pixel-ian.png" alt="Hello!" className="about-watermark-img" />
-          </div>
           <div className="about-links">
             <a
               href="https://github.com/ian-charles/dnd-spellbook-manager"
@@ -105,6 +102,9 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
               <Coffee size={20} />
               <span>Ko-fi</span>
             </a>
+          </div>
+          <div className="about-avatar">
+            <img src="/pixel-ian.png" alt="Pixel art of Ian waving hello" className="about-avatar-img" />
           </div>
           <p>
             Hey! My name's Ian, and thanks for checking out my little app!

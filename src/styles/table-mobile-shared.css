@@ -493,8 +493,8 @@
    These enhance the base mobile styles for larger screens
    ========================================== */
 
-/* Large mobile: 2x2 grid (376px and up) */
-@media (min-width: 376px) {
+/* Large mobile: 2x2 grid (375px and up) */
+@media (min-width: 375px) {
   .spell-inline-expansion .spell-expanded-details,
   .spellbook-table .spell-inline-expansion .spell-expanded-details {
     grid-template-columns: 1fr 1fr;

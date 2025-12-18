@@ -75,7 +75,31 @@ export function Layout({
           <p className="app-subtitle">A D&D Magic Manager</p>
         </div>
         <nav className="app-nav">
-          {/* Utility nav items - visible on desktop, in "More" menu on laptop/tablet */}
+          {/* Primary navigation - always visible */}
+          <button
+            className={`nav-link ${currentView === 'browse' ? 'active' : ''}`}
+            onClick={onNavigateToBrowse}
+            aria-current={currentView === 'browse' ? 'page' : undefined}
+          >
+            Browse Spells
+          </button>
+          <button
+            className={`nav-link ${currentView === 'spellbooks' || currentView === 'spellbook-detail'
+                ? 'active'
+                : ''
+              }`}
+            onClick={onNavigateToSpellbooks}
+            data-testid="nav-spellbooks"
+            aria-current={
+              currentView === 'spellbooks' || currentView === 'spellbook-detail'
+                ? 'page'
+                : undefined
+            }
+          >
+            My Spellbooks ({spellbookCount})
+          </button>
+
+          {/* Utility nav items - visible on desktop, in "More" menu on tablet */}
           {utilityNavItems.map((item) => {
             if (item.href) {
               return (
@@ -105,30 +129,6 @@ export function Layout({
               </button>
             );
           })}
-
-          {/* Primary navigation - always visible */}
-          <button
-            className={`nav-link ${currentView === 'browse' ? 'active' : ''}`}
-            onClick={onNavigateToBrowse}
-            aria-current={currentView === 'browse' ? 'page' : undefined}
-          >
-            Browse Spells
-          </button>
-          <button
-            className={`nav-link ${currentView === 'spellbooks' || currentView === 'spellbook-detail'
-                ? 'active'
-                : ''
-              }`}
-            onClick={onNavigateToSpellbooks}
-            data-testid="nav-spellbooks"
-            aria-current={
-              currentView === 'spellbooks' || currentView === 'spellbook-detail'
-                ? 'page'
-                : undefined
-            }
-          >
-            My Spellbooks ({spellbookCount})
-          </button>
 
           {/* "More" menu - rightmost button on smaller screens */}
           <div className="tablet-only">

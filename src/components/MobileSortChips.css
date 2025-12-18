@@ -1,0 +1,71 @@
+/**
+ * MobileSortChips Component Styles
+ *
+ * Horizontal chip bar for mobile sorting.
+ * Hidden on tablet+ where table headers handle sorting.
+ * Follows existing .filter-btn patterns from SpellFilters.css.
+ */
+
+/* Container - visible on mobile only */
+.mobile-sort-chips {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  margin-bottom: var(--space-2);
+}
+
+/* "Sort:" label - styled as a chip to match the row */
+.mobile-sort-label {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+/* Chip row container */
+.mobile-sort-chips-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Individual chip - follows .filter-btn pattern */
+.mobile-sort-chip {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.mobile-sort-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-link);
+}
+
+/* Active state - similar to .filter-btn.active */
+.mobile-sort-chip.active {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent);
+  color: var(--color-text-link);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==========================================
+   RESPONSIVE BREAKPOINTS (Mobile-First)
+   ========================================== */
+
+/* Tablet+ (>= 768px) - Hide chip bar, table headers visible */
+@media (min-width: 768px) {
+  .mobile-sort-chips {
+    display: none;
+  }
+}

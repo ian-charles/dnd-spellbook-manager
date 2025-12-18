@@ -5,9 +5,11 @@ import { FilterModal } from './FilterModal';
 import { SpellTable } from './SpellTable';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 import { SelectSpellbookModal } from './SelectSpellbookModal';
+import { MobileSortChips } from './MobileSortChips';
 import { useSpellFiltering } from '../hooks/useSpellFiltering';
 import { useSpellSelection } from '../hooks/useSpellSelection';
 import { useSpellbookMutations } from '../hooks/useSpellbookMutations';
+import { useSpellSorting } from '../hooks/useSpellSorting';
 
 interface BrowseViewProps {
     spells: Spell[];
@@ -40,6 +42,14 @@ export function BrowseView({
         classes,
         sources,
     } = useSpellFiltering(spells, loading);
+
+    // Spell sorting state (lifted up for MobileSortChips sync)
+    const {
+        sortedData: sortedSpells,
+        sortColumn,
+        sortDirection,
+        handleSort,
+    } = useSpellSorting(filteredSpells);
 
     // Selected spells state
     const {
@@ -173,10 +183,18 @@ export function BrowseView({
                     Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
                 </button>
             </div>
+            <MobileSortChips
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                onSort={handleSort}
+            />
             <SpellTable
-                spells={filteredSpells}
+                spells={sortedSpells}
                 selectedSpellIds={selectedSpellIds}
                 onSelectionChange={setSelectedSpellIds}
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                onSort={handleSort}
             />
 
             {/* Select Spellbook Modal */}

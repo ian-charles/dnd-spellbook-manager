@@ -447,7 +447,8 @@ describe('SpellbookDetailView', () => {
 
       renderWithContext({ onSort });
 
-      const levelHeader = screen.getByText('Level');
+      // Click the table header (th element), not the mobile sort chip button
+      const levelHeader = screen.getByRole('columnheader', { name: /Level/ });
       await user.click(levelHeader);
 
       expect(onSort).toHaveBeenCalledWith('level');
@@ -459,7 +460,8 @@ describe('SpellbookDetailView', () => {
 
       renderWithContext({ onSort });
 
-      const schoolHeader = screen.getByText('School');
+      // Click the table header (th element), not the mobile sort chip button
+      const schoolHeader = screen.getByRole('columnheader', { name: /School/ });
       await user.click(schoolHeader);
 
       expect(onSort).toHaveBeenCalledWith('school');

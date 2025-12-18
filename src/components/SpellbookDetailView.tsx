@@ -18,9 +18,9 @@ import LoadingSpinner from './LoadingSpinner';
 import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
 import { SpellSlotsDisplay } from './spellbook-detail/SpellSlotsDisplay';
+import { MobileSortChips } from './MobileSortChips';
 import { SquarePen, Copy, Trash2 } from 'lucide-react';
 import './SpellbookDetail.css';
-
 
 import { useSpellbookDetail } from '../contexts/SpellbookDetailContext';
 
@@ -42,6 +42,9 @@ export function SpellbookDetailView() {
     schools,
     classes,
     sources,
+    sortColumn,
+    sortDirection,
+    onSort,
     onBack: _onBack,
     onSelectAll,
     onDeselectAll,
@@ -107,7 +110,6 @@ export function SpellbookDetailView() {
 
   const preparedCount = enrichedSpells.filter(s => s.prepared).length;
   const hasSelection = selectedSpellIds.size > 0;
-  const allSelected = enrichedSpells.length > 0 && selectedSpellIds.size === enrichedSpells.length;
 
   // Count selected spells hidden by filters
   const visibleSpellIds = new Set(sortedSpells.map(s => s.spell.id));
@@ -255,6 +257,12 @@ export function SpellbookDetailView() {
               {hiddenSelectedCount > 0 && ` (${hiddenSelectedCount} hidden by filters)`}
             </div>
           </div>
+
+          <MobileSortChips
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
+            onSort={onSort}
+          />
 
           <SpellbookSpellsTable />
 

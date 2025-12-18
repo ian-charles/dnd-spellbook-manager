@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Spell } from '../types/spell';
 import { SortIcon } from './SortIcon';
-import { useSpellSorting } from '../hooks/useSpellSorting';
+import { useSpellSorting, SortColumn, SortDirection } from '../hooks/useSpellSorting';
 import { useLongPress } from '../hooks/useLongPress';
 import { SpellTableRow } from './SpellTableRow';
 import { SpellDetailModal } from './SpellDetailModal';
@@ -12,6 +12,12 @@ interface SpellTableProps {
   spells: Spell[];
   selectedSpellIds?: Set<string>;
   onSelectionChange?: (selectedIds: Set<string>) => void;
+  /** Optional external sort column (for syncing with MobileSortChips) */
+  sortColumn?: SortColumn;
+  /** Optional external sort direction (for syncing with MobileSortChips) */
+  sortDirection?: SortDirection;
+  /** Optional external sort handler (for syncing with MobileSortChips) */
+  onSort?: (column: SortColumn) => void;
 }
 
 /**
@@ -34,11 +40,20 @@ interface SpellTableProps {
 export function SpellTable({
   spells,
   selectedSpellIds = new Set(),
-  onSelectionChange
+  onSelectionChange,
+  sortColumn: externalSortColumn,
+  sortDirection: externalSortDirection,
+  onSort: externalOnSort,
 }: SpellTableProps) {
   const [modalSpellId, setModalSpellId] = useState<string | null>(null);
-  const { sortedData: sortedSpells, sortColumn, sortDirection, handleSort } = useSpellSorting(spells);
+  const internalSort = useSpellSorting(spells);
   const masterCheckboxRef = useRef<HTMLInputElement>(null);
+
+  // Use external sort if provided, otherwise use internal
+  const sortColumn = externalSortColumn ?? internalSort.sortColumn;
+  const sortDirection = externalSortDirection ?? internalSort.sortDirection;
+  const handleSort = externalOnSort ?? internalSort.handleSort;
+  const sortedSpells = externalSortColumn ? spells : internalSort.sortedData;
 
   const handleRowClick = (spellId: string) => {
     setModalSpellId(spellId);

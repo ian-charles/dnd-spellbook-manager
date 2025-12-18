@@ -9,9 +9,11 @@
 
 
 
+import { useState } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 import { SpellDetailModal } from './SpellDetailModal';
+import { FilterModal } from './FilterModal';
 import LoadingSpinner from './LoadingSpinner';
 import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
@@ -23,9 +25,11 @@ import './SpellbookDetail.css';
 import { useSpellbookDetail } from '../contexts/SpellbookDetailContext';
 
 export function SpellbookDetailView() {
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const {
     spellbook,
     enrichedSpells,
+    sortedSpells,
     selectedSpellIds,
     confirmDialog,
     deleteSpellbookDialog,
@@ -34,6 +38,10 @@ export function SpellbookDetailView() {
     showPreparedOnly,
     allPrepared,
     modalSpellId,
+    filterReducer,
+    schools,
+    classes,
+    sources,
     onBack: _onBack,
     onSelectAll,
     onDeselectAll,
@@ -63,6 +71,30 @@ export function SpellbookDetailView() {
     : null;
   const modalSpell = modalEnrichedSpell?.spell || null;
 
+  // Calculate filter state
+  const hasActiveFilters =
+    filterReducer.state.searchText.length > 0 ||
+    (filterReducer.state.levelRange.min !== 0 || filterReducer.state.levelRange.max !== 9) ||
+    filterReducer.state.selectedSchools.length > 0 ||
+    filterReducer.state.selectedClasses.length > 0 ||
+    filterReducer.state.selectedSources.length > 0 ||
+    filterReducer.state.concentrationOnly ||
+    filterReducer.state.ritualOnly ||
+    filterReducer.state.verbalOnly ||
+    filterReducer.state.somaticOnly ||
+    filterReducer.state.materialOnly;
+
+  const activeFilterCount = [
+    filterReducer.state.selectedSchools.length > 0,
+    filterReducer.state.selectedClasses.length > 0,
+    filterReducer.state.selectedSources.length > 0,
+    filterReducer.state.levelRange.min !== 0 || filterReducer.state.levelRange.max !== 9,
+    filterReducer.state.concentrationOnly,
+    filterReducer.state.ritualOnly,
+    filterReducer.state.verbalOnly,
+    filterReducer.state.somaticOnly,
+    filterReducer.state.materialOnly,
+  ].filter(Boolean).length;
 
   // Loading state
   if (!spellbook) {
@@ -143,8 +175,38 @@ export function SpellbookDetailView() {
         </div>
       ) : (
         <>
-          {/* Filter and Selection Controls */}
-          <div className="spellbook-controls">
+          {/* Search Box */}
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search spells in spellbook..."
+              value={filterReducer.state.searchText}
+              onChange={(e) => filterReducer.setSearchText(e.target.value)}
+              className="search-input"
+              aria-label="Search spells"
+            />
+          </div>
+
+          {/* Filter Controls Bar */}
+          <div className="spellbook-filter-header">
+            <button
+              className="btn-secondary"
+              onClick={() => setFilterModalOpen(true)}
+              aria-label="Open filters"
+            >
+              Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+            </button>
+            <div className="filter-results-text">
+              Showing {sortedSpells.length} of {enrichedSpells.length} spells
+            </div>
+            <button
+              className="btn-clear-filters"
+              onClick={filterReducer.clearFilters}
+              disabled={!hasActiveFilters}
+              aria-label="Clear all active filters"
+            >
+              Clear Filters
+            </button>
             <label className="filter-checkbox-label">
               <input
                 type="checkbox"
@@ -154,6 +216,10 @@ export function SpellbookDetailView() {
               />
               <span>Show <span className="prepared-text">Prepared</span> Only</span>
             </label>
+          </div>
+
+          {/* Selection Controls */}
+          <div className="spellbook-controls">
             <div className="spellbook-actions">
               <button
                 className="btn-secondary"
@@ -255,6 +321,19 @@ export function SpellbookDetailView() {
         }}
         title="Copy Spellbook"
         loadingText="Copying..."
+      />
+
+      {/* Filter Modal */}
+      <FilterModal
+        isOpen={filterModalOpen}
+        onClose={() => setFilterModalOpen(false)}
+        {...filterReducer}
+        schools={schools}
+        classes={classes}
+        sources={sources}
+        filteredCount={sortedSpells.length}
+        totalCount={enrichedSpells.length}
+        selectedCount={selectedSpellIds.size}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import { Spellbook, CreateSpellbookInput, EnrichedSpell } from './spellbook';
 import { SortColumn, SortDirection } from '../hooks/useSpellSorting';
+import { UseFilterReducerReturn } from '../hooks/useFilterReducer';
 
 export interface SpellbookDetailContextType {
     spellbook: Spellbook | null;
@@ -22,6 +23,10 @@ export interface SpellbookDetailContextType {
     copyModalOpen: boolean;
     showPreparedOnly: boolean;
     allPrepared: boolean;
+    filterReducer: UseFilterReducerReturn;
+    schools: string[];
+    classes: string[];
+    sources: string[];
     onBack: () => void;
     onSort: (column: SortColumn) => void;
     onToggleSelected: (spellId: string) => void;

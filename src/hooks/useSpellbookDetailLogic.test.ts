@@ -27,6 +27,7 @@ describe('useSpellbookDetailLogic', () => {
     const mockGetSpellbook = vi.fn();
     const mockUpdateSpellbook = vi.fn();
     const mockTogglePrepared = vi.fn();
+    const mockSetSpellsPrepared = vi.fn();
     const mockRemoveSpellFromSpellbook = vi.fn();
 
     beforeEach(() => {
@@ -37,6 +38,7 @@ describe('useSpellbookDetailLogic', () => {
             getSpellbook: mockGetSpellbook,
             updateSpellbook: mockUpdateSpellbook,
             togglePrepared: mockTogglePrepared,
+            setSpellsPrepared: mockSetSpellsPrepared,
             removeSpellFromSpellbook: mockRemoveSpellFromSpellbook,
         });
 
@@ -189,14 +191,14 @@ describe('useSpellbookDetailLogic', () => {
         expect(result.current.selectedSpellIds.size).toBe(2);
         expect(result.current.allPrepared).toBe(true);
 
-        // Unprep all selected (should toggle both to unprepared)
+        // Unprep all selected (should set both to unprepared via batch operation)
         await act(async () => {
             await result.current.onPrepSelected();
         });
 
-        expect(mockTogglePrepared).toHaveBeenCalledWith('sb1', 'spell1');
-        expect(mockTogglePrepared).toHaveBeenCalledWith('sb1', 'spell2');
-        expect(mockTogglePrepared).toHaveBeenCalledTimes(2);
+        // Should use batch setSpellsPrepared with all spell IDs
+        expect(mockSetSpellsPrepared).toHaveBeenCalledWith('sb1', ['spell1', 'spell2'], false);
+        expect(mockSetSpellsPrepared).toHaveBeenCalledTimes(1);
 
         // Selection should be cleared after prep/unprep
         await waitFor(() => {

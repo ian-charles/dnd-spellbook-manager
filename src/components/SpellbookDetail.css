@@ -362,25 +362,41 @@
   color: white;
 }
 
+/* Consistent width for toggle buttons */
+.spellbook-actions .btn-select-toggle {
+  min-width: 6.5rem;
+}
+
+.spellbook-actions .btn-prep-toggle {
+  min-width: 4.5rem;
+}
+
 .spellbook-actions .btn-prep {
-  background: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
-  color: white;
-  border-color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
-  font-weight: 600;
+  background: var(--color-warning);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-warning);
+  font-weight: var(--font-weight-semibold);
 }
 
 .spellbook-actions .btn-prep:hover:not(:disabled) {
-  background: light-dark(rgb(161, 98, 7), rgb(202, 138, 4));
+  background: var(--color-warning-hover);
 }
 
 .spellbook-actions .btn-unprep {
-  background: light-dark(rgb(100, 100, 100), rgb(115, 115, 115));
-  color: white;
-  border-color: light-dark(rgb(100, 100, 100), rgb(115, 115, 115));
+  background: var(--color-neutral);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-neutral);
 }
 
 .spellbook-actions .btn-unprep:hover:not(:disabled) {
-  background: light-dark(rgb(80, 80, 80), rgb(95, 95, 95));
+  background: var(--color-neutral-hover);
+}
+
+.selection-count-text {
+  width: 100%;
+  text-align: center;
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
 }
 
 .filter-checkbox-label {

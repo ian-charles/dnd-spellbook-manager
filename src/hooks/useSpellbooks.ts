@@ -92,6 +92,11 @@ export function useSpellbooks() {
     await reloadSpellbook();
   };
 
+  const setSpellsPrepared = async (spellbookId: string, spellIds: string[], prepared: boolean) => {
+    await storageService.setSpellsPrepared(spellbookId, spellIds, prepared);
+    await reloadSpellbook();
+  };
+
   const updateSpellNotes = async (spellbookId: string, spellId: string, notes: string) => {
     await storageService.updateSpellNotes(spellbookId, spellId, notes);
     await reloadSpellbook();
@@ -110,6 +115,7 @@ export function useSpellbooks() {
     addSpellsToSpellbook,
     removeSpellFromSpellbook,
     togglePrepared,
+    setSpellsPrepared,
     updateSpellNotes,
   };
 }

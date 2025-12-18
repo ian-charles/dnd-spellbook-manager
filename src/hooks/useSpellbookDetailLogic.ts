@@ -21,7 +21,7 @@ export function useSpellbookDetailLogic({
     onCopySpellbook,
     onDeleteSpellbook,
 }: UseSpellbookDetailLogicProps): SpellbookDetailContextType {
-    const { spellbooks, getSpellbook, createSpellbook, updateSpellbook, togglePrepared, removeSpellFromSpellbook, addSpellsToSpellbook, deleteSpellbook } = useSpellbooks();
+    const { spellbooks, getSpellbook, createSpellbook, updateSpellbook, togglePrepared, setSpellsPrepared, removeSpellFromSpellbook, addSpellsToSpellbook, deleteSpellbook } = useSpellbooks();
     const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
     const [enrichedSpells, setEnrichedSpells] = useState<EnrichedSpell[]>([]);
     const [modalSpellId, setModalSpellId] = useState<string | null>(null);
@@ -64,36 +64,6 @@ export function useSpellbookDetailLogic({
     useEffect(() => {
         loadSpellbook();
     }, [spellbookId]);
-
-    // Clear selections when filters change
-    const prevShowPreparedOnlyRef = useRef(showPreparedOnly);
-    const prevFilterStateRef = useRef(filterReducer.state);
-    useEffect(() => {
-        // Check if showPreparedOnly changed
-        const preparedChanged = prevShowPreparedOnlyRef.current !== showPreparedOnly;
-
-        // Check if any search/filter changed
-        const prevState = prevFilterStateRef.current;
-        const currState = filterReducer.state;
-        const filtersChanged =
-            prevState.searchText !== currState.searchText ||
-            JSON.stringify(prevState.levelRange) !== JSON.stringify(currState.levelRange) ||
-            JSON.stringify(prevState.selectedSchools) !== JSON.stringify(currState.selectedSchools) ||
-            JSON.stringify(prevState.selectedClasses) !== JSON.stringify(currState.selectedClasses) ||
-            JSON.stringify(prevState.selectedSources) !== JSON.stringify(currState.selectedSources) ||
-            prevState.concentrationOnly !== currState.concentrationOnly ||
-            prevState.ritualOnly !== currState.ritualOnly ||
-            prevState.verbalOnly !== currState.verbalOnly ||
-            prevState.somaticOnly !== currState.somaticOnly ||
-            prevState.materialOnly !== currState.materialOnly;
-
-        if ((preparedChanged || filtersChanged) && selectedSpellIds.size > 0) {
-            setSelectedSpellIds(new Set());
-        }
-
-        prevShowPreparedOnlyRef.current = showPreparedOnly;
-        prevFilterStateRef.current = currState;
-    }, [showPreparedOnly, filterReducer.state, selectedSpellIds.size]);
 
     // Watch for changes in spellbooks array and update local state
     useEffect(() => {
@@ -171,8 +141,9 @@ export function useSpellbookDetailLogic({
     };
 
     const handleSelectAll = () => {
-        const allSpellIds = new Set(enrichedSpells.map(s => s.spell.id));
-        setSelectedSpellIds(allSpellIds);
+        // Only select spells currently visible (after filtering)
+        const visibleSpellIds = new Set(sortedSpells.map(s => s.spell.id));
+        setSelectedSpellIds(prev => new Set([...prev, ...visibleSpellIds]));
     };
 
     const handleDeselectAll = () => {
@@ -185,17 +156,14 @@ export function useSpellbookDetailLogic({
         const selectedSpells = enrichedSpells.filter(s => selectedSpellIds.has(s.spell.id));
         const shouldPrep = !allPrepared;
 
-        // Toggle prepared status for all selected spells
-        const promises: Promise<void>[] = [];
-        for (const enrichedSpell of selectedSpells) {
-            // Only toggle if the spell doesn't already have the desired state
-            if (enrichedSpell.prepared !== shouldPrep) {
-                promises.push(togglePrepared(spellbookId, enrichedSpell.spell.id));
-            }
-        }
+        // Get spell IDs that need their prepared status changed
+        const spellIdsToUpdate = selectedSpells
+            .filter(s => s.prepared !== shouldPrep)
+            .map(s => s.spell.id);
 
-        await Promise.all(promises);
-        await loadSpellbook();
+        if (spellIdsToUpdate.length > 0) {
+            await setSpellsPrepared(spellbookId, spellIdsToUpdate, shouldPrep);
+        }
 
         // Deselect all after prep/unprep completion
         setSelectedSpellIds(new Set());

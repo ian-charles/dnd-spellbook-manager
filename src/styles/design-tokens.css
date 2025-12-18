@@ -71,6 +71,7 @@
 
   /* Semantic Colors - Warning */
   --color-warning: light-dark(#d97706, #fbbf24);
+  --color-warning-hover: light-dark(#b45309, #d97706);
   --color-warning-bg: light-dark(rgba(217, 119, 6, 0.1), rgba(251, 191, 36, 0.1));
   --color-warning-border: light-dark(rgba(217, 119, 6, 0.2), rgba(251, 191, 36, 0.2));
 
@@ -85,6 +86,10 @@
   --color-info: light-dark(#0284c7, #38bdf8);
   --color-info-bg: light-dark(rgba(2, 132, 199, 0.1), rgba(56, 189, 248, 0.1));
   --color-info-border: light-dark(rgba(2, 132, 199, 0.2), rgba(56, 189, 248, 0.2));
+
+  /* Semantic Colors - Neutral (for secondary actions like Unprep) */
+  --color-neutral: light-dark(#525252, #a3a3a3);
+  --color-neutral-hover: light-dark(#404040, #737373);
 
   /* Badge/Tag Colors */
   --color-badge-concentration-bg: light-dark(rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.25));

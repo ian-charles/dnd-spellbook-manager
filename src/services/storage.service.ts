@@ -153,22 +153,40 @@ export class StorageService {
    * Toggle prepared status of a spell
    */
   async toggleSpellPrepared(spellbookId: string, spellId: string): Promise<void> {
-    const spellbook = await db.spellbooks.get(spellbookId);
-    if (!spellbook) {
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
+      spellbook.spells = spellbook.spells.map((s) => {
+        if (s.spellId === spellId) {
+          return { ...s, prepared: !s.prepared };
+        }
+        return s;
+      });
+      spellbook.updated = new Date().toISOString();
+    });
+
+    if (updateCount === 0) {
       throw new Error(`Spellbook ${spellbookId} not found`);
     }
+  }
 
-    const updatedSpells = spellbook.spells.map((s) => {
-      if (s.spellId === spellId) {
-        return { ...s, prepared: !s.prepared };
-      }
-      return s;
+  /**
+   * Set prepared status for multiple spells at once
+   * Uses atomic update to avoid race conditions
+   */
+  async setSpellsPrepared(spellbookId: string, spellIds: string[], prepared: boolean): Promise<void> {
+    const spellIdSet = new Set(spellIds);
+    const updateCount = await db.spellbooks.update(spellbookId, (spellbook: Spellbook) => {
+      spellbook.spells = spellbook.spells.map((s) => {
+        if (spellIdSet.has(s.spellId)) {
+          return { ...s, prepared };
+        }
+        return s;
+      });
+      spellbook.updated = new Date().toISOString();
     });
 
-    await db.spellbooks.update(spellbookId, {
-      spells: updatedSpells,
-      updated: new Date().toISOString(),
-    });
+    if (updateCount === 0) {
+      throw new Error(`Spellbook ${spellbookId} not found`);
+    }
   }
 
   /**

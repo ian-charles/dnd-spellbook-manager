@@ -109,6 +109,10 @@ export function SpellbookDetailView() {
   const hasSelection = selectedSpellIds.size > 0;
   const allSelected = enrichedSpells.length > 0 && selectedSpellIds.size === enrichedSpells.length;
 
+  // Count selected spells hidden by filters
+  const visibleSpellIds = new Set(sortedSpells.map(s => s.spell.id));
+  const hiddenSelectedCount = Array.from(selectedSpellIds).filter(id => !visibleSpellIds.has(id)).length;
+
   return (
     <div className="spellbook-detail" data-testid="spellbook-detail">
       <div className="spellbook-detail-header">
@@ -222,15 +226,15 @@ export function SpellbookDetailView() {
           <div className="spellbook-controls">
             <div className="spellbook-actions">
               <button
-                className="btn-secondary"
-                onClick={allSelected ? onDeselectAll : onSelectAll}
+                className="btn-secondary btn-select-toggle"
+                onClick={hasSelection ? onDeselectAll : onSelectAll}
                 data-testid="btn-select-all"
                 disabled={enrichedSpells.length === 0}
               >
-                {allSelected ? 'Deselect All' : 'Select All'}
+                {hasSelection ? 'Deselect All' : 'Select All'}
               </button>
               <button
-                className={`btn-secondary ${!allPrepared && hasSelection ? 'btn-prep' : ''} ${allPrepared && hasSelection ? 'btn-unprep' : ''}`}
+                className={`btn-secondary btn-prep-toggle ${!allPrepared && hasSelection ? 'btn-prep' : ''} ${allPrepared && hasSelection ? 'btn-unprep' : ''}`}
                 onClick={onPrepSelected}
                 data-testid="btn-prep-selected"
                 disabled={!hasSelection}
@@ -245,6 +249,10 @@ export function SpellbookDetailView() {
               >
                 Remove
               </button>
+            </div>
+            <div className="selection-count-text">
+              {selectedSpellIds.size} spell{selectedSpellIds.size !== 1 ? 's' : ''} selected
+              {hiddenSelectedCount > 0 && ` (${hiddenSelectedCount} hidden by filters)`}
             </div>
           </div>
 

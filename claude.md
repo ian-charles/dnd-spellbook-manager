@@ -87,6 +87,34 @@ git diff --cached
 git diff --cached | grep -i "console.log\|debugger\|TODO"
 ```
 
+## Dev Server Management
+
+**CRITICAL: Before starting the dev server (`npm run dev`):**
+
+1. **Check if port 5173 is already in use:**
+   ```bash
+   netstat -ano | findstr :5173
+   ```
+
+2. **If a process is found, verify it belongs to THIS project:**
+   ```bash
+   wmic process where "ProcessId=<pid>" get CommandLine
+   ```
+   - If the command line contains `dnd-spellbook-manager`, kill it and proceed
+   - If it belongs to a DIFFERENT project, **stop and ask the user** how to proceed
+
+3. **Kill the process (only if it's this project):**
+   ```bash
+   taskkill /PID <pid> /F
+   ```
+
+4. **Then start the dev server** (it will use port 5173):
+   ```bash
+   npm run dev
+   ```
+
+**Never let Vite auto-select a different port.** Always free up 5173 first, but only kill processes belonging to this project.
+
 ## Code Style
 
 ### CSS and Design Tokens

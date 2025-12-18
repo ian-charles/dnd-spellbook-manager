@@ -9,6 +9,10 @@
 @import '../styles/table-desktop-shared.css';
 @import '../styles/table-mobile-shared.css';
 
+/* ==========================================================================
+   BASE STYLES (Mobile-first, < 375px)
+   ========================================================================== */
+
 .spellbook-detail {
   padding: 0;
   max-width: 1600px;
@@ -214,7 +218,6 @@
 }
 
 /* Filter header - search and filter controls */
-/* Mobile-first: Base styles for mobile (< 768px) */
 .spellbook-filter-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -253,72 +256,6 @@
   justify-content: center;
 }
 
-/* Tablet+ (768px+): Consolidated desktop styles */
-@media (min-width: 768px) {
-  .spellbook-filter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .spellbook-filter-header .btn-secondary,
-  .spellbook-filter-header .btn-clear-filters {
-    grid-column: unset;
-    grid-row: unset;
-  }
-
-  .spellbook-filter-header .filter-results-text {
-    grid-column: unset;
-    grid-row: unset;
-    margin-left: auto;
-    text-align: right;
-  }
-
-  .spellbook-filter-header .filter-checkbox-label {
-    grid-column: unset;
-    grid-row: unset;
-    justify-content: flex-start;
-  }
-
-  .spellbook-detail {
-    padding: 0 var(--space-8) var(--space-8);
-  }
-
-  .spellbook-header-top {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0;
-  }
-
-  .spellbook-header-top .header-actions {
-    gap: var(--space-3);
-  }
-
-  .spellbook-header-top .btn-secondary {
-    flex: 0 1 auto;
-  }
-
-  .spellbook-attributes {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: stretch;
-  }
-
-  .attributes-group {
-    gap: var(--space-4);
-    grid-template-rows: auto 1fr;
-    height: 100%;
-    width: auto;
-    justify-content: start;
-  }
-
-  .attributes-group span {
-    font-size: var(--font-size-3xl);
-  }
-}
-
 .spellbook-controls {
   display: flex;
   justify-content: space-between;
@@ -332,26 +269,29 @@
   flex-wrap: wrap;
 }
 
+/* Spellbook actions: Stack Select All on top, Prep/Remove share row below */
 .spellbook-actions {
-  display: flex !important;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
   gap: var(--space-3);
-  align-items: center;
-  flex-wrap: wrap;
   flex: 1;
   min-height: 40px;
 }
 
-.spellbook-actions button {
-  display: block !important;
-  visibility: visible !important;
+.spellbook-actions .btn-select-toggle {
+  grid-column: 1 / -1;
+  grid-row: 1;
 }
 
-.spellbook-actions .btn-secondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.spellbook-actions .btn-prep-toggle {
+  grid-column: 1;
+  grid-row: 2;
 }
 
 .spellbook-actions .btn-danger {
+  grid-column: 2;
+  grid-row: 2;
   background: var(--color-error-bg);
   color: var(--color-error);
   border-color: var(--color-error);
@@ -362,13 +302,9 @@
   color: white;
 }
 
-/* Consistent width for toggle buttons */
-.spellbook-actions .btn-select-toggle {
-  min-width: 6.5rem;
-}
-
-.spellbook-actions .btn-prep-toggle {
-  min-width: 4.5rem;
+.spellbook-actions .btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .spellbook-actions .btn-prep {
@@ -476,8 +412,11 @@
   background: light-dark(rgba(202, 138, 4, 0.45), rgba(251, 191, 36, 0.55));
 }
 
+/* ==========================================================================
+   MEDIA QUERIES (in ascending order)
+   ========================================================================== */
 
-/* Small mobile (375px+) - Increase font size and padding */
+/* Small mobile (375px+) */
 @media (min-width: 375px) {
   .spellbook-header-top .btn-secondary {
     padding: var(--space-2) var(--space-4);
@@ -489,5 +428,96 @@
 @media (min-width: 425px) {
   .spellbook-detail {
     padding: 0 var(--space-6) var(--space-6);
+  }
+}
+
+/* Larger mobile (450px+) - All 3 action buttons on same row */
+@media (min-width: 450px) {
+  .spellbook-actions {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+  }
+
+  .spellbook-actions .btn-select-toggle {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .spellbook-actions .btn-prep-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .spellbook-actions .btn-danger {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+/* Tablet+ (768px+) */
+@media (min-width: 768px) {
+  .spellbook-detail {
+    padding: 0 var(--space-8) var(--space-8);
+  }
+
+  .spellbook-header-top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .spellbook-header-top .header-actions {
+    gap: var(--space-3);
+  }
+
+  .spellbook-header-top .btn-secondary {
+    flex: 0 1 auto;
+  }
+
+  .spellbook-attributes {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+
+  .attributes-group {
+    gap: var(--space-4);
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    width: auto;
+    justify-content: start;
+  }
+
+  .attributes-group span {
+    font-size: var(--font-size-3xl);
+  }
+
+  .spellbook-filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .spellbook-filter-header .filter-results-text {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .spellbook-filter-header .filter-checkbox-label {
+    justify-content: flex-start;
+  }
+
+  /* Shrink-width buttons on the left, hide Select All (redundant with checkbox column header) */
+  .spellbook-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--space-3);
+    justify-content: flex-start;
+  }
+
+  .spellbook-actions .btn-select-toggle {
+    display: none;
   }
 }

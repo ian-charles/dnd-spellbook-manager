@@ -42,7 +42,9 @@ export function SpellbookSpellsTable() {
     }, [someSelected]);
 
     const handleMasterCheckboxChange = () => {
-        if (allSelected) {
+        // If any spells are selected, deselect all (including filtered)
+        // If none selected, select all visible (filtered) spells
+        if (selectedCount > 0) {
             onDeselectAll();
         } else {
             onSelectAll();

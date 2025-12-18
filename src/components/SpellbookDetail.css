@@ -520,4 +520,9 @@
   .spellbook-actions .btn-select-toggle {
     display: none;
   }
+
+  .selection-count-text {
+    width: auto;
+    text-align: right;
+  }
 }

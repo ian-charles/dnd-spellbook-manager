@@ -308,6 +308,10 @@ export function useSpellbookDetailLogic({
         onEditClose: () => setEditModalOpen(false),
         onEditSave: handleEditSave,
         onToggleShowPreparedOnly: () => setShowPreparedOnly(prev => !prev),
+        onClearAllFilters: () => {
+            filterReducer.clearFilters();
+            setShowPreparedOnly(false);
+        },
         onCopy: handleCopy,
         onCopyClose: () => setCopyModalOpen(false),
         onCopySave: handleCopySave,

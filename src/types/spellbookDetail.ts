@@ -42,6 +42,7 @@ export interface SpellbookDetailContextType {
     onEditClose: () => void;
     onEditSave: (input: CreateSpellbookInput) => Promise<void>;
     onToggleShowPreparedOnly: () => void;
+    onClearAllFilters: () => void;
     onCopy: () => void;
     onCopyClose: () => void;
     onCopySave: (input: CreateSpellbookInput) => Promise<void>;

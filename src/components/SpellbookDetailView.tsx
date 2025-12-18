@@ -58,6 +58,7 @@ export function SpellbookDetailView() {
     onEditClose,
     onEditSave,
     onToggleShowPreparedOnly,
+    onClearAllFilters,
     onCopy,
     onCopyClose,
     onCopySave,
@@ -74,7 +75,7 @@ export function SpellbookDetailView() {
     : null;
   const modalSpell = modalEnrichedSpell?.spell || null;
 
-  // Calculate filter state
+  // Calculate filter state (includes showPreparedOnly)
   const hasActiveFilters =
     filterReducer.state.searchText.length > 0 ||
     (filterReducer.state.levelRange.min !== 0 || filterReducer.state.levelRange.max !== 9) ||
@@ -85,7 +86,8 @@ export function SpellbookDetailView() {
     filterReducer.state.ritualOnly ||
     filterReducer.state.verbalOnly ||
     filterReducer.state.somaticOnly ||
-    filterReducer.state.materialOnly;
+    filterReducer.state.materialOnly ||
+    showPreparedOnly;
 
   const activeFilterCount = [
     filterReducer.state.selectedSchools.length > 0,
@@ -207,7 +209,7 @@ export function SpellbookDetailView() {
             </div>
             <button
               className="btn-clear-filters"
-              onClick={filterReducer.clearFilters}
+              onClick={onClearAllFilters}
               disabled={!hasActiveFilters}
               aria-label="Clear all active filters"
             >

@@ -448,6 +448,8 @@ button.nav-link.desktop-only {
     bottom: var(--space-8);
     right: var(--space-8);
     left: auto;
+    width: auto;
+    max-width: 400px;
     font-size: var(--font-size-md);
   }
 }
@@ -519,6 +521,7 @@ button.nav-link.desktop-only {
   color: var(--color-text-secondary);
 }
 
+/* Mobile-first: base styles for mobile (< 768px) */
 .success-toast {
   position: fixed;
   bottom: var(--space-4);

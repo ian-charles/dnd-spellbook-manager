@@ -18,6 +18,7 @@
 
 .error-boundary-content {
   max-width: 600px;
+  width: 100%;
   text-align: center;
   background: var(--color-bg-secondary);
   padding: var(--space-8) var(--space-6);
@@ -138,6 +139,8 @@
   line-height: var(--line-height-normal);
   white-space: pre-wrap;
   word-wrap: break-word;
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 /* Desktop (≥ 641px) */

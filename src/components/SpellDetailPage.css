@@ -3,10 +3,11 @@
  * Standalone page for displaying a single spell
  */
 
+/* Mobile-first: base styles for mobile (< 768px) */
 .spell-detail-page {
   min-height: 100vh;
   background: var(--color-bg-primary);
-  padding: var(--space-8) var(--space-4);
+  padding: var(--space-4);
 }
 
 .spell-detail-page-content {
@@ -14,7 +15,7 @@
   margin: 0 auto;
   background: var(--color-bg-secondary);
   border-radius: var(--radius-xl);
-  padding: var(--space-8);
+  padding: var(--space-6);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--color-border-primary);
 }
@@ -27,7 +28,7 @@
 
 .spell-detail-page-header h1 {
   margin: 0 0 var(--space-4) 0;
-  font-size: var(--font-size-4xl);
+  font-size: var(--font-size-2xl);
   color: var(--color-text-heading);
   text-align: center;
 }
@@ -42,7 +43,7 @@
 
 .spell-detail-page-details {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--space-4);
   margin-bottom: var(--space-6);
   padding: var(--space-4);
@@ -167,14 +168,14 @@
   text-decoration: underline;
 }
 
-/* Mobile adjustments */
-@media (max-width: 767px) {
+/* Desktop (≥ 768px) */
+@media (min-width: 768px) {
   .spell-detail-page {
-    padding: var(--space-4);
+    padding: var(--space-8) var(--space-4);
   }
 
   .spell-detail-page-content {
-    padding: var(--space-6);
+    padding: var(--space-8);
   }
 
   .spell-detail-page-header h1 {
@@ -182,6 +183,6 @@
   }
 
   .spell-detail-page-details {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }

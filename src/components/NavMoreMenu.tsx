@@ -5,9 +5,10 @@ import './NavMoreMenu.css';
 
 interface NavMoreMenuProps {
   items: NavItem[];
+  className?: string;
 }
 
-export function NavMoreMenu({ items }: NavMoreMenuProps) {
+export function NavMoreMenu({ items, className }: NavMoreMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +39,7 @@ export function NavMoreMenu({ items }: NavMoreMenuProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="nav-more-menu" ref={menuRef}>
+    <div className={`nav-more-menu ${className || ''}`} ref={menuRef}>
       <button
         className="nav-link nav-more-trigger"
         onClick={() => setIsOpen(!isOpen)}

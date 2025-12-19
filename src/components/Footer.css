@@ -1,3 +1,4 @@
+/* Mobile-first: base styles for mobile (< 768px) */
 .app-footer {
   position: fixed;
   bottom: 0;
@@ -10,8 +11,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
-  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
 }
 
 /* Hide footer on desktop (≥1024px) - buttons will be in navbar */
@@ -25,17 +26,22 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-2) var(--space-4);
   background: transparent;
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--transition-base);
   text-decoration: none;
   white-space: nowrap;
+}
+
+.footer-button svg {
+  width: 18px;
+  height: 18px;
 }
 
 .footer-button:hover {
@@ -68,20 +74,20 @@
   flex-shrink: 0;
 }
 
-/* Mobile optimization */
-@media (max-width: 425px) {
+/* Tablet (≥ 768px) */
+@media (min-width: 768px) {
   .app-footer {
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-3);
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
   }
 
   .footer-button {
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--font-size-sm);
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--font-size-md);
   }
 
   .footer-button svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
 }

@@ -1,7 +1,8 @@
+/* Mobile-first: base styles for mobile (< 768px) */
 .back-to-top-container {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 4rem;
+  right: 1rem;
   z-index: 1000;
 
   display: flex;
@@ -19,8 +20,8 @@
 }
 
 .back-to-top-button {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   padding: 0;
 
@@ -38,10 +39,10 @@
 }
 
 .back-to-top-arrow {
-  width: 33px !important;
-  height: 33px !important;
-  min-width: 33px;
-  min-height: 33px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
   flex-shrink: 0;
   transition: transform 0.3s ease;
 }
@@ -54,26 +55,6 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   display: none;
-}
-
-/* Desktop hover effects */
-@media (hover: hover) {
-  .back-to-top-label {
-    display: block;
-  }
-
-  .back-to-top-container:hover .back-to-top-button {
-    background-color: #2563eb;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-  }
-
-  .back-to-top-container:hover .back-to-top-arrow {
-    transform: translateY(-3px);
-  }
-
-  .back-to-top-container:hover .back-to-top-label {
-    opacity: 1;
-  }
 }
 
 .back-to-top-button:active {
@@ -102,30 +83,50 @@
   }
 }
 
-/* Tablet adjustments - move up to avoid footer */
-@media (max-width: 1023px) {
+/* Tablet (≥ 768px) */
+@media (min-width: 768px) {
   .back-to-top-container {
-    bottom: 5rem;
+    bottom: 5.5rem;
   }
 }
 
-/* Mobile adjustments */
-@media (max-width: 767px) {
+/* Desktop hover effects (≥ 768px) */
+@media (hover: hover) {
+  .back-to-top-label {
+    display: block;
+  }
+
+  .back-to-top-container:hover .back-to-top-button {
+    background-color: #2563eb;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  .back-to-top-container:hover .back-to-top-arrow {
+    transform: translateY(-3px);
+  }
+
+  .back-to-top-container:hover .back-to-top-label {
+    opacity: 1;
+  }
+}
+
+/* Desktop (≥ 1024px) */
+@media (min-width: 1024px) {
   .back-to-top-container {
-    bottom: 5rem;
-    right: 1.5rem;
+    bottom: 2rem;
+    right: 2rem;
   }
 
   .back-to-top-button {
-    width: 3rem;
-    height: 3rem;
+    width: 3.5rem;
+    height: 3.5rem;
   }
 
   .back-to-top-arrow {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px;
-    min-height: 28px;
+    width: 33px;
+    height: 33px;
+    min-width: 33px;
+    min-height: 33px;
   }
 }
 

@@ -21,8 +21,10 @@
 .nav-more-dropdown {
   position: absolute;
   top: calc(100% + var(--space-2));
-  right: 0;
+  right: var(--space-2);
+  left: auto;
   min-width: 180px;
+  max-width: calc(100vw - var(--space-8));
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-md);
@@ -79,14 +81,4 @@
 
 .nav-more-item.nav-link-donate:hover svg {
   color: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
-}
-
-/* Mobile: dropdown should align to right edge of viewport */
-@media (max-width: 767px) {
-  .nav-more-dropdown {
-    right: var(--space-2);
-    left: auto;
-    min-width: 180px;
-    max-width: calc(100vw - var(--space-8));
-  }
 }

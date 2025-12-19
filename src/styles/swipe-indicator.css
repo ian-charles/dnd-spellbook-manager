@@ -18,13 +18,15 @@
   z-index: 1;
 }
 
-/* Base swipe indicator - covers entire row */
+/* Mobile-first: base swipe indicator for mobile (< 768px) */
 .swipe-indicator {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 100%;
+  bottom: 0;
+  height: auto;
+  width: auto;
   display: flex;
   align-items: center;
   font-weight: 600;
@@ -32,7 +34,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   pointer-events: none;
-  z-index: 10; /* Above the cells */
+  z-index: 15; /* Above everything on mobile */
   transition: opacity 0.1s ease;
   gap: 0.5rem;
   padding: 0 1rem;
@@ -75,23 +77,12 @@
   background: light-dark(rgba(148, 163, 184, 0.95), rgba(148, 163, 184, 1));
 }
 
-/* Mobile-specific styles for flex-based table rows */
-@media (max-width: 425px) {
-  /* Ensure swipe indicator covers flex container properly */
+/* Desktop (≥ 768px) - standard table layout */
+@media (min-width: 768px) {
   .swipe-indicator {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: auto; /* Let it fill the container */
+    bottom: auto;
+    height: 100%;
     width: auto;
-    z-index: 15; /* Above everything */
-  }
-
-  /* Cells need lower z-index so indicator covers them */
-  .swipe-container > td {
-    position: relative;
-    z-index: 1;
+    z-index: 10; /* Above cells but not everything */
   }
 }

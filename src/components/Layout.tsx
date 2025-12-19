@@ -131,9 +131,7 @@ export function Layout({
           })}
 
           {/* "More" menu - rightmost button on smaller screens */}
-          <div className="tablet-only">
-            <NavMoreMenu items={utilityNavItems} />
-          </div>
+          <NavMoreMenu items={utilityNavItems} className="tablet-only" />
         </nav>
       </header>
 

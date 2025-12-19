@@ -36,17 +36,14 @@
     font-weight: 600;
 }
 
-/* Override mobile table hiding for spell description tables */
-@media (max-width: 767px) {
+/* Override mobile table hiding for spell description tables - applies to all screen sizes */
+.spell-table-rendered thead,
+.spell-table-rendered th {
+    display: table-header-group !important;
+}
 
-    .spell-table-rendered thead,
-    .spell-table-rendered th {
-        display: table-header-group !important;
-    }
-
-    .spell-table-rendered th {
-        display: table-cell !important;
-    }
+.spell-table-rendered th {
+    display: table-cell !important;
 }
 
 .spell-text-line {

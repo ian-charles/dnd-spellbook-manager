@@ -341,6 +341,18 @@ button.nav-link.desktop-only {
   width: 100%;
 }
 
+/* Small tablet/phablet (≥ 425px) */
+@media (min-width: 425px) {
+  .success-toast {
+    bottom: var(--space-8);
+    right: var(--space-8);
+    left: auto;
+    width: auto;
+    max-width: 400px;
+    font-size: var(--font-size-md);
+  }
+}
+
 /* Tablet (≥ 768px, < 1024px) */
 @media (min-width: 768px) {
   body {
@@ -442,15 +454,6 @@ button.nav-link.desktop-only {
   .batch-add-container .btn-primary,
   .batch-add-container .btn-secondary {
     width: auto;
-  }
-
-  .success-toast {
-    bottom: var(--space-8);
-    right: var(--space-8);
-    left: auto;
-    width: auto;
-    max-width: 400px;
-    font-size: var(--font-size-md);
   }
 }
 

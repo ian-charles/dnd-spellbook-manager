@@ -341,13 +341,6 @@ button.nav-link.desktop-only {
   width: 100%;
 }
 
-.success-toast {
-  bottom: var(--space-4);
-  right: var(--space-4);
-  left: var(--space-4);
-  font-size: var(--font-size-base);
-}
-
 /* Tablet (≥ 768px, < 1024px) */
 @media (min-width: 768px) {
   body {
@@ -455,6 +448,7 @@ button.nav-link.desktop-only {
     bottom: var(--space-8);
     right: var(--space-8);
     left: auto;
+    font-size: var(--font-size-md);
   }
 }
 
@@ -527,14 +521,16 @@ button.nav-link.desktop-only {
 
 .success-toast {
   position: fixed;
-  bottom: var(--space-8);
-  right: var(--space-8);
+  bottom: var(--space-4);
+  right: var(--space-4);
+  left: var(--space-4);
   padding: var(--space-4) var(--space-6);
   background: var(--color-success);
   color: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
   animation: slideIn var(--transition-slow);
   z-index: var(--z-toast);
 }

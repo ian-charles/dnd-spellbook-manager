@@ -742,72 +742,72 @@
 /* Color-code select backgrounds based on selected level */
 /* Level 0 - Cantrip (Grey) */
 .level-dropdown-container .level-select-0 {
-  background: rgba(148, 163, 184, 0.2) !important;
-  border-color: #94a3b8 !important;
-  color: #475569 !important;
+  background: rgba(148, 163, 184, 0.2);
+  border-color: #94a3b8;
+  color: #475569;
 }
 
 /* Level 1 (Violet) */
 .level-dropdown-container .level-select-1 {
-  background: rgba(196, 181, 253, 0.2) !important;
-  border-color: #a78bfa !important;
-  color: #6d28d9 !important;
+  background: rgba(196, 181, 253, 0.2);
+  border-color: #a78bfa;
+  color: #6d28d9;
 }
 
 /* Level 2 (Indigo) */
 .level-dropdown-container .level-select-2 {
-  background: rgba(129, 140, 248, 0.2) !important;
-  border-color: #6366f1 !important;
-  color: #3730a3 !important;
+  background: rgba(129, 140, 248, 0.2);
+  border-color: #6366f1;
+  color: #3730a3;
 }
 
 /* Level 3 (Dark Blue) */
 .level-dropdown-container .level-select-3 {
-  background: rgba(59, 130, 246, 0.25) !important;
-  border-color: #2563eb !important;
-  color: #1e3a8a !important;
+  background: rgba(59, 130, 246, 0.25);
+  border-color: #2563eb;
+  color: #1e3a8a;
 }
 
 /* Level 4 (Light Blue) */
 .level-dropdown-container .level-select-4 {
-  background: rgba(96, 165, 250, 0.2) !important;
-  border-color: #3b82f6 !important;
-  color: #1e40af !important;
+  background: rgba(96, 165, 250, 0.2);
+  border-color: #3b82f6;
+  color: #1e40af;
 }
 
 /* Level 5 (Cyan) */
 .level-dropdown-container .level-select-5 {
-  background: rgba(103, 232, 249, 0.2) !important;
-  border-color: #06b6d4 !important;
-  color: #0e7490 !important;
+  background: rgba(103, 232, 249, 0.2);
+  border-color: #06b6d4;
+  color: #0e7490;
 }
 
 /* Level 6 (Green) */
 .level-dropdown-container .level-select-6 {
-  background: rgba(134, 239, 172, 0.2) !important;
-  border-color: #4ade80 !important;
-  color: #16a34a !important;
+  background: rgba(134, 239, 172, 0.2);
+  border-color: #4ade80;
+  color: #16a34a;
 }
 
 /* Level 7 (Yellow) */
 .level-dropdown-container .level-select-7 {
-  background: rgba(253, 224, 71, 0.2) !important;
-  border-color: #fbbf24 !important;
-  color: #b45309 !important;
+  background: rgba(253, 224, 71, 0.2);
+  border-color: #fbbf24;
+  color: #b45309;
 }
 
 /* Level 8 (Orange) */
 .level-dropdown-container .level-select-8 {
-  background: rgba(251, 146, 60, 0.2) !important;
-  border-color: #fb923c !important;
-  color: #ea580c !important;
+  background: rgba(251, 146, 60, 0.2);
+  border-color: #fb923c;
+  color: #ea580c;
 }
 
 /* Level 9 (Red) */
 .level-dropdown-container .level-select-9 {
-  background: rgba(239, 68, 68, 0.2) !important;
-  border-color: #ef4444 !important;
-  color: #dc2626 !important;
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #dc2626;
 }
 
 /* Level Range Slider Styles */
@@ -1117,71 +1117,71 @@
 @media (prefers-color-scheme: dark) {
   /* Level 0 - Cantrip (Grey) */
   .level-dropdown-container .level-select-0 {
-    background: rgba(148, 163, 184, 0.15) !important;
-    border-color: #64748b !important;
-    color: #cbd5e1 !important;
+    background: rgba(148, 163, 184, 0.15);
+    border-color: #64748b;
+    color: #cbd5e1;
   }
 
   /* Level 1 (Violet) */
   .level-dropdown-container .level-select-1 {
-    background: rgba(196, 181, 253, 0.15) !important;
-    border-color: #7c3aed !important;
-    color: #c4b5fd !important;
+    background: rgba(196, 181, 253, 0.15);
+    border-color: #7c3aed;
+    color: #c4b5fd;
   }
 
   /* Level 2 (Indigo) */
   .level-dropdown-container .level-select-2 {
-    background: rgba(129, 140, 248, 0.15) !important;
-    border-color: #4f46e5 !important;
-    color: #a5b4fc !important;
+    background: rgba(129, 140, 248, 0.15);
+    border-color: #4f46e5;
+    color: #a5b4fc;
   }
 
   /* Level 3 (Dark Blue) */
   .level-dropdown-container .level-select-3 {
-    background: rgba(37, 99, 235, 0.2) !important;
-    border-color: #1d4ed8 !important;
-    color: #60a5fa !important;
+    background: rgba(37, 99, 235, 0.2);
+    border-color: #1d4ed8;
+    color: #60a5fa;
   }
 
   /* Level 4 (Light Blue) */
   .level-dropdown-container .level-select-4 {
-    background: rgba(96, 165, 250, 0.15) !important;
-    border-color: #2563eb !important;
-    color: #93c5fd !important;
+    background: rgba(96, 165, 250, 0.15);
+    border-color: #2563eb;
+    color: #93c5fd;
   }
 
   /* Level 5 (Cyan) */
   .level-dropdown-container .level-select-5 {
-    background: rgba(103, 232, 249, 0.15) !important;
-    border-color: #0891b2 !important;
-    color: #67e8f9 !important;
+    background: rgba(103, 232, 249, 0.15);
+    border-color: #0891b2;
+    color: #67e8f9;
   }
 
   /* Level 6 (Green) */
   .level-dropdown-container .level-select-6 {
-    background: rgba(134, 239, 172, 0.15) !important;
-    border-color: #22c55e !important;
-    color: #86efac !important;
+    background: rgba(134, 239, 172, 0.15);
+    border-color: #22c55e;
+    color: #86efac;
   }
 
   /* Level 7 (Yellow) */
   .level-dropdown-container .level-select-7 {
-    background: rgba(253, 224, 71, 0.15) !important;
-    border-color: #eab308 !important;
-    color: #fde047 !important;
+    background: rgba(253, 224, 71, 0.15);
+    border-color: #eab308;
+    color: #fde047;
   }
 
   /* Level 8 (Orange) */
   .level-dropdown-container .level-select-8 {
-    background: rgba(251, 146, 60, 0.15) !important;
-    border-color: #f97316 !important;
-    color: #fdba74 !important;
+    background: rgba(251, 146, 60, 0.15);
+    border-color: #f97316;
+    color: #fdba74;
   }
 
   /* Level 9 (Red) */
   .level-dropdown-container .level-select-9 {
-    background: rgba(239, 68, 68, 0.15) !important;
-    border-color: #dc2626 !important;
-    color: #fca5a5 !important;
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #dc2626;
+    color: #fca5a5;
   }
 }

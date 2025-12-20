@@ -37,13 +37,12 @@
 }
 
 /* Override mobile table hiding for spell description tables - applies to all screen sizes */
-.spell-table-rendered thead,
-.spell-table-rendered th {
-    display: table-header-group !important;
+table.spell-table-rendered thead {
+    display: table-header-group;
 }
 
-.spell-table-rendered th {
-    display: table-cell !important;
+table.spell-table-rendered th {
+    display: table-cell;
 }
 
 .spell-text-line {

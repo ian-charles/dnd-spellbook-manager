@@ -52,8 +52,8 @@
 
 /* Mobile-first: Adjust spell name padding */
 .spell-table>tbody>tr>.spell-name {
-  padding-left: 0.5rem !important;
-  padding-right: 0.5rem !important;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 /* Mobile-first: Selected spell styling - higher contrast + border */
@@ -88,8 +88,8 @@
 
   /* Adjust spell name padding with checkbox visible */
   .spell-table>tbody>tr>.spell-name {
-    padding-left: var(--space-3) !important;
-    padding-right: var(--space-3) !important;
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
   }
 
   /* All rows have a transparent border to maintain consistent spacing */

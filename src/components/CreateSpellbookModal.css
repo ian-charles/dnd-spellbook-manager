@@ -3,8 +3,8 @@
  * Mobile-first responsive design
  */
 
-.create-spellbook-modal {
-  max-width: 600px !important;
+.dialog.create-spellbook-modal {
+  max-width: 600px;
   width: 90%;
 }
 

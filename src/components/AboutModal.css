@@ -90,11 +90,11 @@
   line-height: 1.8;
 }
 
-.about-signature {
+.about-modal-body p.about-signature {
   text-align: right;
   font-style: italic;
-  margin-top: var(--space-6) !important;
-  margin-bottom: var(--space-6) !important;
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-6);
   color: var(--color-text-secondary);
 }
 

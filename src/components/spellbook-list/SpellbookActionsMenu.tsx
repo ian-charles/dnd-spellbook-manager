@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Menu, WandSparkles, SquarePen, Copy, Trash2 } from 'lucide-react';
+import { EllipsisVertical, WandSparkles, SquarePen, Copy, Trash2 } from 'lucide-react';
 import './SpellbookActionsMenu.css';
 
 interface SpellbookActionsMenuProps {
@@ -19,7 +19,9 @@ export function SpellbookActionsMenu({
   onDelete,
 }: SpellbookActionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [openUpward, setOpenUpward] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -45,6 +47,28 @@ export function SpellbookActionsMenu({
     };
   }, [isOpen]);
 
+  // Position dropdown and check if it should open upward
+  useEffect(() => {
+    if (isOpen && menuRef.current && dropdownRef.current) {
+      const menuRect = menuRef.current.getBoundingClientRect();
+      const dropdownHeight = dropdownRef.current.offsetHeight;
+      const spaceBelow = window.innerHeight - menuRect.bottom;
+      const spaceAbove = menuRect.top;
+
+      // Open upward if there's not enough space below but more space above
+      setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > spaceBelow);
+
+      // Position dropdown using fixed positioning
+      const dropdown = dropdownRef.current;
+      if (openUpward) {
+        dropdown.style.top = `${menuRect.top - dropdownHeight - 8}px`;
+      } else {
+        dropdown.style.top = `${menuRect.bottom + 8}px`;
+      }
+      dropdown.style.left = `${menuRect.right - dropdown.offsetWidth}px`;
+    }
+  }, [isOpen, openUpward]);
+
   const handleAction = (action: () => void) => {
     action();
     setIsOpen(false);
@@ -62,11 +86,15 @@ export function SpellbookActionsMenu({
         aria-label={`Actions for ${spellbookName}`}
         title="Actions"
       >
-        <Menu size={18} />
+        <EllipsisVertical size={18} />
       </button>
 
       {isOpen && (
-        <div className="spellbook-actions-dropdown" onClick={(e) => e.stopPropagation()}>
+        <div
+          ref={dropdownRef}
+          className={`spellbook-actions-dropdown ${openUpward ? 'spellbook-actions-dropdown-upward' : ''}`}
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             className="spellbook-actions-item"
             onClick={() => handleAction(onEditSpells)}

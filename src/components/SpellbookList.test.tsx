@@ -146,7 +146,7 @@ describe('SpellbookList', () => {
     expect(screen.getByText('Attack')).toBeTruthy();
     expect(screen.getByText('Save DC')).toBeTruthy();
     expect(screen.getByText('Last Updated')).toBeTruthy();
-    expect(screen.getByText('Actions')).toBeTruthy();
+    // Actions column header is intentionally empty (no text)
   });
 
   it('should display spellbook data in table rows', () => {

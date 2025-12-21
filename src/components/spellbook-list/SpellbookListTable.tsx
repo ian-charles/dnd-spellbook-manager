@@ -87,7 +87,7 @@ export function SpellbookListTable({
                             <SortIcon column="updated" currentColumn={sortColumn} currentDirection={sortDirection} />
                         </button>
                     </th>
-                    <th>Actions</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>

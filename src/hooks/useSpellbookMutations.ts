@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CreateSpellbookInput, Spellbook } from '../types/spellbook';
 import { MESSAGES } from '../constants/messages';
+import { spellService } from '../services/spell.service';
 
 interface UseSpellbookMutationsProps {
     spellbooks: Spellbook[];
@@ -92,9 +93,14 @@ export function useSpellbookMutations({
             // Ensure spellbooks list is refreshed to show updated spell counts
             await refreshSpellbooks();
 
-            const message = count === 1
-                ? `1 Spell added to ${spellbookName}!`
-                : `${count} Spells added to ${spellbookName}!`;
+            let message: string;
+            if (count === 1) {
+                const spellId = Array.from(selectedSpellIds)[0];
+                const spellName = spellService.getSpellById(spellId)?.name || 'Spell';
+                message = MESSAGES.SUCCESS.SPELL_ADDED_TO_SPELLBOOK(spellName, spellbookName);
+            } else {
+                message = MESSAGES.SUCCESS.SPELLS_ADDED_TO_SPELLBOOK(count, spellbookName);
+            }
             onSuccess(message);
 
             setSelectedSpellIds(new Set()); // Clear selection after adding
@@ -128,12 +134,12 @@ export function useSpellbookMutations({
                 await refreshSpellbooks();
 
                 const count = pendingSpellIds.size;
-                onSuccess(`Spellbook created with ${count} ${count === 1 ? 'spell' : 'spells'}`);
+                onSuccess(MESSAGES.SUCCESS.SPELLBOOK_CREATED_WITH_SPELLS(newSpellbook.name, count));
 
                 setPendingSpellIds(new Set());
                 setSelectedSpellIds(new Set());
             } else {
-                onSuccess('Spellbook created successfully');
+                onSuccess(MESSAGES.SUCCESS.SPELLBOOK_CREATED(newSpellbook.name));
                 // Always refresh and close modal
                 await refreshSpellbooks();
             }

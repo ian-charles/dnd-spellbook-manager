@@ -5,13 +5,16 @@ import { Spellbook, CreateSpellbookInput, EnrichedSpell } from '../types/spellbo
 import { useSpellSorting } from './useSpellSorting';
 import { useSpellbookFiltering } from './useSpellbookFiltering';
 import { SpellbookDetailContextType } from '../types/spellbookDetail';
+import { MESSAGES } from '../constants/messages';
+import { ToastVariant } from './useToast';
 
 interface UseSpellbookDetailLogicProps {
     spellbookId: string;
     openEditModal?: boolean;
     onBack: () => void;
     onCopySpellbook?: (id: string) => void;
-    onDeleteSpellbook?: () => void;
+    onDeleteSpellbook?: (spellbookName?: string) => void;
+    onSuccess?: (message: string, variant?: ToastVariant) => void;
 }
 
 export function useSpellbookDetailLogic({
@@ -20,6 +23,7 @@ export function useSpellbookDetailLogic({
     onBack,
     onCopySpellbook,
     onDeleteSpellbook,
+    onSuccess,
 }: UseSpellbookDetailLogicProps): SpellbookDetailContextType {
     const { spellbooks, getSpellbook, createSpellbook, updateSpellbook, togglePrepared, setSpellsPrepared, removeSpellFromSpellbook, addSpellsToSpellbook, deleteSpellbook } = useSpellbooks();
     const [spellbook, setSpellbook] = useState<Spellbook | null>(null);
@@ -163,6 +167,24 @@ export function useSpellbookDetailLogic({
 
         if (spellIdsToUpdate.length > 0) {
             await setSpellsPrepared(spellbookId, spellIdsToUpdate, shouldPrep);
+
+            // Show toast
+            if (onSuccess) {
+                const count = spellIdsToUpdate.length;
+                const variant = shouldPrep ? 'warning' : 'info';
+                if (count === 1) {
+                    const spell = selectedSpells.find(s => spellIdsToUpdate.includes(s.spell.id));
+                    const message = shouldPrep
+                        ? MESSAGES.SUCCESS.SPELL_PREPPED(spell!.spell.name)
+                        : MESSAGES.SUCCESS.SPELL_UNPREPPED(spell!.spell.name);
+                    onSuccess(message, variant);
+                } else {
+                    const message = shouldPrep
+                        ? MESSAGES.SUCCESS.SPELLS_PREPPED(count)
+                        : MESSAGES.SUCCESS.SPELLS_UNPREPPED(count);
+                    onSuccess(message, variant);
+                }
+            }
         }
 
         // Deselect all after prep/unprep completion
@@ -199,12 +221,28 @@ export function useSpellbookDetailLogic({
     };
 
     const handleConfirmRemove = async () => {
+        // Get spell names before removal
+        const spellsToRemove = enrichedSpells.filter(s =>
+            confirmDialog.spellIds.includes(s.spell.id)
+        );
+        const count = spellsToRemove.length;
+
         const promises: Promise<void>[] = [];
         for (const spellId of confirmDialog.spellIds) {
             promises.push(removeSpellFromSpellbook(spellbookId, spellId));
         }
 
         await Promise.all(promises);
+
+        // Show toast
+        if (onSuccess) {
+            if (count === 1) {
+                onSuccess(MESSAGES.SUCCESS.SPELL_REMOVED(spellsToRemove[0].spell.name), 'error');
+            } else {
+                onSuccess(MESSAGES.SUCCESS.SPELLS_REMOVED(count), 'error');
+            }
+        }
+
         setConfirmDialog({ isOpen: false, spellIds: [], message: '' });
         setSelectedSpellIds(new Set());
         await loadSpellbook();
@@ -212,6 +250,26 @@ export function useSpellbookDetailLogic({
 
     const handleCancelRemove = () => {
         setConfirmDialog({ isOpen: false, spellIds: [], message: '' });
+    };
+
+    const handleTogglePrepared = async (spellbookId: string, spellId: string) => {
+        // Get spell info before toggling
+        const enrichedSpell = enrichedSpells.find(s => s.spell.id === spellId);
+        if (!enrichedSpell) return;
+
+        const wasPrepared = enrichedSpell.prepared;
+
+        // Toggle the prepared status
+        await togglePrepared(spellbookId, spellId);
+
+        // Show toast
+        if (onSuccess) {
+            const variant = wasPrepared ? 'info' : 'warning';
+            const message = wasPrepared
+                ? MESSAGES.SUCCESS.SPELL_UNPREPPED(enrichedSpell.spell.name)
+                : MESSAGES.SUCCESS.SPELL_PREPPED(enrichedSpell.spell.name);
+            onSuccess(message, variant);
+        }
     };
 
     const handleRowClick = (spellId: string) => {
@@ -261,10 +319,13 @@ export function useSpellbookDetailLogic({
     };
 
     const handleConfirmDelete = async () => {
+        // Get spellbook name before deletion
+        const spellbookName = spellbook?.name;
+
         await deleteSpellbook(spellbookId);
         setDeleteSpellbookDialog({ isOpen: false });
         if (onDeleteSpellbook) {
-            await onDeleteSpellbook();
+            await onDeleteSpellbook(spellbookName);
         }
     };
 
@@ -315,7 +376,7 @@ export function useSpellbookDetailLogic({
         onCopy: handleCopy,
         onCopyClose: () => setCopyModalOpen(false),
         onCopySave: handleCopySave,
-        onTogglePrepared: togglePrepared,
+        onTogglePrepared: handleTogglePrepared,
         onRemoveSpell: removeSpellFromSpellbook,
         onRequestRemoveSpell: handleRequestRemoveSpell,
         onDelete: handleRequestDelete,

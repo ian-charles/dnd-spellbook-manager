@@ -4,6 +4,7 @@ import { exportImportService } from '../services/exportImport.service';
 import { MESSAGES } from '../constants/messages';
 import { MAX_IMPORT_FILE_SIZE } from '../constants/gameRules';
 import { AlertDialogState } from './useDialogs';
+import { ToastVariant } from './useToast';
 
 interface UseSpellbookOperationsProps {
     spellbooks: Spellbook[];
@@ -14,6 +15,7 @@ interface UseSpellbookOperationsProps {
     onAddSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
     setAlertDialog: (state: AlertDialogState) => void;
     closeConfirm: () => void;
+    onSuccess?: (message: string, variant?: ToastVariant) => void;
 }
 
 /**
@@ -54,6 +56,7 @@ export function useSpellbookOperations({
     onAddSpellsToSpellbook,
     setAlertDialog,
     closeConfirm,
+    onSuccess,
 }: UseSpellbookOperationsProps) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editSpellbookId, setEditSpellbookId] = useState<string | null>(null);
@@ -115,6 +118,10 @@ export function useSpellbookOperations({
             if (editSpellbookId) {
                 await onUpdateSpellbook(editSpellbookId, input);
                 if (mountedRef.current && !signal.aborted) {
+                    // Show success toast
+                    if (onSuccess) {
+                        onSuccess(MESSAGES.SUCCESS.SPELLBOOK_UPDATED(input.name));
+                    }
                     setCreateModalOpen(false);
                     setEditSpellbookId(null);
                 }
@@ -159,7 +166,31 @@ export function useSpellbookOperations({
                             message: `Spellbook created, but failed to copy spells: ${errors[0]}`,
                             variant: 'warning'
                         });
+                    } else {
+                        // SUCCESS: Show copied toast
+                        if (onSuccess) {
+                            onSuccess(MESSAGES.SUCCESS.SPELLBOOK_COPIED(
+                                newSpellbook.name,
+                                sourceSpellbook.name
+                            ));
+                        }
                     }
+                } else {
+                    // No spells to copy, but still a copy operation - show success
+                    if (onSuccess) {
+                        const sourceSpellbook = spellbooks.find(sb => sb.id === copyData.sourceSpellbookId);
+                        if (sourceSpellbook) {
+                            onSuccess(MESSAGES.SUCCESS.SPELLBOOK_COPIED(
+                                newSpellbook.name,
+                                sourceSpellbook.name
+                            ));
+                        }
+                    }
+                }
+            } else {
+                // Regular creation (not a copy)
+                if (onSuccess) {
+                    onSuccess(MESSAGES.SUCCESS.SPELLBOOK_CREATED(newSpellbook.name));
                 }
             }
 
@@ -224,13 +255,22 @@ export function useSpellbookOperations({
 
     /**
      * Confirms and executes spellbook deletion.
-     * 
+     *
      * @param spellbookId - ID of the spellbook to delete
      */
     const handleConfirmDelete = async (spellbookId: string) => {
         try {
+            // Get spellbook name before deletion
+            const spellbook = spellbooks.find(sb => sb.id === spellbookId);
+            const spellbookName = spellbook?.name || 'Spellbook';
+
             await onDeleteSpellbook(spellbookId);
             closeConfirm();
+
+            // Show success toast
+            if (onSuccess) {
+                onSuccess(MESSAGES.SUCCESS.SPELLBOOK_DELETED(spellbookName), 'error');
+            }
         } catch (error) {
             closeConfirm();
             setAlertDialog({

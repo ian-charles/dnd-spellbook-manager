@@ -57,7 +57,7 @@ function App() {
   } = useHashRouter();
 
   // Toast hook for success messages
-  const { isVisible: showToast, message: toastMessage, showToast: displayToast } = useToast();
+  const { isVisible: showToast, message: toastMessage, variant: toastVariant, showToast: displayToast } = useToast();
 
   // Alert dialog state
   const [alertDialog, setAlertDialog] = useState<{
@@ -77,9 +77,14 @@ function App() {
 
   // Handler for navigating back after spellbook deletion
   // Refreshes the spellbooks list to ensure deleted book is removed from UI
-  const handleSpellbookDeleted = async () => {
+  const handleSpellbookDeleted = async (spellbookName?: string) => {
     await refreshSpellbooks();
     navigateToSpellbooks();
+
+    // Show delete toast after navigation (when deleting from detail page)
+    if (spellbookName) {
+      displayToast(MESSAGES.SUCCESS.SPELLBOOK_DELETED(spellbookName), 'error');
+    }
   };
 
   // Loading state
@@ -138,6 +143,7 @@ function App() {
           onDeleteSpellbook={deleteSpellbook}
           onRefreshSpellbooks={refreshSpellbooks}
           onAddSpellsToSpellbook={addSpellsToSpellbook}
+          onSuccess={displayToast}
         />
       )}
 
@@ -149,6 +155,7 @@ function App() {
           onBack={navigateToSpellbooks}
           onCopySpellbook={navigateToSpellbookDetail}
           onDeleteSpellbook={handleSpellbookDeleted}
+          onSuccess={displayToast}
         />
       )}
 
@@ -157,9 +164,9 @@ function App() {
         <SpellDetailPage spellId={selectedSpellId} />
       )}
 
-      {/* Success Toast */}
+      {/* Toast */}
       {showToast && (
-        <div className="success-toast" data-testid="add-spell-success">
+        <div className={`toast toast-${toastVariant}`} data-testid="toast">
           {toastMessage}
         </div>
       )}

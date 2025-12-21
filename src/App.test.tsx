@@ -263,7 +263,7 @@ describe('App Component', () => {
             expect(createSpellbook).toHaveBeenCalled();
             expect(addSpellsToSpellbook).toHaveBeenCalledWith('sb-new', ['spell-1']);
             expect(refreshSpellbooks).toHaveBeenCalled();
-            expect(showToast).toHaveBeenCalledWith(expect.stringContaining('Spellbook created with 1 spell'));
+            expect(showToast).toHaveBeenCalledWith(expect.stringContaining('created with 1 spell'));
         });
     });
 

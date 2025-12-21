@@ -125,7 +125,7 @@ describe('useSpellbookMutations', () => {
             expect(mockAddSpellsToSpellbook).toHaveBeenCalledTimes(1);
             expect(mockAddSpellsToSpellbook).toHaveBeenCalledWith('sb1', ['spell1', 'spell2']);
             expect(mockRefreshSpellbooks).toHaveBeenCalled();
-            expect(mockOnSuccess).toHaveBeenCalledWith('2 Spells added to Spellbook 1!');
+            expect(mockOnSuccess).toHaveBeenCalledWith('2 spells added to Spellbook 1!');
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
         });
 
@@ -165,7 +165,7 @@ describe('useSpellbookMutations', () => {
             });
 
             expect(mockCreateSpellbook).toHaveBeenCalledWith({ name: 'New Book' });
-            expect(mockOnSuccess).toHaveBeenCalledWith('Spellbook created successfully');
+            expect(mockOnSuccess).toHaveBeenCalledWith('New Book created!');
             expect(mockRefreshSpellbooks).toHaveBeenCalled();
             expect(mockSetCreateModalOpen).toHaveBeenCalledWith(false);
         });
@@ -186,7 +186,7 @@ describe('useSpellbookMutations', () => {
             });
 
             expect(mockAddSpellsToSpellbook).toHaveBeenCalledWith('new-sb', ['spell1']);
-            expect(mockOnSuccess).toHaveBeenCalledWith('Spellbook created with 1 spell');
+            expect(mockOnSuccess).toHaveBeenCalledWith('New Book created with 1 spell!');
             expect(mockSetPendingSpellIds).toHaveBeenCalledWith(new Set());
             expect(mockSetSelectedSpellIds).toHaveBeenCalledWith(new Set());
             expect(mockSetCreateModalOpen).toHaveBeenCalledWith(false);

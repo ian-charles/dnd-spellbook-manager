@@ -57,7 +57,7 @@ describe('useToast', () => {
     const { result } = renderHook(() => useToast());
 
     act(() => {
-      result.current.showToast('Test message', 5000);
+      result.current.showToast('Test message', 'success', 5000);
     });
 
     expect(result.current.isVisible).toBe(true);
@@ -182,7 +182,7 @@ describe('useToast', () => {
     const { result } = renderHook(() => useToast());
 
     act(() => {
-      result.current.showToast('Long toast', 10000);
+      result.current.showToast('Long toast', 'success', 10000);
     });
 
     expect(result.current.isVisible).toBe(true);

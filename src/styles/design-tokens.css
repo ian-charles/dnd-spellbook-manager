@@ -70,8 +70,8 @@
   --color-success-border: light-dark(rgba(5, 150, 105, 0.2), rgba(16, 185, 129, 0.2));
 
   /* Semantic Colors - Warning */
-  --color-warning: light-dark(#d97706, #fbbf24);
-  --color-warning-hover: light-dark(#b45309, #d97706);
+  --color-warning: light-dark(#d97706, #cc9a1d);
+  --color-warning-hover: light-dark(#b45309, #b8871a);
   --color-warning-bg: light-dark(rgba(217, 119, 6, 0.1), rgba(251, 191, 36, 0.1));
   --color-warning-border: light-dark(rgba(217, 119, 6, 0.2), rgba(251, 191, 36, 0.2));
 

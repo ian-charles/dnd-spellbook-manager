@@ -343,13 +343,12 @@ button.nav-link.desktop-only {
 }
 
 /* Mobile-first: base styles for mobile (< 425px) */
-.success-toast {
+.toast {
   position: fixed;
   bottom: var(--space-4);
   right: var(--space-4);
   left: var(--space-4);
   padding: var(--space-4) var(--space-6);
-  background: var(--color-success);
   color: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
@@ -359,9 +358,25 @@ button.nav-link.desktop-only {
   z-index: var(--z-toast);
 }
 
+.toast-success {
+  background: var(--color-success);
+}
+
+.toast-warning {
+  background: var(--color-warning);
+}
+
+.toast-error {
+  background: var(--color-error);
+}
+
+.toast-info {
+  background: var(--color-neutral);
+}
+
 /* Small tablet/phablet (≥ 425px) */
 @media (min-width: 425px) {
-  .success-toast {
+  .toast {
     bottom: var(--space-8);
     right: var(--space-8);
     left: auto;

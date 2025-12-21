@@ -14,6 +14,7 @@ import { useDialogs } from '../hooks/useDialogs';
 import { useSpellbookListState } from '../hooks/useSpellbookListState';
 import { useSpellbookOperations } from '../hooks/useSpellbookOperations';
 import { useContextMenu } from '../hooks/useContextMenu';
+import { ToastVariant } from '../hooks/useToast';
 import './SpellbookList.css';
 
 interface SpellbookListProps {
@@ -25,6 +26,7 @@ interface SpellbookListProps {
   onDeleteSpellbook: (id: string) => Promise<void>;
   onRefreshSpellbooks: () => Promise<void>;
   onAddSpellsToSpellbook: (spellbookId: string, spellIds: string[]) => Promise<void>;
+  onSuccess?: (message: string, variant?: ToastVariant) => void;
 }
 
 export function SpellbookList({
@@ -36,6 +38,7 @@ export function SpellbookList({
   onDeleteSpellbook,
   onRefreshSpellbooks,
   onAddSpellsToSpellbook,
+  onSuccess,
 }: SpellbookListProps) {
   // Custom hooks
   const {
@@ -83,6 +86,7 @@ export function SpellbookList({
     onAddSpellsToSpellbook,
     setAlertDialog,
     closeConfirm,
+    onSuccess,
   });
 
   // Context menu state for mobile long-press interactions.

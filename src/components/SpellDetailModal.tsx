@@ -22,8 +22,6 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
   const startY = useRef(0);
   const isDragging = useRef(false);
   const modalRef = useRef<HTMLDivElement>(null);
-  const [prepAnimating, setPrepAnimating] = useState(false);
-  const [prepFeedback, setPrepFeedback] = useState('');
   const [checkboxAnimating, setCheckboxAnimating] = useState(false);
   const [checkboxFeedback, setCheckboxFeedback] = useState('');
 
@@ -213,25 +211,17 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
           )}
           <div className="spell-detail-modal-footer-center">
             {onTogglePrepared && (
-              <div className={`spell-detail-modal-prep-wrapper ${prepAnimating ? 'animating' : ''}`}>
-                <button
-                  className={`spell-detail-modal-prep-toggle ${isPrepared ? '' : 'prep-action'}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setPrepFeedback(isPrepared ? 'Unprepped!' : 'Prepped!');
-                    onTogglePrepared(spell.id);
-                    setPrepAnimating(true);
-                    setTimeout(() => setPrepAnimating(false), 1000);
-                  }}
-                  aria-label={isPrepared ? 'Unprep spell' : 'Prep spell'}
-                >
-                  {isPrepared ? <BookX size={20} /> : <BookCheck size={20} />}
-                  <span>{isPrepared ? 'Unprep' : 'Prep'}</span>
-                </button>
-                <span className="feedback-text" aria-hidden="true">
-                  {prepFeedback}
-                </span>
-              </div>
+              <button
+                className={`spell-detail-modal-prep-toggle ${isPrepared ? '' : 'prep-action'}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onTogglePrepared(spell.id);
+                }}
+                aria-label={isPrepared ? 'Unprep spell' : 'Prep spell'}
+              >
+                {isPrepared ? <BookX size={20} /> : <BookCheck size={20} />}
+                <span>{isPrepared ? 'Unprep' : 'Prep'}</span>
+              </button>
             )}
             {onRemove && (
               <button

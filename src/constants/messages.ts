@@ -15,6 +15,24 @@ export const MESSAGES = {
   SUCCESS: {
     SPELL_ADDED: '✓ Spell added to spellbook!',
     IMPORT_SUCCESS: 'Import Successful',
+    // Dynamic toast messages
+    SPELL_ADDED_TO_SPELLBOOK: (spellName: string, spellbookName: string) =>
+      `${spellName} added to ${spellbookName}!`,
+    SPELLS_ADDED_TO_SPELLBOOK: (count: number, spellbookName: string) =>
+      `${count} spells added to ${spellbookName}!`,
+    SPELLBOOK_CREATED: (name: string) => `${name} created!`,
+    SPELLBOOK_CREATED_WITH_SPELLS: (name: string, count: number) =>
+      `${name} created with ${count} ${count === 1 ? 'spell' : 'spells'}!`,
+    SPELLBOOK_UPDATED: (name: string) => `${name} updated!`,
+    SPELLBOOK_DELETED: (name: string) => `${name} deleted!`,
+    SPELLBOOK_COPIED: (newName: string, oldName: string) =>
+      `${newName} created from ${oldName}!`,
+    SPELL_PREPPED: (name: string) => `${name} prepared!`,
+    SPELLS_PREPPED: (count: number) => `${count} spells prepared!`,
+    SPELL_UNPREPPED: (name: string) => `${name} unprepared!`,
+    SPELLS_UNPREPPED: (count: number) => `${count} spells unprepared!`,
+    SPELL_REMOVED: (name: string) => `${name} removed!`,
+    SPELLS_REMOVED: (count: number) => `${count} spells removed!`,
   },
   ERROR: {
     FAILED_TO_ADD_SPELL: 'Failed to Add Spell',

@@ -19,15 +19,19 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+export type ToastVariant = 'success' | 'warning' | 'error' | 'info';
+
 interface UseToastReturn {
   isVisible: boolean;
   message: string;
-  showToast: (message: string, duration?: number) => void;
+  variant: ToastVariant;
+  showToast: (message: string, variant?: ToastVariant, duration?: number) => void;
 }
 
 export function useToast(defaultDuration = 2000): UseToastReturn {
   const [isVisible, setIsVisible] = useState(false);
   const [message, setMessage] = useState('');
+  const [variant, setVariant] = useState<ToastVariant>('success');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Clean up timeout on unmount
@@ -39,26 +43,29 @@ export function useToast(defaultDuration = 2000): UseToastReturn {
     };
   }, []);
 
-  const showToast = (toastMessage: string, duration: number = defaultDuration) => {
+  const showToast = (toastMessage: string, toastVariant: ToastVariant = 'success', duration: number = defaultDuration) => {
     // Clear any existing timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
-    // Show toast with message
+    // Show toast with message and variant
     setMessage(toastMessage);
+    setVariant(toastVariant);
     setIsVisible(true);
 
     // Auto-hide after duration
     timeoutRef.current = setTimeout(() => {
       setIsVisible(false);
       setMessage('');
+      setVariant('success');
     }, duration);
   };
 
   return {
     isVisible,
     message,
+    variant,
     showToast,
   };
 }

@@ -1,4 +1,4 @@
-import { Sun, MoonStar, MonitorCog } from 'lucide-react';
+import { Sun, MoonStar, SunMoon } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import './ThemeToggle.css';
 
@@ -18,7 +18,7 @@ interface ThemeToggleProps {
  *
  * Mobile variant shows icon + label:
  * - Light mode → "Dark Mode" (moon icon)
- * - Dark mode → "Auto Mode" (monitor icon)
+ * - Dark mode → "System" (sun-moon icon)
  * - Auto mode → "Light Mode" (sun icon)
  *
  * Desktop variant:
@@ -37,8 +37,8 @@ export function ThemeToggle({ variant = 'mobile', className = '' }: ThemeToggleP
     label = 'Dark Mode';
     nextMode = 'dark';
   } else if (mode === 'dark') {
-    Icon = MonitorCog;
-    label = 'Auto Mode';
+    Icon = SunMoon;
+    label = 'System';
     nextMode = 'auto';
   } else {
     // auto mode

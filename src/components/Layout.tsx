@@ -13,7 +13,7 @@
  */
 
 import { ReactNode } from 'react';
-import { Info, Heart, MessageCircleMore, Sun, MoonStar, MonitorCog } from 'lucide-react';
+import { Info, Heart, MessageCircleMore, Sun, MoonStar, SunMoon } from 'lucide-react';
 import { View } from '../hooks/useHashRouter';
 import { NavMoreMenu } from './NavMoreMenu';
 import { NavItem } from '../hooks/usePriorityNav';
@@ -49,8 +49,8 @@ export function Layout({
     themeLabel = 'Dark Mode';
     nextMode = 'dark';
   } else if (mode === 'dark') {
-    ThemeIcon = MonitorCog;
-    themeLabel = 'Auto Mode';
+    ThemeIcon = SunMoon;
+    themeLabel = 'System';
     nextMode = 'auto';
   } else {
     // auto mode

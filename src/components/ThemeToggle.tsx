@@ -1,4 +1,4 @@
-import { Sun, MoonStar } from 'lucide-react';
+import { Sun, MoonStar, MonitorCog } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import './ThemeToggle.css';
 
@@ -10,26 +10,46 @@ interface ThemeToggleProps {
 /**
  * ThemeToggle Component
  *
- * Toggles between light and dark mode with localStorage persistence.
+ * Cycles between light, dark, and auto (system) modes.
  *
  * Props:
  * - variant: 'desktop' (icon-only square button) or 'mobile' (icon + label)
  * - className: Additional CSS classes
  *
- * Mobile variant:
- * - Light mode: Shows moon-star icon with "Dark Mode" label
- * - Dark mode: Shows sun icon with "Light Mode" label
+ * Mobile variant shows icon + label:
+ * - Light mode → "Dark Mode" (moon icon)
+ * - Dark mode → "Auto Mode" (monitor icon)
+ * - Auto mode → "Light Mode" (sun icon)
  *
  * Desktop variant:
- * - Icon-only square button (no text label)
+ * - Icon-only square button
  */
 export function ThemeToggle({ variant = 'mobile', className = '' }: ThemeToggleProps) {
-  const { theme, toggleTheme } = useTheme();
+  const { mode, resolvedTheme, toggleTheme } = useTheme();
 
-  const isDark = theme === 'dark';
-  const Icon = isDark ? Sun : MoonStar;
-  const label = isDark ? 'Light Mode' : 'Dark Mode';
-  const ariaLabel = `Switch to ${isDark ? 'light' : 'dark'} mode`;
+  // Determine icon and label based on current mode
+  let Icon;
+  let label;
+  let nextMode;
+
+  if (mode === 'light') {
+    Icon = MoonStar;
+    label = 'Dark Mode';
+    nextMode = 'dark';
+  } else if (mode === 'dark') {
+    Icon = MonitorCog;
+    label = 'Auto Mode';
+    nextMode = 'auto';
+  } else {
+    // auto mode
+    Icon = Sun;
+    label = 'Light Mode';
+    nextMode = 'light';
+  }
+
+  const ariaLabel = `Switch to ${nextMode} mode (currently ${mode} mode${
+    mode === 'auto' ? `, displaying ${resolvedTheme}` : ''
+  })`;
 
   if (variant === 'desktop') {
     return (

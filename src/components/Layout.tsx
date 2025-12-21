@@ -13,7 +13,7 @@
  */
 
 import { ReactNode } from 'react';
-import { Info, Heart, MessageCircleMore, Sun, MoonStar } from 'lucide-react';
+import { Info, Heart, MessageCircleMore, Sun, MoonStar, MonitorCog } from 'lucide-react';
 import { View } from '../hooks/useHashRouter';
 import { NavMoreMenu } from './NavMoreMenu';
 import { NavItem } from '../hooks/usePriorityNav';
@@ -37,11 +37,27 @@ export function Layout({
   onAboutClick,
   children,
 }: LayoutProps) {
-  const { theme, toggleTheme } = useTheme();
+  const { mode, toggleTheme } = useTheme();
 
-  const isDark = theme === 'dark';
-  const ThemeIcon = isDark ? Sun : MoonStar;
-  const themeLabel = isDark ? 'Light Mode' : 'Dark Mode';
+  // Determine icon and label for next mode in the cycle
+  let ThemeIcon;
+  let themeLabel;
+  let nextMode;
+
+  if (mode === 'light') {
+    ThemeIcon = MoonStar;
+    themeLabel = 'Dark Mode';
+    nextMode = 'dark';
+  } else if (mode === 'dark') {
+    ThemeIcon = MonitorCog;
+    themeLabel = 'Auto Mode';
+    nextMode = 'auto';
+  } else {
+    // auto mode
+    ThemeIcon = Sun;
+    themeLabel = 'Light Mode';
+    nextMode = 'light';
+  }
 
   // Define utility navigation items that can overflow into "More" menu
   // Theme toggle is handled separately for mobile (in menu) and desktop (separate button)
@@ -80,7 +96,7 @@ export function Layout({
       icon: <ThemeIcon size={18} />,
       onClick: toggleTheme,
       className: 'nav-link-theme',
-      ariaLabel: `Switch to ${isDark ? 'light' : 'dark'} mode`,
+      ariaLabel: `Switch to ${nextMode} mode`,
     },
   ];
 

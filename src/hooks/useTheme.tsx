@@ -1,45 +1,77 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type Theme = 'light' | 'dark';
+type ThemeMode = 'light' | 'dark' | 'auto';
+type ResolvedTheme = 'light' | 'dark';
 
 const THEME_STORAGE_KEY = 'theme-preference';
 
 interface ThemeContextValue {
-  theme: Theme;
+  mode: ThemeMode;
+  resolvedTheme: ResolvedTheme;
   toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 /**
+ * Get the system's preferred color scheme
+ */
+function getSystemTheme(): ResolvedTheme {
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return 'light';
+}
+
+/**
  * ThemeProvider Component
  *
  * Provides theme state to all child components via Context.
+ * Supports three modes: 'light', 'dark', and 'auto' (system preference).
  * Manages localStorage persistence and applies theme to document root.
  */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
-    if (stored) return stored;
-
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return 'light';
+  const [mode, setMode] = useState<ThemeMode>(() => {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY) as ThemeMode | null;
+    return stored || 'auto';
   });
 
+  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(getSystemTheme);
+
+  // Listen for system theme changes when in auto mode
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? 'dark' : 'light');
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Resolve the actual theme to apply
+  const resolvedTheme: ResolvedTheme = mode === 'auto' ? systemTheme : mode;
+
+  // Apply theme to document and save preference
   useEffect(() => {
     const root = document.documentElement;
-    root.style.colorScheme = theme;
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
-  }, [theme]);
+    root.style.colorScheme = resolvedTheme;
+    localStorage.setItem(THEME_STORAGE_KEY, mode);
+  }, [mode, resolvedTheme]);
 
+  // Cycle through: light → dark → auto → light
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setMode((prev) => {
+      if (prev === 'light') return 'dark';
+      if (prev === 'dark') return 'auto';
+      return 'light';
+    });
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ mode, resolvedTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -52,8 +84,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
  * Must be used within a ThemeProvider.
  *
  * Returns:
- * - theme: Current theme ('light' or 'dark')
- * - toggleTheme: Function to toggle between light and dark
+ * - mode: Current theme mode ('light' | 'dark' | 'auto')
+ * - resolvedTheme: Actual theme being applied ('light' | 'dark')
+ * - toggleTheme: Function to cycle through light → dark → auto
  */
 export function useTheme() {
   const context = useContext(ThemeContext);

@@ -13,10 +13,12 @@
  */
 
 import { ReactNode } from 'react';
-import { Info, Heart, MessageCircleMore } from 'lucide-react';
+import { Info, Heart, MessageCircleMore, Sun, MoonStar } from 'lucide-react';
 import { View } from '../hooks/useHashRouter';
 import { NavMoreMenu } from './NavMoreMenu';
 import { NavItem } from '../hooks/usePriorityNav';
+import { ThemeToggle } from './ThemeToggle';
+import { useTheme } from '../hooks/useTheme';
 
 interface LayoutProps {
   currentView: View;
@@ -35,7 +37,14 @@ export function Layout({
   onAboutClick,
   children,
 }: LayoutProps) {
+  const { theme, toggleTheme } = useTheme();
+
+  const isDark = theme === 'dark';
+  const ThemeIcon = isDark ? Sun : MoonStar;
+  const themeLabel = isDark ? 'Light Mode' : 'Dark Mode';
+
   // Define utility navigation items that can overflow into "More" menu
+  // Theme toggle is handled separately for mobile (in menu) and desktop (separate button)
   const utilityNavItems: NavItem[] = [
     {
       id: 'feedback',
@@ -64,6 +73,14 @@ export function Layout({
       rel: 'noopener noreferrer',
       className: 'nav-link-donate',
       ariaLabel: 'Support on Ko-fi',
+    },
+    {
+      id: 'theme',
+      label: themeLabel,
+      icon: <ThemeIcon size={18} />,
+      onClick: toggleTheme,
+      className: 'nav-link-theme',
+      ariaLabel: `Switch to ${isDark ? 'light' : 'dark'} mode`,
     },
   ];
 
@@ -100,7 +117,8 @@ export function Layout({
           </button>
 
           {/* Utility nav items - visible on desktop, in "More" menu on tablet */}
-          {utilityNavItems.map((item) => {
+          {/* Theme toggle is rendered separately, so filter it out here */}
+          {utilityNavItems.filter(item => item.id !== 'theme').map((item) => {
             if (item.href) {
               return (
                 <a
@@ -129,6 +147,9 @@ export function Layout({
               </button>
             );
           })}
+
+          {/* Theme toggle - desktop only (rightmost) */}
+          <ThemeToggle variant="desktop" className="desktop-only theme-toggle-desktop-nav" />
 
           {/* "More" menu - rightmost button on smaller screens */}
           <NavMoreMenu items={utilityNavItems} className="tablet-only" />

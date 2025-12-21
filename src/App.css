@@ -489,6 +489,11 @@ button.nav-link.desktop-only {
     margin-left: auto;
   }
 
+  /* Theme toggle stays at the far right with no extra margin */
+  .theme-toggle-desktop-nav {
+    margin-left: 0;
+  }
+
   .tablet-only {
     display: none;
   }

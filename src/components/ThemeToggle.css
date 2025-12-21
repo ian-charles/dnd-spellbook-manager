@@ -1,0 +1,70 @@
+/**
+ * ThemeToggle Component Styles
+ *
+ * Mobile variant: Icon + text label in nav-more-menu
+ * Desktop variant: Icon-only square button in navbar
+ */
+
+/* Mobile variant (in dropdown menu) */
+.theme-toggle-mobile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  width: 100%;
+}
+
+.theme-toggle-mobile:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+.theme-toggle-mobile svg {
+  flex-shrink: 0;
+}
+
+/* Desktop variant (in navbar) */
+.theme-toggle-desktop {
+  display: none; /* Hidden by default (mobile/tablet) */
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--space-3);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.theme-toggle-desktop:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+.theme-toggle-desktop svg {
+  flex-shrink: 0;
+}
+
+/* Position desktop toggle at the right of navbar */
+.theme-toggle-desktop-nav {
+  margin-left: auto;
+}
+
+/* Desktop (≥ 1024px) - Show the desktop toggle */
+@media (min-width: 1024px) {
+  .theme-toggle-desktop {
+    display: flex;
+  }
+}

@@ -11,6 +11,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Layout } from './Layout';
+import { ThemeProvider } from '../hooks/useTheme';
 import '@testing-library/jest-dom';
 
 describe('Layout', () => {
@@ -24,9 +25,11 @@ describe('Layout', () => {
 
     it('renders children correctly', () => {
         render(
-            <Layout {...defaultProps}>
-                <div data-testid="test-child">Child Content</div>
-            </Layout>
+            <ThemeProvider>
+                <Layout {...defaultProps}>
+                    <div data-testid="test-child">Child Content</div>
+                </Layout>
+            </ThemeProvider>
         );
 
         expect(screen.getByTestId('test-child')).toBeInTheDocument();
@@ -35,9 +38,11 @@ describe('Layout', () => {
 
     it('renders title and subtitle', () => {
         render(
-            <Layout {...defaultProps}>
-                <div>Content</div>
-            </Layout>
+            <ThemeProvider>
+                <Layout {...defaultProps}>
+                    <div>Content</div>
+                </Layout>
+            </ThemeProvider>
         );
 
         expect(screen.getByText('The Spellbookery'), 'Title should be visible').toBeInTheDocument();
@@ -46,9 +51,11 @@ describe('Layout', () => {
 
     it('renders navigation buttons', () => {
         render(
-            <Layout {...defaultProps}>
-                <div>Content</div>
-            </Layout>
+            <ThemeProvider>
+                <Layout {...defaultProps}>
+                    <div>Content</div>
+                </Layout>
+            </ThemeProvider>
         );
 
         expect(screen.getByRole('button', { name: /My Spellbooks/i }), 'Spellbooks button should be visible').toBeInTheDocument();
@@ -57,9 +64,11 @@ describe('Layout', () => {
 
     it('highlights active view correctly', () => {
         const { rerender } = render(
-            <Layout {...defaultProps} currentView="spellbooks">
-                <div>Content</div>
-            </Layout>
+            <ThemeProvider>
+                <Layout {...defaultProps} currentView="spellbooks">
+                    <div>Content</div>
+                </Layout>
+            </ThemeProvider>
         );
 
         const spellbooksButton = screen.getByRole('button', { name: /My Spellbooks/i });
@@ -69,9 +78,11 @@ describe('Layout', () => {
         expect(browseButton, 'Browse button should not be active').not.toHaveAttribute('aria-current');
 
         rerender(
-            <Layout {...defaultProps} currentView="browse">
-                <div>Content</div>
-            </Layout>
+            <ThemeProvider>
+                <Layout {...defaultProps} currentView="browse">
+                    <div>Content</div>
+                </Layout>
+            </ThemeProvider>
         );
 
         expect(spellbooksButton, 'Spellbooks button should not be active').not.toHaveAttribute('aria-current');

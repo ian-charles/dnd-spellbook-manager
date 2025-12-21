@@ -1,4 +1,4 @@
-import { Info, Heart } from 'lucide-react';
+import { Info, Heart, MessageCircleMore } from 'lucide-react';
 import './Footer.css';
 
 interface FooterProps {
@@ -16,6 +16,16 @@ export function Footer({ onAboutClick }: FooterProps) {
         <Info size={20} />
         <span>About</span>
       </button>
+      <a
+        href="https://forms.gle/9Lx1Ghq2iCha7e5P8"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="footer-button footer-button-feedback"
+        aria-label="Provide feedback"
+      >
+        <MessageCircleMore size={20} />
+        <span>Feedback</span>
+      </a>
       <a
         href="https://ko-fi.com/iantheguy"
         target="_blank"

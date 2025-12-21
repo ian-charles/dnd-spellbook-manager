@@ -84,15 +84,6 @@
   clip-path: inset(-20px -20px 0 -20px);
 }
 
-/* Prepared row styling (spellbook only) */
-.spellbook-table .prepared-row {
-  background: light-dark(rgba(202, 138, 4, 0.18), rgba(251, 191, 36, 0.25));
-}
-
-.spellbook-table .prepared-row:hover {
-  background: light-dark(rgba(202, 138, 4, 0.25), rgba(251, 191, 36, 0.35));
-}
-
 /* Remove default cell padding and borders */
 .spell-table>tbody>tr>td,
 .spellbook-table>tbody>tr>td {
@@ -112,13 +103,8 @@
   order: 1;
 }
 
-/* Spell table (browse) - make room for checkbox on left, minimal right */
+/* Spell table - make room for checkbox on left, minimal right */
 .spell-table .spell-name {
-  padding-right: var(--space-1);
-}
-
-/* Spellbook table - same padding as browse table */
-.spellbook-table .spell-name {
   padding-right: var(--space-1);
 }
 

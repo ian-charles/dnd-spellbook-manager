@@ -124,7 +124,7 @@
   background: transparent;
 }
 
-.spell-slot-btn {
+.spell-slots-input .spell-slot-btn {
   width: 30px;
   height: 14px;
   padding: 0;
@@ -138,26 +138,26 @@
   transition: all var(--transition-base);
 }
 
-.spell-slot-btn:hover:not(:disabled) {
+.spell-slots-input .spell-slot-btn:hover:not(:disabled) {
   background: var(--color-hover);
   color: var(--color-text-primary);
   border-color: var(--color-border-focus);
 }
 
-.spell-slot-btn:disabled {
+.spell-slots-input .spell-slot-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }
 
-.spell-slot-btn-up {
+.spell-slots-input .spell-slot-btn-up {
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 
-.spell-slot-btn-down {
+.spell-slots-input .spell-slot-btn-down {
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
 }
 
-input.spell-slot-input {
+.spell-slots-input input.spell-slot-input {
   padding: 0 2px;
   background: var(--color-bg-input);
   border: var(--input-border);
@@ -165,7 +165,7 @@ input.spell-slot-input {
   border-bottom: none;
   border-radius: 0;
   color: var(--color-text-primary);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   line-height: 24px;
   transition: all var(--transition-base);
   width: 30px;
@@ -176,22 +176,22 @@ input.spell-slot-input {
   box-sizing: border-box;
 }
 
-input.spell-slot-input.zero-value {
+.spell-slots-input input.spell-slot-input.zero-value {
   opacity: 0.4;
 }
 
-.spell-slot-input:focus {
+.spell-slots-input .spell-slot-input:focus {
   outline: none;
   border-color: var(--color-border-focus);
 }
 
 /* Hide native spinners since we have custom buttons */
-.spell-slot-input::-webkit-inner-spin-button,
-.spell-slot-input::-webkit-outer-spin-button {
+.spell-slots-input .spell-slot-input::-webkit-inner-spin-button,
+.spell-slots-input .spell-slot-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.spell-slot-input[type="number"] {
+.spell-slots-input .spell-slot-input[type="number"] {
   -moz-appearance: textfield;
 }

@@ -553,46 +553,76 @@
     accent-color: var(--color-accent);
   }
 
-  /* Restore hidden columns */
-  .level-col,
-  .time-col,
+  /* Restore hidden columns - always visible at 768px+ */
+  .level-col {
+    display: table-cell !important;
+    text-align: center;
+    min-width: 60px;
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  .time-col {
+    display: table-cell !important;
+    min-width: 75px;
+    width: 1%;
+    white-space: nowrap;
+  }
+
   .range-col {
     display: table-cell !important;
-    width: auto !important;
-    flex: none;
-    order: 0;
-    white-space: nowrap !important;
-    font-size: var(--font-size-base);
-    color: var(--color-text-primary);
-    padding: var(--space-3) var(--space-4);
+    min-width: 70px;
+    width: 1%;
+    white-space: nowrap;
   }
 
   /* These columns are hidden by default at 768px, shown via container queries */
-  .components-col,
-  .duration-col,
-  .school-col,
-  .classes-col,
-  .source-col {
+  .duration-col {
     display: table-cell;
-    width: auto !important;
-    flex: none;
-    order: 0;
-    white-space: nowrap !important;
-    font-size: var(--font-size-base);
-    color: var(--color-text-primary);
-    padding: var(--space-3) var(--space-4);
+    min-width: 95px;
+    width: 1%;
   }
 
-  .source-col {
-    flex: none;
-    order: 0;
-    font-style: normal;
-    color: var(--color-text-tertiary);
-    font-size: var(--font-size-sm);
-    white-space: normal !important;
+  .duration-col .cell-content {
+    white-space: normal;
+  }
+
+  .school-col {
+    display: table-cell;
+    text-transform: capitalize;
+    min-width: 85px;
+    width: 1%;
+    white-space: nowrap;
   }
 
   .components-col {
+    display: table-cell;
+    text-align: center;
+    font-family: monospace;
+    min-width: 60px;
+    width: 1%;
+    white-space: nowrap;
+    color: var(--color-text-secondary);
+  }
+
+  .classes-col {
+    display: table-cell;
+    text-transform: capitalize;
+    color: var(--color-text-secondary);
+    min-width: 135px;
+    width: 1%;
+  }
+
+  .source-col {
+    display: table-cell;
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-sm);
+    min-width: 80px;
+    width: 1%;
+  }
+
+  .action-col {
+    width: 60px;
     text-align: center;
   }
 
@@ -963,52 +993,8 @@
 }
 
 /* --------------------------------------------------------------------------
-   Column Widths and Styling
+   Cell Content Helper
    -------------------------------------------------------------------------- */
-
-.level-col {
-  text-align: center;
-  min-width: 60px;
-  width: 1%;
-  white-space: nowrap;
-}
-
-.school-col {
-  text-transform: capitalize;
-  min-width: 85px;
-  width: 1%;
-  white-space: nowrap;
-}
-
-.components-col {
-  text-align: center;
-  font-family: monospace;
-  min-width: 60px;
-  width: 1%;
-  white-space: nowrap;
-  color: var(--color-text-secondary);
-}
-
-.time-col {
-  min-width: 75px;
-  width: 1%;
-  white-space: nowrap;
-}
-
-.duration-col {
-  min-width: 95px;
-  width: 1%;
-}
-
-.duration-col .cell-content {
-  white-space: normal;
-}
-
-.range-col {
-  min-width: 70px;
-  width: 1%;
-  white-space: nowrap;
-}
 
 .cell-content {
   display: inline-block;
@@ -1017,25 +1003,6 @@
 
 .cell-content .badge {
   white-space: nowrap;
-}
-
-.classes-col {
-  text-transform: capitalize;
-  color: var(--color-text-secondary);
-  min-width: 135px;
-  width: 1%;
-}
-
-.source-col {
-  color: var(--color-text-tertiary);
-  font-size: var(--font-size-sm);
-  min-width: 80px;
-  width: 1%;
-}
-
-.action-col {
-  width: 60px;
-  text-align: center;
 }
 
 /* --------------------------------------------------------------------------

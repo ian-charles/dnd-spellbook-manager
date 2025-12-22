@@ -30,12 +30,12 @@
   pointer-events: none;
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
-  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  color: var(--color-prepared);
   z-index: 2000;
   background: var(--color-bg-primary);
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-lg);
-  border: 2px solid light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  border: 2px solid var(--color-prepared);
   box-shadow: var(--shadow-xl);
 }
 
@@ -149,7 +149,7 @@
 }
 
 .spell-prep-status-icon.prepared {
-  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  color: var(--color-prepared);
 }
 
 .spell-detail-modal-header h2 {
@@ -245,12 +245,12 @@
 }
 
 .spell-detail-modal-prep-toggle.prep-action {
-  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  color: var(--color-prepared);
 }
 
 .spell-detail-modal-prep-toggle.prep-action:hover {
   background: var(--color-hover);
-  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  color: var(--color-prepared);
 }
 
 .spell-detail-modal-remove {
@@ -533,7 +533,7 @@
 }
 
 .spell-materials .material-cost {
-  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  color: var(--color-prepared);
   font-weight: var(--font-weight-bold);
   text-transform: none;
 }

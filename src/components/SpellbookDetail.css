@@ -355,7 +355,7 @@
 }
 
 .filter-checkbox-label .prepared-text {
-  color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  color: var(--color-prepared);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -379,22 +379,22 @@
 }
 
 .spellbook-table .prepared-row {
-  background: light-dark(rgba(202, 138, 4, 0.18), rgba(251, 191, 36, 0.25));
-  border-color: light-dark(rgba(202, 138, 4, 0.35), rgba(251, 191, 36, 0.45));
+  background: var(--color-prepared-row-bg);
+  border-color: var(--color-prepared-row-border);
 }
 
 .spellbook-table .prepared-row:hover {
-  background: light-dark(rgba(202, 138, 4, 0.22), rgba(251, 191, 36, 0.3));
+  background: var(--color-prepared-row-hover);
 }
 
 /* Selected prepared spells - higher contrast gold + border */
 .spellbook-table .prepared-row.selected-row {
-  background: light-dark(rgba(202, 138, 4, 0.35), rgba(251, 191, 36, 0.45));
-  border-color: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  background: var(--color-prepared-selected-bg);
+  border-color: var(--color-prepared);
 }
 
 .spellbook-table .prepared-row.selected-row:hover {
-  background: light-dark(rgba(202, 138, 4, 0.45), rgba(251, 191, 36, 0.55));
+  background: var(--color-prepared-selected-hover);
 }
 
 /* ==========================================================================

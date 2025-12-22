@@ -106,10 +106,18 @@
   --color-active: light-dark(rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.15));
   --color-active-strong: light-dark(rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.2));
 
-  /* Prepared/Selected States (for spellbook) */
-  --color-prepared-bg: light-dark(rgba(237, 233, 254, 0.25), rgba(79, 70, 229, 0.15));
-  --color-prepared-hover: light-dark(rgba(237, 233, 254, 0.35), rgba(79, 70, 229, 0.2));
+  /* Prepared/Selected States (for spell table expansion) */
+  --color-selected-bg: light-dark(rgba(237, 233, 254, 0.25), rgba(79, 70, 229, 0.15));
+  --color-selected-hover: light-dark(rgba(237, 233, 254, 0.35), rgba(79, 70, 229, 0.2));
   --color-expanded-bg: light-dark(rgba(237, 233, 254, 0.3), rgba(79, 70, 229, 0.1));
+
+  /* Prepared Spell States (gold/amber for spellbook) */
+  --color-prepared: light-dark(rgb(202, 138, 4), rgb(251, 191, 36));
+  --color-prepared-row-bg: light-dark(rgba(202, 138, 4, 0.18), rgba(251, 191, 36, 0.25));
+  --color-prepared-row-border: light-dark(rgba(202, 138, 4, 0.35), rgba(251, 191, 36, 0.45));
+  --color-prepared-row-hover: light-dark(rgba(202, 138, 4, 0.22), rgba(251, 191, 36, 0.3));
+  --color-prepared-selected-bg: light-dark(rgba(202, 138, 4, 0.35), rgba(251, 191, 36, 0.45));
+  --color-prepared-selected-hover: light-dark(rgba(202, 138, 4, 0.45), rgba(251, 191, 36, 0.55));
 
   /* Level Badge Colors */
   --color-level-bg: light-dark(rgba(102, 126, 234, 0.15), rgba(102, 126, 234, 0.2));

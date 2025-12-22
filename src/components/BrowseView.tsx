@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FunnelPlus } from 'lucide-react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { FilterModal } from './FilterModal';
@@ -133,7 +134,8 @@ export function BrowseView({
                     onClick={() => setFilterModalOpen(true)}
                     aria-label="Open filters"
                 >
-                    Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+                    <FunnelPlus size={18} style={{ marginRight: '0.5rem' }} />
+                    <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
                 </button>
                 <div className="filter-results-text">
                     Showing {filteredSpells.length} of {spells.length} spells

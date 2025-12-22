@@ -1,0 +1,1217 @@
+/**
+ * Shared Table Styles
+ *
+ * Unified styles for spell tables used in both:
+ * - SpellTable component (browse view)
+ * - SpellbookDetail component (spellbook view)
+ *
+ * Note: The spellbook table has class="spell-table spellbook-table", so all
+ * .spell-table selectors apply to both tables. Use .spellbook-table only for
+ * spellbook-specific overrides (like prepared row styling in SpellbookDetail.css).
+ *
+ * Mobile-first methodology: Base styles are for mobile, enhanced with min-width queries.
+ * Uses design tokens with light-dark() function for automatic theming.
+ */
+
+/* ==========================================================================
+   BASE STYLES (MOBILE - NO MEDIA QUERY)
+   These are the default styles for all viewports
+   ========================================================================== */
+
+/* Base table styles */
+.spell-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-base);
+}
+
+/* Hide desktop-only columns on mobile */
+.spell-table .desktop-only {
+  display: none;
+}
+
+/* Hide desktop badges on mobile */
+.desktop-badge {
+  display: none;
+}
+
+/* Container - remove desktop table styling on mobile */
+.spell-table-container {
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: visible;
+}
+
+/* Hide table headers on mobile */
+.spell-table thead {
+  display: none;
+}
+
+/* Convert table to block layout */
+.spell-table,
+.spell-table>tbody {
+  display: block;
+  width: 100%;
+}
+
+/* Card-style rows */
+.spell-table>tbody>tr {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+  gap: var(--space-2);
+  background: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 41, 59, 0.6));
+  border: 1px solid light-dark(rgba(226, 232, 240, 0.8), rgba(100, 116, 139, 0.3));
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-left: 4px solid var(--color-primary);
+  position: relative;
+  min-height: 60px;
+  box-shadow: light-dark(0 1px 3px rgba(0, 0, 0, 0.05), none);
+}
+
+.spell-table>tbody>tr:hover {
+  background: light-dark(rgba(248, 250, 252, 0.95), rgba(30, 41, 59, 0.8));
+}
+
+.spell-row {
+  cursor: pointer;
+}
+
+.spell-row.expanded {
+  background: light-dark(rgba(237, 233, 254, 0.3), rgba(79, 70, 229, 0.15));
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+  margin-bottom: 0;
+  z-index: 1;
+  clip-path: inset(-20px -20px 0 -20px);
+}
+
+/* Remove default cell padding and borders on mobile */
+.spell-table>tbody>tr>td {
+  padding: 0;
+  border: none;
+}
+
+/* Selected row styling - applies to both tables */
+.spell-table .selected-row {
+  background: light-dark(rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.2));
+  border-color: light-dark(#3b82f6, #60a5fa);
+}
+
+.spell-table .selected-row:hover {
+  background: light-dark(rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.3));
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: Spell Name Layout
+   -------------------------------------------------------------------------- */
+
+/* Spell name container - flexbox to keep name/level/school inline */
+.spell-name {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-1) var(--space-2) 3rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin: 0;
+  min-width: 0;
+  order: 1;
+}
+
+/* Spell name text itself - grows to fill space, wraps within container */
+.spell-name-header {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: light-dark(#4c1d95, #a5b4fc);
+  line-height: var(--line-height-snug);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: Badge Styles
+   -------------------------------------------------------------------------- */
+
+/* Show level and school as inline badges - stay on same line */
+.mobile-badge.level-badge,
+.mobile-badge.school-badge {
+  flex: 0 0 auto;
+  display: inline-block !important;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  padding: 0.125rem 0.2rem !important;
+  margin: 0;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.mobile-badge.level-badge {
+  min-width: 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  font-size: var(--font-size-md);
+  background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
+  color: light-dark(#6d28d9, #a78bfa);
+  border: 1px solid light-dark(rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.3));
+  order: 2;
+}
+
+.mobile-badge.school-badge {
+  text-transform: uppercase;
+  min-width: 3rem !important;
+  width: 3rem !important;
+  background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+  border: 1px solid light-dark(#64748b, #475569);
+  color: light-dark(#334155, #cbd5e1);
+  order: 3;
+}
+
+/* Level-specific colors for mobile level badges */
+.mobile-badge.level-badge[data-level="0" i] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15)) !important;
+  border-color: light-dark(#94a3b8, #64748b) !important;
+  color: light-dark(#475569, #cbd5e1) !important;
+}
+
+.mobile-badge.level-badge[data-level="1" i] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15)) !important;
+  border-color: light-dark(#a78bfa, #8b5cf6) !important;
+  color: light-dark(#6d28d9, #ddd6fe) !important;
+}
+
+.mobile-badge.level-badge[data-level="2" i] {
+  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15)) !important;
+  border-color: light-dark(#6366f1, #4f46e5) !important;
+  color: light-dark(#3730a3, #c7d2fe) !important;
+}
+
+.mobile-badge.level-badge[data-level="3" i] {
+  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15)) !important;
+  border-color: light-dark(#3b82f6, #2563eb) !important;
+  color: light-dark(#1e3a8a, #bfdbfe) !important;
+}
+
+.mobile-badge.level-badge[data-level="4" i] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15)) !important;
+  border-color: light-dark(#60a5fa, #3b82f6) !important;
+  color: light-dark(#1e3a8a, #bfdbfe) !important;
+}
+
+.mobile-badge.level-badge[data-level="5" i] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15)) !important;
+  border-color: light-dark(#22d3ee, #06b6d4) !important;
+  color: light-dark(#164e63, #cffafe) !important;
+}
+
+.mobile-badge.level-badge[data-level="6" i] {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15)) !important;
+  border-color: light-dark(#4ade80, #22c55e) !important;
+  color: light-dark(#14532d, #dcfce7) !important;
+}
+
+.mobile-badge.level-badge[data-level="7" i] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15)) !important;
+  border-color: light-dark(#facc15, #eab308) !important;
+  color: light-dark(#713f12, #fef9c3) !important;
+}
+
+.mobile-badge.level-badge[data-level="8" i] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15)) !important;
+  border-color: light-dark(#fb923c, #f97316) !important;
+  color: light-dark(#7c2d12, #fed7aa) !important;
+}
+
+.mobile-badge.level-badge[data-level="9" i] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15)) !important;
+  border-color: light-dark(#ef4444, #dc2626) !important;
+  color: light-dark(#7f1d1d, #fecaca) !important;
+}
+
+/* School-specific colors for mobile badges */
+.mobile-badge.school-badge[data-school="abjuration" i] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15)) !important;
+  border-color: light-dark(#94a3b8, #64748b) !important;
+  color: light-dark(#475569, #cbd5e1) !important;
+}
+
+.mobile-badge.school-badge[data-school="conjuration" i] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15)) !important;
+  border-color: light-dark(#3b82f6, #2563eb) !important;
+  color: light-dark(#1e40af, #93c5fd) !important;
+}
+
+.mobile-badge.school-badge[data-school="divination" i] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15)) !important;
+  border-color: light-dark(#fbbf24, #eab308) !important;
+  color: light-dark(#b45309, #fde047) !important;
+}
+
+.mobile-badge.school-badge[data-school="enchantment" i] {
+  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15)) !important;
+  border-color: light-dark(#ec4899, #db2777) !important;
+  color: light-dark(#be185d, #f9a8d4) !important;
+}
+
+.mobile-badge.school-badge[data-school="evocation" i] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15)) !important;
+  border-color: light-dark(#ef4444, #dc2626) !important;
+  color: light-dark(#dc2626, #fca5a5) !important;
+}
+
+.mobile-badge.school-badge[data-school="illusion" i] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15)) !important;
+  border-color: light-dark(#a78bfa, #7c3aed) !important;
+  color: light-dark(#6d28d9, #c4b5fd) !important;
+}
+
+.mobile-badge.school-badge[data-school="necromancy" i] {
+  background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2)) !important;
+  border-color: light-dark(#a3e635, #84cc16) !important;
+  color: light-dark(#4d7c0f, #d9f99d) !important;
+}
+
+.mobile-badge.school-badge[data-school="transmutation" i] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15)) !important;
+  border-color: light-dark(#fb923c, #f97316) !important;
+  color: light-dark(#ea580c, #fdba74) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: Hide columns in mobile card layout
+   -------------------------------------------------------------------------- */
+
+.checkbox-col,
+.level-col,
+.time-col,
+.range-col,
+.duration-col,
+.school-col,
+.components-col,
+.classes-col,
+.source-col {
+  display: none;
+}
+
+/* Badges (C, R from spell-name-header) */
+.badge {
+  display: inline-block;
+  margin: 0 0 0 var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-semibold);
+  vertical-align: middle;
+}
+
+.badge-concentration {
+  background: var(--color-badge-concentration-bg);
+  color: var(--color-badge-concentration-text);
+  border: 1px solid var(--color-badge-concentration-border);
+  margin: 0 var(--space-1) 0 0;
+}
+
+.badge-ritual {
+  background: var(--color-badge-ritual-bg);
+  color: var(--color-badge-ritual-text);
+  border: 1px solid var(--color-badge-ritual-border);
+  margin: 0 0 0 var(--space-1);
+}
+
+/* ==========================================================================
+   TABLET+ (≥ 768px)
+   Restore table structure from mobile card layout
+   ========================================================================== */
+
+@media (min-width: 768px) {
+
+  /* Hide mobile badges on desktop */
+  .mobile-badge,
+  .mobile-badge.level-badge,
+  .mobile-badge.school-badge {
+    display: none !important;
+  }
+
+  /* Desktop badges visible again */
+  .desktop-badge {
+    display: inline-block !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+    white-space: nowrap;
+    text-transform: capitalize;
+    text-align: center;
+  }
+
+  .desktop-badge.level-badge {
+    background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+    border: 1px solid light-dark(#64748b, #475569);
+    color: light-dark(#334155, #cbd5e1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Level-specific colors for desktop level badges */
+  .desktop-badge.level-badge[data-level="0"] {
+    background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+    border-color: light-dark(#94a3b8, #64748b);
+    color: light-dark(#475569, #cbd5e1);
+  }
+
+  .desktop-badge.level-badge[data-level="1"] {
+    background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+    border-color: light-dark(#a78bfa, #8b5cf6);
+    color: light-dark(#6d28d9, #ddd6fe);
+  }
+
+  .desktop-badge.level-badge[data-level="2"] {
+    background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
+    border-color: light-dark(#6366f1, #4f46e5);
+    color: light-dark(#3730a3, #c7d2fe);
+  }
+
+  .desktop-badge.level-badge[data-level="3"] {
+    background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
+    border-color: light-dark(#3b82f6, #2563eb);
+    color: light-dark(#1e3a8a, #bfdbfe);
+  }
+
+  .desktop-badge.level-badge[data-level="4"] {
+    background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+    border-color: light-dark(#60a5fa, #3b82f6);
+    color: light-dark(#1e3a8a, #bfdbfe);
+  }
+
+  .desktop-badge.level-badge[data-level="5"] {
+    background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+    border-color: light-dark(#22d3ee, #06b6d4);
+    color: light-dark(#164e63, #cffafe);
+  }
+
+  .desktop-badge.level-badge[data-level="6"] {
+    background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+    border-color: light-dark(#4ade80, #22c55e);
+    color: light-dark(#14532d, #dcfce7);
+  }
+
+  .desktop-badge.level-badge[data-level="7"] {
+    background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+    border-color: light-dark(#facc15, #eab308);
+    color: light-dark(#713f12, #fef9c3);
+  }
+
+  .desktop-badge.level-badge[data-level="8"] {
+    background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+    border-color: light-dark(#fb923c, #f97316);
+    color: light-dark(#7c2d12, #fed7aa);
+  }
+
+  .desktop-badge.level-badge[data-level="9"] {
+    background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+    border-color: light-dark(#ef4444, #dc2626);
+    color: light-dark(#7f1d1d, #fecaca);
+  }
+
+  /* School-specific colors for desktop school column (text only, no badge) */
+  .school-col[data-school="abjuration" i] {
+    color: light-dark(#475569, #cbd5e1);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  .school-col[data-school="conjuration" i] {
+    color: light-dark(#1e40af, #93c5fd);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  .school-col[data-school="divination" i] {
+    color: light-dark(#b45309, #fde047);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  .school-col[data-school="enchantment" i] {
+    color: light-dark(#be185d, #f9a8d4);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  .school-col[data-school="evocation" i] {
+    color: light-dark(#dc2626, #fca5a5);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  .school-col[data-school="illusion" i] {
+    color: light-dark(#6d28d9, #c4b5fd);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  .school-col[data-school="necromancy" i] {
+    color: light-dark(#4d7c0f, #d9f99d);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  .school-col[data-school="transmutation" i] {
+    color: light-dark(#ea580c, #fdba74);
+    font-weight: var(--font-weight-semibold);
+    text-transform: capitalize;
+  }
+
+  /* Restore desktop-only columns */
+  .spell-table .desktop-only {
+    display: table-cell;
+  }
+
+  /* Restore table container styling */
+  .spell-table-container {
+    padding: var(--space-4);
+    background: var(--color-bg-overlay);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-xl);
+    overflow-x: auto;
+    container-type: inline-size;
+    container-name: table-container;
+  }
+
+  /* Show table headers */
+  .spell-table thead {
+    display: table-header-group;
+    background: light-dark(rgba(241, 245, 249, 0.9), rgba(15, 23, 42, 0.6));
+    position: sticky;
+    top: 0;
+    z-index: var(--z-dropdown);
+  }
+
+  /* Restore table structure */
+  .spell-table,
+  .spell-table>tbody {
+    display: table;
+    width: 100%;
+  }
+
+  .spell-table>tbody {
+    display: table-row-group;
+  }
+
+  /* Restore table rows */
+  .spell-table>tbody>tr {
+    display: table-row;
+    margin-bottom: 0;
+    gap: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    border-left: 4px solid transparent;
+    border-bottom: 1px solid transparent;
+    position: static;
+    min-height: auto;
+    box-shadow: none;
+    transition: background-color var(--transition-fast);
+  }
+
+  .spell-table>tbody>tr:hover {
+    background: var(--color-hover);
+  }
+
+  .spell-row.expanded {
+    background: var(--color-expanded-bg);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 1px solid var(--color-border-secondary);
+    margin-bottom: 0;
+    z-index: auto;
+    clip-path: none;
+  }
+
+  /* Restore table cells */
+  .spell-table>tbody>tr>td {
+    display: table-cell;
+    padding: var(--space-3) var(--space-4);
+    border: none;
+    vertical-align: middle;
+    color: var(--color-text-primary);
+  }
+
+  /* Reset spell name to normal table cell behavior */
+  .spell-name {
+    flex: none;
+    display: table-cell;
+    gap: 0;
+    padding: var(--space-3) var(--space-4);
+    margin: 0;
+    min-width: 120px;
+    order: 0;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-link);
+  }
+
+  .spell-name-header {
+    flex: none;
+    min-width: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-link);
+    line-height: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  /* Table headers */
+  .spell-table th {
+    display: table-cell;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-heading);
+    border-bottom: 2px solid var(--color-border-primary);
+    white-space: nowrap;
+  }
+
+  .spell-table th.sortable-header {
+    padding: 0;
+  }
+
+  /* Selected row - only change border color to prevent jitter */
+  .spell-table .selected-row {
+    background: light-dark(rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.2));
+    border-left-color: light-dark(#3b82f6, #60a5fa);
+  }
+
+  .spell-table .selected-row:hover {
+    background: light-dark(rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.3));
+  }
+
+  /* Checkbox column */
+  .checkbox-col {
+    display: table-cell !important;
+    width: 40px;
+    text-align: center;
+    padding: var(--space-3) var(--space-2) !important;
+  }
+
+  .checkbox-col input[type="checkbox"] {
+    width: 1.125rem;
+    height: 1.125rem;
+    cursor: pointer;
+    accent-color: var(--color-accent);
+  }
+
+  /* Restore hidden columns */
+  .level-col,
+  .time-col,
+  .range-col {
+    display: table-cell !important;
+    width: auto !important;
+    flex: none;
+    order: 0;
+    white-space: nowrap !important;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* These columns are hidden by default at 768px, shown via container queries */
+  .components-col,
+  .duration-col,
+  .school-col,
+  .classes-col,
+  .source-col {
+    display: table-cell;
+    width: auto !important;
+    flex: none;
+    order: 0;
+    white-space: nowrap !important;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .source-col {
+    flex: none;
+    order: 0;
+    font-style: normal;
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-sm);
+    white-space: normal !important;
+  }
+
+  .components-col {
+    text-align: center;
+  }
+
+  /* Reset badges for desktop */
+  .badge {
+    display: inline-block;
+    margin: 0;
+    padding: 0.125rem var(--space-1);
+  }
+
+  .badge-concentration {
+    margin: 0 var(--space-1) 0 0;
+  }
+
+  .badge-ritual {
+    margin: 0 0 0 var(--space-1);
+  }
+
+  /* Hide lower-priority columns by default at 768px - ONLY for Browse table */
+  /* Container queries will progressively show these columns */
+  /* Spellbook table (.spellbook-table-container) shows all columns at 768px+ */
+  .spell-table .duration-col,
+  .spell-table .school-col,
+  .spell-table .components-col,
+  .spell-table .classes-col,
+  .spell-table .source-col {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   DESKTOP (≥ 1024px)
+   Fine-tuning for larger screens
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .spell-table {
+    font-size: var(--font-size-base);
+  }
+
+  .spell-table th,
+  .spell-table td {
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* ==========================================================================
+   CONTAINER QUERIES
+   Progressive column showing based on actual container width
+   ========================================================================== */
+
+@container table-container (min-width: 650px) {
+  .spell-table .duration-col {
+    display: table-cell !important;
+  }
+}
+
+@container table-container (min-width: 750px) {
+  .spell-table .school-col {
+    display: table-cell !important;
+  }
+}
+
+@container table-container (min-width: 900px) {
+  .spell-table .classes-col {
+    display: table-cell !important;
+  }
+}
+
+@container table-container (min-width: 975px) {
+  .spell-table .components-col {
+    display: table-cell !important;
+  }
+}
+
+@container table-container (min-width: 1075px) {
+  .spell-table .source-col {
+    display: table-cell !important;
+  }
+}
+
+/* ==========================================================================
+   SHARED FEATURES (All Viewports)
+   Sorting, badges, expansion rows, column widths
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Sorting UI
+   -------------------------------------------------------------------------- */
+
+.sort-button {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  padding: var(--space-2);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  color: var(--color-text-heading);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: space-between;
+  transition: background-color var(--transition-fast);
+}
+
+.sort-button:hover {
+  background: var(--color-hover);
+}
+
+.th-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: space-between;
+}
+
+.sort-icon {
+  opacity: 0.5;
+  font-size: var(--font-size-base);
+}
+
+.spell-table th.sortable:hover .sort-icon,
+.sort-button:hover .sort-icon {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Expansion Row
+   -------------------------------------------------------------------------- */
+
+.spell-expanded-row {
+  background: var(--color-bg-secondary);
+  animation: slideDown var(--transition-slow);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spell-expanded-content {
+  padding: var(--space-6);
+  border-left: 3px solid var(--color-primary);
+}
+
+.spell-expanded-header h3 {
+  margin: 0 0 var(--space-2) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+}
+
+.spell-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: 0 0 0.5rem 0;
+  font-size: var(--font-size-base);
+}
+
+.spell-meta-separator {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+}
+
+.spell-expanded-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+}
+
+.spell-expanded-details div {
+  font-size: var(--font-size-base);
+}
+
+.spell-expanded-details strong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.spell-expanded-description {
+  margin: var(--space-4) 0;
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+}
+
+.spell-expanded-higher-levels {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  background: var(--color-primary-lighter);
+  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--color-primary);
+}
+
+.spell-expanded-higher-levels strong {
+  color: var(--color-primary);
+}
+
+.spell-expanded-footer {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-base);
+}
+
+.spell-source {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   Desktop Badges (Level, School, Meta)
+   -------------------------------------------------------------------------- */
+
+/* Expansion meta badges */
+.spell-meta-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-md);
+  white-space: nowrap;
+}
+
+.spell-meta-badge.level-badge {
+  background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+  border: 1px solid light-dark(#64748b, #475569);
+  color: light-dark(#334155, #cbd5e1);
+}
+
+/* Level-specific colors for expansion level badges */
+.spell-meta-badge.level-badge[data-level="0"] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
+}
+
+.spell-meta-badge.level-badge[data-level="1"] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #8b5cf6);
+  color: light-dark(#6d28d9, #ddd6fe);
+}
+
+.spell-meta-badge.level-badge[data-level="2"] {
+  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
+  border-color: light-dark(#6366f1, #4f46e5);
+  color: light-dark(#3730a3, #c7d2fe);
+}
+
+.spell-meta-badge.level-badge[data-level="3"] {
+  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+.spell-meta-badge.level-badge[data-level="4"] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#60a5fa, #3b82f6);
+  color: light-dark(#1e3a8a, #bfdbfe);
+}
+
+.spell-meta-badge.level-badge[data-level="5"] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#22d3ee, #06b6d4);
+  color: light-dark(#164e63, #cffafe);
+}
+
+.spell-meta-badge.level-badge[data-level="6"] {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+  border-color: light-dark(#4ade80, #22c55e);
+  color: light-dark(#14532d, #dcfce7);
+}
+
+.spell-meta-badge.level-badge[data-level="7"] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#facc15, #eab308);
+  color: light-dark(#713f12, #fef9c3);
+}
+
+.spell-meta-badge.level-badge[data-level="8"] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#7c2d12, #fed7aa);
+}
+
+.spell-meta-badge.level-badge[data-level="9"] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#7f1d1d, #fecaca);
+}
+
+.spell-meta-badge.school-badge {
+  background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
+  border: 1px solid light-dark(#64748b, #475569);
+  color: light-dark(#334155, #cbd5e1);
+}
+
+/* School-specific colors for expansion school badges */
+.spell-meta-badge.school-badge[data-school="abjuration" i] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
+}
+
+.spell-meta-badge.school-badge[data-school="conjuration" i] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e40af, #93c5fd);
+}
+
+.spell-meta-badge.school-badge[data-school="divination" i] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#fbbf24, #eab308);
+  color: light-dark(#b45309, #fde047);
+}
+
+.spell-meta-badge.school-badge[data-school="enchantment" i] {
+  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15));
+  border-color: light-dark(#ec4899, #db2777);
+  color: light-dark(#be185d, #f9a8d4);
+}
+
+.spell-meta-badge.school-badge[data-school="evocation" i] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#dc2626, #fca5a5);
+}
+
+.spell-meta-badge.school-badge[data-school="illusion" i] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #7c3aed);
+  color: light-dark(#6d28d9, #c4b5fd);
+}
+
+.spell-meta-badge.school-badge[data-school="necromancy" i] {
+  background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2));
+  border-color: light-dark(#a3e635, #84cc16);
+  color: light-dark(#4d7c0f, #d9f99d);
+}
+
+.spell-meta-badge.school-badge[data-school="transmutation" i] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#ea580c, #fdba74);
+}
+
+/* --------------------------------------------------------------------------
+   Component Badges (V, S, M)
+   -------------------------------------------------------------------------- */
+
+.component-badges {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.component-badge {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  vertical-align: middle;
+  text-align: center;
+  min-width: 1.25rem;
+}
+
+.badge-verbal {
+  background: light-dark(rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.25));
+  color: light-dark(rgb(109, 40, 217), rgb(196, 181, 253));
+  border: 1px solid light-dark(rgb(139, 92, 246), rgb(139, 92, 246));
+}
+
+.badge-somatic {
+  background: light-dark(rgba(234, 179, 8, 0.15), rgba(234, 179, 8, 0.25));
+  color: light-dark(rgb(161, 98, 7), rgb(253, 224, 71));
+  border: 1px solid light-dark(rgb(234, 179, 8), rgb(234, 179, 8));
+}
+
+.badge-material {
+  background: light-dark(rgba(236, 72, 153, 0.15), rgba(236, 72, 153, 0.25));
+  color: light-dark(rgb(190, 24, 93), rgb(251, 207, 232));
+  border: 1px solid light-dark(rgb(236, 72, 153), rgb(236, 72, 153));
+}
+
+/* --------------------------------------------------------------------------
+   Class Badges
+   -------------------------------------------------------------------------- */
+
+.class-badges {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.class-badge {
+  display: inline-block;
+  padding: 0.0625rem 0.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-bold);
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1.2;
+  min-width: 1.5rem;
+}
+
+.class-badge-bard {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border: 1px solid light-dark(#a78bfa, #7c3aed);
+  color: light-dark(#6d28d9, #c4b5fd);
+}
+
+.class-badge-cleric {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border: 1px solid light-dark(#fbbf24, #eab308);
+  color: light-dark(#b45309, #fde047);
+}
+
+.class-badge-druid {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+  border: 1px solid light-dark(#4ade80, #22c55e);
+  color: light-dark(#16a34a, #86efac);
+}
+
+.class-badge-paladin {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border: 1px solid light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
+}
+
+.class-badge-ranger {
+  background: light-dark(rgba(217, 119, 6, 0.15), rgba(217, 119, 6, 0.2));
+  border: 1px solid light-dark(#d97706, #ea580c);
+  color: light-dark(#92400e, #fdba74);
+}
+
+.class-badge-sorcerer {
+  background: light-dark(rgba(248, 113, 113, 0.2), rgba(248, 113, 113, 0.15));
+  border: 1px solid light-dark(#f87171, #ef4444);
+  color: light-dark(#dc2626, #fca5a5);
+}
+
+.class-badge-warlock {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border: 1px solid light-dark(#fb923c, #f97316);
+  color: light-dark(#ea580c, #fdba74);
+}
+
+.class-badge-wizard {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border: 1px solid light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e40af, #93c5fd);
+}
+
+/* --------------------------------------------------------------------------
+   Column Widths and Styling
+   -------------------------------------------------------------------------- */
+
+.level-col {
+  text-align: center;
+  min-width: 60px;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.school-col {
+  text-transform: capitalize;
+  min-width: 85px;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.components-col {
+  text-align: center;
+  font-family: monospace;
+  min-width: 60px;
+  width: 1%;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.time-col {
+  min-width: 75px;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.duration-col {
+  min-width: 95px;
+  width: 1%;
+}
+
+.duration-col .cell-content {
+  white-space: normal;
+}
+
+.range-col {
+  min-width: 70px;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.cell-content {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.cell-content .badge {
+  white-space: nowrap;
+}
+
+.classes-col {
+  text-transform: capitalize;
+  color: var(--color-text-secondary);
+  min-width: 135px;
+  width: 1%;
+}
+
+.source-col {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  min-width: 80px;
+  width: 1%;
+}
+
+.action-col {
+  width: 60px;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Empty State
+   -------------------------------------------------------------------------- */
+
+.spell-table-empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-overlay);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+}

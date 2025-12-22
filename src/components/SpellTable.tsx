@@ -6,7 +6,7 @@ import { useSpellSorting, SortColumn, SortDirection } from '../hooks/useSpellSor
 import { useLongPress } from '../hooks/useLongPress';
 import { SpellTableRow } from './SpellTableRow';
 import { SpellDetailModal } from './SpellDetailModal';
-import './SpellTable.css';
+import '../styles/table-shared.css';
 
 interface SpellTableProps {
   spells: Spell[];

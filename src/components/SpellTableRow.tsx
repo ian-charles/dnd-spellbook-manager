@@ -104,8 +104,8 @@ export function SpellTableRow({
           <div className="spell-name-header">
             {formatSpellNameForWrapping(spell.name)}
           </div>
-          <span className="level-col mobile-badge" data-level={spell.level}>{getLevelTextMobile(spell.level)}</span>
-          <span className="school-col mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
+          <span className="level-badge mobile-badge" data-level={spell.level}>{getLevelTextMobile(spell.level)}</span>
+          <span className="school-badge mobile-badge" data-school={spell.school}>{getSchoolAbbreviation(spell.school)}</span>
         </td>
         <td className="level-col">
           <span className="desktop-badge level-badge" data-level={spell.level}>

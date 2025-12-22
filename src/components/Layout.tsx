@@ -63,6 +63,14 @@ export function Layout({
   // Theme toggle is handled separately for mobile (in menu) and desktop (separate button)
   const utilityNavItems: NavItem[] = [
     {
+      id: 'about',
+      label: 'About',
+      icon: <Info size={18} />,
+      onClick: onAboutClick,
+      className: 'nav-link-about',
+      ariaLabel: 'About The Spellbookery',
+    },
+    {
       id: 'feedback',
       label: 'Feedback',
       icon: <MessageCircleMore size={18} />,
@@ -71,14 +79,6 @@ export function Layout({
       rel: 'noopener noreferrer',
       className: 'nav-link-feedback',
       ariaLabel: 'Provide feedback',
-    },
-    {
-      id: 'about',
-      label: 'About',
-      icon: <Info size={18} />,
-      onClick: onAboutClick,
-      className: 'nav-link-about',
-      ariaLabel: 'About The Spellbookery',
     },
     {
       id: 'donate',

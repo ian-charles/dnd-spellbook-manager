@@ -6,8 +6,7 @@
  */
 
 /* Import shared table styles */
-@import '../styles/table-desktop-shared.css';
-@import '../styles/table-mobile-shared.css';
+@import '../styles/table-shared.css';
 
 /* ==========================================================================
    BASE STYLES (Mobile-first, < 375px)
@@ -440,10 +439,6 @@
 
 /* Tablet+ (768px+) */
 @media (min-width: 768px) {
-  .spellbook-detail {
-    padding: 0 var(--space-8) var(--space-8);
-  }
-
   .spellbook-header-top {
     flex-direction: row;
     align-items: center;

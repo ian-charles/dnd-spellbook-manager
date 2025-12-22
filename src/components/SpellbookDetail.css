@@ -362,6 +362,8 @@
 .spellbook-table-container {
   margin-top: var(--space-4);
   overflow-x: auto;
+  container-type: inline-size;
+  container-name: table-container;
 }
 
 .spellbook-table .checkbox-col {

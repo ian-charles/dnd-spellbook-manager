@@ -641,9 +641,8 @@
     margin: 0 0 0 var(--space-1);
   }
 
-  /* Hide lower-priority columns by default at 768px - ONLY for Browse table */
-  /* Container queries will progressively show these columns */
-  /* Spellbook table (.spellbook-table-container) shows all columns at 768px+ */
+  /* Hide lower-priority columns by default at 768px */
+  /* Container queries progressively show these based on container width */
   .spell-table .duration-col,
   .spell-table .school-col,
   .spell-table .components-col,

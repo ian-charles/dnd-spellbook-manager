@@ -116,9 +116,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-1) var(--space-2) 3rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
   margin: 0;
   min-width: 0;
   order: 1;
@@ -144,10 +141,10 @@
 .mobile-badge.level-badge,
 .mobile-badge.school-badge {
   flex: 0 0 auto;
-  display: inline-block !important;
+  display: inline-block;
   font-size: 1rem;
   font-weight: var(--font-weight-semibold);
-  padding: 0.125rem 0.2rem !important;
+  padding: 0.125rem 0.2rem;
   margin: 0;
   border-radius: var(--radius-md);
   white-space: nowrap;
@@ -156,9 +153,9 @@
 }
 
 .mobile-badge.level-badge {
-  min-width: 30px !important;
-  width: 30px !important;
-  height: 30px !important;
+  min-width: 30px;
+  width: 30px;
+  height: 30px;
   font-size: var(--font-size-md);
   background: light-dark(rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
   color: light-dark(#6d28d9, #a78bfa);
@@ -168,8 +165,8 @@
 
 .mobile-badge.school-badge {
   text-transform: uppercase;
-  min-width: 3rem !important;
-  width: 3rem !important;
+  min-width: 3rem;
+  width: 3rem;
   background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
   border: 1px solid light-dark(#64748b, #475569);
   color: light-dark(#334155, #cbd5e1);
@@ -338,12 +335,12 @@
   .mobile-badge,
   .mobile-badge.level-badge,
   .mobile-badge.school-badge {
-    display: none !important;
+    display: none;
   }
 
   /* Desktop badges visible again */
   .desktop-badge {
-    display: inline-block !important;
+    display: inline-block;
     padding: 0.25rem 0.5rem;
     border-radius: var(--radius-md);
     font-weight: var(--font-weight-semibold);
@@ -365,53 +362,19 @@
   /* Level colors inherited from base .level-badge[data-level] rules */
 
   /* School-specific colors for desktop school column (text only, no badge) */
-  .school-col[data-school="abjuration" i] {
-    color: light-dark(#475569, #cbd5e1);
+  .school-col[data-school] {
     font-weight: var(--font-weight-semibold);
     text-transform: capitalize;
   }
 
-  .school-col[data-school="conjuration" i] {
-    color: light-dark(#1e40af, #93c5fd);
-    font-weight: var(--font-weight-semibold);
-    text-transform: capitalize;
-  }
-
-  .school-col[data-school="divination" i] {
-    color: light-dark(#b45309, #fde047);
-    font-weight: var(--font-weight-semibold);
-    text-transform: capitalize;
-  }
-
-  .school-col[data-school="enchantment" i] {
-    color: light-dark(#be185d, #f9a8d4);
-    font-weight: var(--font-weight-semibold);
-    text-transform: capitalize;
-  }
-
-  .school-col[data-school="evocation" i] {
-    color: light-dark(#dc2626, #fca5a5);
-    font-weight: var(--font-weight-semibold);
-    text-transform: capitalize;
-  }
-
-  .school-col[data-school="illusion" i] {
-    color: light-dark(#6d28d9, #c4b5fd);
-    font-weight: var(--font-weight-semibold);
-    text-transform: capitalize;
-  }
-
-  .school-col[data-school="necromancy" i] {
-    color: light-dark(#4d7c0f, #d9f99d);
-    font-weight: var(--font-weight-semibold);
-    text-transform: capitalize;
-  }
-
-  .school-col[data-school="transmutation" i] {
-    color: light-dark(#ea580c, #fdba74);
-    font-weight: var(--font-weight-semibold);
-    text-transform: capitalize;
-  }
+  .school-col[data-school="abjuration" i] { color: light-dark(#475569, #cbd5e1); }
+  .school-col[data-school="conjuration" i] { color: light-dark(#1e40af, #93c5fd); }
+  .school-col[data-school="divination" i] { color: light-dark(#b45309, #fde047); }
+  .school-col[data-school="enchantment" i] { color: light-dark(#be185d, #f9a8d4); }
+  .school-col[data-school="evocation" i] { color: light-dark(#dc2626, #fca5a5); }
+  .school-col[data-school="illusion" i] { color: light-dark(#6d28d9, #c4b5fd); }
+  .school-col[data-school="necromancy" i] { color: light-dark(#4d7c0f, #d9f99d); }
+  .school-col[data-school="transmutation" i] { color: light-dark(#ea580c, #fdba74); }
 
   /* Restore desktop-only columns */
   .spell-table .desktop-only {
@@ -433,6 +396,7 @@
   .spell-table thead {
     display: table-header-group;
     background: light-dark(rgba(241, 245, 249, 0.9), rgba(15, 23, 42, 0.6));
+    border-left: 4px solid transparent;
     position: sticky;
     top: 0;
     z-index: var(--z-dropdown);
@@ -494,7 +458,6 @@
     flex: none;
     display: table-cell;
     gap: 0;
-    padding: var(--space-3) var(--space-4);
     margin: 0;
     min-width: 120px;
     order: 0;
@@ -540,10 +503,10 @@
 
   /* Checkbox column */
   .checkbox-col {
-    display: table-cell !important;
+    display: table-cell;
     width: 40px;
     text-align: center;
-    padding: var(--space-3) var(--space-2) !important;
+    padding: var(--space-3) var(--space-2);
   }
 
   .checkbox-col input[type="checkbox"] {
@@ -555,7 +518,7 @@
 
   /* Restore hidden columns - always visible at 768px+ */
   .level-col {
-    display: table-cell !important;
+    display: table-cell;
     text-align: center;
     min-width: 60px;
     width: 1%;
@@ -563,14 +526,14 @@
   }
 
   .time-col {
-    display: table-cell !important;
+    display: table-cell;
     min-width: 75px;
     width: 1%;
     white-space: nowrap;
   }
 
   .range-col {
-    display: table-cell !important;
+    display: table-cell;
     min-width: 70px;
     width: 1%;
     white-space: nowrap;

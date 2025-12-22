@@ -176,114 +176,114 @@
   order: 3;
 }
 
-/* Level-specific colors for mobile level badges */
-.mobile-badge.level-badge[data-level="0" i] {
-  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15)) !important;
-  border-color: light-dark(#94a3b8, #64748b) !important;
-  color: light-dark(#475569, #cbd5e1) !important;
+/* Level-specific colors - applies to all level badges (mobile, desktop, meta) */
+.level-badge[data-level="0"] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
 }
 
-.mobile-badge.level-badge[data-level="1" i] {
-  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15)) !important;
-  border-color: light-dark(#a78bfa, #8b5cf6) !important;
-  color: light-dark(#6d28d9, #ddd6fe) !important;
+.level-badge[data-level="1"] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #8b5cf6);
+  color: light-dark(#6d28d9, #ddd6fe);
 }
 
-.mobile-badge.level-badge[data-level="2" i] {
-  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15)) !important;
-  border-color: light-dark(#6366f1, #4f46e5) !important;
-  color: light-dark(#3730a3, #c7d2fe) !important;
+.level-badge[data-level="2"] {
+  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
+  border-color: light-dark(#6366f1, #4f46e5);
+  color: light-dark(#3730a3, #c7d2fe);
 }
 
-.mobile-badge.level-badge[data-level="3" i] {
-  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15)) !important;
-  border-color: light-dark(#3b82f6, #2563eb) !important;
-  color: light-dark(#1e3a8a, #bfdbfe) !important;
+.level-badge[data-level="3"] {
+  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e3a8a, #bfdbfe);
 }
 
-.mobile-badge.level-badge[data-level="4" i] {
-  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15)) !important;
-  border-color: light-dark(#60a5fa, #3b82f6) !important;
-  color: light-dark(#1e3a8a, #bfdbfe) !important;
+.level-badge[data-level="4"] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#60a5fa, #3b82f6);
+  color: light-dark(#1e3a8a, #bfdbfe);
 }
 
-.mobile-badge.level-badge[data-level="5" i] {
-  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15)) !important;
-  border-color: light-dark(#22d3ee, #06b6d4) !important;
-  color: light-dark(#164e63, #cffafe) !important;
+.level-badge[data-level="5"] {
+  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
+  border-color: light-dark(#22d3ee, #06b6d4);
+  color: light-dark(#164e63, #cffafe);
 }
 
-.mobile-badge.level-badge[data-level="6" i] {
-  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15)) !important;
-  border-color: light-dark(#4ade80, #22c55e) !important;
-  color: light-dark(#14532d, #dcfce7) !important;
+.level-badge[data-level="6"] {
+  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
+  border-color: light-dark(#4ade80, #22c55e);
+  color: light-dark(#14532d, #dcfce7);
 }
 
-.mobile-badge.level-badge[data-level="7" i] {
-  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15)) !important;
-  border-color: light-dark(#facc15, #eab308) !important;
-  color: light-dark(#713f12, #fef9c3) !important;
+.level-badge[data-level="7"] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#facc15, #eab308);
+  color: light-dark(#713f12, #fef9c3);
 }
 
-.mobile-badge.level-badge[data-level="8" i] {
-  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15)) !important;
-  border-color: light-dark(#fb923c, #f97316) !important;
-  color: light-dark(#7c2d12, #fed7aa) !important;
+.level-badge[data-level="8"] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#7c2d12, #fed7aa);
 }
 
-.mobile-badge.level-badge[data-level="9" i] {
-  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15)) !important;
-  border-color: light-dark(#ef4444, #dc2626) !important;
-  color: light-dark(#7f1d1d, #fecaca) !important;
+.level-badge[data-level="9"] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#7f1d1d, #fecaca);
 }
 
-/* School-specific colors for mobile badges */
-.mobile-badge.school-badge[data-school="abjuration" i] {
-  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15)) !important;
-  border-color: light-dark(#94a3b8, #64748b) !important;
-  color: light-dark(#475569, #cbd5e1) !important;
+/* School-specific colors - applies to all school badges (mobile, meta) */
+.school-badge[data-school="abjuration" i] {
+  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
+  border-color: light-dark(#94a3b8, #64748b);
+  color: light-dark(#475569, #cbd5e1);
 }
 
-.mobile-badge.school-badge[data-school="conjuration" i] {
-  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15)) !important;
-  border-color: light-dark(#3b82f6, #2563eb) !important;
-  color: light-dark(#1e40af, #93c5fd) !important;
+.school-badge[data-school="conjuration" i] {
+  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
+  border-color: light-dark(#3b82f6, #2563eb);
+  color: light-dark(#1e40af, #93c5fd);
 }
 
-.mobile-badge.school-badge[data-school="divination" i] {
-  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15)) !important;
-  border-color: light-dark(#fbbf24, #eab308) !important;
-  color: light-dark(#b45309, #fde047) !important;
+.school-badge[data-school="divination" i] {
+  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
+  border-color: light-dark(#fbbf24, #eab308);
+  color: light-dark(#b45309, #fde047);
 }
 
-.mobile-badge.school-badge[data-school="enchantment" i] {
-  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15)) !important;
-  border-color: light-dark(#ec4899, #db2777) !important;
-  color: light-dark(#be185d, #f9a8d4) !important;
+.school-badge[data-school="enchantment" i] {
+  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15));
+  border-color: light-dark(#ec4899, #db2777);
+  color: light-dark(#be185d, #f9a8d4);
 }
 
-.mobile-badge.school-badge[data-school="evocation" i] {
-  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15)) !important;
-  border-color: light-dark(#ef4444, #dc2626) !important;
-  color: light-dark(#dc2626, #fca5a5) !important;
+.school-badge[data-school="evocation" i] {
+  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
+  border-color: light-dark(#ef4444, #dc2626);
+  color: light-dark(#dc2626, #fca5a5);
 }
 
-.mobile-badge.school-badge[data-school="illusion" i] {
-  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15)) !important;
-  border-color: light-dark(#a78bfa, #7c3aed) !important;
-  color: light-dark(#6d28d9, #c4b5fd) !important;
+.school-badge[data-school="illusion" i] {
+  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
+  border-color: light-dark(#a78bfa, #7c3aed);
+  color: light-dark(#6d28d9, #c4b5fd);
 }
 
-.mobile-badge.school-badge[data-school="necromancy" i] {
-  background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2)) !important;
-  border-color: light-dark(#a3e635, #84cc16) !important;
-  color: light-dark(#4d7c0f, #d9f99d) !important;
+.school-badge[data-school="necromancy" i] {
+  background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2));
+  border-color: light-dark(#a3e635, #84cc16);
+  color: light-dark(#4d7c0f, #d9f99d);
 }
 
-.mobile-badge.school-badge[data-school="transmutation" i] {
-  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15)) !important;
-  border-color: light-dark(#fb923c, #f97316) !important;
-  color: light-dark(#ea580c, #fdba74) !important;
+.school-badge[data-school="transmutation" i] {
+  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
+  border-color: light-dark(#fb923c, #f97316);
+  color: light-dark(#ea580c, #fdba74);
 }
 
 /* --------------------------------------------------------------------------
@@ -362,66 +362,7 @@
     justify-content: center;
   }
 
-  /* Level-specific colors for desktop level badges */
-  .desktop-badge.level-badge[data-level="0"] {
-    background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
-    border-color: light-dark(#94a3b8, #64748b);
-    color: light-dark(#475569, #cbd5e1);
-  }
-
-  .desktop-badge.level-badge[data-level="1"] {
-    background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
-    border-color: light-dark(#a78bfa, #8b5cf6);
-    color: light-dark(#6d28d9, #ddd6fe);
-  }
-
-  .desktop-badge.level-badge[data-level="2"] {
-    background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
-    border-color: light-dark(#6366f1, #4f46e5);
-    color: light-dark(#3730a3, #c7d2fe);
-  }
-
-  .desktop-badge.level-badge[data-level="3"] {
-    background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
-    border-color: light-dark(#3b82f6, #2563eb);
-    color: light-dark(#1e3a8a, #bfdbfe);
-  }
-
-  .desktop-badge.level-badge[data-level="4"] {
-    background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
-    border-color: light-dark(#60a5fa, #3b82f6);
-    color: light-dark(#1e3a8a, #bfdbfe);
-  }
-
-  .desktop-badge.level-badge[data-level="5"] {
-    background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
-    border-color: light-dark(#22d3ee, #06b6d4);
-    color: light-dark(#164e63, #cffafe);
-  }
-
-  .desktop-badge.level-badge[data-level="6"] {
-    background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
-    border-color: light-dark(#4ade80, #22c55e);
-    color: light-dark(#14532d, #dcfce7);
-  }
-
-  .desktop-badge.level-badge[data-level="7"] {
-    background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
-    border-color: light-dark(#facc15, #eab308);
-    color: light-dark(#713f12, #fef9c3);
-  }
-
-  .desktop-badge.level-badge[data-level="8"] {
-    background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
-    border-color: light-dark(#fb923c, #f97316);
-    color: light-dark(#7c2d12, #fed7aa);
-  }
-
-  .desktop-badge.level-badge[data-level="9"] {
-    background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
-    border-color: light-dark(#ef4444, #dc2626);
-    color: light-dark(#7f1d1d, #fecaca);
-  }
+  /* Level colors inherited from base .level-badge[data-level] rules */
 
   /* School-specific colors for desktop school column (text only, no badge) */
   .school-col[data-school="abjuration" i] {
@@ -899,66 +840,7 @@
   color: light-dark(#334155, #cbd5e1);
 }
 
-/* Level-specific colors for expansion level badges */
-.spell-meta-badge.level-badge[data-level="0"] {
-  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
-  border-color: light-dark(#94a3b8, #64748b);
-  color: light-dark(#475569, #cbd5e1);
-}
-
-.spell-meta-badge.level-badge[data-level="1"] {
-  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
-  border-color: light-dark(#a78bfa, #8b5cf6);
-  color: light-dark(#6d28d9, #ddd6fe);
-}
-
-.spell-meta-badge.level-badge[data-level="2"] {
-  background: light-dark(rgba(129, 140, 248, 0.2), rgba(129, 140, 248, 0.15));
-  border-color: light-dark(#6366f1, #4f46e5);
-  color: light-dark(#3730a3, #c7d2fe);
-}
-
-.spell-meta-badge.level-badge[data-level="3"] {
-  background: light-dark(rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.15));
-  border-color: light-dark(#3b82f6, #2563eb);
-  color: light-dark(#1e3a8a, #bfdbfe);
-}
-
-.spell-meta-badge.level-badge[data-level="4"] {
-  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
-  border-color: light-dark(#60a5fa, #3b82f6);
-  color: light-dark(#1e3a8a, #bfdbfe);
-}
-
-.spell-meta-badge.level-badge[data-level="5"] {
-  background: light-dark(rgba(103, 232, 249, 0.2), rgba(103, 232, 249, 0.15));
-  border-color: light-dark(#22d3ee, #06b6d4);
-  color: light-dark(#164e63, #cffafe);
-}
-
-.spell-meta-badge.level-badge[data-level="6"] {
-  background: light-dark(rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.15));
-  border-color: light-dark(#4ade80, #22c55e);
-  color: light-dark(#14532d, #dcfce7);
-}
-
-.spell-meta-badge.level-badge[data-level="7"] {
-  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
-  border-color: light-dark(#facc15, #eab308);
-  color: light-dark(#713f12, #fef9c3);
-}
-
-.spell-meta-badge.level-badge[data-level="8"] {
-  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
-  border-color: light-dark(#fb923c, #f97316);
-  color: light-dark(#7c2d12, #fed7aa);
-}
-
-.spell-meta-badge.level-badge[data-level="9"] {
-  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
-  border-color: light-dark(#ef4444, #dc2626);
-  color: light-dark(#7f1d1d, #fecaca);
-}
+/* Level colors inherited from base .level-badge[data-level] rules */
 
 .spell-meta-badge.school-badge {
   background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
@@ -966,54 +848,7 @@
   color: light-dark(#334155, #cbd5e1);
 }
 
-/* School-specific colors for expansion school badges */
-.spell-meta-badge.school-badge[data-school="abjuration" i] {
-  background: light-dark(rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.15));
-  border-color: light-dark(#94a3b8, #64748b);
-  color: light-dark(#475569, #cbd5e1);
-}
-
-.spell-meta-badge.school-badge[data-school="conjuration" i] {
-  background: light-dark(rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.15));
-  border-color: light-dark(#3b82f6, #2563eb);
-  color: light-dark(#1e40af, #93c5fd);
-}
-
-.spell-meta-badge.school-badge[data-school="divination" i] {
-  background: light-dark(rgba(253, 224, 71, 0.2), rgba(253, 224, 71, 0.15));
-  border-color: light-dark(#fbbf24, #eab308);
-  color: light-dark(#b45309, #fde047);
-}
-
-.spell-meta-badge.school-badge[data-school="enchantment" i] {
-  background: light-dark(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.15));
-  border-color: light-dark(#ec4899, #db2777);
-  color: light-dark(#be185d, #f9a8d4);
-}
-
-.spell-meta-badge.school-badge[data-school="evocation" i] {
-  background: light-dark(rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.15));
-  border-color: light-dark(#ef4444, #dc2626);
-  color: light-dark(#dc2626, #fca5a5);
-}
-
-.spell-meta-badge.school-badge[data-school="illusion" i] {
-  background: light-dark(rgba(196, 181, 253, 0.2), rgba(196, 181, 253, 0.15));
-  border-color: light-dark(#a78bfa, #7c3aed);
-  color: light-dark(#6d28d9, #c4b5fd);
-}
-
-.spell-meta-badge.school-badge[data-school="necromancy" i] {
-  background: light-dark(rgba(217, 249, 157, 0.3), rgba(217, 249, 157, 0.2));
-  border-color: light-dark(#a3e635, #84cc16);
-  color: light-dark(#4d7c0f, #d9f99d);
-}
-
-.spell-meta-badge.school-badge[data-school="transmutation" i] {
-  background: light-dark(rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.15));
-  border-color: light-dark(#fb923c, #f97316);
-  color: light-dark(#ea580c, #fdba74);
-}
+/* School colors inherited from base .school-badge[data-school] rules */
 
 /* --------------------------------------------------------------------------
    Component Badges (V, S, M)

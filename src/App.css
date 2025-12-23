@@ -94,14 +94,14 @@
 }
 
 .nav-link-donate {
-  background: light-dark(rgb(255, 94, 91), rgb(239, 68, 68));
+  background: var(--color-donate);
   color: white;
-  border-color: light-dark(rgb(255, 94, 91), rgb(239, 68, 68));
+  border-color: var(--color-donate);
 }
 
 .nav-link-donate:hover {
-  background: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
-  border-color: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
+  background: var(--color-donate-hover);
+  border-color: var(--color-donate-hover);
   color: white;
 }
 

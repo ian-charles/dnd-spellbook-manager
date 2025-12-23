@@ -80,7 +80,7 @@
   cursor: pointer;
   padding: var(--space-2);
   font-size: var(--font-size-lg);
-  line-height: 1;
+  line-height: var(--line-height-none);
   transition: color var(--transition-base);
 }
 
@@ -132,7 +132,7 @@
 .spellbook-name {
   grid-row: 1;
   grid-column: 1 / -1;
-  font-size: 1.5rem;
+  font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-heading);
   margin-bottom: var(--space-2);

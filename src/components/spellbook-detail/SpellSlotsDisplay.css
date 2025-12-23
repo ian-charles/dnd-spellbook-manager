@@ -31,7 +31,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--letter-spacing-wide);
   text-align: center;
 }
 
@@ -40,7 +40,7 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--letter-spacing-wide);
   white-space: nowrap;
 }
 
@@ -51,7 +51,7 @@
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-md);
-  line-height: 1;
+  line-height: var(--line-height-none);
   background: light-dark(rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.15));
   border: 1px solid light-dark(#64748b, #475569);
   color: light-dark(#334155, #cbd5e1);

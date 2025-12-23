@@ -7,7 +7,7 @@
   z-index: 90;
   background: var(--color-bg-primary);
   border-top: 1px solid var(--color-border-secondary);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,14 +65,14 @@
 }
 
 .footer-button-donate {
-  background: light-dark(rgb(255, 94, 91), rgb(239, 68, 68));
+  background: var(--color-donate);
   color: white;
-  border-color: light-dark(rgb(255, 94, 91), rgb(239, 68, 68));
+  border-color: var(--color-donate);
 }
 
 .footer-button-donate:hover {
-  background: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
-  border-color: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
+  background: var(--color-donate-hover);
+  border-color: var(--color-donate-hover);
   color: white;
 }
 

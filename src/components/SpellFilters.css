@@ -667,7 +667,7 @@
   align-items: center;
   font-size: var(--font-size-md);
   color: var(--color-text-secondary);
-  line-height: 1;
+  line-height: var(--line-height-none);
 }
 
 .btn-clear-filters {

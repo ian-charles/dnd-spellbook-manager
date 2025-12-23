@@ -37,7 +37,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border-primary);
   background: var(--color-bg-secondary);
 }
 
@@ -51,13 +51,13 @@
 .filter-modal-close {
   background: none;
   border: none;
-  font-size: 2rem;
-  line-height: 1;
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-none);
   color: var(--color-text-secondary);
   cursor: pointer;
   padding: 0;
-  width: 2rem;
-  height: 2rem;
+  width: var(--space-8);
+  height: var(--space-8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,7 +66,7 @@
 }
 
 .filter-modal-close:hover {
-  background-color: var(--color-bg-hover);
+  background-color: var(--color-hover);
 }
 
 /* Modal Body */
@@ -79,7 +79,7 @@
 /* Modal Footer */
 .filter-modal-footer {
   padding: var(--space-4);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border-primary);
   background: var(--color-bg-secondary);
   display: flex;
   gap: var(--space-3);

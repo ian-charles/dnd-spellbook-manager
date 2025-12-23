@@ -2,11 +2,8 @@
  * SpellbookDetail Component Styles
  *
  * Component-specific styles for the spellbook detail view.
- * Shared desktop and mobile table styles are imported.
+ * Shared table styles are imported via SpellTable.tsx.
  */
-
-/* Import shared table styles */
-@import '../styles/table-shared.css';
 
 /* ==========================================================================
    BASE STYLES (Mobile-first, < 375px)
@@ -152,7 +149,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--letter-spacing-wide);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -380,7 +377,7 @@
 
 .spellbook-table .prepared-row {
   background: var(--color-prepared-row-bg);
-  border-color: var(--color-prepared-row-border);
+  border-left-color: var(--color-prepared-row-border);
 }
 
 .spellbook-table .prepared-row:hover {
@@ -390,7 +387,7 @@
 /* Selected prepared spells - higher contrast gold + border */
 .spellbook-table .prepared-row.selected-row {
   background: var(--color-prepared-selected-bg);
-  border-color: var(--color-prepared);
+  border-left-color: var(--color-prepared);
 }
 
 .spellbook-table .prepared-row.selected-row:hover {

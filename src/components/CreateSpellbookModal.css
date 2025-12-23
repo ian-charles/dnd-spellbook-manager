@@ -20,7 +20,7 @@
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--letter-spacing-wide);
   text-align: center;
 }
 

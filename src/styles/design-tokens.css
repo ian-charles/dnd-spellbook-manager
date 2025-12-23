@@ -91,6 +91,10 @@
   --color-neutral: light-dark(#525252, #a3a3a3);
   --color-neutral-hover: light-dark(#404040, #737373);
 
+  /* Semantic Colors - Donate (Ko-fi button) */
+  --color-donate: light-dark(rgb(255, 94, 91), rgb(239, 68, 68));
+  --color-donate-hover: light-dark(rgb(235, 74, 71), rgb(220, 38, 38));
+
   /* Badge/Tag Colors */
   --color-badge-concentration-bg: light-dark(rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.25));
   --color-badge-concentration-text: light-dark(#0e7490, #67e8f9);
@@ -101,14 +105,17 @@
   --color-badge-ritual-border: light-dark(#ef4444, #dc2626);
 
   /* Interactive States */
+  --color-unselected-bg: light-dark(rgba(255, 255, 255, 0.95), rgba(30, 41, 59, 0.6));
+  --color-unselected-border: light-dark(rgba(226, 232, 240, 0.8), rgba(100, 116, 139, 0.3));
   --color-hover: light-dark(#f1f5f9, rgba(100, 116, 139, 0.15));
   --color-hover-strong: light-dark(#e2e8f0, rgba(100, 116, 139, 0.2));
   --color-active: light-dark(rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.15));
   --color-active-strong: light-dark(rgba(79, 70, 229, 0.15), rgba(79, 70, 229, 0.2));
 
   /* Prepared/Selected States (for spell table expansion) */
-  --color-selected-bg: light-dark(rgba(237, 233, 254, 0.25), rgba(79, 70, 229, 0.15));
-  --color-selected-hover: light-dark(rgba(237, 233, 254, 0.35), rgba(79, 70, 229, 0.2));
+  --color-selected-bg: light-dark(rgba(96, 165, 250, 0.15), rgba(96, 165, 250, 0.2));
+  --color-selected-border: light-dark(#3b82f6, #60a5fa);
+  --color-selected-hover: light-dark(rgba(96, 165, 250, 0.25), rgba(96, 165, 250, 0.3));
   --color-expanded-bg: light-dark(rgba(237, 233, 254, 0.3), rgba(79, 70, 229, 0.1));
 
   /* Prepared Spell States (gold/amber for spellbook) */
@@ -123,6 +130,12 @@
   --color-level-bg: light-dark(rgba(102, 126, 234, 0.15), rgba(102, 126, 234, 0.2));
   --color-level-text: light-dark(#4c1d95, #a5b4fc);
   --color-level-border: light-dark(rgba(102, 126, 234, 0.25), rgba(102, 126, 234, 0.3));
+
+  /* Swipe Indicator Colors */
+  --color-swipe-select-bg: light-dark(rgba(34, 197, 94, 0.85), rgba(34, 197, 94, 0.9));
+  --color-swipe-select-text: light-dark(rgb(21, 128, 61), rgb(134, 239, 172));
+  --color-swipe-deselect-bg: light-dark(rgba(148, 163, 184, 0.85), rgba(148, 163, 184, 0.9));
+  --color-swipe-deselect-text: light-dark(rgb(71, 85, 105), rgb(203, 213, 225));
 
   /* ========================================
      SPACING SCALE (T-shirt sizing)
@@ -168,6 +181,7 @@
   --font-weight-bold: 700;
 
   /* Line Heights */
+  --line-height-none: 1;
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.7;
@@ -210,6 +224,7 @@
      ======================================== */
   --z-base: 1;
   --z-dropdown: 10;
+  --z-tooltip: 50;
   --z-sticky: 100;
   --z-overlay: 1000;
   --z-modal: 2000;

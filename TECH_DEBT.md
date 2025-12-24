@@ -17,6 +17,30 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ### Medium Priority
 
+#### Unused Underscore-Prefixed Variables
+**Location**: `src/components/BrowseView.tsx:59-60`, `src/components/SpellbookDetailView.tsx:51`
+**Issue**: Variables prefixed with underscore (`_setTargetSpellbookId`, `_isAddingSpells`, `_onBack`) are destructured but unused
+**Impact**: Could mask dead code or indicate incomplete refactoring
+**Proposed Solution**: Remove if truly unused, or use if needed
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Duplicate Filter State Calculation Logic
+**Location**: `src/components/BrowseView.tsx:78-99`, `src/components/SpellbookDetailView.tsx:61-79`
+**Issue**: `hasActiveFilters` and `activeFilterCount` calculations are nearly identical across both components
+**Impact**: Duplicate code, risk of inconsistency if one is updated without the other
+**Proposed Solution**: Extract to a shared hook (e.g., `useFilterMetrics`)
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
+#### Complex Inline IIFE in BrowseView JSX
+**Location**: `src/components/BrowseView.tsx:119-131`
+**Issue**: IIFE calculates select/deselect button text inline, duplicating logic from lines 109-117
+**Impact**: Reduced readability and potential performance impact
+**Proposed Solution**: Extract to `useMemo` hook
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
 #### Missing Test Coverage in useHashRouter
 **Location**: `src/hooks/useHashRouter.ts`, `src/hooks/useHashRouter.test.ts`
 **Issue**: Several features lack test coverage:

@@ -4,7 +4,7 @@
  * Tests for hash-based routing hook.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useHashRouter } from './useHashRouter';
 
@@ -12,6 +12,8 @@ describe('useHashRouter', () => {
   let originalHash: string;
 
   beforeEach(() => {
+    // Mock window.scrollTo (not implemented in jsdom)
+    window.scrollTo = vi.fn();
     // Save original hash
     originalHash = window.location.hash;
     // Reset hash before each test

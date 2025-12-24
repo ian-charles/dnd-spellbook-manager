@@ -15,6 +15,20 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 
 
+### Medium Priority
+
+#### Missing Test Coverage in useHashRouter
+**Location**: `src/hooks/useHashRouter.ts`, `src/hooks/useHashRouter.test.ts`
+**Issue**: Several features lack test coverage:
+- `spell-detail` route (`#/spell/:id`) and `navigateToSpellDetail()` function
+- Query parameter parsing (e.g., `#/spellbooks/123?edit=true`)
+- `navigateToSpellbookDetail` with `openEdit: true` option
+- Error handling fallback branch (try/catch)
+**Impact**: Untested code paths could break without detection
+**Proposed Solution**: Add tests for these specific scenarios
+**Effort**: Low (1-2 hours)
+**Priority**: Medium
+
 ### High Priority
 
 

@@ -50,6 +50,10 @@ export function useHashRouter(): HashRouterReturn {
   useEffect(() => {
     const handleHashChange = () => {
       if (typeof window === 'undefined') return;
+
+      // Scroll to top on navigation
+      window.scrollTo(0, 0);
+
       try {
         const rawHash = window.location.hash.slice(1); // Remove '#' prefix
         const [path, query] = rawHash.split('?');

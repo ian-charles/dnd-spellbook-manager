@@ -36,6 +36,10 @@
     font-weight: var(--font-weight-semibold);
 }
 
+.spell-table-rendered tbody tr:nth-child(even) {
+    background-color: var(--color-bg-elevated);
+}
+
 /* Override mobile table hiding for spell description tables - applies to all screen sizes */
 table.spell-table-rendered thead {
     display: table-header-group;

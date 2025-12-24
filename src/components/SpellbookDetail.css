@@ -213,45 +213,6 @@
   margin: var(--space-2) 0;
 }
 
-/* Filter header - search and filter controls */
-.spellbook-filter-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto auto;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-
-.spellbook-filter-header .btn-secondary,
-.spellbook-filter-header .btn-clear-filters {
-  min-width: 120px;
-  white-space: nowrap;
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--font-size-md);
-}
-
-.spellbook-filter-header .btn-secondary {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.spellbook-filter-header .btn-clear-filters {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.spellbook-filter-header .filter-results-text {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  text-align: center;
-}
-
-.spellbook-filter-header .filter-checkbox-label {
-  grid-column: 1 / -1;
-  grid-row: 3;
-  justify-content: center;
-}
-
 .spellbook-controls {
   display: flex;
   justify-content: space-between;
@@ -406,13 +367,6 @@
   }
 }
 
-/* Tablet (425px+) */
-@media (min-width: 425px) {
-  .spellbook-detail {
-    padding: 0 var(--space-6) var(--space-6);
-  }
-}
-
 /* Larger mobile (450px+) - All 3 action buttons on same row */
 @media (min-width: 450px) {
   .spellbook-actions {
@@ -469,22 +423,6 @@
 
   .attributes-group span {
     font-size: var(--font-size-3xl);
-  }
-
-  .spellbook-filter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .spellbook-filter-header .filter-results-text {
-    margin-left: auto;
-    text-align: right;
-  }
-
-  .spellbook-filter-header .filter-checkbox-label {
-    justify-content: flex-start;
   }
 
   /* Shrink-width buttons on the left, hide Select All (redundant with checkbox column header) */

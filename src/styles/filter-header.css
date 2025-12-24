@@ -1,0 +1,80 @@
+/**
+ * Shared Filter Header Styles
+ *
+ * Unified styles for the filter header bar used in both:
+ * - BrowseView (Browse Spells page)
+ * - SpellbookDetailView (Spellbook page)
+ *
+ * Mobile-first methodology: Base styles are for mobile, enhanced with min-width queries.
+ */
+
+/* ==========================================================================
+   BASE STYLES (MOBILE)
+   ========================================================================== */
+
+.filter-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-bg-overlay);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+
+/* Buttons: icon + text with proper alignment */
+.filter-header .btn-secondary,
+.filter-header .btn-clear-filters {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: 1 1 calc(50% - var(--space-1));
+  font-size: var(--font-size-md);
+  padding: var(--space-2) var(--space-4);
+  white-space: nowrap;
+}
+
+/* Results text - full width below buttons on mobile */
+.filter-header .filter-results-text {
+  flex: 1 1 100%;
+  text-align: center;
+  order: 3;
+}
+
+/* Spellbook-specific: Prepared checkbox */
+.filter-header .filter-checkbox-label {
+  flex: 1 1 100%;
+  justify-content: center;
+  order: 4;
+}
+
+/* ==========================================================================
+   TABLET+ (768px)
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .filter-header {
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+  }
+
+  .filter-header .btn-secondary,
+  .filter-header .btn-clear-filters {
+    flex: 0 0 auto;
+    order: 0;
+  }
+
+  .filter-header .filter-results-text {
+    flex: 1;
+    text-align: right;
+    margin-left: auto;
+  }
+
+  .filter-header .filter-checkbox-label {
+    flex: 0 0 auto;
+    order: 5;
+  }
+}

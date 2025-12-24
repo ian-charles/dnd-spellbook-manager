@@ -19,7 +19,7 @@ import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
 import { SpellSlotsDisplay } from './spellbook-detail/SpellSlotsDisplay';
 import { MobileSortChips } from './MobileSortChips';
-import { SquarePen, Copy, Trash2 } from 'lucide-react';
+import { SquarePen, Copy, Trash2, FunnelPlus } from 'lucide-react';
 import './SpellbookDetail.css';
 
 import { useSpellbookDetail } from '../contexts/SpellbookDetailContext';
@@ -196,13 +196,14 @@ export function SpellbookDetailView() {
           </div>
 
           {/* Filter Controls Bar */}
-          <div className="spellbook-filter-header">
+          <div className="filter-header">
             <button
               className="btn-secondary"
               onClick={() => setFilterModalOpen(true)}
               aria-label="Open filters"
             >
-              Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+              <FunnelPlus size={18} />
+              <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
             </button>
             <div className="filter-results-text">
               Showing {sortedSpells.length} of {enrichedSpells.length} spells

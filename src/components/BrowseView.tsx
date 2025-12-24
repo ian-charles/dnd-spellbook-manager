@@ -128,13 +128,13 @@ export function BrowseView({
                 />
             </div>
 
-            <div className="browse-view-header" data-testid="spell-filters">
+            <div className="filter-header" data-testid="spell-filters">
                 <button
                     className="btn-secondary"
                     onClick={() => setFilterModalOpen(true)}
                     aria-label="Open filters"
                 >
-                    <FunnelPlus size={18} style={{ marginRight: '0.5rem' }} />
+                    <FunnelPlus size={18} />
                     <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
                 </button>
                 <div className="filter-results-text">

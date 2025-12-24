@@ -4,6 +4,8 @@
  * Uses design tokens for consistent theming.
  */
 
+@import './styles/filter-header.css';
+
 .app {
   display: flex;
   flex-direction: column;
@@ -147,28 +149,11 @@
   border-color: var(--color-border-focus);
 }
 
-.browse-view-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin: 0 0 1rem;
-  padding: var(--space-4);
-  background: var(--color-bg-overlay);
-  border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
-}
-
 .filter-results-text {
   font-size: var(--font-size-md);
   color: var(--color-text-secondary);
   flex: 1;
   text-align: center;
-}
-
-.browse-view-header .btn-secondary,
-.browse-view-header .btn-clear-filters {
-  font-size: var(--font-size-md);
-  padding: var(--space-2) var(--space-4);
 }
 
 .btn-clear-filters {
@@ -313,24 +298,6 @@ button.nav-link.desktop-only {
   display: none;
 }
 
-.browse-view-header {
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-/* Mobile: Filters and Clear Filters take half width each */
-.browse-view-header .btn-secondary,
-.browse-view-header .btn-clear-filters {
-  flex: 1 1 calc(50% - var(--space-1));
-}
-
-/* Mobile: Results text on its own line, centered */
-.filter-results-text {
-  flex: 1 1 100%;
-  text-align: center;
-  order: 3;
-}
-
 .batch-add-container {
   flex-direction: column;
   gap: var(--space-3);
@@ -456,27 +423,6 @@ button.nav-link.desktop-only {
     padding: var(--space-4);
     margin-top: var(--space-16);
     max-width: 1400px;
-  }
-
-  .browse-view-header {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: var(--space-3);
-  }
-
-  /* Tablet+: Filters and Clear Filters side-by-side on left, flex-grow disabled */
-  .browse-view-header .btn-secondary,
-  .browse-view-header .btn-clear-filters {
-    flex: 0 0 auto;
-    order: 0;
-  }
-
-  /* Tablet+: Results text on right side */
-  .filter-results-text {
-    flex: 1;
-    order: 3;
-    text-align: right;
-    margin-left: auto;
   }
 
   .batch-add-container {

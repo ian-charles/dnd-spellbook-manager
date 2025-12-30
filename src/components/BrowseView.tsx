@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Funnel, FunnelX } from 'lucide-react';
+import { Funnel, FunnelX, BookPlus } from 'lucide-react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { FilterModal } from './FilterModal';
@@ -7,6 +7,7 @@ import { SpellTable } from './SpellTable';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
 import { SelectSpellbookModal } from './SelectSpellbookModal';
 import { MobileSortChips } from './MobileSortChips';
+import { BackToTopButton } from './BackToTopButton';
 import { useSpellFiltering } from '../hooks/useSpellFiltering';
 import { useSpellSelection } from '../hooks/useSpellSelection';
 import { useSpellbookMutations } from '../hooks/useSpellbookMutations';
@@ -183,7 +184,8 @@ export function BrowseView({
                     data-testid="btn-add-selected"
                     disabled={selectedSpellIds.size === 0}
                 >
-                    Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}
+                    <BookPlus size={18} />
+                    <span>Add {selectedSpellIds.size} {selectedSpellIds.size === 1 ? 'Spell' : 'Spells'}</span>
                 </button>
             </div>
             <MobileSortChips
@@ -238,6 +240,12 @@ export function BrowseView({
                 filteredCount={filteredSpells.length}
                 totalCount={spells.length}
                 selectedCount={selectedSpellIds.size}
+            />
+
+            {/* Floating Action Buttons */}
+            <BackToTopButton
+                selectedCount={selectedSpellIds.size}
+                onAddSpells={() => setSelectModalOpen(true)}
             />
         </>
     );

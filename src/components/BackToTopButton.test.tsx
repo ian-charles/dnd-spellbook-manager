@@ -40,7 +40,7 @@ describe('BackToTopButton', () => {
     // Trigger scroll event
     window.dispatchEvent(new Event('scroll'));
 
-    expect(container.querySelector('.back-to-top-container')).toBeNull();
+    expect(container.querySelector('.floating-action-container')).toBeNull();
   });
 
   it('should render when spell table scrolls off screen', async () => {
@@ -136,7 +136,7 @@ describe('BackToTopButton', () => {
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
-      expect(container.querySelector('.back-to-top-container')).not.toBeNull();
+      expect(container.querySelector('.floating-action-container')).not.toBeNull();
     });
 
     // Scroll back up - table visible again
@@ -155,7 +155,7 @@ describe('BackToTopButton', () => {
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
-      expect(container.querySelector('.back-to-top-container')).toBeNull();
+      expect(container.querySelector('.floating-action-container')).toBeNull();
     }, { timeout: 500 }); // Wait for fade-out animation
   });
 
@@ -176,9 +176,9 @@ describe('BackToTopButton', () => {
     window.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
-      const label = container.querySelector('.back-to-top-label');
-      expect(label).toBeInTheDocument();
-      expect(label?.textContent).toBe('Back to Top');
+      const labels = container.querySelectorAll('.floating-action-label');
+      const backToTopLabel = Array.from(labels).find(l => l.textContent === 'Back to Top');
+      expect(backToTopLabel).toBeInTheDocument();
     });
   });
 

@@ -1,5 +1,5 @@
 /* Mobile-first: base styles for mobile (< 768px) */
-.back-to-top-container {
+.floating-action-container {
   position: fixed;
   bottom: var(--space-16);
   right: var(--space-4);
@@ -11,15 +11,16 @@
   gap: var(--space-2);
 }
 
-.back-to-top-container.visible {
+.floating-action-container.visible {
   animation: fadeIn 0.3s ease;
 }
 
-.back-to-top-container.hidden {
+.floating-action-container.hidden {
   animation: fadeOut 0.3s ease;
 }
 
-.back-to-top-button {
+/* Shared button styles for both floating buttons */
+.floating-action-btn {
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
@@ -38,7 +39,12 @@
   transition: all var(--transition-slow);
 }
 
-.back-to-top-arrow {
+.floating-action-btn:active {
+  transform: scale(0.95);
+}
+
+/* Shared icon styles */
+.floating-action-icon {
   width: 28px;
   height: 28px;
   min-width: 28px;
@@ -47,7 +53,8 @@
   transition: transform 0.3s ease;
 }
 
-.back-to-top-label {
+/* Shared label styles */
+.floating-action-label {
   font-size: 0.75rem;
   color: var(--color-text-primary);
   font-weight: var(--font-weight-medium);
@@ -57,8 +64,20 @@
   display: none;
 }
 
-.back-to-top-button:active {
-  transform: scale(0.95);
+/* Add Spells button wrapper - contains button + label */
+.floating-add-spells-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Back to Top button wrapper - contains button + label */
+.floating-back-to-top-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 @keyframes fadeIn {
@@ -85,44 +104,47 @@
 
 /* Tablet (≥ 768px) */
 @media (min-width: 768px) {
-  .back-to-top-container {
+  .floating-action-container {
     bottom: 5.5rem;
   }
 }
 
 /* Desktop hover effects (≥ 768px) */
 @media (hover: hover) {
-  .back-to-top-label {
+  .floating-action-label {
     display: block;
   }
 
-  .back-to-top-container:hover .back-to-top-button {
+  .floating-add-spells-wrapper:hover .floating-action-btn,
+  .floating-back-to-top-wrapper:hover .floating-action-btn {
     background-color: #2563eb;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   }
 
-  .back-to-top-container:hover .back-to-top-arrow {
+  .floating-add-spells-wrapper:hover .floating-action-icon,
+  .floating-back-to-top-wrapper:hover .floating-action-icon {
     transform: translateY(-3px);
   }
 
-  .back-to-top-container:hover .back-to-top-label {
+  .floating-add-spells-wrapper:hover .floating-action-label,
+  .floating-back-to-top-wrapper:hover .floating-action-label {
     opacity: 1;
   }
 }
 
 /* Desktop (≥ 1024px) */
 @media (min-width: 1024px) {
-  .back-to-top-container {
+  .floating-action-container {
     bottom: var(--space-8);
     right: var(--space-8);
   }
 
-  .back-to-top-button {
+  .floating-action-btn {
     width: 3.5rem;
     height: 3.5rem;
   }
 
-  .back-to-top-arrow {
+  .floating-action-icon {
     width: 33px;
     height: 33px;
     min-width: 33px;
@@ -132,12 +154,12 @@
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .back-to-top-button {
+  .floating-action-btn {
     background-color: var(--primary-color);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  .back-to-top-label {
+  .floating-action-label {
     color: var(--color-text-primary);
   }
 }

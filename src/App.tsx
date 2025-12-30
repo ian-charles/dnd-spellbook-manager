@@ -5,7 +5,6 @@ import { SpellbookList } from './components/SpellbookList';
 import { SpellbookDetail } from './components/SpellbookDetail';
 import { SpellDetailPage } from './components/SpellDetailPage';
 import { AlertDialog } from './components/AlertDialog';
-import { BackToTopButton } from './components/BackToTopButton';
 import { AboutModal } from './components/AboutModal';
 import { Footer } from './components/Footer';
 
@@ -179,9 +178,6 @@ function App() {
         variant={alertDialog.variant}
         onClose={() => setAlertDialog({ ...alertDialog, isOpen: false })}
       />
-
-      {/* Back to Top Button */}
-      <BackToTopButton />
 
       {/* About Modal */}
       <AboutModal

@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
-import { ArrowUpToLine } from 'lucide-react';
+import { ArrowUpToLine, BookPlus } from 'lucide-react';
 import '../styles/back-to-top.css';
 
-export function BackToTopButton() {
+interface BackToTopButtonProps {
+  selectedCount?: number;
+  onAddSpells?: () => void;
+}
+
+export function BackToTopButton({ selectedCount = 0, onAddSpells }: BackToTopButtonProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
 
@@ -43,16 +48,34 @@ export function BackToTopButton() {
     return null;
   }
 
+  const showAddSpells = selectedCount > 0 && onAddSpells;
+
   return (
-    <div className={`back-to-top-container ${isVisible ? 'visible' : 'hidden'}`}>
-      <button
-        className="back-to-top-button"
-        onClick={scrollToTop}
-        aria-label="Back to top"
-      >
-        <ArrowUpToLine className="back-to-top-arrow" size={33} strokeWidth={2.5} />
-      </button>
-      <span className="back-to-top-label">Back to Top</span>
+    <div className={`floating-action-container ${isVisible ? 'visible' : 'hidden'}`}>
+      {showAddSpells && (
+        <div className="floating-add-spells-wrapper">
+          <button
+            className="floating-action-btn"
+            onClick={onAddSpells}
+            aria-label={`Add ${selectedCount} ${selectedCount === 1 ? 'spell' : 'spells'}`}
+          >
+            <BookPlus className="floating-action-icon" size={33} strokeWidth={2} />
+          </button>
+          <span className="floating-action-label">
+            Add {selectedCount} {selectedCount === 1 ? 'Spell' : 'Spells'}
+          </span>
+        </div>
+      )}
+      <div className="floating-back-to-top-wrapper">
+        <button
+          className="floating-action-btn"
+          onClick={scrollToTop}
+          aria-label="Back to top"
+        >
+          <ArrowUpToLine className="floating-action-icon" size={33} strokeWidth={2.5} />
+        </button>
+        <span className="floating-action-label">Back to Top</span>
+      </div>
     </div>
   );
 }

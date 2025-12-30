@@ -20,6 +20,7 @@ import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
 import { SpellSlotsDisplay } from './spellbook-detail/SpellSlotsDisplay';
 import { MobileSortChips } from './MobileSortChips';
 import { SquarePen, Copy, Trash2, Funnel, FunnelX } from 'lucide-react';
+import { BackToTopButton } from './BackToTopButton';
 import './SpellbookDetail.css';
 
 import { useSpellbookDetail } from '../contexts/SpellbookDetailContext';
@@ -355,6 +356,9 @@ export function SpellbookDetailView() {
         totalCount={enrichedSpells.length}
         selectedCount={selectedSpellIds.size}
       />
+
+      {/* Floating Action Button */}
+      <BackToTopButton />
     </div>
   );
 }

@@ -13,7 +13,7 @@
  */
 
 import { ReactNode } from 'react';
-import { Info, Heart, MessageCircleMore, Sun, MoonStar, SunMoon } from 'lucide-react';
+import { Info, Heart, MessageCircleMore, Sun, MoonStar, SunMoon, HelpCircle } from 'lucide-react';
 import { View } from '../hooks/useHashRouter';
 import { NavMoreMenu } from './NavMoreMenu';
 import { NavItem } from '../hooks/usePriorityNav';
@@ -26,6 +26,7 @@ interface LayoutProps {
   onNavigateToBrowse: () => void;
   onNavigateToSpellbooks: () => void;
   onAboutClick: () => void;
+  onHelpClick: () => void;
   children: ReactNode;
 }
 
@@ -35,6 +36,7 @@ export function Layout({
   onNavigateToBrowse,
   onNavigateToSpellbooks,
   onAboutClick,
+  onHelpClick,
   children,
 }: LayoutProps) {
   const { mode, toggleTheme } = useTheme();
@@ -62,6 +64,14 @@ export function Layout({
   // Define utility navigation items that can overflow into "More" menu
   // Theme toggle is handled separately for mobile (in menu) and desktop (separate button)
   const utilityNavItems: NavItem[] = [
+    {
+      id: 'help',
+      label: 'Help',
+      icon: <HelpCircle size={18} />,
+      onClick: onHelpClick,
+      className: 'nav-link-help',
+      ariaLabel: 'Start tutorial',
+    },
     {
       id: 'about',
       label: 'About',

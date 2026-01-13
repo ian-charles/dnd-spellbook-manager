@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { BrowseView } from './components/BrowseView';
 import { SpellbookList } from './components/SpellbookList';
@@ -7,6 +7,7 @@ import { SpellDetailPage } from './components/SpellDetailPage';
 import { AlertDialog } from './components/AlertDialog';
 import { AboutModal } from './components/AboutModal';
 import { Footer } from './components/Footer';
+import { TutorialProvider, TutorialOverlay, TutorialMenu, useTutorial } from './components/tutorial';
 
 import LoadingSpinner from './components/LoadingSpinner';
 import { useSpells } from './hooks/useSpells';
@@ -15,6 +16,7 @@ import { useHashRouter } from './hooks/useHashRouter';
 import { useToast } from './hooks/useToast';
 import { MESSAGES } from './constants/messages';
 import './App.css';
+import './components/tutorial/Tutorial.css';
 
 /**
  * Main Application Component
@@ -31,7 +33,9 @@ import './App.css';
  * - Spellbooks View: Manage existing spellbooks (create, delete, view).
  * - Batch Operations: Add multiple spells to spellbooks with progress feedback.
  */
-function App() {
+function AppContent() {
+  const { state, openMenu } = useTutorial();
+
   // Data hooks
   const { spells, loading, error } = useSpells();
   const {
@@ -74,6 +78,17 @@ function App() {
   // About modal state
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
+  // Show welcome tutorial menu on first visit after app loads
+  useEffect(() => {
+    if (!loading && !error && !state.hasSeenWelcome) {
+      // Small delay to ensure UI is ready
+      const timer = setTimeout(() => {
+        openMenu();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, error, state.hasSeenWelcome, openMenu]);
+
   // Handler for navigating back after spellbook deletion
   // Refreshes the spellbooks list to ensure deleted book is removed from UI
   const handleSpellbookDeleted = async (spellbookName?: string) => {
@@ -115,6 +130,7 @@ function App() {
       onNavigateToBrowse={navigateToBrowse}
       onNavigateToSpellbooks={navigateToSpellbooks}
       onAboutClick={() => setIsAboutModalOpen(true)}
+      onHelpClick={openMenu}
     >
       {/* Browse View */}
       {currentView === 'browse' && (
@@ -187,7 +203,19 @@ function App() {
 
       {/* Footer (visible on mobile/tablet only) */}
       <Footer onAboutClick={() => setIsAboutModalOpen(true)} />
+
+      {/* Tutorial System */}
+      <TutorialOverlay />
+      <TutorialMenu />
     </Layout>
+  );
+}
+
+function App() {
+  return (
+    <TutorialProvider>
+      <AppContent />
+    </TutorialProvider>
   );
 }
 

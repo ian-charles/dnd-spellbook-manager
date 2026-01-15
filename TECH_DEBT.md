@@ -17,6 +17,22 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ### Medium Priority
 
+#### Tour Selector Fragility
+**Location**: `src/constants/tours.ts` (multiple lines)
+**Issue**: Mix of class-based CSS selectors (`.spell-table`, `.filter-header`) and data-testid selectors
+**Impact**: Class selectors may break during refactoring while data-testid selectors are stable
+**Proposed Solution**: Migrate all selectors to data-testid pattern for consistency
+**Effort**: Low (1-2 hours)
+**Priority**: Medium
+
+#### Tour Step Validation
+**Location**: `src/constants/tours.ts`, `src/types/tutorial.ts`
+**Issue**: Steps without targetSelector rely on implicit convention (center placement)
+**Impact**: Could cause runtime errors if pattern violated
+**Proposed Solution**: Add runtime validation or make relationship explicit in types
+**Effort**: Low (1 hour)
+**Priority**: Medium
+
 #### Unused Underscore-Prefixed Variables
 **Location**: `src/components/BrowseView.tsx:59-60`, `src/components/SpellbookDetailView.tsx:51`
 **Issue**: Variables prefixed with underscore (`_setTargetSpellbookId`, `_isAddingSpells`, `_onBack`) are destructured but unused

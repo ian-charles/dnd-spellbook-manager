@@ -1,42 +1,6 @@
 import { Tour, TourId } from '../types/tutorial';
 
 export const TOURS: Record<TourId, Tour> = {
-  navigation: {
-    id: 'navigation',
-    name: 'App Navigation',
-    description: 'Learn how to navigate between views',
-    requiredView: 'browse',
-    steps: [
-      {
-        id: 'nav-welcome',
-        targetSelector: '.app-title',
-        title: 'Welcome to The Spellbookery',
-        description: 'This is your D&D spell management tool. Let\'s learn how to navigate around.',
-        placement: 'bottom',
-      },
-      {
-        id: 'nav-browse',
-        targetSelector: '.app-nav .nav-link:first-child',
-        title: 'Browse Spells',
-        description: 'Click here to search and explore all D&D spells. This is where you\'ll find spells to add to your spellbooks.',
-        placement: 'bottom',
-      },
-      {
-        id: 'nav-spellbooks',
-        targetSelector: '[data-testid="nav-spellbooks"]',
-        title: 'My Spellbooks',
-        description: 'Your personal spellbook collection lives here. Create spellbooks for different characters or campaigns.',
-        placement: 'bottom',
-      },
-      {
-        id: 'nav-utilities',
-        targetSelector: '.nav-link-help',
-        title: 'Need Help?',
-        description: 'Click here anytime to access these tutorials again, plus About info, feedback, and theme options.',
-        placement: 'bottom',
-      },
-    ],
-  },
   'browse-spells': {
     id: 'browse-spells',
     name: 'Browse Spells',
@@ -67,9 +31,11 @@ export const TOURS: Record<TourId, Tour> = {
       },
       {
         id: 'browse-checkbox',
-        targetSelector: '.spell-row .checkbox-col input',
+        targetSelector: '.spell-row',
+        desktopSelector: '.spell-row .checkbox-col input',
         title: 'Select Spells',
-        description: 'Check the box to select spells for adding to a spellbook. You can select multiple spells at once!',
+        description: 'Swipe right on a spell row to select it. Swipe again to deselect. You can select multiple spells at once!',
+        desktopDescription: 'Check the box to select spells for adding to a spellbook. You can select multiple spells at once!',
         placement: 'bottom',
         desktopPlacement: 'right',
       },
@@ -205,7 +171,6 @@ export const TOURS: Record<TourId, Tour> = {
 };
 
 export const TOUR_ORDER: TourId[] = [
-  'navigation',
   'browse-spells',
   'spellbooks-list',
   'spellbook-detail',

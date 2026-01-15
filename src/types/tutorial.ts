@@ -2,7 +2,6 @@ import { View } from '../hooks/useHashRouter';
 
 /** Unique identifier for each tour */
 export type TourId =
-  | 'navigation'
   | 'browse-spells'
   | 'spellbooks-list'
   | 'spellbook-detail';
@@ -74,6 +73,12 @@ export interface TutorialState {
 
   /** Whether the first-visit welcome modal has been dismissed */
   hasSeenWelcome: boolean;
+
+  /** Whether user opted into touring (accepted the welcome tour offer) */
+  wantsTour: boolean;
+
+  /** Tour IDs that have been auto-triggered when visiting a page */
+  seenPageTours: TourId[];
 }
 
 /** Context value provided by TutorialProvider */
@@ -88,5 +93,10 @@ export interface TutorialContextValue {
   exitTour: () => void;
   openMenu: () => void;
   closeMenu: () => void;
-  dismissWelcome: () => void;
+  /** User accepted the tour offer from welcome modal */
+  acceptTour: () => void;
+  /** User declined the tour offer from welcome modal */
+  declineTour: () => void;
+  /** Mark a page tour as having been shown (for auto-trigger tracking) */
+  markPageTourSeen: (tourId: TourId) => void;
 }

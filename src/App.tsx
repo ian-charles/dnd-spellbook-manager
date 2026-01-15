@@ -34,7 +34,7 @@ import './components/tutorial/Tutorial.css';
  * - Batch Operations: Add multiple spells to spellbooks with progress feedback.
  */
 function AppContent() {
-  const { state, openMenu } = useTutorial();
+  const { state, openMenu, activeTour, startTour, markPageTourSeen } = useTutorial();
 
   // Data hooks
   const { spells, loading, error } = useSpells();
@@ -88,6 +88,34 @@ function AppContent() {
       return () => clearTimeout(timer);
     }
   }, [loading, error, state.hasSeenWelcome, openMenu]);
+
+  // Auto-trigger page-specific tours for users who opted into touring
+  useEffect(() => {
+    // Only auto-trigger if user accepted the tour
+    if (!state.wantsTour) return;
+    // Don't interrupt an active tour
+    if (activeTour) return;
+    // Don't auto-trigger while loading
+    if (loading) return;
+
+    // Map views to their corresponding tour IDs
+    const tourForView: Record<string, 'spellbooks-list' | 'spellbook-detail' | null> = {
+      'browse': null, // Already shown via welcome flow
+      'spellbooks': 'spellbooks-list',
+      'spellbook-detail': 'spellbook-detail',
+      'spell-detail': null,
+    };
+
+    const tourId = tourForView[currentView];
+    if (tourId && !state.seenPageTours.includes(tourId)) {
+      // Small delay to ensure the view has rendered
+      const timer = setTimeout(() => {
+        markPageTourSeen(tourId);
+        startTour(tourId);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentView, state.wantsTour, state.seenPageTours, activeTour, loading, startTour, markPageTourSeen]);
 
   // Handler for navigating back after spellbook deletion
   // Refreshes the spellbooks list to ensure deleted book is removed from UI

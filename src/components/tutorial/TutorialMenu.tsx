@@ -11,7 +11,8 @@ export function TutorialMenu() {
     isMenuOpen,
     closeMenu,
     startTour,
-    dismissWelcome,
+    acceptTour,
+    declineTour,
   } = useTutorial();
 
   // Show welcome variant if user hasn't dismissed the welcome yet
@@ -43,7 +44,7 @@ export function TutorialMenu() {
 
   const handleClose = () => {
     if (isWelcome) {
-      dismissWelcome();
+      declineTour();
     } else {
       closeMenu();
     }
@@ -56,9 +57,6 @@ export function TutorialMenu() {
   };
 
   const handleStartTour = (tourId: TourId) => {
-    if (isWelcome) {
-      dismissWelcome();
-    }
     startTour(tourId);
   };
 
@@ -87,17 +85,34 @@ export function TutorialMenu() {
           </h2>
           {isWelcome && (
             <p className="tutorial-menu-subtitle">
-              Would you like a quick tour? Choose a topic below or explore on your own.
+              Would you like a quick tour of how to use the app?
             </p>
           )}
         </div>
 
         <div className="tutorial-menu-content">
-          {availableTours.length === 0 ? (
+          {isWelcome ? (
+            // Welcome: binary choice instead of tour list
+            <div className="tutorial-welcome-choice">
+              <button
+                className="tutorial-welcome-btn tutorial-welcome-btn-primary"
+                onClick={acceptTour}
+              >
+                Take the Tour
+              </button>
+              <button
+                className="tutorial-welcome-btn tutorial-welcome-btn-secondary"
+                onClick={declineTour}
+              >
+                Skip
+              </button>
+            </div>
+          ) : availableTours.length === 0 ? (
             <p className="tutorial-menu-empty">
               No tours available yet. Check back soon!
             </p>
           ) : (
+            // Help menu: show tour list
             <ul className="tutorial-menu-list">
               {availableTours.map(tourId => {
                 const tour = TOURS[tourId];
@@ -133,14 +148,16 @@ export function TutorialMenu() {
           )}
         </div>
 
-        <div className="tutorial-menu-footer">
-          <button
-            className="tutorial-menu-skip"
-            onClick={handleClose}
-          >
-            {isWelcome ? 'Skip for now' : 'Close'}
-          </button>
-        </div>
+        {!isWelcome && (
+          <div className="tutorial-menu-footer">
+            <button
+              className="tutorial-menu-skip"
+              onClick={handleClose}
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

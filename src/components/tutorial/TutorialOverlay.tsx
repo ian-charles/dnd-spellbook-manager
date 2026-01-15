@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTutorial } from './TutorialProvider';
 import { TutorialTooltip } from './TutorialTooltip';
 import { ConfirmDialog } from '../ConfirmDialog';
-import { lockScroll, unlockScroll } from '../../utils/modalScrollLock';
 
 const HIGHLIGHT_PADDING = 8;
 
@@ -16,14 +15,72 @@ function useIsMobile(breakpoint = 768): boolean {
     // matchMedia may not be available in test environments
     if (typeof window === 'undefined' || !window.matchMedia) return;
 
-    const mediaQuery = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    // Use min-width for mobile-first consistency with CSS
+    const mediaQuery = window.matchMedia(`(min-width: ${breakpoint}px)`);
+    // When min-width matches, we're NOT mobile (viewport >= breakpoint)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(!e.matches);
+
+    // Set initial state based on current match
+    setIsMobile(!mediaQuery.matches);
 
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, [breakpoint]);
 
   return isMobile;
+}
+
+/**
+ * Scrolls the target element into view, positioning its TOP at approximately 25% down the viewport.
+ * Returns whether scrolling is currently in progress.
+ */
+function useScrollToTarget(selector: string | undefined): boolean {
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  useEffect(() => {
+    if (!selector) {
+      setIsScrolling(false);
+      return;
+    }
+
+    const element = document.querySelector(selector);
+    if (!element) {
+      setIsScrolling(false);
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // Target: position the TOP of the element at 25% down from the top of the viewport
+    const targetPosition = viewportHeight * 0.25;
+
+    // Calculate how much we need to scroll (based on element's top edge)
+    const scrollOffset = rect.top - targetPosition;
+
+    // Only scroll if element is significantly off from target position
+    // (more than 50px away from ideal position)
+    if (Math.abs(scrollOffset) > 50) {
+      setIsScrolling(true);
+
+      window.scrollBy({
+        top: scrollOffset,
+        behavior: 'smooth',
+      });
+
+      // Wait for scroll to complete, then show spotlight
+      // Smooth scroll typically takes 300-500ms, we use 400ms as a safe estimate
+      const timer = setTimeout(() => {
+        setIsScrolling(false);
+      }, 400);
+
+      return () => clearTimeout(timer);
+    } else {
+      setIsScrolling(false);
+    }
+  }, [selector]);
+
+  return isScrolling;
 }
 
 function useTargetRect(selector: string | undefined): DOMRect | null {
@@ -72,6 +129,9 @@ export function TutorialOverlay() {
     ? currentStep.desktopSelector
     : currentStep?.targetSelector;
 
+  // Scroll target element into view when step changes
+  const isScrolling = useScrollToTarget(selector);
+
   const targetRect = useTargetRect(selector);
 
   // Request exit - shows confirmation if not on first step
@@ -91,14 +151,6 @@ export function TutorialOverlay() {
   const cancelExit = useCallback(() => {
     setShowExitConfirm(false);
   }, []);
-
-  // Lock scroll when overlay is active
-  useEffect(() => {
-    if (activeTour) {
-      lockScroll();
-      return () => unlockScroll();
-    }
-  }, [activeTour]);
 
   // Handle escape key
   useEffect(() => {
@@ -120,7 +172,10 @@ export function TutorialOverlay() {
 
   const padding = currentStep.highlightPadding ?? HIGHLIGHT_PADDING;
 
-  const spotlightStyle = targetRect && currentStep.placement !== 'center'
+  // Only show spotlight after scrolling completes to avoid "chasing" animation
+  const showSpotlight = !isScrolling && targetRect && currentStep.placement !== 'center';
+
+  const spotlightStyle = showSpotlight
     ? {
         top: targetRect.top - padding,
         left: targetRect.left - padding,
@@ -131,7 +186,7 @@ export function TutorialOverlay() {
 
   return (
     <div className="tutorial-overlay" onClick={requestExit}>
-      {/* Spotlight cutout or backdrop for center placement */}
+      {/* Spotlight cutout or backdrop (backdrop shown while scrolling or for center placement) */}
       {spotlightStyle ? (
         <div
           className="tutorial-spotlight"

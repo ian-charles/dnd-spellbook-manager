@@ -7,13 +7,20 @@ const STORAGE_KEY = 'spellbookery-tutorial';
 const defaultState: TutorialState = {
   completedTours: [],
   hasSeenWelcome: false,
+  wantsTour: false,
+  seenPageTours: [],
 };
 
 function loadState(): TutorialState {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      // Merge with defaults to handle missing fields from older versions
+      return {
+        ...defaultState,
+        ...parsed,
+      };
     }
   } catch (e) {
     console.error('Failed to load tutorial state:', e);
@@ -90,9 +97,29 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     setIsMenuOpen(false);
   }, []);
 
-  const dismissWelcome = useCallback(() => {
-    setState(s => ({ ...s, hasSeenWelcome: true }));
+  const acceptTour = useCallback(() => {
+    setState(s => ({ ...s, hasSeenWelcome: true, wantsTour: true }));
     setIsMenuOpen(false);
+    // Start the Browse Spells tour immediately
+    const tour = TOURS['browse-spells'];
+    if (tour && tour.steps.length > 0) {
+      setActiveTour(tour);
+      setActiveStepIndex(0);
+    }
+  }, []);
+
+  const declineTour = useCallback(() => {
+    setState(s => ({ ...s, hasSeenWelcome: true, wantsTour: false }));
+    setIsMenuOpen(false);
+  }, []);
+
+  const markPageTourSeen = useCallback((tourId: TourId) => {
+    setState(s => ({
+      ...s,
+      seenPageTours: s.seenPageTours.includes(tourId)
+        ? s.seenPageTours
+        : [...s.seenPageTours, tourId],
+    }));
   }, []);
 
   const value: TutorialContextValue = {
@@ -106,7 +133,9 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     exitTour,
     openMenu,
     closeMenu,
-    dismissWelcome,
+    acceptTour,
+    declineTour,
+    markPageTourSeen,
   };
 
   return (

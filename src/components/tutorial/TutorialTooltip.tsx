@@ -14,6 +14,7 @@ interface TutorialTooltipProps {
   totalSteps: number;
   targetRect: DOMRect | null;
   isMobile: boolean;
+  isInteractive: boolean;
   onNext: () => void;
   onPrev: () => void;
   onExit: () => void;
@@ -85,6 +86,7 @@ export function TutorialTooltip({
   totalSteps,
   targetRect,
   isMobile,
+  isInteractive,
   onNext,
   onPrev,
   onExit,
@@ -215,7 +217,7 @@ export function TutorialTooltip({
             className="tutorial-tooltip-btn tutorial-tooltip-btn-primary"
             onClick={onNext}
           >
-            {isLastStep ? 'Finish' : 'Next'}
+            {isLastStep ? 'Finish' : isInteractive ? 'Continue' : 'Next'}
             {!isLastStep && <ChevronRight size={16} />}
           </button>
         </div>

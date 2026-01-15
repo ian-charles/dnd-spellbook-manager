@@ -41,8 +41,8 @@ export interface TourStep {
   /** Extra padding around the highlighted element in pixels (default: 8) */
   highlightPadding?: number;
 
-  /** If true, user can click the highlighted element during this step (not yet implemented) */
-  allowInteraction?: boolean;
+  /** If true, user can interact with the highlighted element during this step */
+  interactive?: boolean;
 }
 
 /**

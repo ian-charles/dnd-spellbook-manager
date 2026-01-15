@@ -17,6 +17,7 @@
   justify-content: center;
   z-index: var(--z-modal);
   padding: var(--space-4);
+  pointer-events: auto; /* Ensure clicks work even if parent has pointer-events: none */
 }
 
 /* Dialog container - mobile-first: base styles for mobile (< 768px) */

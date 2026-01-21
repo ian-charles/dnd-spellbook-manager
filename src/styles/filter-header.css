@@ -51,13 +51,23 @@
   order: 4;
 }
 
+/* Search box - full width below other elements */
+.filter-header .search-box {
+  flex: 1 1 100%;
+  order: 5;
+}
+
+.filter-header .search-input {
+  width: 100%;
+}
+
 /* ==========================================================================
    TABLET+ (768px)
    ========================================================================== */
 
 @media (min-width: 768px) {
   .filter-header {
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: var(--space-3);
   }
 
@@ -76,5 +86,12 @@
   .filter-header .filter-checkbox-label {
     flex: 0 0 auto;
     order: 5;
+  }
+
+  /* Search box stays full width on tablet+ */
+  .filter-header .search-box {
+    flex: 1 1 100%;
+    order: 10;
+    margin-top: var(--space-2);
   }
 }

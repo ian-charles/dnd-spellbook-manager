@@ -21,6 +21,7 @@ describe('Layout', () => {
         onNavigateToBrowse: vi.fn(),
         onNavigateToSpellbooks: vi.fn(),
         onAboutClick: vi.fn(),
+        onHelpClick: vi.fn(),
     };
 
     it('renders children correctly', () => {
@@ -58,7 +59,7 @@ describe('Layout', () => {
             </ThemeProvider>
         );
 
-        expect(screen.getByRole('button', { name: /My Spellbooks/i }), 'Spellbooks button should be visible').toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Spellbooks/i }), 'Spellbooks button should be visible').toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Browse Spells/i }), 'Browse button should be visible').toBeInTheDocument();
     });
 
@@ -71,7 +72,7 @@ describe('Layout', () => {
             </ThemeProvider>
         );
 
-        const spellbooksButton = screen.getByRole('button', { name: /My Spellbooks/i });
+        const spellbooksButton = screen.getByRole('button', { name: /Spellbooks/i });
         const browseButton = screen.getByRole('button', { name: /Browse Spells/i });
 
         expect(spellbooksButton, 'Spellbooks button should be active').toHaveAttribute('aria-current', 'page');

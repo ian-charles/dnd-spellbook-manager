@@ -117,18 +117,6 @@ export function BrowseView({
 
     return (
         <>
-            {/* Search Box - Always Visible */}
-            <div className="search-box">
-                <input
-                    type="text"
-                    placeholder="Search spells..."
-                    value={filterReducer.state.searchText}
-                    onChange={(e) => filterReducer.setSearchText(e.target.value)}
-                    className="search-input"
-                    aria-label="Search spells"
-                />
-            </div>
-
             <div className="filter-header" data-testid="spell-filters">
                 <button
                     className="btn-secondary"
@@ -150,6 +138,17 @@ export function BrowseView({
                     <FunnelX size={18} />
                     <span>Clear Filters</span>
                 </button>
+                {/* Search Box */}
+                <div className="search-box">
+                    <input
+                        type="text"
+                        placeholder="Search spells..."
+                        value={filterReducer.state.searchText}
+                        onChange={(e) => filterReducer.setSearchText(e.target.value)}
+                        className="search-input"
+                        aria-label="Search spells"
+                    />
+                </div>
             </div>
             <div className="batch-add-container">
                 <button

@@ -8,7 +8,7 @@
  * - currentView: Current active view for navigation highlighting
  * - spellbookCount: Number of spellbooks to display in nav
  * - onNavigateToBrowse: Callback when Browse Spells is clicked
- * - onNavigateToSpellbooks: Callback when My Spellbooks is clicked
+ * - onNavigateToSpellbooks: Callback when Spellbooks is clicked
  * - children: Main content to render
  */
 
@@ -139,7 +139,7 @@ export function Layout({
                 : undefined
             }
           >
-            My Spellbooks ({spellbookCount})
+            Spellbooks ({spellbookCount})
           </button>
 
           {/* Utility nav items - visible on desktop, in "More" menu on tablet */}

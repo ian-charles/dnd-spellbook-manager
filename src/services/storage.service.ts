@@ -5,6 +5,11 @@ import {
   UpdateSpellbookInput,
   SpellbookSpell,
 } from '../types/spellbook';
+import {
+  DEMO_SPELLBOOK_NAME,
+  DEMO_SPELLBOOK_INPUT,
+  DEMO_SPELLBOOK_SPELLS,
+} from '../constants/demoSpellbook';
 
 /**
  * Storage service for managing spellbooks in IndexedDB
@@ -207,6 +212,54 @@ export class StorageService {
 
     if (updateCount === 0) {
       throw new Error(`Spellbook ${spellbookId} not found`);
+    }
+  }
+
+  /**
+   * Check if demo spellbook exists by name
+   */
+  async hasDemoSpellbook(): Promise<boolean> {
+    const spellbooks = await this.getSpellbooks();
+    return spellbooks.some(sb => sb.name === DEMO_SPELLBOOK_NAME);
+  }
+
+  /**
+   * Create demo spellbook with predefined spells for new users.
+   * Returns the created spellbook, or null if it already exists.
+   */
+  async createDemoSpellbook(): Promise<Spellbook | null> {
+    // Don't create if demo already exists
+    if (await this.hasDemoSpellbook()) {
+      return null;
+    }
+
+    // Create the spellbook with pre-populated spells
+    const now = new Date().toISOString();
+    const spellbook: Spellbook = {
+      id: crypto.randomUUID(),
+      name: DEMO_SPELLBOOK_INPUT.name,
+      spells: DEMO_SPELLBOOK_SPELLS,
+      created: now,
+      updated: now,
+      spellcastingAbility: DEMO_SPELLBOOK_INPUT.spellcastingAbility,
+      spellAttackModifier: DEMO_SPELLBOOK_INPUT.spellAttackModifier,
+      spellSaveDC: DEMO_SPELLBOOK_INPUT.spellSaveDC,
+      maxSpellSlots: DEMO_SPELLBOOK_INPUT.maxSpellSlots,
+    };
+
+    await db.spellbooks.add(spellbook);
+    return spellbook;
+  }
+
+  /**
+   * Initialize storage for new users.
+   * Creates demo spellbook if no spellbooks exist.
+   * Should be called once on app startup.
+   */
+  async initializeForNewUser(): Promise<void> {
+    const spellbooks = await this.getSpellbooks();
+    if (spellbooks.length === 0) {
+      await this.createDemoSpellbook();
     }
   }
 

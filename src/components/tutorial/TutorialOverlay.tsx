@@ -163,15 +163,41 @@ function useTargetRect(
 }
 
 export function TutorialOverlay() {
-  const { activeTour, activeStepIndex, nextStep, prevStep, exitTour } = useTutorial();
+  const { activeTour, activeStepIndex, nextStep, prevStep, exitTour, executeBeforeStepAction, currentView } = useTutorial();
   const isMobile = useIsMobile();
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const spotlightRef = useRef<HTMLDivElement>(null);
+  const lastExecutedStepRef = useRef<string | null>(null);
 
   const currentStep = activeTour?.steps[activeStepIndex];
   const selector = !isMobile && currentStep?.desktopSelector
     ? currentStep.desktopSelector
     : currentStep?.targetSelector;
+
+  // Execute beforeStep action when step changes
+  useEffect(() => {
+    if (!currentStep?.beforeStep) return;
+
+    // Avoid re-executing for the same step
+    const stepKey = `${activeTour?.id}-${activeStepIndex}`;
+    if (lastExecutedStepRef.current === stepKey) return;
+    lastExecutedStepRef.current = stepKey;
+
+    setIsNavigating(true);
+    executeBeforeStepAction(currentStep.beforeStep);
+  }, [currentStep, activeTour?.id, activeStepIndex, executeBeforeStepAction]);
+
+  // Clear navigating state when view changes (navigation completed)
+  useEffect(() => {
+    if (isNavigating) {
+      // Small delay to let the new view render
+      const timer = setTimeout(() => {
+        setIsNavigating(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentView, isNavigating]);
 
   const padding = currentStep?.highlightPadding ?? HIGHLIGHT_PADDING;
   const isInteractive = currentStep?.interactive === true;
@@ -215,6 +241,15 @@ export function TutorialOverlay() {
     return null;
   }
 
+  // Show a simple backdrop while navigating between views
+  if (isNavigating) {
+    return (
+      <div className="tutorial-overlay">
+        <div className="tutorial-backdrop" />
+      </div>
+    );
+  }
+
   // Only show spotlight after scrolling completes to avoid "chasing" animation
   const showSpotlight = !isScrolling && targetRect && currentStep.placement !== 'center';
 
@@ -237,15 +272,13 @@ export function TutorialOverlay() {
 
   return (
     <div className="tutorial-overlay">
-      {/* Spotlight or backdrop */}
-      {spotlightStyle ? (
+      {/* Spotlight (only when targeting an element) */}
+      {spotlightStyle && (
         <div
           ref={spotlightRef}
           className={spotlightClass}
           style={spotlightStyle}
         />
-      ) : (
-        <div className="tutorial-backdrop" />
       )}
 
       {/* Tooltip */}

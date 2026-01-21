@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { TutorialContextValue, TutorialState, TourId, Tour } from '../../types/tutorial';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import { TutorialContextValue, TutorialState, TourId, Tour, NavigationHandler, BeforeStepAction } from '../../types/tutorial';
+import { View } from '../../hooks/useHashRouter';
 import { TOURS } from '../../constants/tours';
 
 const STORAGE_KEY = 'spellbookery-tutorial';
@@ -47,19 +48,41 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
   const [activeTour, setActiveTour] = useState<Tour | null>(null);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentView, setCurrentView] = useState<View | null>(null);
+  const [targetSpellbookId, setTargetSpellbookId] = useState<string | null>(null);
+
+  // Use ref for navigation handler to avoid dependency in startTour
+  const navigationHandlerRef = useRef<NavigationHandler | null>(null);
 
   useEffect(() => {
     saveState(state);
   }, [state]);
 
+  const setNavigationHandler = useCallback((handler: NavigationHandler) => {
+    navigationHandlerRef.current = handler;
+  }, []);
+
   const startTour = useCallback((tourId: TourId) => {
     const tour = TOURS[tourId];
-    if (tour && tour.steps.length > 0) {
-      setActiveTour(tour);
-      setActiveStepIndex(0);
-      setIsMenuOpen(false);
+    if (!tour || tour.steps.length === 0) return;
+
+    // Check if navigation is needed
+    if (tour.requiredView && currentView !== tour.requiredView) {
+      // Navigate to the required view
+      if (navigationHandlerRef.current) {
+        // For spellbook-detail, pass the target spellbook ID
+        if (tour.requiredView === 'spellbook-detail' && targetSpellbookId) {
+          navigationHandlerRef.current(tour.requiredView, targetSpellbookId);
+        } else {
+          navigationHandlerRef.current(tour.requiredView);
+        }
+      }
     }
-  }, []);
+
+    setActiveTour(tour);
+    setActiveStepIndex(0);
+    setIsMenuOpen(false);
+  }, [currentView, targetSpellbookId]);
 
   const nextStep = useCallback(() => {
     if (!activeTour) return;
@@ -100,8 +123,8 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
   const acceptTour = useCallback(() => {
     setState(s => ({ ...s, hasSeenWelcome: true, wantsTour: true }));
     setIsMenuOpen(false);
-    // Start the Browse Spells tour immediately
-    const tour = TOURS['browse-spells'];
+    // Start the Welcome tour immediately (end-to-end onboarding)
+    const tour = TOURS['welcome'];
     if (tour && tour.steps.length > 0) {
       setActiveTour(tour);
       setActiveStepIndex(0);
@@ -122,11 +145,33 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     }));
   }, []);
 
+  const executeBeforeStepAction = useCallback((action: BeforeStepAction, spellbookId?: string) => {
+    if (!navigationHandlerRef.current) return;
+
+    switch (action) {
+      case 'navigate-to-browse':
+        navigationHandlerRef.current('browse');
+        break;
+      case 'navigate-to-spellbooks':
+        navigationHandlerRef.current('spellbooks');
+        break;
+      case 'navigate-to-spellbook-detail':
+        // Use provided spellbookId or fall back to targetSpellbookId
+        const id = spellbookId || targetSpellbookId;
+        if (id) {
+          navigationHandlerRef.current('spellbook-detail', id);
+        }
+        break;
+    }
+  }, [targetSpellbookId]);
+
   const value: TutorialContextValue = {
     state,
     activeTour,
     activeStepIndex,
     isMenuOpen,
+    currentView,
+    targetSpellbookId,
     startTour,
     nextStep,
     prevStep,
@@ -136,6 +181,10 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     acceptTour,
     declineTour,
     markPageTourSeen,
+    setNavigationHandler,
+    setCurrentView,
+    executeBeforeStepAction,
+    setTargetSpellbookId,
   };
 
   return (

@@ -11,6 +11,9 @@ vi.stubGlobal('crypto', {
   randomUUID: vi.fn(() => `test-uuid-${++uuidCounter}`),
 });
 
+// Mock initializeForNewUser to prevent demo spellbook creation during tests
+vi.spyOn(storageService, 'initializeForNewUser').mockResolvedValue(undefined);
+
 describe('useSpellbooks', () => {
   beforeAll(async () => {
     // Ensure database is open before running tests

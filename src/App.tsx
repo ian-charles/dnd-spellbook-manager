@@ -34,7 +34,7 @@ import './components/tutorial/Tutorial.css';
  * - Batch Operations: Add multiple spells to spellbooks with progress feedback.
  */
 function AppContent() {
-  const { state, openMenu, activeTour, startTour, markPageTourSeen } = useTutorial();
+  const { state, openMenu, setNavigationHandler, setCurrentView, setTargetSpellbookId } = useTutorial();
 
   // Data hooks
   const { spells, loading, error } = useSpells();
@@ -61,6 +61,30 @@ function AppContent() {
 
   // Toast hook for success messages
   const { isVisible: showToast, message: toastMessage, variant: toastVariant, showToast: displayToast } = useToast();
+
+  // Register navigation handler for tutorial system
+  useEffect(() => {
+    setNavigationHandler((view, spellbookId) => {
+      switch (view) {
+        case 'browse':
+          navigateToBrowse();
+          break;
+        case 'spellbooks':
+          navigateToSpellbooks();
+          break;
+        case 'spellbook-detail':
+          if (spellbookId) {
+            navigateToSpellbookDetail(spellbookId);
+          }
+          break;
+      }
+    });
+  }, [setNavigationHandler, navigateToBrowse, navigateToSpellbooks, navigateToSpellbookDetail]);
+
+  // Keep tutorial system informed of current view
+  useEffect(() => {
+    setCurrentView(currentView);
+  }, [currentView, setCurrentView]);
 
   // Alert dialog state
   const [alertDialog, setAlertDialog] = useState<{
@@ -89,33 +113,18 @@ function AppContent() {
     }
   }, [loading, error, state.hasSeenWelcome, openMenu]);
 
-  // Auto-trigger page-specific tours for users who opted into touring
+  // Set target spellbook for tutorial navigation (used by Welcome and Spellbooks tours)
+  // Prefers a spellbook with spells (like the demo spellbook)
   useEffect(() => {
-    // Only auto-trigger if user accepted the tour
-    if (!state.wantsTour) return;
-    // Don't interrupt an active tour
-    if (activeTour) return;
-    // Don't auto-trigger while loading
-    if (loading) return;
+    if (spellbooksLoading || spellbooks.length === 0) return;
 
-    // Map views to their corresponding tour IDs
-    const tourForView: Record<string, 'spellbooks-list' | 'spellbook-detail' | null> = {
-      'browse': null, // Already shown via welcome flow
-      'spellbooks': 'spellbooks-list',
-      'spellbook-detail': 'spellbook-detail',
-      'spell-detail': null,
-    };
+    const spellbookWithSpells = spellbooks.find(sb => sb.spells.length > 0);
+    const targetSpellbook = spellbookWithSpells || spellbooks[0];
 
-    const tourId = tourForView[currentView];
-    if (tourId && !state.seenPageTours.includes(tourId)) {
-      // Small delay to ensure the view has rendered
-      const timer = setTimeout(() => {
-        markPageTourSeen(tourId);
-        startTour(tourId);
-      }, 300);
-      return () => clearTimeout(timer);
+    if (targetSpellbook) {
+      setTargetSpellbookId(targetSpellbook.id);
     }
-  }, [currentView, state.wantsTour, state.seenPageTours, activeTour, loading, startTour, markPageTourSeen]);
+  }, [spellbooks, spellbooksLoading, setTargetSpellbookId]);
 
   // Handler for navigating back after spellbook deletion
   // Refreshes the spellbooks list to ensure deleted book is removed from UI

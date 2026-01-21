@@ -2,12 +2,18 @@ import { View } from '../hooks/useHashRouter';
 
 /** Unique identifier for each tour */
 export type TourId =
+  | 'welcome'
   | 'browse-spells'
-  | 'spellbooks-list'
-  | 'spellbook-detail';
+  | 'spellbooks';
 
 /** Where the tooltip appears relative to the highlighted element */
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right' | 'center';
+
+/** Actions that can be triggered before a step is shown */
+export type BeforeStepAction =
+  | 'navigate-to-browse'
+  | 'navigate-to-spellbooks'
+  | 'navigate-to-spellbook-detail';
 
 /**
  * A single step in a tour.
@@ -43,6 +49,9 @@ export interface TourStep {
 
   /** If true, user can interact with the highlighted element during this step */
   interactive?: boolean;
+
+  /** Action to execute before showing this step (e.g., navigation) */
+  beforeStep?: BeforeStepAction;
 }
 
 /**
@@ -81,6 +90,9 @@ export interface TutorialState {
   seenPageTours: TourId[];
 }
 
+/** Navigation handler for auto-navigating to required views */
+export type NavigationHandler = (view: View, spellbookId?: string) => void;
+
 /** Context value provided by TutorialProvider */
 export interface TutorialContextValue {
   state: TutorialState;
@@ -99,4 +111,16 @@ export interface TutorialContextValue {
   declineTour: () => void;
   /** Mark a page tour as having been shown (for auto-trigger tracking) */
   markPageTourSeen: (tourId: TourId) => void;
+  /** Register navigation handler for auto-navigation to required views */
+  setNavigationHandler: (handler: NavigationHandler) => void;
+  /** Current view (set by App.tsx for navigation decisions) */
+  currentView: View | null;
+  /** Set current view (called by App.tsx when view changes) */
+  setCurrentView: (view: View) => void;
+  /** Execute a beforeStep action (called by TutorialOverlay) */
+  executeBeforeStepAction: (action: BeforeStepAction, spellbookId?: string) => void;
+  /** Set the spellbook ID to use for spellbook-detail navigation */
+  setTargetSpellbookId: (id: string | null) => void;
+  /** Current target spellbook ID for the unified spellbooks tour */
+  targetSpellbookId: string | null;
 }

@@ -22,8 +22,23 @@ export function useSpellbooks() {
     }
   };
 
+  // Initialize storage (creates demo spellbook for new users) and load spellbooks
   useEffect(() => {
-    loadSpellbooks();
+    const init = async () => {
+      try {
+        setLoading(true);
+        // Create demo spellbook for new users (no-op if spellbooks exist)
+        await storageService.initializeForNewUser();
+        // Then load all spellbooks
+        const books = await storageService.getSpellbooks();
+        setSpellbooks(books);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
   }, []);
 
   const createSpellbook = async (input: CreateSpellbookInput) => {

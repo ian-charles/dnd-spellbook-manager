@@ -184,18 +184,6 @@ export function SpellbookDetailView() {
         </div>
       ) : (
         <>
-          {/* Search Box */}
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Search spells in spellbook..."
-              value={filterReducer.state.searchText}
-              onChange={(e) => filterReducer.setSearchText(e.target.value)}
-              className="search-input"
-              aria-label="Search spells"
-            />
-          </div>
-
           {/* Filter Controls Bar */}
           <div className="filter-header">
             <button
@@ -206,9 +194,6 @@ export function SpellbookDetailView() {
               <Funnel size={18} />
               <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
             </button>
-            <div className="filter-results-text">
-              Showing {sortedSpells.length} of {enrichedSpells.length} spells
-            </div>
             <button
               className="btn-clear-filters"
               onClick={onClearAllFilters}
@@ -218,15 +203,19 @@ export function SpellbookDetailView() {
               <FunnelX size={18} />
               <span>Clear Filters</span>
             </button>
-            <label className="filter-checkbox-label">
+            <div className="search-box">
               <input
-                type="checkbox"
-                checked={showPreparedOnly}
-                onChange={onToggleShowPreparedOnly}
-                data-testid="filter-prepared-only"
+                type="text"
+                placeholder="Search spells in spellbook..."
+                value={filterReducer.state.searchText}
+                onChange={(e) => filterReducer.setSearchText(e.target.value)}
+                className="search-input"
+                aria-label="Search spells"
               />
-              <span>Show <span className="prepared-text">Prepared</span> Only</span>
-            </label>
+            </div>
+            <div className="filter-results-text">
+              Showing {sortedSpells.length} of {enrichedSpells.length} spells
+            </div>
           </div>
 
           {/* Selection Controls */}
@@ -256,6 +245,15 @@ export function SpellbookDetailView() {
               >
                 Remove
               </button>
+              <label className="filter-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={showPreparedOnly}
+                  onChange={onToggleShowPreparedOnly}
+                  data-testid="filter-prepared-only"
+                />
+                <span>Show <span className="prepared-text">Prepared</span> Only</span>
+              </label>
             </div>
             <div className="selection-count-text">
               {selectedSpellIds.size} spell{selectedSpellIds.size !== 1 ? 's' : ''} selected

@@ -126,9 +126,6 @@ export function BrowseView({
                     <Funnel size={18} />
                     <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
                 </button>
-                <div className="filter-results-text">
-                    Showing {filteredSpells.length} of {spells.length} spells
-                </div>
                 <button
                     className="btn-clear-filters"
                     onClick={filterReducer.clearFilters}
@@ -148,6 +145,9 @@ export function BrowseView({
                         className="search-input"
                         aria-label="Search spells"
                     />
+                </div>
+                <div className="filter-results-text">
+                    Showing {filteredSpells.length} of {spells.length} spells
                 </div>
             </div>
             <div className="batch-add-container">

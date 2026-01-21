@@ -37,28 +37,21 @@
   white-space: nowrap;
 }
 
-/* Results text - full width below buttons on mobile */
-.filter-header .filter-results-text {
-  flex: 1 1 100%;
-  text-align: center;
-  order: 3;
-}
-
-/* Spellbook-specific: Prepared checkbox */
-.filter-header .filter-checkbox-label {
-  flex: 1 1 100%;
-  justify-content: center;
-  order: 4;
-}
-
-/* Search box - full width below other elements */
+/* Search box - full width on its own row */
 .filter-header .search-box {
   flex: 1 1 100%;
-  order: 5;
+  order: 3;
 }
 
 .filter-header .search-input {
   width: 100%;
+}
+
+/* Results text - always full width, always centered */
+.filter-header .filter-results-text {
+  flex: 1 1 100%;
+  text-align: center;
+  order: 4;
 }
 
 /* ==========================================================================
@@ -67,31 +60,26 @@
 
 @media (min-width: 768px) {
   .filter-header {
-    flex-wrap: wrap;
     gap: var(--space-3);
   }
 
+  /* Buttons shrink to fit content */
   .filter-header .btn-secondary,
   .filter-header .btn-clear-filters {
     flex: 0 0 auto;
+  }
+
+  /* Search box fills remaining space on button row */
+  .filter-header .search-box {
+    flex: 1 1 0;
+    min-width: 150px;
     order: 0;
   }
 
+  /* Results text stays on its own row, centered */
   .filter-header .filter-results-text {
-    flex: 1;
-    text-align: right;
-    margin-left: auto;
-  }
-
-  .filter-header .filter-checkbox-label {
-    flex: 0 0 auto;
-    order: 5;
-  }
-
-  /* Search box stays full width on tablet+ */
-  .filter-header .search-box {
     flex: 1 1 100%;
+    text-align: center;
     order: 10;
-    margin-top: var(--space-2);
   }
 }

@@ -4,8 +4,15 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ## Active Technical Debt
 
+### Low Priority
 
-
+#### Tutorial CSS Arrow Positioning Magic Numbers
+**Location**: `src/components/tutorial/Tutorial.css:171-209` (arrow pseudo-elements)
+**Issue**: Arrow offset uses hardcoded `-7px` value derived from arrow size (12px) and border width
+**Impact**: Minor maintenance burden if arrow size changes
+**Proposed Solution**: Use calc() expressions to make relationship explicit
+**Effort**: Low (30 minutes)
+**Priority**: Low
 
 
 

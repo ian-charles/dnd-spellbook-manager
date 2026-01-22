@@ -66,7 +66,9 @@
   left: 0;
   right: 0;
   z-index: 1502;
-  background: rgba(0, 0, 0, 0.6);
+  /* Opaque background that matches dimmed header/footer appearance.
+     Uses color-mix to compute bg-primary darkened by 60%. */
+  background: color-mix(in srgb, var(--color-bg-primary), black 60%);
   pointer-events: none;
 }
 

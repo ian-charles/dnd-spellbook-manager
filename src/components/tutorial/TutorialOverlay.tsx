@@ -6,6 +6,11 @@ import { ConfirmDialog } from '../ConfirmDialog';
 const HIGHLIGHT_PADDING = 8;
 const FADE_DURATION = 150; // ms for tooltip fade in/out
 
+// Scroll positioning: where to place target element's top edge in viewport
+const DEFAULT_VIEWPORT_POSITION = 0.25; // 25% down - good visibility with tooltip below
+const MOBILE_TOP_TOOLTIP_POSITION = 0.33; // 33% down - more room for tooltip above element
+const SCROLL_THRESHOLD_PX = 50; // Minimum offset to trigger scroll - avoids jarring scrolls for nearly-visible elements
+
 function useIsMobile(breakpoint = 768): boolean {
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -32,11 +37,17 @@ function useIsMobile(breakpoint = 768): boolean {
 }
 
 /**
- * Scrolls the target element into view, positioning its TOP at approximately 25% down the viewport.
+ * Scrolls the target element into view.
+ * - Default: positions element's TOP at 25% down the viewport
+ * - Mobile with mobilePlacement='top': positions at 33% to give more room for top tooltip
  * Returns whether scrolling is currently in progress.
  * Includes retry logic for when elements aren't immediately available after navigation.
  */
-function useScrollToTarget(selector: string | undefined): boolean {
+function useScrollToTarget(
+  selector: string | undefined,
+  isMobile: boolean,
+  mobilePlacement: 'top' | 'bottom' | undefined
+): boolean {
   const [isScrolling, setIsScrolling] = useState(false);
 
   useEffect(() => {
@@ -49,15 +60,17 @@ function useScrollToTarget(selector: string | undefined): boolean {
       const rect = element.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
 
-      // Target: position the TOP of the element at 25% down from the top of the viewport
-      const targetPosition = viewportHeight * 0.25;
+      // Mobile with top tooltip: position element lower to give room for tooltip above
+      const targetPercent = (isMobile && mobilePlacement === 'top')
+        ? MOBILE_TOP_TOOLTIP_POSITION
+        : DEFAULT_VIEWPORT_POSITION;
+      const targetPosition = viewportHeight * targetPercent;
 
       // Calculate how much we need to scroll (based on element's top edge)
       const scrollOffset = rect.top - targetPosition;
 
       // Only scroll if element is significantly off from target position
-      // (more than 50px away from ideal position)
-      if (Math.abs(scrollOffset) > 50) {
+      if (Math.abs(scrollOffset) > SCROLL_THRESHOLD_PX) {
         setIsScrolling(true);
 
         window.scrollBy({
@@ -126,7 +139,7 @@ function useScrollToTarget(selector: string | undefined): boolean {
     return () => {
       if (currentTimer) clearTimeout(currentTimer);
     };
-  }, [selector]);
+  }, [selector, isMobile, mobilePlacement]);
 
   return isScrolling;
 }
@@ -367,9 +380,10 @@ export function TutorialOverlay() {
 
   const padding = currentStep?.highlightPadding ?? HIGHLIGHT_PADDING;
   const isInteractive = currentStep?.interactive === true;
+  const mobilePlacement = currentStep?.mobilePlacement;
 
   // Scroll target element into view when step changes
-  const isScrolling = useScrollToTarget(selector);
+  const isScrolling = useScrollToTarget(selector, isMobile, mobilePlacement);
 
   // Track target rect - updates state when scrolling completes (with transition),
   // updates ref directly during user scroll (no transition)

@@ -17,6 +17,30 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ### Medium Priority
 
+#### TutorialOverlay Race Conditions in Retry Logic
+**Location**: `src/components/tutorial/TutorialOverlay.tsx:81-139` (useScrollToTarget), `src/components/tutorial/TutorialOverlay.tsx:230-300` (useTargetRect)
+**Issue**: Both hooks use retry logic with setTimeout chains. If component unmounts or selector changes mid-retry, multiple chains can run simultaneously, causing memory leaks and unpredictable behavior.
+**Impact**: Potential memory leaks, rare UI glitches during rapid tour navigation
+**Proposed Solution**: Add mounted ref and track all timers for proper cleanup
+**Effort**: Medium (1-2 hours)
+**Priority**: Medium (edge case, difficult to trigger in practice)
+
+#### TutorialOverlay Missing Test Coverage
+**Location**: `src/components/tutorial/TutorialOverlay.tsx` (entire file)
+**Issue**: Complex component with 4 hooks and async state logic lacks dedicated test file
+**Impact**: Logic changes cannot be verified without manual testing
+**Proposed Solution**: Create unit tests for hooks, integration tests for state transitions
+**Effort**: High (4-6 hours)
+**Priority**: Medium
+
+#### TutorialOverlay MutationObserver Performance
+**Location**: `src/components/tutorial/TutorialOverlay.tsx:311`
+**Issue**: Observes entire `document.body` with `subtree: true`, triggering callback on every DOM change
+**Impact**: Potential performance impact during heavy UI updates
+**Proposed Solution**: Observe target element's parent container instead
+**Effort**: Low (30 minutes)
+**Priority**: Medium
+
 #### Import Data Validation Gaps
 **Location**: `src/services/storage.service.ts:282-296` (`importData` method)
 **Issue**: Three validation gaps in the import function:

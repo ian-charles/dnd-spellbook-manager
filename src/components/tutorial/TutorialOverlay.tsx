@@ -41,7 +41,7 @@ function useIsMobile(breakpoint = 768): boolean {
 }
 
 /**
- * Measures header and footer heights for chrome dimming overlays.
+ * Measures header and footer heights for spotlight clamping.
  * Returns { headerHeight, footerHeight } in pixels.
  */
 function useChromeHeights(): { headerHeight: number; footerHeight: number } {
@@ -183,6 +183,48 @@ interface BlockerRefs {
   spotlight: React.RefObject<HTMLDivElement>;
 }
 
+/** Chrome bounds for clamping spotlight */
+interface ChromeBounds {
+  headerHeight: number;
+  footerHeight: number;
+}
+
+/**
+ * Clamps spotlight bounds to stay within the safe zone between header and footer.
+ * - Top edge: max(original, headerHeight)
+ * - Bottom edge: min(original, viewportHeight - footerHeight)
+ */
+function clampSpotlightBounds(
+  top: number,
+  left: number,
+  width: number,
+  height: number,
+  chromeBounds: ChromeBounds
+): { top: number; left: number; width: number; height: number } {
+  const viewportHeight = window.innerHeight;
+  const { headerHeight, footerHeight } = chromeBounds;
+
+  // Calculate original bottom
+  const originalBottom = top + height;
+
+  // Clamp top: can't go above header bottom
+  const clampedTop = Math.max(top, headerHeight);
+
+  // Clamp bottom: can't go below footer top
+  const maxBottom = viewportHeight - footerHeight;
+  const clampedBottom = Math.min(originalBottom, maxBottom);
+
+  // Recalculate height based on clamped bounds
+  const clampedHeight = Math.max(0, clampedBottom - clampedTop);
+
+  return {
+    top: clampedTop,
+    left,
+    width,
+    height: clampedHeight,
+  };
+}
+
 /**
  * Hook that tracks target element rect.
  * Returns initial rect via state (triggers transition on step change),
@@ -192,6 +234,7 @@ interface BlockerRefs {
  * @param isInteractive - When true, skips MutationObserver updates to avoid tracking
  *                        mid-animation positions (e.g., during swipe gestures)
  * @param blockerRefs - Refs for the four click-blocking panels + spotlight blocker
+ * @param chromeBounds - Header/footer heights for clamping spotlight bounds
  */
 function useTargetRect(
   selector: string | undefined,
@@ -199,7 +242,8 @@ function useTargetRect(
   padding: number,
   isScrolling: boolean,
   isInteractive: boolean,
-  blockerRefs?: BlockerRefs
+  blockerRefs: BlockerRefs | undefined,
+  chromeBounds: ChromeBounds
 ): DOMRect | null {
   const [rect, setRect] = useState<DOMRect | null>(null);
 
@@ -212,23 +256,38 @@ function useTargetRect(
 
     const newRect = element.getBoundingClientRect();
 
+    // Calculate unclamped spotlight bounds
+    const unclampedTop = newRect.top - padding;
+    const unclampedLeft = newRect.left - padding;
+    const unclampedWidth = newRect.width + padding * 2;
+    const unclampedHeight = newRect.height + padding * 2;
+
+    // Clamp spotlight to stay within header/footer safe zone
+    const clamped = clampSpotlightBounds(
+      unclampedTop,
+      unclampedLeft,
+      unclampedWidth,
+      unclampedHeight,
+      chromeBounds
+    );
+
     // Update spotlight position
     if (spotlightRef.current) {
       // Disable transition for scroll updates
       spotlightRef.current.style.transition = 'none';
       // Directly update DOM, bypassing React state
-      spotlightRef.current.style.top = `${newRect.top - padding}px`;
-      spotlightRef.current.style.left = `${newRect.left - padding}px`;
-      spotlightRef.current.style.width = `${newRect.width + padding * 2}px`;
-      spotlightRef.current.style.height = `${newRect.height + padding * 2}px`;
+      spotlightRef.current.style.top = `${clamped.top}px`;
+      spotlightRef.current.style.left = `${clamped.left}px`;
+      spotlightRef.current.style.width = `${clamped.width}px`;
+      spotlightRef.current.style.height = `${clamped.height}px`;
     }
 
-    // Update blocker panel positions
+    // Update blocker panel positions (use clamped bounds)
     if (blockerRefs) {
-      const spotTop = newRect.top - padding;
-      const spotLeft = newRect.left - padding;
-      const spotWidth = newRect.width + padding * 2;
-      const spotHeight = newRect.height + padding * 2;
+      const spotTop = clamped.top;
+      const spotLeft = clamped.left;
+      const spotWidth = clamped.width;
+      const spotHeight = clamped.height;
 
       // Top blocker: full width, from top to spotlight top
       if (blockerRefs.top.current) {
@@ -270,7 +329,7 @@ function useTargetRect(
         blockerRefs.spotlight.current.style.height = `${spotHeight}px`;
       }
     }
-  }, [selector, spotlightRef, padding, blockerRefs]);
+  }, [selector, spotlightRef, padding, blockerRefs, chromeBounds]);
 
   // Update React state only when scrolling completes (captures correct post-scroll position)
   // Includes retry logic for when elements aren't immediately available after navigation
@@ -416,9 +475,12 @@ export function TutorialOverlay() {
   // Scroll target element into view when step changes
   const isScrolling = useScrollToTarget(selector, isMobile, mobilePlacement);
 
+  // Chrome bounds for spotlight clamping
+  const chromeBounds: ChromeBounds = { headerHeight, footerHeight };
+
   // Track target rect - updates state when scrolling completes (with transition),
   // updates ref directly during user scroll (no transition)
-  const targetRect = useTargetRect(selector, spotlightRef, padding, isScrolling, isInteractive, blockerRefs);
+  const targetRect = useTargetRect(selector, spotlightRef, padding, isScrolling, isInteractive, blockerRefs, chromeBounds);
 
   // Fade tooltip back in after scroll completes and everything is settled
   useEffect(() => {
@@ -478,14 +540,25 @@ export function TutorialOverlay() {
   // Only show spotlight after scrolling completes to avoid "chasing" animation
   const showSpotlight = !isScrolling && targetRect && currentStep.placement !== 'center';
 
+  // Calculate clamped spotlight bounds for initial render
+  const clampedBounds = showSpotlight
+    ? clampSpotlightBounds(
+        targetRect.top - padding,
+        targetRect.left - padding,
+        targetRect.width + padding * 2,
+        targetRect.height + padding * 2,
+        chromeBounds
+      )
+    : null;
+
   // Initial style from React state (includes transition for step changes)
   // Scroll updates are applied directly to ref with transition disabled
-  const spotlightStyle = showSpotlight
+  const spotlightStyle = clampedBounds
     ? {
-        top: targetRect.top - padding,
-        left: targetRect.left - padding,
-        width: targetRect.width + padding * 2,
-        height: targetRect.height + padding * 2,
+        top: clampedBounds.top,
+        left: clampedBounds.left,
+        width: clampedBounds.width,
+        height: clampedBounds.height,
         transition: 'all 0.2s ease-out',
       }
     : undefined;
@@ -496,37 +569,38 @@ export function TutorialOverlay() {
     : 'tutorial-spotlight';
 
   // Calculate blocker panel styles (for initial render; scroll updates via refs)
-  const blockerStyles = showSpotlight && targetRect
+  // Uses clamped bounds to match spotlight
+  const blockerStyles = clampedBounds
     ? {
         top: {
           top: 0,
           left: 0,
           right: 0,
-          height: Math.max(0, targetRect.top - padding),
+          height: Math.max(0, clampedBounds.top),
         },
         bottom: {
-          top: targetRect.top - padding + targetRect.height + padding * 2,
+          top: clampedBounds.top + clampedBounds.height,
           left: 0,
           right: 0,
           bottom: 0,
         },
         left: {
-          top: targetRect.top - padding,
+          top: clampedBounds.top,
           left: 0,
-          width: Math.max(0, targetRect.left - padding),
-          height: targetRect.height + padding * 2,
+          width: Math.max(0, clampedBounds.left),
+          height: clampedBounds.height,
         },
         right: {
-          top: targetRect.top - padding,
-          left: targetRect.left - padding + targetRect.width + padding * 2,
+          top: clampedBounds.top,
+          left: clampedBounds.left + clampedBounds.width,
           right: 0,
-          height: targetRect.height + padding * 2,
+          height: clampedBounds.height,
         },
         spotlight: {
-          top: targetRect.top - padding,
-          left: targetRect.left - padding,
-          width: targetRect.width + padding * 2,
-          height: targetRect.height + padding * 2,
+          top: clampedBounds.top,
+          left: clampedBounds.left,
+          width: clampedBounds.width,
+          height: clampedBounds.height,
         },
       }
     : null;
@@ -584,20 +658,6 @@ export function TutorialOverlay() {
           ref={spotlightRef}
           className={spotlightClass}
           style={spotlightStyle}
-        />
-      )}
-
-      {/* Chrome dimming overlays - keep header/footer dimmed regardless of spotlight position */}
-      {headerHeight > 0 && (
-        <div
-          className="tutorial-chrome-dim tutorial-chrome-dim--header"
-          style={{ height: headerHeight }}
-        />
-      )}
-      {footerHeight > 0 && (
-        <div
-          className="tutorial-chrome-dim tutorial-chrome-dim--footer"
-          style={{ height: footerHeight }}
         />
       )}
 

@@ -5,9 +5,10 @@
  * Uses design tokens for consistency with the rest of the app.
  *
  * Z-index layers:
- * - Spotlight: 1500 (above regular overlays)
- * - Backdrop: 1500 (same layer as spotlight)
- * - Tooltip: 1600 (above spotlight)
+ * - Spotlight: 1501 (above regular overlays)
+ * - Backdrop/Blockers: 1500 (same layer, blocks clicks)
+ * - Chrome dimming (header/footer): 1502 (above spotlight, keeps chrome dimmed)
+ * - Tooltip: 1600 (above all tutorial layers)
  * - Menu: 2000 (modal level)
  */
 
@@ -51,6 +52,41 @@
 /* Full-screen blocker for center-placement steps */
 .tutorial-blocker--full {
   inset: 0;
+}
+
+/* ===========================================
+   CHROME DIMMING (Header/Footer)
+   Ensures header/footer stay dimmed regardless
+   of spotlight position. Sits above spotlight
+   to prevent "bright chrome" visual glitch.
+   =========================================== */
+
+.tutorial-chrome-dim {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 1502;
+  background: rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+/* Header dimming - matches .app-header height */
+.tutorial-chrome-dim--header {
+  top: 0;
+  /* Height set via inline style to match actual header height */
+}
+
+/* Footer dimming - matches .app-footer height */
+.tutorial-chrome-dim--footer {
+  bottom: 0;
+  /* Height set via inline style to match actual footer height */
+}
+
+/* Hide footer dimming on desktop where footer is hidden */
+@media (min-width: 1024px) {
+  .tutorial-chrome-dim--footer {
+    display: none;
+  }
 }
 
 /* Interactive spotlight - pulsing border effect */

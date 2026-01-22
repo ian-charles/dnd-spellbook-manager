@@ -42,6 +42,7 @@ export const TOURS: Record<TourId, Tour> = {
         description: 'Spells can be selected/deselected by long-pressing or swiping to the side. Give it a shot!',
         desktopDescription: 'Spells can be selected/deselected using the checkbox.',
         placement: 'bottom',
+        mobilePlacement: 'top',
         desktopPlacement: 'right',
         interactive: true,
       },

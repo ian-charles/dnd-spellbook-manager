@@ -6,6 +6,10 @@ import { ConfirmDialog } from '../ConfirmDialog';
 const HIGHLIGHT_PADDING = 8;
 const FADE_DURATION = 150; // ms for tooltip fade in/out
 
+// Chrome element selectors for dimming overlays
+const HEADER_SELECTOR = '.app-header';
+const FOOTER_SELECTOR = '.app-footer';
+
 // Scroll positioning: where to place target element's top edge in viewport
 const DEFAULT_VIEWPORT_POSITION = 0.25; // 25% down - good visibility with tooltip below
 const MOBILE_TOP_TOOLTIP_POSITION = 0.33; // 33% down - more room for tooltip above element
@@ -34,6 +38,32 @@ function useIsMobile(breakpoint = 768): boolean {
   }, [breakpoint]);
 
   return isMobile;
+}
+
+/**
+ * Measures header and footer heights for chrome dimming overlays.
+ * Returns { headerHeight, footerHeight } in pixels.
+ */
+function useChromeHeights(): { headerHeight: number; footerHeight: number } {
+  const [heights, setHeights] = useState({ headerHeight: 0, footerHeight: 0 });
+
+  useEffect(() => {
+    const measure = () => {
+      const header = document.querySelector(HEADER_SELECTOR);
+      const footer = document.querySelector(FOOTER_SELECTOR);
+      setHeights({
+        headerHeight: header?.getBoundingClientRect().height ?? 0,
+        footerHeight: footer?.getBoundingClientRect().height ?? 0,
+      });
+    };
+
+    // Measure on mount and resize
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  return heights;
 }
 
 /**
@@ -318,6 +348,7 @@ function useTargetRect(
 export function TutorialOverlay() {
   const { activeTour, activeStepIndex, nextStep, prevStep, exitTour, executeBeforeStepAction, currentView } = useTutorial();
   const isMobile = useIsMobile();
+  const { headerHeight, footerHeight } = useChromeHeights();
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
@@ -553,6 +584,20 @@ export function TutorialOverlay() {
           ref={spotlightRef}
           className={spotlightClass}
           style={spotlightStyle}
+        />
+      )}
+
+      {/* Chrome dimming overlays - keep header/footer dimmed regardless of spotlight position */}
+      {headerHeight > 0 && (
+        <div
+          className="tutorial-chrome-dim tutorial-chrome-dim--header"
+          style={{ height: headerHeight }}
+        />
+      )}
+      {footerHeight > 0 && (
+        <div
+          className="tutorial-chrome-dim tutorial-chrome-dim--footer"
+          style={{ height: footerHeight }}
         />
       )}
 

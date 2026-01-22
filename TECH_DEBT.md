@@ -17,6 +17,17 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ### Medium Priority
 
+#### Import Data Validation Gaps
+**Location**: `src/services/storage.service.ts:282-296` (`importData` method)
+**Issue**: Three validation gaps in the import function:
+1. Error message loses type information (`${error}` instead of checking `instanceof Error`)
+2. No schema validation - trusts that `data.spellbooks` exists and is an array
+3. No version check - `exportData` includes version `'1.0'` but import doesn't validate it
+**Impact**: Malformed backup files could cause confusing errors or silent data corruption
+**Proposed Solution**: Add schema validation, proper error typing, and version compatibility check
+**Effort**: Low (1-2 hours)
+**Priority**: Medium
+
 #### Tour Selector Fragility
 **Location**: `src/constants/tours.ts` (multiple lines)
 **Issue**: Mix of class-based CSS selectors (`.spell-table`, `.filter-header`) and data-testid selectors

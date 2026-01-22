@@ -11,6 +11,9 @@ import {
   DEMO_SPELLBOOK_SPELLS,
 } from '../constants/demoSpellbook';
 
+// Module-level initialization promise to prevent race conditions
+let initPromise: Promise<void> | null = null;
+
 /**
  * Storage service for managing spellbooks in IndexedDB
  * Provides CRUD operations with async/await interface
@@ -254,13 +257,24 @@ export class StorageService {
   /**
    * Initialize storage for new users.
    * Creates demo spellbook if no spellbooks exist.
-   * Should be called once on app startup.
+   * Uses singleton pattern to ensure this only runs once,
+   * preventing race conditions when multiple components call this.
    */
   async initializeForNewUser(): Promise<void> {
-    const spellbooks = await this.getSpellbooks();
-    if (spellbooks.length === 0) {
-      await this.createDemoSpellbook();
+    // If already initialized or initializing, return the same promise
+    if (initPromise) {
+      return initPromise;
     }
+
+    // Create and store the promise
+    initPromise = (async () => {
+      const spellbooks = await this.getSpellbooks();
+      if (spellbooks.length === 0) {
+        await this.createDemoSpellbook();
+      }
+    })();
+
+    return initPromise;
   }
 
   /**

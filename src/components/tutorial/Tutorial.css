@@ -66,9 +66,10 @@
   left: 0;
   right: 0;
   z-index: 1502;
-  /* Opaque background that matches dimmed header/footer appearance.
-     Uses color-mix to compute bg-primary darkened by 60%. */
-  background: color-mix(in srgb, var(--color-bg-primary), black 60%);
+  /* Opaque color matching "header bg + 60% black overlay" visual result.
+     Must be opaque to fully mask spotlight glow/hole in header/footer.
+     Uses color-mix: 40% of header bg (what shows through 60% overlay) + 60% black. */
+  background: color-mix(in srgb, var(--color-bg-primary) 40%, black);
   pointer-events: none;
 }
 

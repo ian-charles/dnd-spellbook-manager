@@ -192,7 +192,6 @@ interface BlockerRefs {
  * @param isInteractive - When true, skips MutationObserver updates to avoid tracking
  *                        mid-animation positions (e.g., during swipe gestures)
  * @param blockerRefs - Refs for the four click-blocking panels + spotlight blocker
- * @param chromeHeights - Header/footer heights for clip-path calculation
  */
 function useTargetRect(
   selector: string | undefined,
@@ -200,8 +199,7 @@ function useTargetRect(
   padding: number,
   isScrolling: boolean,
   isInteractive: boolean,
-  blockerRefs?: BlockerRefs,
-  chromeHeights?: { headerHeight: number; footerHeight: number }
+  blockerRefs?: BlockerRefs
 ): DOMRect | null {
   const [rect, setRect] = useState<DOMRect | null>(null);
 
@@ -223,10 +221,6 @@ function useTargetRect(
       spotlightRef.current.style.left = `${newRect.left - padding}px`;
       spotlightRef.current.style.width = `${newRect.width + padding * 2}px`;
       spotlightRef.current.style.height = `${newRect.height + padding * 2}px`;
-      // Apply clip-path to exclude header/footer regions
-      if (chromeHeights) {
-        spotlightRef.current.style.clipPath = `inset(${chromeHeights.headerHeight}px 0 ${chromeHeights.footerHeight}px 0)`;
-      }
     }
 
     // Update blocker panel positions
@@ -276,7 +270,7 @@ function useTargetRect(
         blockerRefs.spotlight.current.style.height = `${spotHeight}px`;
       }
     }
-  }, [selector, spotlightRef, padding, blockerRefs, chromeHeights]);
+  }, [selector, spotlightRef, padding, blockerRefs]);
 
   // Update React state only when scrolling completes (captures correct post-scroll position)
   // Includes retry logic for when elements aren't immediately available after navigation
@@ -424,10 +418,7 @@ export function TutorialOverlay() {
 
   // Track target rect - updates state when scrolling completes (with transition),
   // updates ref directly during user scroll (no transition)
-  const targetRect = useTargetRect(
-    selector, spotlightRef, padding, isScrolling, isInteractive, blockerRefs,
-    { headerHeight, footerHeight }
-  );
+  const targetRect = useTargetRect(selector, spotlightRef, padding, isScrolling, isInteractive, blockerRefs);
 
   // Fade tooltip back in after scroll completes and everything is settled
   useEffect(() => {
@@ -489,7 +480,6 @@ export function TutorialOverlay() {
 
   // Initial style from React state (includes transition for step changes)
   // Scroll updates are applied directly to ref with transition disabled
-  // clip-path excludes header/footer regions so spotlight doesn't render there
   const spotlightStyle = showSpotlight
     ? {
         top: targetRect.top - padding,
@@ -497,7 +487,6 @@ export function TutorialOverlay() {
         width: targetRect.width + padding * 2,
         height: targetRect.height + padding * 2,
         transition: 'all 0.2s ease-out',
-        clipPath: `inset(${headerHeight}px 0 ${footerHeight}px 0)`,
       }
     : undefined;
 

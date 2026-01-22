@@ -23,20 +23,14 @@ export const TOURS: Record<TourId, Tour> = {
         description: 'This is the Browse Spells table, where you can find all available D&D spells. Tap on a spell to see its full details and description.',
         desktopDescription: 'This is the Browse Spells table, where you can find all available D&D spells. Click on a spell to see its full details and description.',
         placement: 'top',
+        mobilePlacement: 'top',
         interactive: true,
       },
       {
         id: 'browse-filters',
         targetSelector: '.filter-header',
         title: 'Advanced Filters',
-        description: 'There are tons of spells to pick from, so you can narrow things down with filters for spell Level, School, Class, and more.',
-        placement: 'bottom',
-      },
-      {
-        id: 'browse-search',
-        targetSelector: '.search-input',
-        title: 'Search Spells',
-        description: 'You can also search for spells by name. Try searching for "fire" to find spells like "Fire Bolt," "Fireball," "Faerie Fire" and so on.',
+        description: 'There are tons of spells to pick from, so you can search by Spell Name or narrow things down with filters for Spell Level, School, Class, and more.',
         placement: 'bottom',
         interactive: true,
       },
@@ -46,7 +40,7 @@ export const TOURS: Record<TourId, Tour> = {
         desktopSelector: '.spell-row .checkbox-col input',
         title: 'Select Spells',
         description: 'Spells can be selected/deselected by long-pressing or swiping to the side. Give it a shot!',
-        desktopDescription: 'Spells can be selected/deselected using the checkbox. Give it a shot!',
+        desktopDescription: 'Spells can be selected/deselected using the checkbox.',
         placement: 'bottom',
         desktopPlacement: 'right',
         interactive: true,
@@ -72,6 +66,7 @@ export const TOURS: Record<TourId, Tour> = {
         description: 'Now let\'s take a look at a spellbook. We\'ve already created one as an example for you to explore.',
         placement: 'center',
         beforeStep: 'navigate-to-spellbook-detail',
+        requiredView: 'spellbook-detail',
       },
       // SPELLBOOK DETAIL PHASE
       {
@@ -80,13 +75,15 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Spellbook Overview',
         description: 'Your spellbook\'s name and basic stats are shown here. Use the buttons to edit stats, make a copy, or delete this spellbook.',
         placement: 'bottom',
+        requiredView: 'spellbook-detail',
       },
       {
         id: 'detail-slots',
         targetSelector: '.spell-slots-display',
         title: 'Spell Slots',
         description: 'These show your total spell slots by level. Set these in the Edit menu to match your character.',
-        placement: 'bottom',
+        placement: 'left',
+        requiredView: 'spellbook-detail',
       },
       {
         id: 'detail-spells',
@@ -95,13 +92,16 @@ export const TOURS: Record<TourId, Tour> = {
         description: 'And here are the spells! Just like the Browse table, you can tap any spell for details, swipe to select, search, filter, etc.',
         desktopDescription: 'And here are the spells! Just like the Browse table, you can click any spell for details, check to select, search, filter, etc.',
         placement: 'top',
+        requiredView: 'spellbook-detail',
+        interactive: true,
       },
       {
         id: 'detail-prepared-toggle',
         targetSelector: '[data-testid="btn-prep-selected"]',
         title: 'Prepare Spells',
-        description: 'You can also mark spells as Prepared. Prepared spells are highlighted in gold!',
-        placement: 'bottom',
+        description: 'You can also mark selected spells as Prepared. Prepared spells are highlighted in gold!',
+        placement: 'right',
+        requiredView: 'spellbook-detail',
       },
       {
         id: 'detail-prepared-filter',
@@ -109,6 +109,8 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Filter by Prepared',
         description: 'Toggle this to show only your prepared spells. Great for during gameplay when you need quick access.',
         placement: 'bottom',
+        requiredView: 'spellbook-detail',
+        interactive: true,
       },
       {
         id: 'detail-remove',
@@ -116,6 +118,7 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Remove Spells',
         description: 'Spells can also be removed from the spellbook if necessary. You can always add them back later from the Browse page.',
         placement: 'bottom',
+        requiredView: 'spellbook-detail',
       },
       // TRANSITION TO SPELLBOOKS LIST
       {
@@ -124,15 +127,18 @@ export const TOURS: Record<TourId, Tour> = {
         description: 'Finally, let\'s see how to manage all your spellbooks.',
         placement: 'center',
         beforeStep: 'navigate-to-spellbooks',
+        requiredView: 'spellbooks',
       },
       // SPELLBOOKS LIST PHASE
       {
         id: 'spellbooks-list',
-        targetSelector: '.spellbook-list-table',
+        targetSelector: '.spellbooks-table',
         title: 'Your Spellbooks',
         description: 'This table lists all your saved spellbooks. Tap one to open, or long-press for quick actions like copy and delete.',
-        desktopDescription: 'This table lists all your saved spellbooks. Tap one to open, or long-press for quick actions like copy and delete.',
+        desktopDescription: 'This table lists all your saved spellbooks. Tap one to open, or use the button on the right for actions like Copy and Delete.',
         placement: 'top',
+        mobilePlacement: 'top',
+        requiredView: 'spellbooks',
       },
       {
         id: 'spellbooks-create',
@@ -140,6 +146,7 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Create a Spellbook',
         description: 'Create new spellbooks for new characters or campaigns. You can set spellcasting ability, attack modifier, and spell slots. Adding spells can be done later from the Browse Spells page.',
         placement: 'bottom',
+        requiredView: 'spellbooks',
       },
       {
         id: 'spellbooks-search',
@@ -147,6 +154,7 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Search Spellbooks',
         description: 'Have lots of spellbooks? Search by name to quickly find the one you need.',
         placement: 'bottom',
+        requiredView: 'spellbooks',
       },
       {
         id: 'spellbooks-import-export',
@@ -154,12 +162,14 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Import & Export',
         description: 'Finally, you can export your spellbooks for backup or to share them with friends. Uses JSON format that can be re-imported anytime.',
         placement: 'bottom',
+        requiredView: 'spellbooks',
       },
       {
         id: 'welcome-complete',
         title: 'You\'re All Set!',
-        description: 'You now know how to use The Spellbookery! Happy spellcasting! You can revisit these tours anytime from the Help menu.',
+        description: 'You now know how to use The Spellbookery! You can revisit these tours anytime from the Help menu. Happy spellcasting!',
         placement: 'center',
+        requiredView: 'spellbooks',
       },
     ],
   },
@@ -301,6 +311,7 @@ export const TOURS: Record<TourId, Tour> = {
         description: 'Now let\'s look at how to manage all your spellbooks. We\'ll go to the Spellbooks page.',
         placement: 'center',
         beforeStep: 'navigate-to-spellbooks',
+        requiredView: 'spellbooks',
       },
       // SPELLBOOKS LIST PHASE
       {
@@ -309,6 +320,7 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Create a Spellbook',
         description: 'Create new spellbooks for each character or campaign. You can set spellcasting ability, attack modifier, and spell slots.',
         placement: 'bottom',
+        requiredView: 'spellbooks',
       },
       {
         id: 'spellbooks-search',
@@ -316,6 +328,7 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Search Spellbooks',
         description: 'Have many spellbooks? Search by name to quickly find the one you need.',
         placement: 'bottom',
+        requiredView: 'spellbooks',
       },
       {
         id: 'spellbooks-list',
@@ -324,6 +337,8 @@ export const TOURS: Record<TourId, Tour> = {
         description: 'Each row is a spellbook. Tap to open, or long-press for quick actions like edit and delete.',
         desktopDescription: 'Each row is a spellbook. Click a row to open it and manage its spells.',
         placement: 'top',
+        mobilePlacement: 'top',
+        requiredView: 'spellbooks',
       },
       {
         id: 'spellbooks-import-export',
@@ -331,12 +346,14 @@ export const TOURS: Record<TourId, Tour> = {
         title: 'Import & Export',
         description: 'Backup your spellbooks or share them with friends. Uses JSON format that can be re-imported anytime.',
         placement: 'bottom',
+        requiredView: 'spellbooks',
       },
       {
         id: 'spellbooks-complete',
         title: 'You\'re All Set!',
         description: 'You now know how to manage your spellbooks! Happy spellcasting!',
         placement: 'center',
+        requiredView: 'spellbooks',
       },
     ],
   },

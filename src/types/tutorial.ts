@@ -44,6 +44,9 @@ export interface TourStep {
   /** Optional different placement for desktop (>= 768px) */
   desktopPlacement?: TooltipPlacement;
 
+  /** Mobile tooltip position: 'top' or 'bottom' (default: 'bottom') */
+  mobilePlacement?: 'top' | 'bottom';
+
   /** Extra padding around the highlighted element in pixels (default: 8) */
   highlightPadding?: number;
 
@@ -52,6 +55,9 @@ export interface TourStep {
 
   /** Action to execute before showing this step (e.g., navigation) */
   beforeStep?: BeforeStepAction;
+
+  /** Which view this step belongs to (defaults to tour's requiredView) */
+  requiredView?: View;
 }
 
 /**

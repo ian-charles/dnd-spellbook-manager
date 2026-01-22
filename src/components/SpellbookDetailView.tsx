@@ -19,7 +19,7 @@ import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
 import { SpellSlotsDisplay } from './spellbook-detail/SpellSlotsDisplay';
 import { MobileSortChips } from './MobileSortChips';
-import { SquarePen, Copy, Trash2, Funnel, FunnelX } from 'lucide-react';
+import { SquarePen, Copy, Trash2, Funnel, FunnelX, X } from 'lucide-react';
 import { BackToTopButton } from './BackToTopButton';
 import './SpellbookDetail.css';
 
@@ -212,6 +212,15 @@ export function SpellbookDetailView() {
                 className="search-input"
                 aria-label="Search spells"
               />
+              {filterReducer.state.searchText && (
+                <button
+                  className="btn-clear-search"
+                  onClick={() => filterReducer.setSearchText('')}
+                  aria-label="Clear search"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
             <div className="filter-results-text">
               Showing {sortedSpells.length} of {enrichedSpells.length} spells

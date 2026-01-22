@@ -436,10 +436,10 @@
     font-size: var(--font-size-3xl);
   }
 
-  /* Shrink-width buttons on the left, hide Select All (redundant with checkbox column header) */
+  /* Full-width flex container: buttons left, checkbox right */
   .spellbook-actions {
     display: flex;
-    flex: 0 0 auto;
+    flex: 1;
     gap: var(--space-3);
     justify-content: flex-start;
     align-items: center;
@@ -450,6 +450,6 @@
   }
 
   .spellbook-actions .filter-checkbox-label {
-    justify-content: flex-start;
+    margin-left: auto;
   }
 }

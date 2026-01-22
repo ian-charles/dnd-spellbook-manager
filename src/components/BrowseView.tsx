@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Funnel, FunnelX, BookPlus } from 'lucide-react';
+import { Funnel, FunnelX, BookPlus, X } from 'lucide-react';
 import { Spell } from '../types/spell';
 import { Spellbook, CreateSpellbookInput } from '../types/spellbook';
 import { FilterModal } from './FilterModal';
@@ -145,6 +145,15 @@ export function BrowseView({
                         className="search-input"
                         aria-label="Search spells"
                     />
+                    {filterReducer.state.searchText && (
+                        <button
+                            className="btn-clear-search"
+                            onClick={() => filterReducer.setSearchText('')}
+                            aria-label="Clear search"
+                        >
+                            <X size={16} />
+                        </button>
+                    )}
                 </div>
                 <div className="filter-results-text">
                     Showing {filteredSpells.length} of {spells.length} spells

@@ -66,16 +66,16 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     const tour = TOURS[tourId];
     if (!tour || tour.steps.length === 0) return;
 
-    // Check if navigation is needed
-    if (tour.requiredView && currentView !== tour.requiredView) {
-      // Navigate to the required view
-      if (navigationHandlerRef.current) {
-        // For spellbook-detail, pass the target spellbook ID
-        if (tour.requiredView === 'spellbook-detail' && targetSpellbookId) {
-          navigationHandlerRef.current(tour.requiredView, targetSpellbookId);
-        } else {
-          navigationHandlerRef.current(tour.requiredView);
-        }
+    // Determine which view the first step needs (step-level overrides tour-level)
+    const firstStep = tour.steps[0];
+    const requiredView = firstStep.requiredView || tour.requiredView;
+
+    // Navigate if we're not on the required view
+    if (requiredView && currentView !== requiredView && navigationHandlerRef.current) {
+      if (requiredView === 'spellbook-detail' && targetSpellbookId) {
+        navigationHandlerRef.current(requiredView, targetSpellbookId);
+      } else {
+        navigationHandlerRef.current(requiredView);
       }
     }
 
@@ -88,7 +88,23 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     if (!activeTour) return;
 
     if (activeStepIndex < activeTour.steps.length - 1) {
-      setActiveStepIndex(i => i + 1);
+      const nextIndex = activeStepIndex + 1;
+      const nextStepDef = activeTour.steps[nextIndex];
+
+      // Determine which view the next step needs
+      const stepRequiredView = nextStepDef.requiredView || activeTour.requiredView;
+
+      // Navigate if the next step is on a different page (and doesn't have a beforeStep action)
+      // Steps with beforeStep handle their own navigation
+      if (!nextStepDef.beforeStep && stepRequiredView && stepRequiredView !== currentView && navigationHandlerRef.current) {
+        if (stepRequiredView === 'spellbook-detail' && targetSpellbookId) {
+          navigationHandlerRef.current(stepRequiredView, targetSpellbookId);
+        } else {
+          navigationHandlerRef.current(stepRequiredView);
+        }
+      }
+
+      setActiveStepIndex(nextIndex);
     } else {
       setState(s => ({
         ...s,
@@ -99,13 +115,28 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
       setActiveTour(null);
       setActiveStepIndex(0);
     }
-  }, [activeTour, activeStepIndex]);
+  }, [activeTour, activeStepIndex, currentView, targetSpellbookId]);
 
   const prevStep = useCallback(() => {
-    if (activeStepIndex > 0) {
-      setActiveStepIndex(i => i - 1);
+    if (activeStepIndex <= 0 || !activeTour) return;
+
+    const prevIndex = activeStepIndex - 1;
+    const prevStepDef = activeTour.steps[prevIndex];
+
+    // Determine which view the previous step needs
+    const stepRequiredView = prevStepDef.requiredView || activeTour.requiredView;
+
+    // Navigate if the previous step is on a different page
+    if (stepRequiredView && stepRequiredView !== currentView && navigationHandlerRef.current) {
+      if (stepRequiredView === 'spellbook-detail' && targetSpellbookId) {
+        navigationHandlerRef.current(stepRequiredView, targetSpellbookId);
+      } else {
+        navigationHandlerRef.current(stepRequiredView);
+      }
     }
-  }, [activeStepIndex]);
+
+    setActiveStepIndex(prevIndex);
+  }, [activeStepIndex, activeTour, currentView, targetSpellbookId]);
 
   const exitTour = useCallback(() => {
     setActiveTour(null);
@@ -122,14 +153,10 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
 
   const acceptTour = useCallback(() => {
     setState(s => ({ ...s, hasSeenWelcome: true, wantsTour: true }));
-    setIsMenuOpen(false);
     // Start the Welcome tour immediately (end-to-end onboarding)
-    const tour = TOURS['welcome'];
-    if (tour && tour.steps.length > 0) {
-      setActiveTour(tour);
-      setActiveStepIndex(0);
-    }
-  }, []);
+    // Uses startTour to ensure navigation to required view
+    startTour('welcome');
+  }, [startTour]);
 
   const declineTour = useCallback(() => {
     setState(s => ({ ...s, hasSeenWelcome: true, wantsTour: false }));

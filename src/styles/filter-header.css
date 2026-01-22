@@ -39,12 +39,34 @@
 
 /* Search box - full width on its own row */
 .filter-header .search-box {
+  position: relative;
   flex: 1 1 100%;
   order: 3;
 }
 
 .filter-header .search-input {
   width: 100%;
+  padding-right: var(--space-10);
+}
+
+.filter-header .btn-clear-search {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-base);
+}
+
+.filter-header .btn-clear-search:hover {
+  color: var(--color-text-primary);
 }
 
 /* Results text - always full width, always centered */
@@ -61,6 +83,13 @@
 @media (min-width: 768px) {
   .filter-header {
     gap: var(--space-3);
+  }
+
+  /* Align all interactive elements to same height */
+  .filter-header .btn-secondary,
+  .filter-header .btn-clear-filters,
+  .filter-header .search-input {
+    height: 42px;
   }
 
   /* Buttons shrink to fit content */

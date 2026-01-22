@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { AlertDialog } from './AlertDialog';
 import { CreateSpellbookModal } from './CreateSpellbookModal';
-import { WandSparkles, SquarePen, Copy, Trash2 } from 'lucide-react';
+import { WandSparkles, SquarePen, Copy, Trash2, X } from 'lucide-react';
 
 import LoadingSpinner from './LoadingSpinner';
 import { SpellbookListHeader } from './spellbook-list/SpellbookListHeader';
@@ -194,7 +194,7 @@ export function SpellbookList({
                 data-testid="btn-clear-search"
                 aria-label="Clear search"
               >
-                ✕
+                <X size={16} />
               </button>
             )}
           </div>

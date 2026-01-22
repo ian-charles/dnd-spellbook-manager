@@ -15,6 +15,7 @@ interface TutorialTooltipProps {
   targetRect: DOMRect | null;
   isMobile: boolean;
   isInteractive: boolean;
+  isVisible: boolean;
   onNext: () => void;
   onPrev: () => void;
   onExit: () => void;
@@ -87,6 +88,7 @@ export function TutorialTooltip({
   targetRect,
   isMobile,
   isInteractive,
+  isVisible,
   onNext,
   onPrev,
   onExit,
@@ -170,10 +172,21 @@ export function TutorialTooltip({
   const effectivePlacement = !isMobile && step.desktopPlacement ? step.desktopPlacement : step.placement;
   const showArrow = !isMobile && effectivePlacement !== 'center';
 
+  // Determine mobile placement (default: 'bottom')
+  const mobileTopPlacement = isMobile && step.mobilePlacement === 'top';
+
+  // Build class name with visibility modifier
+  const tooltipClassName = [
+    'tutorial-tooltip',
+    showArrow ? `tutorial-tooltip-arrow-${position.arrowPosition}` : '',
+    isVisible ? 'tutorial-tooltip--visible' : 'tutorial-tooltip--hidden',
+    mobileTopPlacement ? 'tutorial-tooltip--mobile-top' : '',
+  ].filter(Boolean).join(' ');
+
   return (
     <div
       ref={tooltipRef}
-      className={`tutorial-tooltip${showArrow ? ` tutorial-tooltip-arrow-${position.arrowPosition}` : ''}`}
+      className={tooltipClassName}
       style={tooltipStyle}
       role="dialog"
       aria-modal="true"

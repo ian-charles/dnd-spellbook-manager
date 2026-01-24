@@ -99,13 +99,16 @@ export interface TutorialState {
 /** Navigation handler for auto-navigating to required views */
 export type NavigationHandler = (view: View, spellbookId?: string) => void;
 
+/** Callback invoked before a tour starts, returns the demo spellbook ID if applicable */
+export type BeforeTourStartHandler = (tourId: TourId) => Promise<string | null>;
+
 /** Context value provided by TutorialProvider */
 export interface TutorialContextValue {
   state: TutorialState;
   activeTour: Tour | null;
   activeStepIndex: number;
   isMenuOpen: boolean;
-  startTour: (tourId: TourId) => void;
+  startTour: (tourId: TourId) => Promise<void>;
   nextStep: () => void;
   prevStep: () => void;
   exitTour: () => void;
@@ -129,4 +132,6 @@ export interface TutorialContextValue {
   setTargetSpellbookId: (id: string | null) => void;
   /** Current target spellbook ID for the unified spellbooks tour */
   targetSpellbookId: string | null;
+  /** Register callback to be invoked before a tour starts (for demo spellbook reset) */
+  setBeforeTourStartHandler: (handler: BeforeTourStartHandler) => void;
 }

@@ -49,9 +49,12 @@ export const TOURS: Record<TourId, Tour> = {
       {
         id: 'browse-select-all',
         targetSelector: '[data-testid="btn-select-all-mobile"]',
+        desktopSelector: '.spell-table thead .checkbox-col input',
         title: 'Bulk Selection',
         description: 'You can also bulk select/deselect all visible spells at once. Great when combined with filters!',
+        desktopDescription: 'Use this checkbox to select or deselect all visible spells at once. Great when combined with filters!',
         placement: 'bottom',
+        desktopPlacement: 'right',
       },
       {
         id: 'browse-add',
@@ -228,9 +231,12 @@ export const TOURS: Record<TourId, Tour> = {
       {
         id: 'browse-select-all',
         targetSelector: '[data-testid="btn-select-all-mobile"]',
+        desktopSelector: '.spell-table thead .checkbox-col input',
         title: 'Bulk Selection',
         description: 'You can also bulk select/deselect all visible spells at once. Great when combined with filters!',
+        desktopDescription: 'Use this checkbox to select or deselect all visible spells at once. Great when combined with filters!',
         placement: 'bottom',
+        desktopPlacement: 'right',
       },
       {
         id: 'browse-add',
@@ -360,8 +366,7 @@ export const TOURS: Record<TourId, Tour> = {
   },
 };
 
-// Tours shown in the Help menu (excludes 'welcome' which is only for first-time users)
+// Tours shown in the Help menu
 export const TOUR_ORDER: TourId[] = [
-  'browse-spells',
-  'spellbooks',
+  'welcome',
 ];

@@ -31,19 +31,23 @@ export const DEMO_SPELLBOOK_INPUT: CreateSpellbookInput = {
 /**
  * Spells for the demo spellbook.
  * Mix of cantrips and leveled spells to demonstrate filtering/sorting.
- * None are prepared - the tour will guide users through preparation.
+ * Core spells are prepared, additional spells are unprepped for tour demonstration.
  */
 export const DEMO_SPELLBOOK_SPELLS: SpellbookSpell[] = [
-  // Cantrips
-  { spellId: 'fire-bolt', prepared: false, notes: '' },
-  { spellId: 'prestidigitation', prepared: false, notes: '' },
-  { spellId: 'mage-hand', prepared: false, notes: '' },
-  // Level 1
-  { spellId: 'mage-armor', prepared: false, notes: '' },
-  { spellId: 'magic-missile', prepared: false, notes: '' },
-  { spellId: 'shield', prepared: false, notes: '' },
-  { spellId: 'find-familiar', prepared: false, notes: '' },
-  // Level 2
-  { spellId: 'misty-step', prepared: false, notes: '' },
-  { spellId: 'scorching-ray', prepared: false, notes: '' },
+  // Cantrips (prepared)
+  { spellId: 'fire-bolt', prepared: true, notes: '' },
+  { spellId: 'prestidigitation', prepared: true, notes: '' },
+  { spellId: 'mage-hand', prepared: true, notes: '' },
+  // Level 1 (prepared)
+  { spellId: 'mage-armor', prepared: true, notes: '' },
+  { spellId: 'magic-missile', prepared: true, notes: '' },
+  { spellId: 'shield', prepared: true, notes: '' },
+  { spellId: 'find-familiar', prepared: true, notes: '' },
+  { spellId: 'feather-fall', prepared: false, notes: '' },
+  { spellId: 'thunderwave', prepared: false, notes: '' },
+  // Level 2 (prepared)
+  { spellId: 'misty-step', prepared: true, notes: '' },
+  { spellId: 'scorching-ray', prepared: true, notes: '' },
+  { spellId: 'hold-person', prepared: false, notes: '' },
+  { spellId: 'shatter', prepared: false, notes: '' },
 ];

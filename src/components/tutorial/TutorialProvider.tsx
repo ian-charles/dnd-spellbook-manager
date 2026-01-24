@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { TutorialContextValue, TutorialState, TourId, Tour, NavigationHandler, BeforeStepAction } from '../../types/tutorial';
+import { TutorialContextValue, TutorialState, TourId, Tour, NavigationHandler, BeforeStepAction, BeforeTourStartHandler } from '../../types/tutorial';
 import { View } from '../../hooks/useHashRouter';
 import { TOURS } from '../../constants/tours';
 
@@ -53,6 +53,8 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
 
   // Use ref for navigation handler to avoid dependency in startTour
   const navigationHandlerRef = useRef<NavigationHandler | null>(null);
+  // Use ref for before tour start handler
+  const beforeTourStartHandlerRef = useRef<BeforeTourStartHandler | null>(null);
 
   useEffect(() => {
     saveState(state);
@@ -62,9 +64,23 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     navigationHandlerRef.current = handler;
   }, []);
 
-  const startTour = useCallback((tourId: TourId) => {
+  const setBeforeTourStartHandler = useCallback((handler: BeforeTourStartHandler) => {
+    beforeTourStartHandlerRef.current = handler;
+  }, []);
+
+  const startTour = useCallback(async (tourId: TourId) => {
     const tour = TOURS[tourId];
     if (!tour || tour.steps.length === 0) return;
+
+    // Call before tour start handler (e.g., to reset demo spellbook)
+    let spellbookId = targetSpellbookId;
+    if (beforeTourStartHandlerRef.current) {
+      const newSpellbookId = await beforeTourStartHandlerRef.current(tourId);
+      if (newSpellbookId) {
+        spellbookId = newSpellbookId;
+        setTargetSpellbookId(newSpellbookId);
+      }
+    }
 
     // Determine which view the first step needs (step-level overrides tour-level)
     const firstStep = tour.steps[0];
@@ -72,8 +88,8 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
 
     // Navigate if we're not on the required view
     if (requiredView && currentView !== requiredView && navigationHandlerRef.current) {
-      if (requiredView === 'spellbook-detail' && targetSpellbookId) {
-        navigationHandlerRef.current(requiredView, targetSpellbookId);
+      if (requiredView === 'spellbook-detail' && spellbookId) {
+        navigationHandlerRef.current(requiredView, spellbookId);
       } else {
         navigationHandlerRef.current(requiredView);
       }
@@ -212,6 +228,7 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     setCurrentView,
     executeBeforeStepAction,
     setTargetSpellbookId,
+    setBeforeTourStartHandler,
   };
 
   return (

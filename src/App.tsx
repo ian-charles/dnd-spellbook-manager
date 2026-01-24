@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Layout } from './components/Layout';
 import { BrowseView } from './components/BrowseView';
 import { SpellbookList } from './components/SpellbookList';
@@ -15,6 +15,8 @@ import { useSpellbooks } from './hooks/useSpellbooks';
 import { useHashRouter } from './hooks/useHashRouter';
 import { useToast } from './hooks/useToast';
 import { MESSAGES } from './constants/messages';
+import { storageService } from './services/storage.service';
+import { TourId } from './types/tutorial';
 import './App.css';
 import './components/tutorial/Tutorial.css';
 
@@ -34,7 +36,7 @@ import './components/tutorial/Tutorial.css';
  * - Batch Operations: Add multiple spells to spellbooks with progress feedback.
  */
 function AppContent() {
-  const { state, openMenu, setNavigationHandler, setCurrentView, setTargetSpellbookId } = useTutorial();
+  const { state, openMenu, setNavigationHandler, setCurrentView, setTargetSpellbookId, setBeforeTourStartHandler } = useTutorial();
 
   // Data hooks
   const { spells, loading, error } = useSpells();
@@ -80,6 +82,23 @@ function AppContent() {
       }
     });
   }, [setNavigationHandler, navigateToBrowse, navigateToSpellbooks, navigateToSpellbookDetail]);
+
+  // Handler to reset demo spellbook before starting welcome tour
+  const handleBeforeTourStart = useCallback(async (tourId: TourId): Promise<string | null> => {
+    if (tourId === 'welcome') {
+      // Reset demo spellbook to default state (creates if missing)
+      const demoSpellbook = await storageService.resetDemoSpellbook();
+      // Refresh spellbooks list to reflect changes
+      await refreshSpellbooks();
+      return demoSpellbook.id;
+    }
+    return null;
+  }, [refreshSpellbooks]);
+
+  // Register before tour start handler
+  useEffect(() => {
+    setBeforeTourStartHandler(handleBeforeTourStart);
+  }, [setBeforeTourStartHandler, handleBeforeTourStart]);
 
   // Keep tutorial system informed of current view
   useEffect(() => {

@@ -227,6 +227,14 @@ export class StorageService {
   }
 
   /**
+   * Get the demo spellbook if it exists
+   */
+  async getDemoSpellbook(): Promise<Spellbook | null> {
+    const spellbooks = await this.getSpellbooks();
+    return spellbooks.find(sb => sb.name === DEMO_SPELLBOOK_NAME) ?? null;
+  }
+
+  /**
    * Create demo spellbook with predefined spells for new users.
    * Returns the created spellbook, or null if it already exists.
    */
@@ -255,8 +263,38 @@ export class StorageService {
   }
 
   /**
+   * Reset demo spellbook to default state.
+   * If it exists, deletes and recreates it. If not, creates it.
+   * Returns the demo spellbook.
+   */
+  async resetDemoSpellbook(): Promise<Spellbook> {
+    // Delete existing demo spellbook if it exists
+    const existing = await this.getDemoSpellbook();
+    if (existing) {
+      await this.deleteSpellbook(existing.id);
+    }
+
+    // Create fresh demo spellbook
+    const now = new Date().toISOString();
+    const spellbook: Spellbook = {
+      id: crypto.randomUUID(),
+      name: DEMO_SPELLBOOK_INPUT.name,
+      spells: DEMO_SPELLBOOK_SPELLS,
+      created: now,
+      updated: now,
+      spellcastingAbility: DEMO_SPELLBOOK_INPUT.spellcastingAbility,
+      spellAttackModifier: DEMO_SPELLBOOK_INPUT.spellAttackModifier,
+      spellSaveDC: DEMO_SPELLBOOK_INPUT.spellSaveDC,
+      maxSpellSlots: DEMO_SPELLBOOK_INPUT.maxSpellSlots,
+    };
+
+    await db.spellbooks.add(spellbook);
+    return spellbook;
+  }
+
+  /**
    * Initialize storage for new users.
-   * Creates demo spellbook if no spellbooks exist.
+   * Always creates demo spellbook if it doesn't exist.
    * Uses singleton pattern to ensure this only runs once,
    * preventing race conditions when multiple components call this.
    */
@@ -268,10 +306,8 @@ export class StorageService {
 
     // Create and store the promise
     initPromise = (async () => {
-      const spellbooks = await this.getSpellbooks();
-      if (spellbooks.length === 0) {
-        await this.createDemoSpellbook();
-      }
+      // Always create demo spellbook for new users if it doesn't exist
+      await this.createDemoSpellbook();
     })();
 
     return initPromise;

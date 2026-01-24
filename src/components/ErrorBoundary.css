@@ -143,8 +143,8 @@
   overflow-wrap: break-word;
 }
 
-/* Desktop (≥ 641px) */
-@media (min-width: 641px) {
+/* Tablet+ (≥ 768px) */
+@media (min-width: 768px) {
   .error-boundary {
     padding: var(--space-8);
   }

@@ -92,8 +92,9 @@
   font-size: var(--font-size-md);
 }
 
-/* Desktop/Tablet: Right-aligned buttons with Clear to left of Apply */
+/* Desktop/Tablet (>= 768px) */
 @media (min-width: 768px) {
+  /* Right-aligned buttons with Clear to left of Apply */
   .filter-modal-footer {
     justify-content: flex-end;
   }
@@ -103,10 +104,8 @@
     flex: 0 0 auto;
     min-width: 120px;
   }
-}
 
-/* Desktop/Tablet: Centered modal with max-width */
-@media (min-width: 768px) {
+  /* Centered modal with max-width */
   .filter-modal-backdrop {
     padding: var(--space-4);
   }

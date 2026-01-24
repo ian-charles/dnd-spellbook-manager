@@ -205,6 +205,11 @@
     border-left: none;
     border-bottom: none;
   }
+
+  /* Reset safe area padding on desktop */
+  .tutorial-tooltip-footer {
+    padding-bottom: var(--space-3);
+  }
 }
 
 .tutorial-tooltip-close {
@@ -533,13 +538,6 @@
 
 .tutorial-menu-footer {
   padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
-}
-
-/* Reset safe area padding on desktop */
-@media (min-width: 768px) {
-  .tutorial-tooltip-footer {
-    padding-bottom: var(--space-3);
-  }
 }
 
 /* ===========================================

@@ -15,13 +15,6 @@
   padding: var(--space-2) var(--space-3);
 }
 
-/* Hide footer on desktop (≥1024px) - buttons will be in navbar */
-@media (min-width: 1024px) {
-  .app-footer {
-    display: none;
-  }
-}
-
 .footer-button {
   display: flex;
   align-items: center;
@@ -111,5 +104,12 @@
   .footer-button svg {
     width: 20px;
     height: 20px;
+  }
+}
+
+/* Desktop (≥ 1024px) - hide footer, buttons will be in navbar */
+@media (min-width: 1024px) {
+  .app-footer {
+    display: none;
   }
 }

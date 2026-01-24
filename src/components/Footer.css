@@ -107,8 +107,8 @@
   }
 }
 
-/* Desktop (≥ 1024px) - hide footer, buttons will be in navbar */
-@media (min-width: 1024px) {
+/* Desktop (≥ 1280px) - hide footer, buttons will be in navbar */
+@media (min-width: 1280px) {
   .app-footer {
     display: none;
   }

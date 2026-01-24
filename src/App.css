@@ -455,10 +455,10 @@ button.nav-link.desktop-only {
 }
 
 /* ==========================================================================
-   DESKTOP (>= 1024px)
+   DESKTOP (>= 1280px)
    ========================================================================== */
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
 
   /* Priority+ Navigation: Show utility items, hide "More" menu */
   a.nav-link.desktop-only,

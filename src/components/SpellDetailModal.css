@@ -130,7 +130,12 @@
 }
 
 .spell-detail-modal-header-content.no-prep-icon {
-  grid-template-columns: 1fr 40px;
+  grid-template-columns: 40px 1fr 40px;
+}
+
+.spell-detail-modal-header-content.no-prep-icon::before {
+  content: '';
+  width: 40px;
 }
 
 .spell-prep-status-icon {
@@ -255,9 +260,9 @@
 
 .spell-detail-modal-remove {
   position: relative;
-  background: transparent;
-  border: 1px solid var(--color-border-primary);
-  color: var(--color-text-secondary);
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
   cursor: pointer;
   padding: var(--space-1) var(--space-2);
   height: 32px;
@@ -278,8 +283,8 @@
 }
 
 .spell-detail-modal-remove:hover {
-  background: var(--color-hover);
-  color: light-dark(rgb(220, 38, 38), rgb(248, 113, 113));
+  background: var(--color-error);
+  color: white;
 }
 
 .spell-detail-modal-external-link {

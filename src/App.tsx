@@ -90,10 +90,13 @@ function AppContent() {
       const demoSpellbook = await storageService.resetDemoSpellbook();
       // Refresh spellbooks list to reflect changes
       await refreshSpellbooks();
+      // Explicitly set the demo spellbook as the tour target after refresh,
+      // since the generic useEffect may have overwritten it with a different spellbook
+      setTargetSpellbookId(demoSpellbook.id);
       return demoSpellbook.id;
     }
     return null;
-  }, [refreshSpellbooks]);
+  }, [refreshSpellbooks, setTargetSpellbookId]);
 
   // Register before tour start handler
   useEffect(() => {

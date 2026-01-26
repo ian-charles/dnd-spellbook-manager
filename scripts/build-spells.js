@@ -10,6 +10,19 @@ const OUTPUT_DIR = join(__dirname, '..', 'public', 'data');
 const OUTPUT_FILE = join(OUTPUT_DIR, 'spells.json');
 
 /**
+ * Source filters: controls which API sources are included and how they're normalized.
+ * - match: the document__title value from Open5e API
+ * - canonical: the normalized source name used in our data and IDs
+ */
+const SOURCE_FILTERS = [
+  { match: '5e Core Rules', canonical: '5e Core Rules' },
+  { match: 'System Reference Document', canonical: '5e Core Rules' },
+];
+
+const ALLOWED_SOURCES = new Set(SOURCE_FILTERS.map(f => f.match));
+const SOURCE_MAP = Object.fromEntries(SOURCE_FILTERS.map(f => [f.match, f.canonical]));
+
+/**
  * Fetch all spells from Open5e API with pagination
  */
 async function fetchAllSpells() {
@@ -50,9 +63,22 @@ async function fetchAllSpells() {
 }
 
 /**
+ * Convert a string to kebab-case, stripping punctuation.
+ * Mirrors src/utils/spellId.ts toKebab() for consistency.
+ */
+function toKebab(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+/**
  * Transform Open5e spell data to our optimized format
  */
-function transformSpell(spell) {
+function transformSpell(spell, canonicalSource) {
   // Parse classes and filter out "ritual caster" (it's a feat, not a class)
   let classes = Array.isArray(spell.dnd_class)
     ? spell.dnd_class.split(',').map(c => c.trim().toLowerCase())
@@ -63,9 +89,12 @@ function transformSpell(spell) {
   // Remove "ritual caster" - it's a feat, not a class
   classes = classes.filter(c => c !== 'ritual caster');
 
+  const name = spell.name;
+  const source = canonicalSource;
+
   return {
-    id: spell.slug,
-    name: spell.name,
+    id: `${toKebab(name)}-${toKebab(source)}`,
+    name,
     level: spell.level_int || 0,
     school: spell.school?.toLowerCase() || 'unknown',
     classes,
@@ -82,7 +111,7 @@ function transformSpell(spell) {
     ritual: spell.ritual?.toLowerCase() === 'yes' || false,
     description: spell.desc || '',
     higherLevels: spell.higher_level || '',
-    source: spell.document__title || 'Unknown',
+    source,
   };
 }
 
@@ -99,21 +128,24 @@ async function main() {
     // Fetch all spells
     const rawSpells = await fetchAllSpells();
 
-    // Filter to only 5e Core Rules (SRD)
-    console.log('\n🔍 Filtering to 5e Core Rules only...');
-    const srdSpells = rawSpells.filter(spell => {
+    // Filter to allowed sources
+    console.log('\n🔍 Filtering to allowed sources...');
+    const filteredSpells = rawSpells.filter(spell => {
       const source = spell.document__title || '';
-      return source === '5e Core Rules' || source === 'System Reference Document';
+      return ALLOWED_SOURCES.has(source);
     });
-    console.log(`   Kept ${srdSpells.length} SRD spells (filtered out ${rawSpells.length - srdSpells.length} non-SRD spells)`);
+    console.log(`   Kept ${filteredSpells.length} spells (filtered out ${rawSpells.length - filteredSpells.length} from excluded sources)`);
 
-    // Transform spells
+    // Transform spells with canonical source names
     console.log('\n🔄 Transforming spell data...');
-    const transformedSpells = srdSpells.map(transformSpell);
+    const transformedSpells = filteredSpells.map(spell => {
+      const canonicalSource = SOURCE_MAP[spell.document__title] || spell.document__title || 'Unknown';
+      return transformSpell(spell, canonicalSource);
+    });
 
     // Create output object
     const output = {
-      version: '1.0.0',
+      version: '2.0.0',
       generatedAt: new Date().toISOString(),
       count: transformedSpells.length,
       spells: transformedSpells,

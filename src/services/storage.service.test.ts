@@ -131,11 +131,11 @@ describe('StorageService', () => {
     it('should add spell to spellbook', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
 
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells).toHaveLength(1);
-      expect(updated?.spells[0].spellId).toBe('fireball');
+      expect(updated?.spells[0].spellId).toBe('fireball-5e-core-rules');
       expect(updated?.spells[0].prepared).toBe(false);
       expect(updated?.spells[0].notes).toBe('');
     });
@@ -143,8 +143,8 @@ describe('StorageService', () => {
     it('should not add duplicate spell', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
 
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells).toHaveLength(1);
@@ -152,7 +152,7 @@ describe('StorageService', () => {
 
     it('should throw error for non-existent spellbook', async () => {
       await expect(
-        service.addSpellToSpellbook('non-existent', 'fireball')
+        service.addSpellToSpellbook('non-existent', 'fireball-5e-core-rules')
       ).rejects.toThrow('Spellbook non-existent not found');
     });
   });
@@ -160,19 +160,19 @@ describe('StorageService', () => {
   describe('removeSpellFromSpellbook', () => {
     it('should remove spell from spellbook', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
-      await service.addSpellToSpellbook(spellbook.id, 'lightning-bolt');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
+      await service.addSpellToSpellbook(spellbook.id, 'lightning-bolt-5e-core-rules');
 
-      await service.removeSpellFromSpellbook(spellbook.id, 'fireball');
+      await service.removeSpellFromSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells).toHaveLength(1);
-      expect(updated?.spells[0].spellId).toBe('lightning-bolt');
+      expect(updated?.spells[0].spellId).toBe('lightning-bolt-5e-core-rules');
     });
 
     it('should throw error for non-existent spellbook', async () => {
       await expect(
-        service.removeSpellFromSpellbook('non-existent', 'fireball')
+        service.removeSpellFromSpellbook('non-existent', 'fireball-5e-core-rules')
       ).rejects.toThrow('Spellbook non-existent not found');
     });
   });
@@ -180,9 +180,9 @@ describe('StorageService', () => {
   describe('toggleSpellPrepared', () => {
     it('should toggle spell prepared status to true', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
-      await service.toggleSpellPrepared(spellbook.id, 'fireball');
+      await service.toggleSpellPrepared(spellbook.id, 'fireball-5e-core-rules');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells[0].prepared).toBe(true);
@@ -190,10 +190,10 @@ describe('StorageService', () => {
 
     it('should toggle spell prepared status to false', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
-      await service.toggleSpellPrepared(spellbook.id, 'fireball');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
+      await service.toggleSpellPrepared(spellbook.id, 'fireball-5e-core-rules');
 
-      await service.toggleSpellPrepared(spellbook.id, 'fireball');
+      await service.toggleSpellPrepared(spellbook.id, 'fireball-5e-core-rules');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells[0].prepared).toBe(false);
@@ -201,10 +201,10 @@ describe('StorageService', () => {
 
     it('should only toggle the specified spell', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
-      await service.addSpellToSpellbook(spellbook.id, 'lightning-bolt');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
+      await service.addSpellToSpellbook(spellbook.id, 'lightning-bolt-5e-core-rules');
 
-      await service.toggleSpellPrepared(spellbook.id, 'fireball');
+      await service.toggleSpellPrepared(spellbook.id, 'fireball-5e-core-rules');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells[0].prepared).toBe(true);
@@ -213,7 +213,7 @@ describe('StorageService', () => {
 
     it('should throw error for non-existent spellbook', async () => {
       await expect(
-        service.toggleSpellPrepared('non-existent', 'fireball')
+        service.toggleSpellPrepared('non-existent', 'fireball-5e-core-rules')
       ).rejects.toThrow('Spellbook non-existent not found');
     });
   });
@@ -221,9 +221,9 @@ describe('StorageService', () => {
   describe('updateSpellNotes', () => {
     it('should update spell notes', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
-      await service.updateSpellNotes(spellbook.id, 'fireball', 'Use sparingly in taverns');
+      await service.updateSpellNotes(spellbook.id, 'fireball-5e-core-rules', 'Use sparingly in taverns');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells[0].notes).toBe('Use sparingly in taverns');
@@ -231,10 +231,10 @@ describe('StorageService', () => {
 
     it('should only update the specified spell', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
-      await service.addSpellToSpellbook(spellbook.id, 'lightning-bolt');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
+      await service.addSpellToSpellbook(spellbook.id, 'lightning-bolt-5e-core-rules');
 
-      await service.updateSpellNotes(spellbook.id, 'fireball', 'Test note');
+      await service.updateSpellNotes(spellbook.id, 'fireball-5e-core-rules', 'Test note');
 
       const updated = await service.getSpellbook(spellbook.id);
       expect(updated?.spells[0].notes).toBe('Test note');
@@ -243,7 +243,7 @@ describe('StorageService', () => {
 
     it('should throw error for non-existent spellbook', async () => {
       await expect(
-        service.updateSpellNotes('non-existent', 'fireball', 'note')
+        service.updateSpellNotes('non-existent', 'fireball-5e-core-rules', 'note')
       ).rejects.toThrow('Spellbook non-existent not found');
     });
   });
@@ -272,13 +272,13 @@ describe('StorageService', () => {
 
     it('should include spell data in export', async () => {
       const spellbook = await service.createSpellbook({ name: 'Test' });
-      await service.addSpellToSpellbook(spellbook.id, 'fireball');
+      await service.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
       const json = await service.exportData();
       const data = JSON.parse(json);
 
       expect(data.spellbooks[0].spells).toHaveLength(1);
-      expect(data.spellbooks[0].spells[0].spellId).toBe('fireball');
+      expect(data.spellbooks[0].spells[0].spellId).toBe('fireball-5e-core-rules');
     });
   });
 

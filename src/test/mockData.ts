@@ -2,7 +2,7 @@ import { Spell } from '../types/spell';
 
 export const mockSpells: Spell[] = [
   {
-    id: 'fireball',
+    id: 'fireball-5e-core-rules',
     name: 'Fireball',
     level: 3,
     school: 'evocation',
@@ -23,7 +23,7 @@ export const mockSpells: Spell[] = [
     source: '5e Core Rules',
   },
   {
-    id: 'shield',
+    id: 'shield-5e-core-rules',
     name: 'Shield',
     level: 1,
     school: 'abjuration',
@@ -44,7 +44,7 @@ export const mockSpells: Spell[] = [
     source: '5e Core Rules',
   },
   {
-    id: 'detect-magic',
+    id: 'detect-magic-5e-core-rules',
     name: 'Detect Magic',
     level: 1,
     school: 'divination',
@@ -65,7 +65,7 @@ export const mockSpells: Spell[] = [
     source: '5e Core Rules',
   },
   {
-    id: 'healing-word',
+    id: 'healing-word-5e-core-rules',
     name: 'Healing Word',
     level: 1,
     school: 'evocation',
@@ -86,7 +86,7 @@ export const mockSpells: Spell[] = [
     source: '5e Core Rules',
   },
   {
-    id: 'eldritch-blast',
+    id: 'eldritch-blast-5e-core-rules',
     name: 'Eldritch Blast',
     level: 0,
     school: 'evocation',
@@ -107,7 +107,7 @@ export const mockSpells: Spell[] = [
     source: '5e Core Rules',
   },
   {
-    id: 'arcane-weapon',
+    id: 'arcane-weapon-deep-magic',
     name: 'Arcane Weapon',
     level: 1,
     school: 'transmutation',

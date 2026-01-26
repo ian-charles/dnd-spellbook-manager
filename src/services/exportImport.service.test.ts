@@ -28,8 +28,8 @@ describe('exportImportService', () => {
         id: 'test-1',
         name: 'Wizard Spellbook',
         spells: [
-          { spellId: 'fireball', prepared: true, notes: 'Favorite' },
-          { spellId: 'magic-missile', prepared: false, notes: '' },
+          { spellId: 'fireball-5e-core-rules', prepared: true, notes: 'Favorite' },
+          { spellId: 'magic-missile-5e-core-rules', prepared: false, notes: '' },
         ],
         created: '2024-01-01T00:00:00.000Z',
         updated: '2024-01-02T00:00:00.000Z',
@@ -38,7 +38,7 @@ describe('exportImportService', () => {
       const spellbook2: Spellbook = {
         id: 'test-2',
         name: 'Cleric Spellbook',
-        spells: [{ spellId: 'cure-wounds', prepared: true, notes: 'Essential' }],
+        spells: [{ spellId: 'cure-wounds-5e-core-rules', prepared: true, notes: 'Essential' }],
         created: '2024-01-03T00:00:00.000Z',
         updated: '2024-01-03T00:00:00.000Z',
       };
@@ -77,7 +77,7 @@ describe('exportImportService', () => {
           {
             id: 'import-1',
             name: 'Imported Spellbook',
-            spells: [{ spellId: 'fireball', prepared: true, notes: 'Test' }],
+            spells: [{ spellId: 'fireball-5e-core-rules', prepared: true, notes: 'Test' }],
             created: '2024-01-01T00:00:00.000Z',
             updated: '2024-01-01T00:00:00.000Z',
           },

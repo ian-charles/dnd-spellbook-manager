@@ -13,7 +13,7 @@ vi.mock('../services/exportImport.service', () => ({
 
 describe('useSpellbookOperations', () => {
     const mockSpellbooks: Spellbook[] = [
-        { id: '1', name: 'Source Spellbook', spells: [{ spellId: 'fireball', prepared: true, notes: '' }], created: '', updated: '' },
+        { id: '1', name: 'Source Spellbook', spells: [{ spellId: 'fireball-5e-core-rules', prepared: true, notes: '' }], created: '', updated: '' },
     ];
 
     const mockOnCreateSpellbook = vi.fn();
@@ -76,7 +76,7 @@ describe('useSpellbookOperations', () => {
         });
 
         expect(mockOnCreateSpellbook).toHaveBeenCalled();
-        expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('2', ['fireball']);
+        expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('2', ['fireball-5e-core-rules']);
         expect(mockOnRefreshSpellbooks).toHaveBeenCalled();
     });
 
@@ -140,8 +140,8 @@ describe('useSpellbookOperations', () => {
         const multiSpellBook = {
             ...mockSpellbooks[0],
             spells: [
-                { spellId: 'fireball', prepared: true, notes: '' },
-                { spellId: 'magic-missile', prepared: true, notes: '' }
+                { spellId: 'fireball-5e-core-rules', prepared: true, notes: '' },
+                { spellId: 'magic-missile-5e-core-rules', prepared: true, notes: '' }
             ]
         };
 

@@ -81,7 +81,7 @@ describe('SpellService', () => {
     });
 
     it('should return spell by ID', () => {
-      const spell = service.getSpellById('fireball');
+      const spell = service.getSpellById('fireball-5e-core-rules');
 
       expect(spell).toBeDefined();
       expect(spell.name).toBe('Fireball');

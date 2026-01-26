@@ -49,7 +49,10 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentView, setCurrentView] = useState<View | null>(null);
-  const [targetSpellbookId, setTargetSpellbookId] = useState<string | null>(null);
+
+  // Ref for the spellbook ID to navigate to during a tour.
+  // Using a ref instead of state so it can't be overwritten by external effects.
+  const tourSpellbookIdRef = useRef<string | null>(null);
 
   // Use ref for navigation handler to avoid dependency in startTour
   const navigationHandlerRef = useRef<NavigationHandler | null>(null);
@@ -73,12 +76,10 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     if (!tour || tour.steps.length === 0) return;
 
     // Call before tour start handler (e.g., to reset demo spellbook)
-    let spellbookId = targetSpellbookId;
     if (beforeTourStartHandlerRef.current) {
-      const newSpellbookId = await beforeTourStartHandlerRef.current(tourId);
-      if (newSpellbookId) {
-        spellbookId = newSpellbookId;
-        setTargetSpellbookId(newSpellbookId);
+      const spellbookId = await beforeTourStartHandlerRef.current(tourId);
+      if (spellbookId) {
+        tourSpellbookIdRef.current = spellbookId;
       }
     }
 
@@ -88,8 +89,8 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
 
     // Navigate if we're not on the required view
     if (requiredView && currentView !== requiredView && navigationHandlerRef.current) {
-      if (requiredView === 'spellbook-detail' && spellbookId) {
-        navigationHandlerRef.current(requiredView, spellbookId);
+      if (requiredView === 'spellbook-detail' && tourSpellbookIdRef.current) {
+        navigationHandlerRef.current(requiredView, tourSpellbookIdRef.current);
       } else {
         navigationHandlerRef.current(requiredView);
       }
@@ -98,7 +99,7 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     setActiveTour(tour);
     setActiveStepIndex(0);
     setIsMenuOpen(false);
-  }, [currentView, targetSpellbookId]);
+  }, [currentView]);
 
   const nextStep = useCallback(() => {
     if (!activeTour) return;
@@ -113,8 +114,8 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
       // Navigate if the next step is on a different page (and doesn't have a beforeStep action)
       // Steps with beforeStep handle their own navigation
       if (!nextStepDef.beforeStep && stepRequiredView && stepRequiredView !== currentView && navigationHandlerRef.current) {
-        if (stepRequiredView === 'spellbook-detail' && targetSpellbookId) {
-          navigationHandlerRef.current(stepRequiredView, targetSpellbookId);
+        if (stepRequiredView === 'spellbook-detail' && tourSpellbookIdRef.current) {
+          navigationHandlerRef.current(stepRequiredView, tourSpellbookIdRef.current);
         } else {
           navigationHandlerRef.current(stepRequiredView);
         }
@@ -131,7 +132,7 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
       setActiveTour(null);
       setActiveStepIndex(0);
     }
-  }, [activeTour, activeStepIndex, currentView, targetSpellbookId]);
+  }, [activeTour, activeStepIndex, currentView]);
 
   const prevStep = useCallback(() => {
     if (activeStepIndex <= 0 || !activeTour) return;
@@ -144,15 +145,15 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
 
     // Navigate if the previous step is on a different page
     if (stepRequiredView && stepRequiredView !== currentView && navigationHandlerRef.current) {
-      if (stepRequiredView === 'spellbook-detail' && targetSpellbookId) {
-        navigationHandlerRef.current(stepRequiredView, targetSpellbookId);
+      if (stepRequiredView === 'spellbook-detail' && tourSpellbookIdRef.current) {
+        navigationHandlerRef.current(stepRequiredView, tourSpellbookIdRef.current);
       } else {
         navigationHandlerRef.current(stepRequiredView);
       }
     }
 
     setActiveStepIndex(prevIndex);
-  }, [activeStepIndex, activeTour, currentView, targetSpellbookId]);
+  }, [activeStepIndex, activeTour, currentView]);
 
   const exitTour = useCallback(() => {
     setActiveTour(null);
@@ -188,7 +189,7 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     }));
   }, []);
 
-  const executeBeforeStepAction = useCallback((action: BeforeStepAction, spellbookId?: string) => {
+  const executeBeforeStepAction = useCallback((action: BeforeStepAction) => {
     if (!navigationHandlerRef.current) return;
 
     switch (action) {
@@ -199,14 +200,12 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
         navigationHandlerRef.current('spellbooks');
         break;
       case 'navigate-to-spellbook-detail':
-        // Use provided spellbookId or fall back to targetSpellbookId
-        const id = spellbookId || targetSpellbookId;
-        if (id) {
-          navigationHandlerRef.current('spellbook-detail', id);
+        if (tourSpellbookIdRef.current) {
+          navigationHandlerRef.current('spellbook-detail', tourSpellbookIdRef.current);
         }
         break;
     }
-  }, [targetSpellbookId]);
+  }, []);
 
   const value: TutorialContextValue = {
     state,
@@ -214,7 +213,6 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     activeStepIndex,
     isMenuOpen,
     currentView,
-    targetSpellbookId,
     startTour,
     nextStep,
     prevStep,
@@ -227,7 +225,6 @@ export function TutorialProvider({ children }: TutorialProviderProps) {
     setNavigationHandler,
     setCurrentView,
     executeBeforeStepAction,
-    setTargetSpellbookId,
     setBeforeTourStartHandler,
   };
 

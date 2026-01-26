@@ -127,11 +127,7 @@ export interface TutorialContextValue {
   /** Set current view (called by App.tsx when view changes) */
   setCurrentView: (view: View) => void;
   /** Execute a beforeStep action (called by TutorialOverlay) */
-  executeBeforeStepAction: (action: BeforeStepAction, spellbookId?: string) => void;
-  /** Set the spellbook ID to use for spellbook-detail navigation */
-  setTargetSpellbookId: (id: string | null) => void;
-  /** Current target spellbook ID for the unified spellbooks tour */
-  targetSpellbookId: string | null;
+  executeBeforeStepAction: (action: BeforeStepAction) => void;
   /** Register callback to be invoked before a tour starts (for demo spellbook reset) */
   setBeforeTourStartHandler: (handler: BeforeTourStartHandler) => void;
 }

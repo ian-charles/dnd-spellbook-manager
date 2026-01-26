@@ -36,7 +36,7 @@ import './components/tutorial/Tutorial.css';
  * - Batch Operations: Add multiple spells to spellbooks with progress feedback.
  */
 function AppContent() {
-  const { state, openMenu, setNavigationHandler, setCurrentView, setTargetSpellbookId, setBeforeTourStartHandler } = useTutorial();
+  const { state, openMenu, setNavigationHandler, setCurrentView, setBeforeTourStartHandler } = useTutorial();
 
   // Data hooks
   const { spells, loading, error } = useSpells();
@@ -83,20 +83,15 @@ function AppContent() {
     });
   }, [setNavigationHandler, navigateToBrowse, navigateToSpellbooks, navigateToSpellbookDetail]);
 
-  // Handler to reset demo spellbook before starting welcome tour
+  // Handler to reset demo spellbook before starting tours that need it
   const handleBeforeTourStart = useCallback(async (tourId: TourId): Promise<string | null> => {
-    if (tourId === 'welcome') {
-      // Reset demo spellbook to default state (creates if missing)
+    if (tourId === 'welcome' || tourId === 'spellbooks') {
       const demoSpellbook = await storageService.resetDemoSpellbook();
-      // Refresh spellbooks list to reflect changes
       await refreshSpellbooks();
-      // Explicitly set the demo spellbook as the tour target after refresh,
-      // since the generic useEffect may have overwritten it with a different spellbook
-      setTargetSpellbookId(demoSpellbook.id);
       return demoSpellbook.id;
     }
     return null;
-  }, [refreshSpellbooks, setTargetSpellbookId]);
+  }, [refreshSpellbooks]);
 
   // Register before tour start handler
   useEffect(() => {
@@ -134,19 +129,6 @@ function AppContent() {
       return () => clearTimeout(timer);
     }
   }, [loading, error, state.hasSeenWelcome, openMenu]);
-
-  // Set target spellbook for tutorial navigation (used by Welcome and Spellbooks tours)
-  // Prefers a spellbook with spells (like the demo spellbook)
-  useEffect(() => {
-    if (spellbooksLoading || spellbooks.length === 0) return;
-
-    const spellbookWithSpells = spellbooks.find(sb => sb.spells.length > 0);
-    const targetSpellbook = spellbookWithSpells || spellbooks[0];
-
-    if (targetSpellbook) {
-      setTargetSpellbookId(targetSpellbook.id);
-    }
-  }, [spellbooks, spellbooksLoading, setTargetSpellbookId]);
 
   // Handler for navigating back after spellbook deletion
   // Refreshes the spellbooks list to ensure deleted book is removed from UI

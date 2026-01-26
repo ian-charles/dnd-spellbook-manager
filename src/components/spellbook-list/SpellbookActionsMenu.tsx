@@ -70,7 +70,9 @@ export function SpellbookActionsMenu({
       }
 
       const dropdownHeight = dropdown.offsetHeight;
-      const spaceBelow = window.innerHeight - menuRect.bottom;
+      const footer = document.querySelector('.app-footer');
+      const footerHeight = footer ? footer.getBoundingClientRect().height : 0;
+      const spaceBelow = window.innerHeight - menuRect.bottom - footerHeight;
       const spaceAbove = menuRect.top;
       const shouldOpenUpward = spaceBelow < dropdownHeight && spaceAbove > spaceBelow;
       setOpenUpward(shouldOpenUpward);

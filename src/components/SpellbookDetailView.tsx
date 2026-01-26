@@ -19,14 +19,16 @@ import { MESSAGES } from '../constants/messages';
 import { SpellbookSpellsTable } from './spellbook-detail/SpellbookSpellsTable';
 import { SpellSlotsDisplay } from './spellbook-detail/SpellSlotsDisplay';
 import { MobileSortChips } from './MobileSortChips';
-import { SquarePen, Copy, Trash2, Funnel, FunnelX, X } from 'lucide-react';
+import { SquarePen, Copy, Trash2, Funnel, FunnelX, X, Printer } from 'lucide-react';
 import { BackToTopButton } from './BackToTopButton';
+import { ExportPdfModal } from './ExportPdfModal';
 import './SpellbookDetail.css';
 
 import { useSpellbookDetail } from '../contexts/SpellbookDetailContext';
 
 export function SpellbookDetailView() {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   const {
     spellbook,
     enrichedSpells,
@@ -147,6 +149,14 @@ export function SpellbookDetailView() {
               >
                 <Copy size={16} />
                 <span className="btn-text">Copy</span>
+              </button>
+              <button
+                className="btn-secondary"
+                onClick={() => setExportModalOpen(true)}
+                data-testid="btn-print-spellbook"
+              >
+                <Printer size={16} />
+                <span className="btn-text">Print</span>
               </button>
               <button
                 className="btn-secondary btn-danger"
@@ -362,6 +372,15 @@ export function SpellbookDetailView() {
         filteredCount={sortedSpells.length}
         totalCount={enrichedSpells.length}
         selectedCount={selectedSpellIds.size}
+      />
+
+      {/* Export PDF Modal */}
+      <ExportPdfModal
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        spellbook={spellbook}
+        enrichedSpells={enrichedSpells}
+        selectedSpellIds={selectedSpellIds}
       />
 
       {/* Floating Action Button */}

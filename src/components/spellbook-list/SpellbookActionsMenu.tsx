@@ -47,27 +47,54 @@ export function SpellbookActionsMenu({
     };
   }, [isOpen]);
 
-  // Position dropdown and check if it should open upward
+  // Position dropdown and reposition on scroll/resize
   useEffect(() => {
-    if (isOpen && menuRef.current && dropdownRef.current) {
-      const menuRect = menuRef.current.getBoundingClientRect();
-      const dropdownHeight = dropdownRef.current.offsetHeight;
-      const spaceBelow = window.innerHeight - menuRect.bottom;
+    if (!isOpen || !menuRef.current || !dropdownRef.current) return;
+
+    const menu = menuRef.current;
+    const dropdown = dropdownRef.current;
+
+    const updatePosition = () => {
+      const menuRect = menu.getBoundingClientRect();
+
+      // Close if trigger scrolled entirely out of viewport
+      const scrolledOut =
+        menuRect.bottom < 0 ||
+        menuRect.top > window.innerHeight ||
+        menuRect.right < 0 ||
+        menuRect.left > window.innerWidth;
+
+      if (scrolledOut) {
+        setIsOpen(false);
+        return;
+      }
+
+      const dropdownHeight = dropdown.offsetHeight;
+      const footer = document.querySelector('.app-footer');
+      const footerHeight = footer ? footer.getBoundingClientRect().height : 0;
+      const spaceBelow = window.innerHeight - menuRect.bottom - footerHeight;
       const spaceAbove = menuRect.top;
+      const shouldOpenUpward = spaceBelow < dropdownHeight && spaceAbove > spaceBelow;
+      setOpenUpward(shouldOpenUpward);
 
-      // Open upward if there's not enough space below but more space above
-      setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > spaceBelow);
-
-      // Position dropdown using fixed positioning
-      const dropdown = dropdownRef.current;
-      if (openUpward) {
+      if (shouldOpenUpward) {
         dropdown.style.top = `${menuRect.top - dropdownHeight - 8}px`;
       } else {
         dropdown.style.top = `${menuRect.bottom + 8}px`;
       }
       dropdown.style.left = `${menuRect.right - dropdown.offsetWidth}px`;
-    }
-  }, [isOpen, openUpward]);
+    };
+
+    updatePosition();
+
+    window.addEventListener('scroll', updatePosition, { capture: true, passive: true });
+    window.addEventListener('resize', updatePosition);
+
+    return () => {
+      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener('resize', updatePosition);
+    };
+  }, [isOpen]);
 
   const handleAction = (action: () => void) => {
     action();

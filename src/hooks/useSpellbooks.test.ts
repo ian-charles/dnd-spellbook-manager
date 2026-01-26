@@ -192,7 +192,7 @@ describe('useSpellbooks', () => {
       });
 
       await act(async () => {
-        await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+        await result.current.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
         // Caller must refresh after batch operations
         await result.current.refreshSpellbooks();
       });
@@ -201,7 +201,7 @@ describe('useSpellbooks', () => {
       await waitFor(() => {
         const updated = result.current.spellbooks.find(sb => sb.id === spellbook.id);
         expect(updated?.spells).toHaveLength(1);
-        expect(updated?.spells[0].spellId).toBe('fireball');
+        expect(updated?.spells[0].spellId).toBe('fireball-5e-core-rules');
       });
     });
 
@@ -218,7 +218,7 @@ describe('useSpellbooks', () => {
       expect(beforeAdd?.spells).toHaveLength(0);
 
       await act(async () => {
-        await result.current.addSpellToSpellbook(spellbook.id, 'fireball');
+        await result.current.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
         // Caller must refresh after batch operations
         await result.current.refreshSpellbooks();
       });
@@ -233,8 +233,8 @@ describe('useSpellbooks', () => {
   describe('removeSpellFromSpellbook', () => {
     it('should remove a spell from spellbook', async () => {
       const spellbook = await storageService.createSpellbook({ name: 'Test' });
-      await storageService.addSpellToSpellbook(spellbook.id, 'fireball');
-      await storageService.addSpellToSpellbook(spellbook.id, 'lightning-bolt');
+      await storageService.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
+      await storageService.addSpellToSpellbook(spellbook.id, 'lightning-bolt-5e-core-rules');
 
       const { result } = renderHook(() => useSpellbooks());
 
@@ -243,13 +243,13 @@ describe('useSpellbooks', () => {
       });
 
       await act(async () => {
-        await result.current.removeSpellFromSpellbook(spellbook.id, 'fireball');
+        await result.current.removeSpellFromSpellbook(spellbook.id, 'fireball-5e-core-rules');
       });
 
       await waitFor(() => {
         const updated = result.current.spellbooks.find(sb => sb.id === spellbook.id);
         expect(updated?.spells).toHaveLength(1);
-        expect(updated?.spells[0].spellId).toBe('lightning-bolt');
+        expect(updated?.spells[0].spellId).toBe('lightning-bolt-5e-core-rules');
       });
     });
   });
@@ -257,7 +257,7 @@ describe('useSpellbooks', () => {
   describe('togglePrepared', () => {
     it('should toggle spell prepared status', async () => {
       const spellbook = await storageService.createSpellbook({ name: 'Test' });
-      await storageService.addSpellToSpellbook(spellbook.id, 'fireball');
+      await storageService.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
       const { result } = renderHook(() => useSpellbooks());
 
@@ -270,7 +270,7 @@ describe('useSpellbooks', () => {
       expect(updated?.spells[0].prepared).toBe(false);
 
       await act(async () => {
-        await result.current.togglePrepared(spellbook.id, 'fireball');
+        await result.current.togglePrepared(spellbook.id, 'fireball-5e-core-rules');
       });
 
       // Should be prepared after toggle
@@ -282,8 +282,8 @@ describe('useSpellbooks', () => {
 
     it('should toggle back to false', async () => {
       const spellbook = await storageService.createSpellbook({ name: 'Test' });
-      await storageService.addSpellToSpellbook(spellbook.id, 'fireball');
-      await storageService.toggleSpellPrepared(spellbook.id, 'fireball');
+      await storageService.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
+      await storageService.toggleSpellPrepared(spellbook.id, 'fireball-5e-core-rules');
 
       const { result } = renderHook(() => useSpellbooks());
 
@@ -296,7 +296,7 @@ describe('useSpellbooks', () => {
       expect(updated?.spells[0].prepared).toBe(true);
 
       await act(async () => {
-        await result.current.togglePrepared(spellbook.id, 'fireball');
+        await result.current.togglePrepared(spellbook.id, 'fireball-5e-core-rules');
       });
 
       // Should be unprepared after toggle
@@ -310,7 +310,7 @@ describe('useSpellbooks', () => {
   describe('updateSpellNotes', () => {
     it('should update spell notes', async () => {
       const spellbook = await storageService.createSpellbook({ name: 'Test' });
-      await storageService.addSpellToSpellbook(spellbook.id, 'fireball');
+      await storageService.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
       const { result } = renderHook(() => useSpellbooks());
 
@@ -319,7 +319,7 @@ describe('useSpellbooks', () => {
       });
 
       await act(async () => {
-        await result.current.updateSpellNotes(spellbook.id, 'fireball', 'Use sparingly in taverns');
+        await result.current.updateSpellNotes(spellbook.id, 'fireball-5e-core-rules', 'Use sparingly in taverns');
       });
 
       await waitFor(() => {
@@ -330,7 +330,7 @@ describe('useSpellbooks', () => {
 
     it('should reload spellbooks after updating notes', async () => {
       const spellbook = await storageService.createSpellbook({ name: 'Test' });
-      await storageService.addSpellToSpellbook(spellbook.id, 'fireball');
+      await storageService.addSpellToSpellbook(spellbook.id, 'fireball-5e-core-rules');
 
       const { result } = renderHook(() => useSpellbooks());
 
@@ -342,7 +342,7 @@ describe('useSpellbooks', () => {
       expect(beforeUpdate?.spells[0].notes).toBe('');
 
       await act(async () => {
-        await result.current.updateSpellNotes(spellbook.id, 'fireball', 'New note');
+        await result.current.updateSpellNotes(spellbook.id, 'fireball-5e-core-rules', 'New note');
       });
 
       await waitFor(() => {

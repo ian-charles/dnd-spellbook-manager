@@ -90,8 +90,8 @@ describe('SpellbookList', () => {
       id: 'spellbook-1',
       name: 'My First Spellbook',
       spells: [
-        { spellId: 'fireball', prepared: true, notes: '' },
-        { spellId: 'magic-missile', prepared: false, notes: '' },
+        { spellId: 'fireball-5e-core-rules', prepared: true, notes: '' },
+        { spellId: 'magic-missile-5e-core-rules', prepared: false, notes: '' },
       ],
       spellcastingAbility: 'INT',
       spellAttackModifier: 7,
@@ -102,7 +102,7 @@ describe('SpellbookList', () => {
     {
       id: 'spellbook-2',
       name: 'Adventure Spells',
-      spells: [{ spellId: 'cure-wounds', prepared: true, notes: '' }],
+      spells: [{ spellId: 'cure-wounds-5e-core-rules', prepared: true, notes: '' }],
       spellcastingAbility: 'WIS',
       spellAttackModifier: 5,
       spellSaveDC: 13,
@@ -286,7 +286,7 @@ describe('SpellbookList', () => {
     // Verify spells were copied
     await waitFor(() => {
       expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledTimes(1);
-      expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('new-spellbook-id', ['cure-wounds']);
+      expect(mockOnAddSpellsToSpellbook).toHaveBeenCalledWith('new-spellbook-id', ['cure-wounds-5e-core-rules']);
     });
 
     // Verify refresh was called

@@ -35,19 +35,19 @@ export const DEMO_SPELLBOOK_INPUT: CreateSpellbookInput = {
  */
 export const DEMO_SPELLBOOK_SPELLS: SpellbookSpell[] = [
   // Cantrips (prepared)
-  { spellId: 'fire-bolt', prepared: true, notes: '' },
-  { spellId: 'prestidigitation', prepared: true, notes: '' },
-  { spellId: 'mage-hand', prepared: true, notes: '' },
+  { spellId: 'fire-bolt-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'prestidigitation-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'mage-hand-5e-core-rules', prepared: true, notes: '' },
   // Level 1 (prepared)
-  { spellId: 'mage-armor', prepared: true, notes: '' },
-  { spellId: 'magic-missile', prepared: true, notes: '' },
-  { spellId: 'shield', prepared: true, notes: '' },
-  { spellId: 'find-familiar', prepared: true, notes: '' },
-  { spellId: 'feather-fall', prepared: false, notes: '' },
-  { spellId: 'thunderwave', prepared: false, notes: '' },
+  { spellId: 'mage-armor-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'magic-missile-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'shield-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'find-familiar-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'feather-fall-5e-core-rules', prepared: false, notes: '' },
+  { spellId: 'thunderwave-5e-core-rules', prepared: false, notes: '' },
   // Level 2 (prepared)
-  { spellId: 'misty-step', prepared: true, notes: '' },
-  { spellId: 'scorching-ray', prepared: true, notes: '' },
-  { spellId: 'hold-person', prepared: false, notes: '' },
-  { spellId: 'shatter', prepared: false, notes: '' },
+  { spellId: 'misty-step-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'scorching-ray-5e-core-rules', prepared: true, notes: '' },
+  { spellId: 'hold-person-5e-core-rules', prepared: false, notes: '' },
+  { spellId: 'shatter-5e-core-rules', prepared: false, notes: '' },
 ];

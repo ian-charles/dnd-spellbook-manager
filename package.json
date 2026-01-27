@@ -13,7 +13,9 @@
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "test:unit": "vitest --run src/services"
+    "test:unit": "vitest --run src/services",
+    "scrape:spells": "node scripts/scraper/scrape-spells.js",
+    "merge:spells": "node scripts/scraper/merge-spells.js"
   },
   "scripts-info": {
     "dev": "Start the development server",
@@ -47,6 +49,7 @@
     "cross-env": "^10.1.0",
     "fake-indexeddb": "^6.2.5",
     "jsdom": "^24.0.0",
+    "puppeteer": "^24.36.0",
     "typescript": "^5.3.3",
     "vite": "^7.2.4",
     "vite-plugin-pwa": "^1.2.0",

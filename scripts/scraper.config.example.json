@@ -1,0 +1,26 @@
+{
+  "auth": {
+    "cookie": "CobaltSession=YOUR_SESSION_COOKIE_HERE"
+  },
+  "sources": [
+    {
+      "filterId": 27,
+      "canonical": "Xanathar's Guide to Everything",
+      "slug": "xanathars"
+    },
+    {
+      "filterId": 40,
+      "canonical": "Tasha's Cauldron of Everything",
+      "slug": "tashas"
+    }
+  ],
+  "scraping": {
+    "delayBetweenRequests": 2000,
+    "maxRetries": 3,
+    "timeout": 30000,
+    "headless": true
+  },
+  "output": {
+    "directory": "data/scraped"
+  }
+}

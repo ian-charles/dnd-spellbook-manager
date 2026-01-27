@@ -37,3 +37,11 @@ nodejs_installer.msi
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Scraper config (contains auth cookies)
+scripts/scraper.config.json
+
+# Scraped spell data (personal use only)
+data/scraped/*.json
+data/scraped/.checkpoint-*.json
+!data/scraped/.gitkeep

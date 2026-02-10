@@ -302,6 +302,12 @@ button.nav-link.desktop-only {
   background: var(--color-neutral);
 }
 
+@media (max-width: 424px) {
+  .app:has(.spell-detail-modal-backdrop) .toast {
+    display: none;
+  }
+}
+
 .spellbook-selector-list {
   display: flex;
   flex-direction: column;

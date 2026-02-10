@@ -39,8 +39,7 @@
   box-shadow: var(--shadow-xl);
 }
 
-.spell-detail-modal-prep-wrapper.animating .feedback-text,
-.spell-detail-modal-checkbox-wrapper.animating .feedback-text {
+.spell-detail-modal-header-checkbox-wrapper.animating .feedback-text {
   animation: rise-and-fade 1s ease-out;
 }
 
@@ -125,15 +124,15 @@
   gap: var(--space-3);
 }
 
-.spell-detail-modal-header-content.with-prep-icon {
+.spell-detail-modal-header-content.with-checkbox {
   grid-template-columns: 40px 1fr 40px;
 }
 
-.spell-detail-modal-header-content.no-prep-icon {
+.spell-detail-modal-header-content.no-checkbox {
   grid-template-columns: 40px 1fr 40px;
 }
 
-.spell-detail-modal-header-content.no-prep-icon::before {
+.spell-detail-modal-header-content.no-checkbox::before {
   content: '';
   width: 40px;
 }
@@ -142,6 +141,7 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  justify-self: start;
 }
 
 .spell-prep-status-icon svg {
@@ -207,20 +207,23 @@
   gap: var(--space-3);
 }
 
-.spell-detail-modal-checkbox-wrapper {
+/* Header checkbox (selection) */
+.spell-detail-modal-header-checkbox-wrapper {
   position: relative;
-  flex-shrink: 0;
-  justify-self: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.spell-detail-modal-footer-checkbox {
-  width: 26px;
-  height: 26px;
+.spell-detail-modal-header-checkbox {
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   accent-color: light-dark(rgb(96, 165, 250), rgb(96, 165, 250));
   flex-shrink: 0;
 }
 
+/* Footer layout */
 .spell-detail-modal-footer-center {
   display: flex;
   align-items: center;
@@ -232,49 +235,73 @@
   justify-self: end;
 }
 
-.spell-detail-modal-prep-wrapper {
-  position: relative;
-  flex-shrink: 0;
-}
-
-/* Buttons - mobile: smaller */
-.spell-detail-modal-prep-toggle {
-  position: relative;
-  background: transparent;
-  border: 1px solid var(--color-border-primary);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  padding: var(--space-1) var(--space-2);
-  height: 32px;
-  min-width: 90px;
+/* Prep toggle switch */
+.spell-detail-modal-prep-toggle-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
+}
+
+.spell-detail-modal-prep-toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.spell-detail-modal-prep-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  min-height: 44px;
+  user-select: none;
+}
+
+.spell-detail-modal-prep-toggle-track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: var(--color-border-primary);
   border-radius: var(--radius-full);
-  transition: all var(--transition-base);
+  transition: background var(--transition-base);
   flex-shrink: 0;
-  white-space: nowrap;
+}
+
+.spell-detail-modal-prep-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.spell-detail-modal-prep-toggle-input:checked + .spell-detail-modal-prep-toggle-label .spell-detail-modal-prep-toggle-track {
+  background: var(--color-prepared);
+}
+
+.spell-detail-modal-prep-toggle-input:checked + .spell-detail-modal-prep-toggle-label .spell-detail-modal-prep-toggle-thumb {
+  transform: translateX(20px);
+}
+
+.spell-detail-modal-prep-toggle-input:focus-visible + .spell-detail-modal-prep-toggle-label .spell-detail-modal-prep-toggle-track {
+  box-shadow: var(--shadow-focus);
+}
+
+.spell-detail-modal-prep-toggle-text {
   font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  min-width: 5.5em;
+  transition: color var(--transition-base), font-weight var(--transition-base);
 }
 
-.spell-detail-modal-prep-toggle svg {
-  width: 18px;
-  height: 18px;
-}
-
-.spell-detail-modal-prep-toggle:hover {
-  background: var(--color-hover);
-  color: var(--color-text-primary);
-}
-
-.spell-detail-modal-prep-toggle.prep-action {
+.spell-detail-modal-prep-toggle-input:checked + .spell-detail-modal-prep-toggle-label .spell-detail-modal-prep-toggle-text {
   color: var(--color-prepared);
-}
-
-.spell-detail-modal-prep-toggle.prep-action:hover {
-  background: var(--color-hover);
-  color: var(--color-prepared);
+  font-weight: var(--font-weight-bold);
 }
 
 .spell-detail-modal-remove {
@@ -403,21 +430,6 @@
 
   .spell-detail-modal-footer-center {
     gap: var(--space-4);
-  }
-
-  /* Buttons - desktop: larger */
-  .spell-detail-modal-prep-toggle {
-    padding: var(--space-2) var(--space-3);
-    height: 40px;
-    min-width: 100px;
-    gap: var(--space-2);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-  }
-
-  .spell-detail-modal-prep-toggle svg {
-    width: 20px;
-    height: 20px;
   }
 
   .spell-detail-modal-remove {

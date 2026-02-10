@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { BookCheck, BookX, BookDashed, Trash2 } from 'lucide-react';
+import { BookCheck, BookDashed, Trash2 } from 'lucide-react';
 import { Spell } from '../types/spell';
 import { SpellDescription } from './SpellDescription';
 import { ComponentBadges, ClassBadges } from './SpellBadges';
@@ -118,10 +118,25 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className={`spell-detail-modal-header-content ${onTogglePrepared ? 'with-prep-icon' : 'no-prep-icon'}`}>
-            {onTogglePrepared && (
-              <div className={`spell-prep-status-icon ${isPrepared ? 'prepared' : 'unprepared'}`}>
-                {isPrepared ? <BookCheck size={24} /> : <BookDashed size={24} />}
+          <div className={`spell-detail-modal-header-content ${onToggleSelected ? 'with-checkbox' : 'no-checkbox'}`}>
+            {onToggleSelected && (
+              <div className={`spell-detail-modal-header-checkbox-wrapper ${checkboxAnimating ? 'animating' : ''}`}>
+                <input
+                  type="checkbox"
+                  className="spell-detail-modal-header-checkbox"
+                  checked={isSelected}
+                  onChange={() => {
+                    setCheckboxFeedback(isSelected ? 'Deselected!' : 'Selected!');
+                    onToggleSelected(spell.id);
+                    setCheckboxAnimating(true);
+                    setTimeout(() => setCheckboxAnimating(false), 1000);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={`Select ${spell.name}`}
+                />
+                <span className="feedback-text" aria-hidden="true">
+                  {checkboxFeedback}
+                </span>
               </div>
             )}
             <h2 id="spell-detail-title">{spell.name}</h2>
@@ -189,39 +204,39 @@ export function SpellDetailModal({ spell, isOpen, onClose, isSelected = false, o
           </div>
         </div>
         <div className="spell-detail-modal-footer">
-          {onToggleSelected && (
-            <div className={`spell-detail-modal-checkbox-wrapper ${checkboxAnimating ? 'animating' : ''}`}>
-              <input
-                type="checkbox"
-                className="spell-detail-modal-footer-checkbox"
-                checked={isSelected}
-                onChange={() => {
-                  setCheckboxFeedback(isSelected ? 'Deselected!' : 'Selected!');
-                  onToggleSelected(spell.id);
-                  setCheckboxAnimating(true);
-                  setTimeout(() => setCheckboxAnimating(false), 1000);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                aria-label={`Select ${spell.name}`}
-              />
-              <span className="feedback-text" aria-hidden="true">
-                {checkboxFeedback}
-              </span>
+          {onTogglePrepared ? (
+            <div className={`spell-prep-status-icon ${isPrepared ? 'prepared' : 'unprepared'}`}>
+              {isPrepared ? <BookCheck size={24} /> : <BookDashed size={24} />}
             </div>
+          ) : (
+            <div />
           )}
           <div className="spell-detail-modal-footer-center">
             {onTogglePrepared && (
-              <button
-                className={`spell-detail-modal-prep-toggle ${isPrepared ? '' : 'prep-action'}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onTogglePrepared(spell.id);
-                }}
-                aria-label={isPrepared ? 'Unprep spell' : 'Prep spell'}
-              >
-                {isPrepared ? <BookX size={20} /> : <BookCheck size={20} />}
-                <span>{isPrepared ? 'Unprep' : 'Prep'}</span>
-              </button>
+              <div className="spell-detail-modal-prep-toggle-wrapper">
+                <input
+                  type="checkbox"
+                  id={`prep-toggle-${spell.id}`}
+                  className="spell-detail-modal-prep-toggle-input"
+                  checked={isPrepared}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onTogglePrepared(spell.id);
+                  }}
+                  aria-label={isPrepared ? 'Unprep spell' : 'Prep spell'}
+                />
+                <label
+                  htmlFor={`prep-toggle-${spell.id}`}
+                  className="spell-detail-modal-prep-toggle-label"
+                >
+                  <span className="spell-detail-modal-prep-toggle-track">
+                    <span className="spell-detail-modal-prep-toggle-thumb" />
+                  </span>
+                  <span className="spell-detail-modal-prep-toggle-text">
+                    {isPrepared ? 'Prepared' : 'Unprepped'}
+                  </span>
+                </label>
+              </div>
             )}
             {onRemove && (
               <button

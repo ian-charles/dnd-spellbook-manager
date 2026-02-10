@@ -113,10 +113,10 @@ export function Layout({
   return (
     <div className="app">
       <header className="app-header">
-        <div className="app-title">
+        <button className="app-title" onClick={onNavigateToBrowse} type="button">
           <h1>The Spellbookery</h1>
           <p className="app-subtitle">A D&D Magic Manager</p>
-        </div>
+        </button>
         <nav className="app-nav">
           {/* Primary navigation - always visible */}
           <button

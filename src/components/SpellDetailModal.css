@@ -165,9 +165,28 @@
   flex: 1;
 }
 
-/* Close button - mobile: hidden (swipe to dismiss) */
+/* Close button */
 .spell-detail-modal-close {
-  display: none;
+  display: flex;
+  background: transparent;
+  border: none;
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-none);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-2);
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+}
+
+.spell-detail-modal-close:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
 }
 
 /* Body - mobile */
@@ -369,30 +388,6 @@
 
   .spell-detail-modal-header h2 {
     font-size: var(--font-size-2xl);
-  }
-
-  /* Show close button on desktop */
-  .spell-detail-modal-close {
-    display: flex;
-    background: transparent;
-    border: none;
-    font-size: var(--font-size-3xl);
-    line-height: var(--line-height-none);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    padding: var(--space-2);
-    width: 40px;
-    height: 40px;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-base);
-    flex-shrink: 0;
-  }
-
-  .spell-detail-modal-close:hover {
-    background: var(--color-hover);
-    color: var(--color-text-primary);
   }
 
   /* Body - desktop */

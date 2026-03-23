@@ -7,17 +7,17 @@
 .spell-detail-page {
   min-height: 100vh;
   background: var(--color-bg-primary);
-  padding: var(--space-4);
+  padding: 0;
 }
 
 .spell-detail-page-content {
   max-width: 800px;
   margin: 0 auto;
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-primary);
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  border: none;
 }
 
 .spell-detail-page-header {
@@ -43,7 +43,7 @@
 
 .spell-detail-page-details {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-4);
   margin-bottom: var(--space-6);
   padding: var(--space-4);
@@ -95,7 +95,7 @@
   display: block;
   margin-bottom: var(--space-3);
   font-size: var(--font-size-lg);
-  color: light-dark(#ca8a04, #fbbf24);
+  color: var(--color-prepared);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -168,7 +168,14 @@
   text-decoration: underline;
 }
 
-/* Desktop (≥ 768px) */
+/* Details grid: 1x4 at 690px+ (matches modal behavior) */
+@media (min-width: 690px) {
+  .spell-detail-page-details {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tablet+ (≥ 768px) - restore card styling */
 @media (min-width: 768px) {
   .spell-detail-page {
     padding: var(--space-8) var(--space-4);
@@ -176,13 +183,13 @@
 
   .spell-detail-page-content {
     padding: var(--space-8);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-border-primary);
   }
 
   .spell-detail-page-header h1 {
     font-size: var(--font-size-3xl);
-  }
-
-  .spell-detail-page-details {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }

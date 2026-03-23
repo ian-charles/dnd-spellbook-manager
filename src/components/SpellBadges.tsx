@@ -6,7 +6,7 @@ export function ComponentBadges({ spell }: { spell: Spell }) {
         <div className="component-badges">
             {spell.components.verbal && <span className="component-badge badge-verbal">V</span>}
             {spell.components.somatic && <span className="component-badge badge-somatic">S</span>}
-            {spell.components.material && <span className="component-badge badge-material">M</span>}
+            {spell.components.material && <span className="component-badge badge-material" title={spell.materials || undefined}>M</span>}
         </div>
     );
 }

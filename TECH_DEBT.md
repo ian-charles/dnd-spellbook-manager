@@ -24,6 +24,22 @@ This document tracks known technical debt, code quality issues, and refactoring 
 
 ### Medium Priority
 
+#### SpellBadges Test Ordering Dependency
+**Location**: `src/components/SpellBadges.test.tsx:28-32, 36-38`
+**Issue**: Test assertions rely on array indices (`badges[0]`, `badges[1]`) which creates implicit ordering dependencies
+**Impact**: Tests may break if rendering order changes even if the correct badges are present
+**Proposed Solution**: Use `getByText` or verify badge existence without relying on order
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
+#### Missing filterClasses Integration Test in SpellBadges
+**Location**: `src/components/SpellBadges.test.tsx` (ClassBadges tests)
+**Issue**: `ClassBadges` uses `filterClasses` utility but tests don't verify filtering behavior
+**Impact**: If `filterClasses` removes certain classes, that behavior isn't covered by these tests
+**Proposed Solution**: Add test with classes that would be filtered
+**Effort**: Low (15 minutes)
+**Priority**: Medium
+
 #### TutorialOverlay Race Conditions in Retry Logic
 **Location**: `src/components/tutorial/TutorialOverlay.tsx:81-139` (useScrollToTarget), `src/components/tutorial/TutorialOverlay.tsx:230-300` (useTargetRect)
 **Issue**: Both hooks use retry logic with setTimeout chains. If component unmounts or selector changes mid-retry, multiple chains can run simultaneously, causing memory leaks and unpredictable behavior.

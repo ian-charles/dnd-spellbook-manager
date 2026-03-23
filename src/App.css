@@ -443,6 +443,7 @@ button.nav-link.desktop-only {
 
   .app-main {
     padding: var(--space-4);
+    padding-bottom: calc(var(--space-4) + 70px);
     margin-top: var(--space-16);
     max-width: 1400px;
   }

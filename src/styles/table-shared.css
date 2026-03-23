@@ -422,25 +422,6 @@
   font-weight: var(--font-weight-normal);
 }
 
-.spell-expanded-details {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-  padding: var(--space-4);
-  background: var(--color-bg-primary);
-  border-radius: var(--radius-lg);
-}
-
-.spell-expanded-details div {
-  font-size: var(--font-size-base);
-}
-
-.spell-expanded-details strong {
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-semibold);
-}
-
 .spell-expanded-description {
   margin: var(--space-4) 0;
   line-height: var(--line-height-relaxed);
